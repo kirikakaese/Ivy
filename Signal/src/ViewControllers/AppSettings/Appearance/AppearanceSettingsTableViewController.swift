@@ -7,6 +7,9 @@ import SignalServiceKit
 import SignalUI
 
 final class AppearanceSettingsTableViewController: OWSTableViewController2 {
+    // Ivy: set to true once Ivy provides its own alternate app icons.
+    private static let showsAppIconSetting = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -46,26 +49,29 @@ final class AppearanceSettingsTableViewController: OWSTableViewController2 {
             let vc = ColorAndWallpaperSettingsViewController()
             self.navigationController?.pushViewController(vc, animated: true)
         })
-        firstSection.add(
-            OWSTableItem(
-                customCellBlock: { [weak self] in
-                    OWSTableItem.buildCell(
-                        itemName: OWSLocalizedString(
-                            "SETTINGS_APPEARANCE_APP_ICON",
-                            comment: "The title for the app icon section in the appearance settings.",
-                        ),
-                        accessoryType: .disclosureIndicator,
-                        accessoryContentView: self?.buildCurrentAppIconView(),
-                    )
-                },
-                actionBlock: { [weak self] in
-                    guard let self else { return }
-                    let vc = AppIconSettingsTableViewController()
-                    vc.iconDelegate = self
-                    self.navigationController?.pushViewController(vc, animated: true)
-                },
-            ),
-        )
+        // Ivy: alternate app icons are hidden until Ivy has its own icon variants.
+        if Self.showsAppIconSetting {
+            firstSection.add(
+                OWSTableItem(
+                    customCellBlock: { [weak self] in
+                        OWSTableItem.buildCell(
+                            itemName: OWSLocalizedString(
+                                "SETTINGS_APPEARANCE_APP_ICON",
+                                comment: "The title for the app icon section in the appearance settings.",
+                            ),
+                            accessoryType: .disclosureIndicator,
+                            accessoryContentView: self?.buildCurrentAppIconView(),
+                        )
+                    },
+                    actionBlock: { [weak self] in
+                        guard let self else { return }
+                        let vc = AppIconSettingsTableViewController()
+                        vc.iconDelegate = self
+                        self.navigationController?.pushViewController(vc, animated: true)
+                    },
+                ),
+            )
+        }
 
         contents.add(firstSection)
 
