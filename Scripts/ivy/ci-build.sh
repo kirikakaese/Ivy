@@ -83,24 +83,49 @@ PY
 # stuck. The raw log is not a reliable signal because a stuck test can keep
 # logging. Per-test time limits do not catch every hang.
 watchdog() {
-  local pretty="$1" raw="$2" limit=$(( ${STALL_MINUTES:-15} * 60 ))
+  local pretty="$1" raw="$2" limit=$(( ${STALL_MINUTES:-10} * 60 ))
   while sleep 30; do
     [ -f "$pretty" ] || continue
     if [ $(( $(date +%s) - $(stat -f %m "$pretty") )) -ge "$limit" ]; then
-      echo "::group::No progress for ${STALL_MINUTES:-15} minutes; stopping"
+      echo "::group::No progress for ${STALL_MINUTES:-10} minutes; stopping"
       echo "Last test lines of the raw log:"
       grep -i "^test case '" "$raw" | tail -5 | cut -c1-300
       echo "End of the raw log:"
       tail -80 "$raw" | cut -c1-300
+      echo "Swift Testing tests that started but did not finish:"
+      unfinished_swift_tests "$raw" || true
       for pid in $(pgrep -x Ivy) $(pgrep -f '/xctest( |$)'); do
         echo "== $(ps -o command= -p "$pid" | cut -c1-200)"
-        sample "$pid" 3 2>&1 | grep -v '^ *$' | head -250
+        # Keep the thread headers and the app's own frames.
+        sample "$pid" 3 2>&1 \
+          | grep -E 'Thread_|Signal|Ivy|XCTWaiter|swift_task|Testing' \
+          | grep -vE 'dyld|\?\?\?' | cut -c1-220 | head -600
       done
       echo "::endgroup::"
       pkill -x xcodebuild || true
       return
     fi
   done
+}
+
+# Lists Swift Testing tests (and parameterized cases) that started but did
+# not finish, from the raw xcodebuild output.
+unfinished_swift_tests() {
+  python3 - "$1" <<'PY'
+import re, sys
+started, ended = {}, set()
+for line in open(sys.argv[1], errors="replace"):
+    m = re.search(r"Test (case passing .* to )?(\S+\(.*?\)) started", line)
+    if m and "◇" in line:
+        started[line.split("◇", 1)[1].replace(" started.", "").strip()] = True
+    m = re.search(r"[✔✘] Test (case passing .* to )?(\S+\(.*?\)) (passed|failed|recorded|skipped)", line)
+    if m:
+        ended.add(line.split(" ", 2)[-1].rsplit(" passed", 1)[0].rsplit(" failed", 1)[0].strip())
+for name in started:
+    key = name.replace("Test ", "", 1)
+    if not any(key in e for e in ended):
+        print("  " + name[:300])
+PY
 }
 
 # Prints the details of test failures recorded in the result bundle.
