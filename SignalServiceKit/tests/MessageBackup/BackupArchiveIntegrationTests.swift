@@ -155,6 +155,11 @@ class BackupArchiveIntegrationTests: XCTestCase {
                     testCaseFileUrl: binprotoFileUrl,
                     failureLogOutput: preferredFailureLogOutput,
                 )
+            } catch let skip as XCTSkip {
+                // Ivy: a skip means the comparison is unavailable on this
+                // platform (outside the simulator); report it as a skip
+                // instead of a failure of every test case.
+                throw skip
             } catch TestError.failure(let message) {
                 logFailure("""
 
