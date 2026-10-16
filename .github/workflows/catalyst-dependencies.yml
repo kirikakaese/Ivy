@@ -242,11 +242,13 @@ jobs:
           set -euo pipefail
           WEBRTC_SRC_DIR="$PWD/src/webrtc/src"
           mkdir -p ../pkg/libringrtc/aarch64-apple-ios-macabi
-          LIB=$(find ./target ./src/rust/target -path '*aarch64-apple-ios-macabi/release/libringrtc.a' 2>/dev/null | head -1)
+          LIB=$(find ./target ./src/rust/target -path '*aarch64-apple-ios-macabi/release/libringrtc.a' 2>/dev/null | head -1 || true)
           echo "libringrtc: $LIB"
+          [ -n "$LIB" ] || { echo "libringrtc.a not found"; exit 1; }
           cp "$LIB" ../pkg/libringrtc/aarch64-apple-ios-macabi/
-          FW=$(find "${WEBRTC_SRC_DIR}/out/catalyst" -name WebRTC.framework -path '*catalyst*' | head -1)
-          [ -n "$FW" ] || FW=$(find "${WEBRTC_SRC_DIR}/out/catalyst" -name WebRTC.framework | head -1)
+          FW=$(find "${WEBRTC_SRC_DIR}/out/catalyst" -name WebRTC.framework -path '*catalyst*' | head -1 || true)
+          [ -n "$FW" ] || FW=$(find "${WEBRTC_SRC_DIR}/out/catalyst" -name WebRTC.framework | head -1 || true)
+          [ -n "$FW" ] || { echo "WebRTC.framework not found"; exit 1; }
           echo "Catalyst framework: $FW"
           cp -R "$FW" ../pkg/WebRTC.framework
           cd ../pkg
