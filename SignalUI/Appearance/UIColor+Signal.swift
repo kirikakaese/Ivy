@@ -68,12 +68,13 @@ extension UIColor.Signal {
 
     // MARK: Accent
 
+    // Ivy: the accent color is Ivy green instead of Signal's ultramarine.
     public static var ultramarine: UIColor {
         UIColor.byRGBHex(
-            light: 0x2267F5,
-            lightHighContrast: 0x0A43B9,
-            dark: 0x2D70FA,
-            darkHighContrast: 0x5D92FF,
+            light: 0x2E7D4F,
+            lightHighContrast: 0x1D5C38,
+            dark: 0x3A9A62,
+            darkHighContrast: 0x5CC08A,
         )
     }
 
@@ -249,8 +250,9 @@ extension UIColor.Signal {
         )
     }
 
+    // Ivy: tinted to match the Ivy accent color.
     public static var secondaryUltramarineBackground: UIColor {
-        UIColor(rgbHex: 0xC7DDFB)
+        UIColor(rgbHex: 0xCDE8D6)
     }
 
     public static var backdrop: UIColor {

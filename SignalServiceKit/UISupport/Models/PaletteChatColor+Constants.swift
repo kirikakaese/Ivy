@@ -23,9 +23,10 @@ extension PaletteChatColor {
     public var colorSetting: ColorOrGradientSetting {
         switch self {
         case .ultramarine:
+            // Ivy: the default bubble color is Ivy green instead of Signal's ultramarine.
             return .gradient(
-                gradientColor1: OWSColor(red: 0.0196078431372549, green: 0.3215686274509804, blue: 0.9411764705882353),
-                gradientColor2: OWSColor(red: 0.17254901960784313, green: 0.4196078431372549, blue: 0.9294117647058824),
+                gradientColor1: OWSColor(red: 0.1137254901960784, green: 0.4196078431372549, blue: 0.2509803921568627),
+                gradientColor2: OWSColor(red: 0.1803921568627451, green: 0.5215686274509804, blue: 0.3215686274509804),
                 angleRadians: CGFloat.pi * 0,
             )
         case .crimson:
