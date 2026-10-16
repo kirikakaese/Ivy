@@ -131,7 +131,7 @@ SPEC CHECKSUMS:
   GRDB.swift: 1395cb3556df6b16ed69dfc74c3886abc75d2825
   LibMobileCoin: 4c76066a0aa8c614099da08e38562fd7b4b2d246
   libPhoneNumber-iOS: 1a34106b49dc6e12a7f37eb9aee7c64011509547
-  LibSignalClient: 17121e090ab43a072ad865eaea99b0c944d09cd5
+  LibSignalClient: 1581bddec9a3aaaa288be08aeb188320f2795144
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   Logging: beeb016c9c80cf77042d62e83495816847ef108b
   lottie-ios: fcb5e73e17ba4c983140b7d21095c834b3087418

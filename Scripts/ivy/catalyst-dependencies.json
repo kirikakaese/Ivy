@@ -2,9 +2,9 @@
   "libsignal": {
     "version": "0.103.1",
     "repository": "kirikakaese/Ivy",
-    "tag": "catalyst-libsignal-v0.103.1",
+    "tag": "catalyst-libsignal-v0.103.1-2",
     "asset": "libsignal-client-ios-build-v0.103.1.tar.gz",
-    "sha256": "4b49699ddb96acc6bba4c2a14c7d679f44ab5a4ab2ae9afccb5d63266afef61e"
+    "sha256": "a3dbde06586c2db20e37bd7a07fcd7acc8748da9b45c01ab49951bb6a010debe"
   },
   "mobilecoin": {
     "version": "6.0.2",
