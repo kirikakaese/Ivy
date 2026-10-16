@@ -205,7 +205,14 @@ jobs:
       - name: Fetch WebRTC
         if: steps.existing.outputs.exists != 'true'
         working-directory: ringrtc
-        run: bin/prepare-workspace ios
+        run: |
+          # Chromium's source servers occasionally fail with HTTP 5xx.
+          for attempt in 1 2 3; do
+            bin/prepare-workspace ios && exit 0
+            echo "Fetching WebRTC failed (attempt $attempt), retrying"
+            sleep 60
+          done
+          exit 1
 
       - name: Build WebRTC for Mac Catalyst
         if: steps.existing.outputs.exists != 'true'
