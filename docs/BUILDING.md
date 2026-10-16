@@ -45,7 +45,7 @@ Select the `Signal` scheme and an iPhone or iPad simulator, then build and run. 
 ## Tests
 
 ```
-Scripts/build-and-test.sh
+Scripts/ivy/ci-build.sh full
 ```
 
 Ivy's own scripts have Python unit tests that run on any system:
@@ -56,4 +56,6 @@ python3 -m unittest discover -s Scripts/ivy -p 'test_*.py'
 
 ## Continuous integration
 
-GitHub Actions builds and tests the app on every push and pull request (`.github/workflows/ci.yml`).
+GitHub Actions checks every pull request (`.github/workflows/ci.yml`). Draft pull requests get a fast check that builds the app and all test bundles; pull requests that are ready for review, pushes to `main` and manual runs also run the full test suite. Build products are cached between runs.
+
+The Mac Catalyst variants of libsignal, RingRTC/WebRTC and MobileCoin are built by `.github/workflows/catalyst-dependencies.yml`. It runs automatically when the pinned versions in the `Podfile` change and publishes the results as release assets, so it only does real work about once per upstream dependency update.
