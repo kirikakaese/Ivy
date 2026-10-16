@@ -240,13 +240,17 @@ jobs:
         working-directory: lmc/libmobilecoin
         run: |
           set -euo pipefail
-          TOOLCHAIN=$(cat ../Vendor/mobilecoin/rust-toolchain 2>/dev/null || sed -n 's/^channel *= *"\(.*\)"/\1/p' ../Vendor/mobilecoin/rust-toolchain.toml)
-          rustup toolchain install "$TOOLCHAIN" --profile minimal --target aarch64-apple-ios-macabi --component rust-src
-          brew install protobuf || true
-          export SGX_MODE=SW IAS_MODE=PROD
-          export IPHONEOS_DEPLOYMENT_TARGET=14.0
+          TOOLCHAIN=$(sed -n 's/^channel *= *"\(.*\)"/\1/p' ../Vendor/mobilecoin/rust-toolchain)
+          echo "Toolchain: $TOOLCHAIN"
+          rustup toolchain install "$TOOLCHAIN" --profile minimal --component rust-src --component llvm-tools-preview
+          rustup override set "$TOOLCHAIN"
+          brew install protobuf cmake || true
+          ../tools/patch-cmake.sh >/dev/null
           export CFLAGS_aarch64_apple_ios_macabi="--target=arm64-apple-ios14.0-macabi"
-          cargo +"$TOOLCHAIN" build --target aarch64-apple-ios-macabi --profile mobile-release
+          export CXXFLAGS_aarch64_apple_ios_macabi="--target=arm64-apple-ios14.0-macabi"
+          make ALL_ARCHS_IOS=aarch64-apple-ios-macabi \
+            CARGO_ENV_FLAGS='CFLAGS=-DPB_NO_PACKED_STRUCTS=1 CXXFLAGS=-DPB_NO_PACKED_STRUCTS=1 IPHONEOS_DEPLOYMENT_TARGET=14.0' \
+            aarch64-apple-ios-macabi
           find . -name libmobilecoin.a -path '*macabi*'
 
       - name: Package
