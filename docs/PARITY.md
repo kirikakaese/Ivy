@@ -30,6 +30,17 @@ Status values: `planned`, `in progress`, `done`, `removed`, `disabled` (temporar
 | Local-only diagnostics | 2 | planned | planned | planned | |
 | About, license, privacy statement | 2 | planned | planned | planned | |
 
+## Platform differences
+
+Upstream features that exist on the Mac in a reduced form, because the underlying Apple API does not exist there. Code paths are marked with `// Ivy:` comments.
+
+| Feature | macOS behavior |
+|---|---|
+| Device transfer and quick restore | Uses MultipeerConnectivity only; Wi-Fi Aware is iPhone and iPad only |
+| Multitasking camera access | Not needed; the Mac camera works while other windows are in front |
+| Limited contact access picker | Not shown; contact access is all or nothing |
+| Quick Look support check | Skipped; Quick Look shows a generic view for files it cannot render |
+
 ## Organization
 
 | Feature | Phase | iPhone | iPad | macOS | Notes |
