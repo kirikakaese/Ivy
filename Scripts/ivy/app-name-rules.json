@@ -1,0 +1,2279 @@
+{
+ "InfoPlist.strings": {
+  "NSAppleMusicUsageDescription": {
+   "fingerprint": "c58f9cbea2362c7f",
+   "replace": [
+    true
+   ]
+  },
+  "NSCameraUsageDescription": {
+   "fingerprint": "973b809d4ad9a655",
+   "replace": [
+    true
+   ]
+  },
+  "NSContactsUsageDescription": {
+   "fingerprint": "8469790e1bf8e628",
+   "replace": [
+    true
+   ]
+  },
+  "NSFaceIDUsageDescription": {
+   "fingerprint": "275bbc48f56ba27a",
+   "replace": [
+    true
+   ]
+  },
+  "NSLocalNetworkUsageDescription": {
+   "fingerprint": "74fd02526780a0cf",
+   "replace": [
+    true
+   ]
+  },
+  "NSLocationWhenInUseUsageDescription": {
+   "fingerprint": "5d0ec69c67cb2e48",
+   "replace": [
+    true
+   ]
+  },
+  "NSMicrophoneUsageDescription": {
+   "fingerprint": "27f11c87b1f4d58e",
+   "replace": [
+    true
+   ]
+  },
+  "NSPhotoLibraryAddUsageDescription": {
+   "fingerprint": "ba19613345f3204e",
+   "replace": [
+    true
+   ]
+  },
+  "NSPhotoLibraryUsageDescription": {
+   "fingerprint": "72fc7d090fd7a100",
+   "replace": [
+    true
+   ]
+  }
+ },
+ "Localizable.strings": {
+  "ABOUT_SECTION_FOOTER": {
+   "fingerprint": "afd81011d9225a81",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "ABOUT_SECTION_TITLE": {
+   "fingerprint": "694f4c3a4fe58d6f",
+   "replace": [
+    true
+   ]
+  },
+  "ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_MESSAGE": {
+   "fingerprint": "da9fb46884af2b20",
+   "replace": [
+    false
+   ]
+  },
+  "ACCOUNT_DATA_REPORT_FOOTER": {
+   "fingerprint": "3be769002a96ea66",
+   "replace": [
+    true
+   ]
+  },
+  "ACCOUNT_DATA_REPORT_SUBTITLE": {
+   "fingerprint": "be4de9c85ee4bde8",
+   "replace": [
+    false
+   ]
+  },
+  "ACTION_INVITE": {
+   "fingerprint": "bb9cc97af4832dd6",
+   "replace": [
+    false
+   ]
+  },
+  "ACTION_VOICE_CALL": {
+   "fingerprint": "7db83399351632af",
+   "replace": [
+    false
+   ]
+  },
+  "APP_EXPIRED_BOTTOM": {
+   "fingerprint": "4d21eff118350be5",
+   "replace": [
+    true
+   ]
+  },
+  "APP_LAUNCH_FAILURE_ALERT_MESSAGE": {
+   "fingerprint": "866957e210559c75",
+   "replace": [
+    true
+   ]
+  },
+  "APP_LAUNCH_FAILURE_CONTINUE": {
+   "fingerprint": "f91e7188c367bf3f",
+   "replace": [
+    true
+   ]
+  },
+  "APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_TITLE": {
+   "fingerprint": "7b7a7c2e03fe7037",
+   "replace": [
+    true
+   ]
+  },
+  "APP_LAUNCH_FAILURE_DATABASE_CORRUPTED_MESSAGE": {
+   "fingerprint": "53f76ae1663ebab6",
+   "replace": [
+    true
+   ]
+  },
+  "APP_LAUNCH_FAILURE_EXIT_APP_ACTION_TITLE": {
+   "fingerprint": "6d007f5648abb2ea",
+   "replace": [
+    true
+   ]
+  },
+  "APP_LAUNCH_FAILURE_INVALID_DATABASE_VERSION_MESSAGE": {
+   "fingerprint": "a4d3e52e28f16a7e",
+   "replace": [
+    true
+   ]
+  },
+  "APP_LAUNCH_FAILURE_LAST_LAUNCH_CRASHED_MESSAGE": {
+   "fingerprint": "663f3dad628966ae",
+   "replace": [
+    true
+   ]
+  },
+  "APP_LAUNCH_FAILURE_LAST_LAUNCH_CRASHED_TITLE": {
+   "fingerprint": "7b7a7c2e03fe7037",
+   "replace": [
+    true
+   ]
+  },
+  "APP_LAUNCH_FAILURE_NOT_ENOUGH_STORAGE_SPACE_MESSAGE_FORMAT": {
+   "fingerprint": "fbe40abf260effe6",
+   "replace": [
+    true,
+    true
+   ]
+  },
+  "APP_LAUNCH_FAILURE_RESTORE_FAILED_MESSAGE": {
+   "fingerprint": "c8438688e5c13c67",
+   "replace": [
+    true
+   ]
+  },
+  "ATTACHMENT_BACKFILL_FINISHED_NOTIFICATION": {
+   "fingerprint": "ee585ac88d33e9b4",
+   "replace": [
+    false
+   ]
+  },
+  "ATTACHMENT_BACKFILL_INTERRUPTED_NOTIFICATION": {
+   "fingerprint": "3aff9d413b900a07",
+   "replace": [
+    true
+   ]
+  },
+  "ATTACHMENT_BACKFILL_SYNCING_NOTIFICATION": {
+   "fingerprint": "b796b51a5ab74d9d",
+   "replace": [
+    false
+   ]
+  },
+  "ATTACHMENT_KEYBOARD_LIMITED_ACCESS": {
+   "fingerprint": "f285551c947f8f0f",
+   "replace": [
+    true
+   ]
+  },
+  "ATTACHMENT_KEYBOARD_NO_PHOTO_ACCESS": {
+   "fingerprint": "30a67d696adb483d",
+   "replace": [
+    true
+   ]
+  },
+  "BACKUPS_BACK_UP_YOUR_MEDIA_MEGAPHONE_BODY": {
+   "fingerprint": "c31655de6662a2ba",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUPS_BACK_UP_YOUR_MEDIA_UPSELL_BODY": {
+   "fingerprint": "a234bb63cf316570",
+   "replace": [
+    false,
+    true
+   ]
+  },
+  "BACKUPS_NEVER_LOSE_A_MESSAGE_MEGAPHONE_BODY": {
+   "fingerprint": "35e052ffcf003176",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUPS_SAVE_SPACE_MEGAPHONE_BODY": {
+   "fingerprint": "b57384e5c349caf5",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUPS_SAVE_SPACE_UPSELL_BODY": {
+   "fingerprint": "0db829da822d037b",
+   "replace": [
+    true,
+    false
+   ]
+  },
+  "BACKUPS_SETUP_ON_PRIMARY_MESSAGE": {
+   "fingerprint": "d3bcd2361d446deb",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUPS_TURNED_ON_NOTIFICATION_BODY_FORMAT": {
+   "fingerprint": "70d91a5238488c77",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_ENABLEMENT_REMINDER_MEGAPHONE_BODY": {
+   "fingerprint": "39acd179e89b44b8",
+   "replace": [
+    true
+   ]
+  },
+  "BACKUP_NEVER_SHARE_RECOVERY_KEY_SHEET_BODY": {
+   "fingerprint": "3d2f44455df5e2f2",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "BACKUP_ONBOARDING_CONFIRM_KEY_KEEP_KEY_SAFE_SHEET_BODY": {
+   "fingerprint": "cec6f09ddedd98e8",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_ONBOARDING_INTRO_SUBTITLE": {
+   "fingerprint": "43475bcfcd3b2804",
+   "replace": [
+    false,
+    true
+   ]
+  },
+  "BACKUP_ONBOARDING_INTRO_TITLE": {
+   "fingerprint": "7b42c07deac09534",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_PLAN_DOWNGRADED_SHEET_BODY": {
+   "fingerprint": "6e35791011171176",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_PLAN_DOWNGRADED_SHEET_BODY_TESTFLIGHT": {
+   "fingerprint": "ae86dd3d2026462d",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SAVE_KEY_PW_MGR_CONFIRM_SHEET_MESSAGE": {
+   "fingerprint": "e5f1d92aaa12e813",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_BACKGROUND_APP_REFRESH_DISABLED_MESSAGE": {
+   "fingerprint": "a9fc6ba0d370fe8d",
+   "replace": [
+    true
+   ]
+  },
+  "BACKUP_SETTINGS_BACKGROUND_APP_REFRESH_DISABLED_SHEET_MESSAGE": {
+   "fingerprint": "2443dd99c99b6134",
+   "replace": [
+    true
+   ]
+  },
+  "BACKUP_SETTINGS_BACKUPS_DISABLED_SECTION_FOOTER": {
+   "fingerprint": "8a8301922b961ed9",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_BACKUPS_DISABLING_DOWNLOADING_MEDIA_PROGRESS_VIEW_DESCRIPTION": {
+   "fingerprint": "92c558ae481ff6bc",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_BACKUPS_DISABLING_GENERIC_ERROR_SECTION_HEADER": {
+   "fingerprint": "ad047e7cd4f16971",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_BACKUPS_DISABLING_SECTION_HEADER": {
+   "fingerprint": "e97f75da5514caaa",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_BACKUP_PLAN_PAID_BUT_IAP_NOT_FOUND_LOCALLY_DESCRIPTION": {
+   "fingerprint": "f05129ebe66840f1",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_DISABLING_DOWNLOADS_STARTED_ACTION_SHEET_MESSAGE": {
+   "fingerprint": "555b18fa742b8106",
+   "replace": [
+    true
+   ]
+  },
+  "BACKUP_SETTINGS_DISABLING_ERROR_GENERIC_ERROR_ACTION_SHEET_MESSAGE": {
+   "fingerprint": "ad047e7cd4f16971",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_DISABLING_SUBSCRIPTION_CANCEL_ACTION_SHEET_MESSAGE": {
+   "fingerprint": "9ff754ce8572a4c3",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_LANDING_PAGE_SUBTITLE": {
+   "fingerprint": "4b788233d6beac6a",
+   "replace": [
+    true
+   ]
+  },
+  "BACKUP_SETTINGS_LANDING_SIGNAL_BACKUPS_BODY": {
+   "fingerprint": "ca8227a6110d7e7e",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_LANDING_SIGNAL_BACKUPS_TITLE": {
+   "fingerprint": "7b42c07deac09534",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_LINKED_DEVICE_MANAGE_ON_PRIMARY_FOOTER": {
+   "fingerprint": "580f57ec9c50e99c",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_LINKED_DEVICE_MANAGE_ON_PRIMARY_FOOTER_PAID": {
+   "fingerprint": "7d9b5de31e597476",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_LINKED_DEVICE_NO_BACKUP_FOOTER": {
+   "fingerprint": "9cdf32d7ae864c41",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_LINKED_DEVICE_SUBSCRIPTION_NOT_FOUND": {
+   "fingerprint": "3fc87f3d16395ab5",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_OPTIMIZE_LOCAL_STORAGE_DOWNLOAD_SHEET_MESSAGE": {
+   "fingerprint": "892a022c3e7a35e7",
+   "replace": [
+    true
+   ]
+  },
+  "BACKUP_SETTINGS_OPTIMIZE_LOCAL_STORAGE_TOGGLE_FOOTER_UNAVAILABLE": {
+   "fingerprint": "fc16fb27ef827842",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_OPTIMIZE_LOCAL_STORAGE_TOGGLE_TITLE": {
+   "fingerprint": "df5881edc02bfddc",
+   "replace": [
+    true
+   ]
+  },
+  "BACKUP_SETTINGS_OPTIMIZE_LOCAL_STORAGE_UPSELL_BODY": {
+   "fingerprint": "0a26c807958c2551",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_OUT_OF_STORAGE_SPACE_NOTIFICATION_SUBTITLE": {
+   "fingerprint": "3add58cd0bc62fc8",
+   "replace": [
+    true
+   ]
+  },
+  "BACKUP_SETTINGS_SUBSCRIPTION_ALREADY_REDEEMED_SHEET_BODY": {
+   "fingerprint": "546249be0da95113",
+   "replace": [
+    false
+   ]
+  },
+  "BACKUP_SETTINGS_UPLOAD_PROGRESS_SUBTITLE_PAUSED_OUT_OF_STORAGE_SPACE_FORMAT": {
+   "fingerprint": "ace6128be4284fcb",
+   "replace": [
+    true
+   ]
+  },
+  "BACKUP_SETTINGS_WELCOME_TO_BACKUPS_SHEET_MESSAGE": {
+   "fingerprint": "092a91478fc77efb",
+   "replace": [
+    true
+   ]
+  },
+  "BACKUP_SETTINGS_WELCOME_TO_BACKUPS_SHEET_OPTIMIZE_MEDIA_TOGGLE_TITLE": {
+   "fingerprint": "df5881edc02bfddc",
+   "replace": [
+    true
+   ]
+  },
+  "BACKUP_SUBSCRIPTION_FAILED_TO_RENEW_SHEET_MESSAGE": {
+   "fingerprint": "93d78d492b4f3ec5",
+   "replace": [
+    false
+   ]
+  },
+  "BADGE_DETAILS_TITLE_FOR_SUPPORTER": {
+   "fingerprint": "220be219892dfce6",
+   "replace": [
+    false
+   ]
+  },
+  "BADGE_EXPIRED_BOOST_BODY": {
+   "fingerprint": "e9ce55ea04739d64",
+   "replace": [
+    false
+   ]
+  },
+  "BANK_DONATION_SUBHEADER_TEXT": {
+   "fingerprint": "fe2d737d37586d22",
+   "replace": [
+    false
+   ]
+  },
+  "BANK_MANDATE_SUBTITLE": {
+   "fingerprint": "a40d03b96297d081",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "BLOCK_LIST_BLOCK_RELEASE_NOTES_TITLE": {
+   "fingerprint": "4bab15992204d265",
+   "replace": [
+    false
+   ]
+  },
+  "BLOCK_RELEASE_NOTES_BEHAVIOR_EXPLANATION": {
+   "fingerprint": "679958e4383d5e82",
+   "replace": [
+    false
+   ]
+  },
+  "CALLKIT_ANONYMOUS_CONTACT_NAME": {
+   "fingerprint": "13eddb7d05d1d976",
+   "replace": [
+    false
+   ]
+  },
+  "CALLKIT_ANONYMOUS_GROUP_NAME": {
+   "fingerprint": "a976560e8e9f2640",
+   "replace": [
+    false
+   ]
+  },
+  "CALL_AUDIO_PERMISSION_MESSAGE": {
+   "fingerprint": "2452b4c8eb24f345",
+   "replace": [
+    true
+   ]
+  },
+  "CALL_LINK_LINK_PREVIEW_DESCRIPTION": {
+   "fingerprint": "4069e01e9178571e",
+   "replace": [
+    false
+   ]
+  },
+  "CALL_LINK_SHARE_VIA_SIGNAL": {
+   "fingerprint": "e550811c27f58d13",
+   "replace": [
+    true
+   ]
+  },
+  "CALL_QUALITY_SURVEY_CUSTOM_ISSUE_FOOTER": {
+   "fingerprint": "7b319fdcb6853d16",
+   "replace": [
+    false
+   ]
+  },
+  "CALL_QUALITY_SURVEY_RATING_HEADER": {
+   "fingerprint": "02658ced711b50b1",
+   "replace": [
+    false
+   ]
+  },
+  "CARD_DONATION_READ_MORE_SHEET_BODY": {
+   "fingerprint": "7f9dfcd15b7588cf",
+   "replace": [
+    false,
+    false,
+    false
+   ]
+  },
+  "CARD_DONATION_SUBHEADER_TEXT": {
+   "fingerprint": "872c66713f5be0ea",
+   "replace": [
+    false
+   ]
+  },
+  "CHAT_LIST_BACKUP_PROGRESS_VIEW_RESUME_CELLULAR_DATA_MESSAGE": {
+   "fingerprint": "2b7cc53c36f162ca",
+   "replace": [
+    true
+   ]
+  },
+  "CHOOSE_BACKUP_PLAN_BULLET_THANKS_FOR_SUPPORTING_SIGNAL": {
+   "fingerprint": "c1a886478d136168",
+   "replace": [
+    false
+   ]
+  },
+  "CHOOSE_BACKUP_PLAN_SUBTITLE": {
+   "fingerprint": "ffd81bc6306159a9",
+   "replace": [
+    false
+   ]
+  },
+  "CLOCK_SKEW_APP_BLOCKING_SUBTITLE": {
+   "fingerprint": "623ead2d525313c6",
+   "replace": [
+    true
+   ]
+  },
+  "COMPOSE_BUTTON_HINT": {
+   "fingerprint": "ee88a7551ffc6896",
+   "replace": [
+    false
+   ]
+  },
+  "COMPOSE_SCREEN_LIMITED_CONTACTS_PERMISSION": {
+   "fingerprint": "4210b36776f48c20",
+   "replace": [
+    true
+   ]
+  },
+  "COMPOSE_SCREEN_MISSING_CONTACTS_PERMISSION": {
+   "fingerprint": "e6eebd439f58fcd3",
+   "replace": [
+    false
+   ]
+  },
+  "CONTACT_ABOUT_SHEET_SECONDARY_NAME_TOOLTIP_MESSAGE": {
+   "fingerprint": "59dc5f6073f1b02e",
+   "replace": [
+    false
+   ]
+  },
+  "CONTACT_ABOUT_SHEET_SIGNAL_CONNECTION_LABEL": {
+   "fingerprint": "39b1d7eabde38461",
+   "replace": [
+    false
+   ]
+  },
+  "CONTACT_PERMISSION_ACTION_SHEET_2_BODY": {
+   "fingerprint": "1344a486490935e0",
+   "replace": [
+    false
+   ]
+  },
+  "CONTACT_PERMISSION_REMINDER_MEGAPHONE_BODY": {
+   "fingerprint": "0d47b7d635927f76",
+   "replace": [
+    false
+   ]
+  },
+  "CONTACT_PERMISSION_REMINDER_MEGAPHONE_TITLE": {
+   "fingerprint": "7c6dbfb5bc48884c",
+   "replace": [
+    false
+   ]
+  },
+  "CONTACT_SHARING_NO_ACCESS_BODY": {
+   "fingerprint": "6fd47219dc84bc0c",
+   "replace": [
+    true,
+    false
+   ]
+  },
+  "CONTACT_SUPPORT_PROMPT_ERROR_ALERT_BODY": {
+   "fingerprint": "472ad3eab4d4bfa7",
+   "replace": [
+    true
+   ]
+  },
+  "CONVERSATION_SETTINGS_BADGES_FOOTER": {
+   "fingerprint": "e9e14ccafb7a22a3",
+   "replace": [
+    false
+   ]
+  },
+  "DATABASE_RECOVERY_RECOVERY_FAILED_DESCRIPTION": {
+   "fingerprint": "8f2e23b4426b2460",
+   "replace": [
+    true
+   ]
+  },
+  "DATABASE_RECOVERY_RECOVERY_FAILED_RESET_APP_BUTTON": {
+   "fingerprint": "26deb79e8717f8ba",
+   "replace": [
+    true
+   ]
+  },
+  "DATABASE_RECOVERY_RECOVERY_FAILED_RESET_APP_CONFIRMATION_TITLE": {
+   "fingerprint": "26deb79e8717f8ba",
+   "replace": [
+    true
+   ]
+  },
+  "DELETE_ACCOUNT_CONFIRMATION_ACTION_SHEEET_MESSAGE": {
+   "fingerprint": "72328fa5abeaa2b6",
+   "replace": [
+    false
+   ]
+  },
+  "DELETE_ACCOUNT_CONFIRMATION_SECTION_TITLE": {
+   "fingerprint": "db4c44023f579a6a",
+   "replace": [
+    false
+   ]
+  },
+  "DEREGISTRATION_NOTIFICATION": {
+   "fingerprint": "631350726940476c",
+   "replace": [
+    true
+   ]
+  },
+  "DEREGISTRATION_WARNING": {
+   "fingerprint": "0692a2b2bf06016b",
+   "replace": [
+    false
+   ]
+  },
+  "DEVICE_TRANSFER_ERROR_BACKGROUNDED": {
+   "fingerprint": "ad8c3ca9194b3b28",
+   "replace": [
+    true
+   ]
+  },
+  "DEVICE_TRANSFER_ERROR_UNSUPPORTED_VERSION": {
+   "fingerprint": "94075c434c86ddb4",
+   "replace": [
+    false
+   ]
+  },
+  "DEVICE_TRANSFER_RECEIVING_EXPLANATION": {
+   "fingerprint": "946fd91474866730",
+   "replace": [
+    true
+   ]
+  },
+  "DEVICE_TRANSFER_STATUS_NEW_DEVICE_TRANSFERRING_DESCRIPTION": {
+   "fingerprint": "946fd91474866730",
+   "replace": [
+    true
+   ]
+  },
+  "DONATE_CHOOSE_PAYMENT_METHOD_SHEET_TITLE_FOR_DONATION_ON_BEHALF_OF_A_FRIEND": {
+   "fingerprint": "72babd68b238f109",
+   "replace": [
+    false
+   ]
+  },
+  "DONATE_CHOOSE_PAYMENT_METHOD_SHEET_TITLE_FOR_MONTHLY_DONATION": {
+   "fingerprint": "c5fd12db5ef83bcf",
+   "replace": [
+    false
+   ]
+  },
+  "DONATE_CHOOSE_PAYMENT_METHOD_SHEET_TITLE_FOR_ONE_TIME_DONATION": {
+   "fingerprint": "c5fd12db5ef83bcf",
+   "replace": [
+    false
+   ]
+  },
+  "DONATION_ON_BEHALF_OF_A_FRIEND_CHOOSE_BADGE_DESCRIPTION": {
+   "fingerprint": "798780537232832d",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "DONATION_ON_BEHALF_OF_A_FRIEND_PAYMENT_SUCCEEDED_BUT_MESSAGE_FAILED_ERROR_BODY": {
+   "fingerprint": "88ad5b55bee550c9",
+   "replace": [
+    false
+   ]
+  },
+  "DONATION_ON_BEHALF_OF_A_FRIEND_RECEIVED_TITLE_FORMAT": {
+   "fingerprint": "8ffacb1dea8fe196",
+   "replace": [
+    false
+   ]
+  },
+  "DONATION_ON_BEHALF_OF_A_FRIEND_THANKS_BODY_FORMAT": {
+   "fingerprint": "f674adb31da3e568",
+   "replace": [
+    false
+   ]
+  },
+  "DONATION_ON_BEHALF_OF_A_FRIEND_YOU_RECEIVED_A_BADGE_FORMAT": {
+   "fingerprint": "541b3b12fd2ffcce",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "DONATION_READ_MORE_SHEET_BODY": {
+   "fingerprint": "953c60d4ba3b9bad",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "DONATION_READ_MORE_SHEET_BULLET_3": {
+   "fingerprint": "807a426209aa2b1c",
+   "replace": [
+    false
+   ]
+  },
+  "DONATION_RECEIPTS_MIGHT_BE_MISSING_IF_YOU_REINSTALLED": {
+   "fingerprint": "eae340f0a74877a4",
+   "replace": [
+    false
+   ]
+  },
+  "DONATION_RECEIPT_FOOTER": {
+   "fingerprint": "bbf239a12de2c1ef",
+   "replace": [
+    false,
+    false,
+    false
+   ]
+  },
+  "DONATION_SCREENS_HEADER_DESCRIPTION": {
+   "fingerprint": "88066e3ff60e1e24",
+   "replace": [
+    false
+   ]
+  },
+  "DONATION_VIEW_DONATION_TO_SIGNAL": {
+   "fingerprint": "80a7f412bbd835ff",
+   "replace": [
+    false
+   ]
+  },
+  "DONATION_VIEW_MONTHLY_DONATION_TO_SIGNAL": {
+   "fingerprint": "ca722389bfc0747d",
+   "replace": [
+    false
+   ]
+  },
+  "DONATION_VIEW_TITLE": {
+   "fingerprint": "09106df3bf7b2aca",
+   "replace": [
+    false
+   ]
+  },
+  "EDIT_CONTACT_WITHOUT_CONTACTS_PERMISSION_ALERT_TITLE": {
+   "fingerprint": "83e5b6f22b4217d2",
+   "replace": [
+    true
+   ]
+  },
+  "EDIT_GROUP_ERROR_CANNOT_ADD_MEMBER": {
+   "fingerprint": "2fceae41cba3eb8c",
+   "replace": [
+    false
+   ]
+  },
+  "EMAIL_INVITE_BODY": {
+   "fingerprint": "17c48b5b2bb16bb7",
+   "replace": [
+    false,
+    false,
+    false,
+    false,
+    false
+   ]
+  },
+  "EMAIL_INVITE_SUBJECT": {
+   "fingerprint": "09c566f0e7848d25",
+   "replace": [
+    false
+   ]
+  },
+  "EMPTY_CONTACTS_LABEL_LINE1": {
+   "fingerprint": "77fada78e0c2f67f",
+   "replace": [
+    false
+   ]
+  },
+  "ERROR_DESCRIPTION_UNREGISTERED_RECIPIENT": {
+   "fingerprint": "3df94e90cd8108de",
+   "replace": [
+    false
+   ]
+  },
+  "ERROR_NOTIFICATION_MESSAGE_FORMAT": {
+   "fingerprint": "3dc161cfa75c357a",
+   "replace": [
+    false
+   ]
+  },
+  "ERROR_NOTIFICATION_TITLE": {
+   "fingerprint": "c364cfcfbcdbf7ef",
+   "replace": [
+    true
+   ]
+  },
+  "ERROR_SENDING_EXPIRED": {
+   "fingerprint": "4a49affdc937e0fb",
+   "replace": [
+    true
+   ]
+  },
+  "EXPIRATION_ERROR": {
+   "fingerprint": "18a9fde024f37232",
+   "replace": [
+    true
+   ]
+  },
+  "EXPIRATION_WARNING_SOON": {
+   "fingerprint": "1f8aaaee26fef9f9",
+   "replace": [
+    true
+   ]
+  },
+  "EXPIRATION_WARNING_TODAY": {
+   "fingerprint": "cbe23580671f4557",
+   "replace": [
+    true
+   ]
+  },
+  "FAILED_SENDING_BECAUSE_INVALID_KEY_SIGNATURE": {
+   "fingerprint": "4384898c201df9bb",
+   "replace": [
+    false
+   ]
+  },
+  "GROUP_CALL_WILL_RING_ONE_PERSON_FORMAT": {
+   "fingerprint": "167ed18d9270e6e4",
+   "replace": [
+    true
+   ]
+  },
+  "GROUP_CALL_WILL_RING_TWO_PEOPLE_FORMAT": {
+   "fingerprint": "ba4f0fb47c1448b0",
+   "replace": [
+    true
+   ]
+  },
+  "GROUP_LINK_VIEW_SHARE_LINK_VIA_SIGNAL": {
+   "fingerprint": "0779e79a9983412d",
+   "replace": [
+    true
+   ]
+  },
+  "GROUP_NAME_EDUCATION_SHEET_BULLET_2": {
+   "fingerprint": "72c7ce0591d6471d",
+   "replace": [
+    false
+   ]
+  },
+  "GROUP_NAME_EDUCATION_SHEET_BULLET_3": {
+   "fingerprint": "ce1376955be94312",
+   "replace": [
+    false
+   ]
+  },
+  "HOME_VIEW_FIRST_CONVERSATION_OFFER_1_CONTACT_FORMAT": {
+   "fingerprint": "c373ceb838f72092",
+   "replace": [
+    false
+   ]
+  },
+  "HOME_VIEW_FIRST_CONVERSATION_OFFER_2_CONTACTS_FORMAT": {
+   "fingerprint": "fd65a93d29b690a1",
+   "replace": [
+    false
+   ]
+  },
+  "HOME_VIEW_FIRST_CONVERSATION_OFFER_3_CONTACTS_FORMAT": {
+   "fingerprint": "18afa8deebbb3d16",
+   "replace": [
+    false
+   ]
+  },
+  "INACTIVE_PRIMARY_DEVICE_REMINDER_MEGAPHONE_BODY": {
+   "fingerprint": "75d2810527f52b38",
+   "replace": [
+    false
+   ]
+  },
+  "INACTIVE_PRIMARY_DEVICE_REMINDER_MEGAPHONE_TITLE": {
+   "fingerprint": "adadfbc8f369137a",
+   "replace": [
+    false
+   ]
+  },
+  "INFO_MESSAGE_CONTACT_REINSTATED": {
+   "fingerprint": "de20fbf3b37cfbde",
+   "replace": [
+    false
+   ]
+  },
+  "INFO_MESSAGE_CONTACT_REMOVED": {
+   "fingerprint": "91ad50f386451a31",
+   "replace": [
+    false
+   ]
+  },
+  "INFO_MESSAGE_REPORTED_SPAM_LEARN_MORE_MESSAGE": {
+   "fingerprint": "1102a416a90e4366",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "INFO_MESSAGE_USER_JOINED_SIGNAL_BODY_FORMAT": {
+   "fingerprint": "e0b19c932c9d6356",
+   "replace": [
+    false
+   ]
+  },
+  "INVITE_FLOW_REQUIRES_CONTACT_ACCESS_BODY": {
+   "fingerprint": "49c88e8962b18ba1",
+   "replace": [
+    false
+   ]
+  },
+  "INVITE_FRIENDS_CONTACT_TABLE_BUTTON": {
+   "fingerprint": "5fa9187730fdaec5",
+   "replace": [
+    false
+   ]
+  },
+  "LINKED_DEVICES_EDUCATION_POINT_MESSAGES": {
+   "fingerprint": "9a3289bf446aba71",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "LINKED_DEVICES_EDUCATION_TITLE": {
+   "fingerprint": "1649a53014651479",
+   "replace": [
+    false
+   ]
+  },
+  "LINKED_DEVICES_HEADER_DESCRIPTION": {
+   "fingerprint": "5128ac5e4fa4f431",
+   "replace": [
+    false
+   ]
+  },
+  "LINKED_DEVICE_CONTACTS_NOT_ALLOWED": {
+   "fingerprint": "39160e2767904dd2",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "LINKED_DEVICE_INFO_SHEET_HEADER": {
+   "fingerprint": "910c2b7674a1300f",
+   "replace": [
+    false
+   ]
+  },
+  "LINKED_DEVICE_MANAGE_CONTACTS_BANNER": {
+   "fingerprint": "79443ca33a4454b6",
+   "replace": [
+    false
+   ]
+  },
+  "LINKED_DEVICE_URL_OPENED_ACTION_SHEET_EXTERNAL_URL_MESSAGE": {
+   "fingerprint": "f4ef942df1e6e375",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "LINKED_DEVICE_URL_OPENED_ACTION_SHEET_IN_APP_CAMERA_MESSAGE": {
+   "fingerprint": "413257bdb690f241",
+   "replace": [
+    false
+   ]
+  },
+  "LINK_NEW_DEVICE_AUTHENTICATION_INFO_SHEET_BODY": {
+   "fingerprint": "0dcbac698bb70aea",
+   "replace": [
+    false
+   ]
+  },
+  "LINK_NEW_DEVICE_FINISH_ON_OTHER_DEVICE_SHEET_BODY": {
+   "fingerprint": "1446e60bfebad9b3",
+   "replace": [
+    false
+   ]
+  },
+  "LOCAL_BACKUPS_MISSING_BACKUP_ACTION_SHEET_BODY": {
+   "fingerprint": "c62ef898b8389bd4",
+   "replace": [
+    false
+   ]
+  },
+  "LOCAL_FILE_BACKUPS_OPTIMIZE_MEDIA_WARNING_ACTION_SHEET": {
+   "fingerprint": "759624b26e0bcad3",
+   "replace": [
+    true
+   ]
+  },
+  "LOCAL_FILE_BACKUPS_OPTIMIZE_MEDIA_WARNING_ACTION_SHEET_2_BODY": {
+   "fingerprint": "81179e0f5f03f5cb",
+   "replace": [
+    true
+   ]
+  },
+  "LOCAL_FILE_BACKUP_ONBOARDING_INTRO_SUBTITLE": {
+   "fingerprint": "891ce0339a69c84c",
+   "replace": [
+    true
+   ]
+  },
+  "LOGGING_SECTION_FOOTER": {
+   "fingerprint": "5c7c3372e761e67b",
+   "replace": [
+    false
+   ]
+  },
+  "LOW_DISK_SPACE_WARNING_SHEET_MESSAGE_FORMAT": {
+   "fingerprint": "e50bf7ecfd9e1f8a",
+   "replace": [
+    true
+   ]
+  },
+  "LOW_DISK_SPACE_WARNING_SHEET_SUGGESTION_DELETE_CAMERA_ROLL_MEDIA": {
+   "fingerprint": "e84e9032c8dd2db2",
+   "replace": [
+    true
+   ]
+  },
+  "MESSAGE_ACTION_ADMIN_DELETE_FOR_EVERYONE_CONFIRMATION": {
+   "fingerprint": "19900a8e5dfdf060",
+   "replace": [
+    false
+   ]
+  },
+  "MESSAGE_ACTION_DELETE_FOR_EVERYONE_CONFIRMATION": {
+   "fingerprint": "5ad5ec1ea894c00e",
+   "replace": [
+    false
+   ]
+  },
+  "MESSAGE_ACTION_LINK_OPEN_PROXY": {
+   "fingerprint": "c7d8a60996410dea",
+   "replace": [
+    false
+   ]
+  },
+  "MESSAGE_REQUEST_CONFIRM_ACCEPT_MESSAGE_EMBEDDED_BOLD_TEXT": {
+   "fingerprint": "68f34a35e3db4ef7",
+   "replace": [
+    false
+   ]
+  },
+  "MESSAGE_REQUEST_REPORT_CONVERSATION_MESSAGE": {
+   "fingerprint": "065ed34220701b17",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "MISSED_CALL_BLOCKED_SYSTEM_SETTINGS_SHEET_BLOCK_ACTION": {
+   "fingerprint": "0d0af4ede193e9cd",
+   "replace": [
+    true
+   ]
+  },
+  "MISSING_CAMERA_PERMISSION_TITLE": {
+   "fingerprint": "8bff865b4206fef8",
+   "replace": [
+    true
+   ]
+  },
+  "MISSING_LOCATION_PERMISSION_TITLE": {
+   "fingerprint": "68866aab4138b9d5",
+   "replace": [
+    true
+   ]
+  },
+  "MISSING_MEDIA_LIBRARY_PERMISSION_TITLE": {
+   "fingerprint": "a4fff764640766d3",
+   "replace": [
+    true
+   ]
+  },
+  "MY_STORIES_SETTINGS_VISIBILITY_ALL_SIGNAL_CONNECTIONS_TITLE": {
+   "fingerprint": "982d8163ceceb891",
+   "replace": [
+    false
+   ]
+  },
+  "NICKNAME_EDITOR_DESCRIPTION": {
+   "fingerprint": "fafa8ebfb00d2a26",
+   "replace": [
+    false
+   ]
+  },
+  "NOTIFICATIONS_ERROR_MESSAGE": {
+   "fingerprint": "c1dea2d222399920",
+   "replace": [
+    true
+   ]
+  },
+  "NOTIFICATION_BODY_CLOCK_SKEW": {
+   "fingerprint": "6de93705be52c0b8",
+   "replace": [
+    true
+   ]
+  },
+  "NOTIFICATION_BODY_LOW_STORAGE_SPACE": {
+   "fingerprint": "fe4fe3528ba57b3f",
+   "replace": [
+    true
+   ]
+  },
+  "NOT_LINKED_BOTTOM": {
+   "fingerprint": "1fdc79a846760b9d",
+   "replace": [
+    true
+   ]
+  },
+  "NOT_REGISTERED_BOTTOM": {
+   "fingerprint": "ff60f0c5e7fae726",
+   "replace": [
+    true
+   ]
+  },
+  "ONBOARDING_CHOOSE_RESTORE_METHOD_BACKUPS_BODY": {
+   "fingerprint": "34f459ef49772cc5",
+   "replace": [
+    false
+   ]
+  },
+  "ONBOARDING_CHOOSE_RESTORE_METHOD_BACKUPS_TITLE": {
+   "fingerprint": "368bd4e82345d798",
+   "replace": [
+    false
+   ]
+  },
+  "ONBOARDING_CHOOSE_RESTORE_METHOD_NONE_AVAILABLE_BODY": {
+   "fingerprint": "c50571203d5b2fbc",
+   "replace": [
+    false
+   ]
+  },
+  "ONBOARDING_MODE_SWITCH_EXPLANATION_PROVISIONING": {
+   "fingerprint": "b77e0f122521aeaa",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "ONBOARDING_MODE_SWITCH_EXPLANATION_REGISTERING": {
+   "fingerprint": "d3a66c74e7c91d0b",
+   "replace": [
+    false
+   ]
+  },
+  "ONBOARDING_MODE_SWITCH_WARNING_PROVISIONING": {
+   "fingerprint": "a06f001a2b092923",
+   "replace": [
+    false
+   ]
+  },
+  "ONBOARDING_PERMISSIONS_CONTACTS_DESCRIPTION": {
+   "fingerprint": "3b6a3b4aff462a9c",
+   "replace": [
+    false
+   ]
+  },
+  "ONBOARDING_PERMISSIONS_PREAMBLE": {
+   "fingerprint": "cb06944e96a7ee0f",
+   "replace": [
+    true
+   ]
+  },
+  "ONBOARDING_PHONE_NUMBER_DISCOVERABILITY_EXPLANATION_FORMAT": {
+   "fingerprint": "15c67154e3be08f8",
+   "replace": [
+    false
+   ]
+  },
+  "ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_EXPLANATION": {
+   "fingerprint": "5c4c9b629fffc11d",
+   "replace": [
+    false
+   ]
+  },
+  "ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_WITH_UNKNOWN_REGLOCK_EXPLANATION": {
+   "fingerprint": "591ed2f412301ec6",
+   "replace": [
+    false
+   ]
+  },
+  "ONBOARDING_SPLASH_DO_NOT_HAVE_OLD_DEVICE_BODY": {
+   "fingerprint": "32f73ea6a127f409",
+   "replace": [
+    true
+   ]
+  },
+  "ONBOARDING_SPLASH_HAVE_OLD_DEVICE_BODY": {
+   "fingerprint": "0d01e4fe2f710853",
+   "replace": [
+    false
+   ]
+  },
+  "ONBOARDING_SPLASH_NONPROFIT": {
+   "fingerprint": "bb4496e26b85ee4c",
+   "replace": [
+    false
+   ]
+  },
+  "OS_EXPIRED_AND_CAN_UPGRADE_OS": {
+   "fingerprint": "61d094ffbdb3171d",
+   "replace": [
+    true,
+    true
+   ]
+  },
+  "OS_EXPIRED_AND_DEVICE_IS_STUCK": {
+   "fingerprint": "7d54b93a3c9e5139",
+   "replace": [
+    true,
+    true
+   ]
+  },
+  "OS_SOON_TO_EXPIRE_AND_CAN_UPGRADE_OS_FORMAT": {
+   "fingerprint": "5e1f4e9f55734ccd",
+   "replace": [
+    true,
+    true
+   ]
+  },
+  "OS_SOON_TO_EXPIRE_AND_DEVICE_WILL_BE_STUCK_FORMAT": {
+   "fingerprint": "1e16ff85080a2b57",
+   "replace": [
+    true,
+    true
+   ]
+  },
+  "OUTAGE_WARNING": {
+   "fingerprint": "8355a5f03038a918",
+   "replace": [
+    false
+   ]
+  },
+  "OUTDATED_PAYMENT_CLIENT_REMINDER_TEXT": {
+   "fingerprint": "f771f18e795ce91d",
+   "replace": [
+    true
+   ]
+  },
+  "OUTGOING_DEVICE_REGISTRATION_COMPLETE_BODY": {
+   "fingerprint": "a32d15371ed5ffc2",
+   "replace": [
+    false,
+    true
+   ]
+  },
+  "OUTGOING_DEVICE_RESTORE_COMPLETE_BODY": {
+   "fingerprint": "f282250e1a05fbeb",
+   "replace": [
+    false,
+    true
+   ]
+  },
+  "OUTGOING_DEVICE_TRANSFER_COMPLETE_BODY": {
+   "fingerprint": "9c3acf301c56b70f",
+   "replace": [
+    false,
+    true
+   ]
+  },
+  "OUTGOING_TRANSFER_COMPLETE_EXIT_ACTION": {
+   "fingerprint": "6d007f5648abb2ea",
+   "replace": [
+    true
+   ]
+  },
+  "OUTGOING_TRANSFER_COMPLETE_MESSAGE": {
+   "fingerprint": "88fabfe96fd00831",
+   "replace": [
+    true
+   ]
+  },
+  "PASSWORD_MANAGER_SIGNAL_APP_NAME": {
+   "fingerprint": "ef037baa3dd93aa2",
+   "replace": [
+    true
+   ]
+  },
+  "PAYMENTS_NEW_PAYMENT_ERROR_OUTDATED_CLIENT": {
+   "fingerprint": "c0015cdfa74178a5",
+   "replace": [
+    true
+   ]
+  },
+  "PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION": {
+   "fingerprint": "2583391acba4aff4",
+   "replace": [
+    false
+   ]
+  },
+  "PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION": {
+   "fingerprint": "41adef635ce0be62",
+   "replace": [
+    false
+   ]
+  },
+  "PINS_MEGAPHONE_BODY": {
+   "fingerprint": "a0a5c90a4786e6e8",
+   "replace": [
+    false
+   ]
+  },
+  "PIN_CREATION_DISABLE_CONFIRMATION_MESSAGE": {
+   "fingerprint": "97eeb2496ad60355",
+   "replace": [
+    true
+   ]
+  },
+  "PIN_CREATION_EXPLANATION": {
+   "fingerprint": "e4337b8a75830aa0",
+   "replace": [
+    false
+   ]
+  },
+  "PIN_CREATION_LEARN_MORE_TEXT": {
+   "fingerprint": "e7d510b635f41aec",
+   "replace": [
+    false
+   ]
+  },
+  "PIN_CREATION_LEARN_MORE_TITLE": {
+   "fingerprint": "74cedc188edabaa6",
+   "replace": [
+    false
+   ]
+  },
+  "PIN_CREATION_WEAK_ERROR_MESSAGE": {
+   "fingerprint": "1e6f3fc93b1ec52a",
+   "replace": [
+    false
+   ]
+  },
+  "PIN_REMINDER_MEGAPHONE_TITLE": {
+   "fingerprint": "648d3d7d6e2c23f1",
+   "replace": [
+    false
+   ]
+  },
+  "PIN_REMINDER_TITLE": {
+   "fingerprint": "9430e91ffb51b4cb",
+   "replace": [
+    false
+   ]
+  },
+  "PRIVACY_VERIFICATION_FAILED_NO_SAFETY_NUMBERS_IN_CLIPBOARD": {
+   "fingerprint": "6c02988b663a63c5",
+   "replace": [
+    true
+   ]
+  },
+  "PRIVACY_VERIFICATION_FAILED_THEY_HAVE_WRONG_KEY_FOR_ME": {
+   "fingerprint": "596bb5f4f9d48100",
+   "replace": [
+    false
+   ]
+  },
+  "PRIVACY_VERIFICATION_FAILED_WITH_OLD_LOCAL_VERSION": {
+   "fingerprint": "1cd70861930f1a70",
+   "replace": [
+    true
+   ]
+  },
+  "PRIVACY_VERIFICATION_FAILED_WITH_OLD_REMOTE_VERSION": {
+   "fingerprint": "f4fa430452e5449b",
+   "replace": [
+    false
+   ]
+  },
+  "PRIVACY_VERIFICATION_FAILURE_INVALID_QRCODE": {
+   "fingerprint": "39dfa7b64cc4b9ab",
+   "replace": [
+    false
+   ]
+  },
+  "PROFILE_NAME_EDUCATION_SHEET_BULLET_1": {
+   "fingerprint": "72c7ce0591d6471d",
+   "replace": [
+    false
+   ]
+  },
+  "PROFILE_NAME_EDUCATION_SHEET_BULLET_2": {
+   "fingerprint": "ce1376955be94312",
+   "replace": [
+    false
+   ]
+  },
+  "PROFILE_NAME_EDUCATION_SHEET_HEADER_FORMAT": {
+   "fingerprint": "5c238661f28ea3f8",
+   "replace": [
+    false
+   ]
+  },
+  "QUICK_RESTORE_URL_OPENED_ACTION_SHEET_EXTERNAL_URL_MESSAGE": {
+   "fingerprint": "9c8e859a95fe8b9d",
+   "replace": [
+    true,
+    false
+   ]
+  },
+  "RECIPIENT_PICKER_INVALID_NUMBER_MESSAGE": {
+   "fingerprint": "1aa36c2eb12cabd1",
+   "replace": [
+    false
+   ]
+  },
+  "RECIPIENT_PICKER_INVITE_MESSAGE": {
+   "fingerprint": "02dfb421a6d14919",
+   "replace": [
+    false
+   ]
+  },
+  "RECIPIENT_PICKER_INVITE_TITLE": {
+   "fingerprint": "bb9cc97af4832dd6",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTER_2FA_FORGOT_SVR_PIN_ALERT_MESSAGE": {
+   "fingerprint": "841512750d9bb155",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE": {
+   "fingerprint": "4ea52ce7b5600f6a",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_AND_CAN_CREATE_NEW_PIN_ALERT_MESSAGE": {
+   "fingerprint": "767a57f569b96d03",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_BODY": {
+   "fingerprint": "c73bf524c05ca806",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_BACKUP_RESTORE_ERROR_INCORRECT_KEY_BODY": {
+   "fingerprint": "4aef71322911c12e",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_BACKUP_RESTORE_ERROR_UNSUPPORTED_BACKUP_VERSION_BODY": {
+   "fingerprint": "c74e35aac047d38b",
+   "replace": [
+    true
+   ]
+  },
+  "REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_DESCRIPTION": {
+   "fingerprint": "5fee0a537ec7e35a",
+   "replace": [
+    true
+   ]
+  },
+  "REGISTRATION_NO_BACKUP_KEY_SHEET_BODY": {
+   "fingerprint": "cb86d945fae1e11c",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_PIN_CREATE_SUBTITLE": {
+   "fingerprint": "6d0ea48ad12a8830",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE": {
+   "fingerprint": "6d0ea48ad12a8830",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_RESTORE_METHOD_MAKE_BACKUP_TUTORIAL_OPEN_SIGNAL": {
+   "fingerprint": "fa13efbdc62506c8",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_SCAN_QR_CODE_TUTORIAL_OPEN_SIGNAL": {
+   "fingerprint": "fa13efbdc62506c8",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_SIGNAL_LOGIN_DETAILS_BODY": {
+   "fingerprint": "adc7ded6c9d56291",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_SIGNAL_LOGIN_DETAILS_TITLE": {
+   "fingerprint": "779861b1d169199e",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_SIGNAL_LOGIN_FULL_DETAILS_TITLE": {
+   "fingerprint": "89dfa826d6dda04b",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_SIGNAL_LOGIN_HELP_BODY": {
+   "fingerprint": "f4457acf7847569e",
+   "replace": [
+    false,
+    false,
+    false,
+    false
+   ]
+  },
+  "REGISTRATION_SIGNAL_LOGIN_TITLE": {
+   "fingerprint": "89dfa826d6dda04b",
+   "replace": [
+    false
+   ]
+  },
+  "RELEASE_NOTES_BOTTOM_BAR_LABEL": {
+   "fingerprint": "4502839219493bf6",
+   "replace": [
+    false
+   ]
+  },
+  "RELEASE_NOTES_CHANNEL_NAME": {
+   "fingerprint": "1e9806e4227ba3b9",
+   "replace": [
+    false
+   ]
+  },
+  "RELEASE_NOTES_DETAILS": {
+   "fingerprint": "ec667f263f59c6fe",
+   "replace": [
+    false
+   ]
+  },
+  "RELEASE_NOTES_SETTINGS_DESCRIPTION_ONLY_OFFICAL_CHAT": {
+   "fingerprint": "4502839219493bf6",
+   "replace": [
+    false
+   ]
+  },
+  "ROTATE_AEP_ACTION_BACKUPS_DISABLE_REQUIRED": {
+   "fingerprint": "e0df313e7dc5df46",
+   "replace": [
+    false
+   ]
+  },
+  "SAFETY_NUMBERS_AUTOMATIC_VERIFICATION_EDUCATION_SHEET_BODY": {
+   "fingerprint": "df1e1a16f0426b5d",
+   "replace": [
+    false
+   ]
+  },
+  "SAFETY_NUMBERS_AUTOMATIC_VERIFICATION_EDUCATION_SHEET_TITLE": {
+   "fingerprint": "02ad216062c43e02",
+   "replace": [
+    false
+   ]
+  },
+  "SAFETY_NUMBERS_AUTOMATIC_VERIFICATION_FAILURE_SHEET_BODY_FORMAT": {
+   "fingerprint": "ff7f4024bbdf1eb4",
+   "replace": [
+    false
+   ]
+  },
+  "SAFETY_NUMBERS_AUTOMATIC_VERIFICATION_NOT_AVAILABLE_SHEET_BODY": {
+   "fingerprint": "405a2db629aee517",
+   "replace": [
+    false
+   ]
+  },
+  "SAFETY_NUMBERS_AUTOMATIC_VERIFICATION_SUCCESS_SHEET_BODY": {
+   "fingerprint": "63d1d181733c7080",
+   "replace": [
+    false
+   ]
+  },
+  "SAFETY_NUMBER_SHARE_FORMAT": {
+   "fingerprint": "0cfc065cb1026799",
+   "replace": [
+    false
+   ]
+  },
+  "SAFETY_TIPS_ENABLE_REGLOCK_BODY": {
+   "fingerprint": "fb6b2f0e6eae90a3",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "SAFETY_TIPS_REVIEW_NAMES_BODY": {
+   "fingerprint": "bd570d08db7f1269",
+   "replace": [
+    false
+   ]
+  },
+  "SAFETY_TIPS_REVIEW_NAMES_BODY_VIEW_MORE": {
+   "fingerprint": "4a32e6223ce4f533",
+   "replace": [
+    false
+   ]
+  },
+  "SAFETY_TIPS_SIGNAL_CHATS_BODY": {
+   "fingerprint": "6c130877aaa08304",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "SAFETY_TIPS_SIGNAL_CHATS_BODY_VIEW_MORE": {
+   "fingerprint": "78cc87ea97160b91",
+   "replace": [
+    false,
+    false,
+    false
+   ]
+  },
+  "SAFETY_TIPS_SIGNAL_CHATS_TITLE": {
+   "fingerprint": "7fbb64af85c4d692",
+   "replace": [
+    false
+   ]
+  },
+  "SCREEN_LOCK_REASON_UNLOCK_SCREEN_LOCK": {
+   "fingerprint": "9193a3069be54402",
+   "replace": [
+    true
+   ]
+  },
+  "SCREEN_LOCK_UNLOCK_SIGNAL": {
+   "fingerprint": "e3ff8e599918728f",
+   "replace": [
+    true
+   ]
+  },
+  "SECONDARY_LINKING_ERROR_OBSOLETE_LINKED_DEVICE_MESSAGE": {
+   "fingerprint": "5bb1fb37e205e92b",
+   "replace": [
+    true
+   ]
+  },
+  "SECONDARY_LINKING_ERROR_OLD_VERSION_MESSAGE": {
+   "fingerprint": "d6b58fa995f90ba4",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "SECONDARY_LINKING_SYNCING_UPDATE_REQUIRED_ERROR_MESSAGE": {
+   "fingerprint": "a4e500207235c178",
+   "replace": [
+    true
+   ]
+  },
+  "SECONDARY_ONBOARDING_GET_STARTED_BY_OPENING_PRIMARY": {
+   "fingerprint": "2497d9ef1a5aeb96",
+   "replace": [
+    false
+   ]
+  },
+  "SECONDARY_ONBOARDING_GET_STARTED_DO_NOT_HAVE_PRIMARY": {
+   "fingerprint": "503570719cc05a6c",
+   "replace": [
+    false
+   ]
+  },
+  "SECONDARY_ONBOARDING_INSTALL_PRIMARY_FIRST_BODY": {
+   "fingerprint": "02de05ee43810b89",
+   "replace": [
+    false
+   ]
+  },
+  "SECONDARY_ONBOARDING_INSTALL_PRIMARY_FIRST_TITLE": {
+   "fingerprint": "b8b39182412acb4f",
+   "replace": [
+    false
+   ]
+  },
+  "SECONDARY_ONBOARDING_SCAN_CODE_STEP_OPEN_PRIMARY": {
+   "fingerprint": "9665af358be3cdb8",
+   "replace": [
+    false
+   ]
+  },
+  "SECONDARY_ONBOARDING_SCAN_CODE_STEP_OPEN_SETTINGS": {
+   "fingerprint": "93db0abb3c093b83",
+   "replace": [
+    false
+   ]
+  },
+  "SECONDARY_TRANSFER_GET_STARTED_BY_OPENING_IPAD": {
+   "fingerprint": "60898ec23e628cd6",
+   "replace": [
+    false
+   ]
+  },
+  "SELECT_CONTACT_FOR_SHARING_PERMISSION_PROMPT_BODY": {
+   "fingerprint": "1bd8fde39d8c0fa5",
+   "replace": [
+    false
+   ]
+  },
+  "SELECT_CONTACT_FOR_SHARING_PERMISSION_PROMPT_TITLE": {
+   "fingerprint": "3de6b047883eab4a",
+   "replace": [
+    false
+   ]
+  },
+  "SESSION_REFRESH_ALERT_MESSAGE": {
+   "fingerprint": "9e4abc4b0be241c8",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_ADVANCED_CENSORSHIP_CIRCUMVENTION_FOOTER": {
+   "fingerprint": "29c651f65d752e3c",
+   "replace": [
+    true,
+    false
+   ]
+  },
+  "SETTINGS_ADVANCED_CENSORSHIP_CIRCUMVENTION_FOOTER_WEBSOCKET_CONNECTED": {
+   "fingerprint": "4601e8c10f526281",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_APP_ICON_EDUCATION_APP_NAME": {
+   "fingerprint": "6b1721376e3887e8",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_APP_ICON_EDUCATION_HOME_SCREEN_DOCK": {
+   "fingerprint": "0f747725c762a5c9",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_APP_ICON_FOOTER": {
+   "fingerprint": "6b1721376e3887e8",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_BLOCK_LIST_NO_CONTACTS": {
+   "fingerprint": "d3709b9b2e163924",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_CALLING_HIDES_IP_ADDRESS_PREFERENCE_TITLE_DETAIL": {
+   "fingerprint": "75dcb4c9d070ae52",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_DONATE": {
+   "fingerprint": "09106df3bf7b2aca",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_KEY_TRANSPARENCY_OPT_OUT_FOOTER": {
+   "fingerprint": "7aa235073cafee17",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_LINKED_DEVICE_ACCOUNT_CARD_SUBTITLE": {
+   "fingerprint": "02b8c2b7b27b0ae6",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_LINKED_DEVICE_DELETE_DATA_FOOTER": {
+   "fingerprint": "12673ff03bbdd8fe",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_LOCAL_FILE_BACKUPS_LOCAL_BACKUP_IN_PROGRESS_MESSAGE": {
+   "fingerprint": "ca06aca1ba51221b",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_LOCAL_FILE_BACKUPS_REMOTE_BACKUP_IN_PROGRESS_MESSAGE": {
+   "fingerprint": "adc9db8698e008ce",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_LOCAL_FILE_BACKUPS_RESTORE_FOOTER": {
+   "fingerprint": "7938cfac8141791b",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_NOTIFICATIONS_CONTACT_JOINED_SIGNAL_FOOTER": {
+   "fingerprint": "f2a8b4a4703a1aae",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_NOTIFICATION_EVENTS_CONTACT_JOINED_SIGNAL": {
+   "fingerprint": "2b532dfd19724397",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_PAYMENTS_ACTIVATE_PAYMENTS_CONFIRM_DESCRIPTION": {
+   "fingerprint": "e29cb0a3ab159f8c",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_PAYMENTS_CANNOT_ACTIVATE_PAYMENTS_KILL_SWITCH": {
+   "fingerprint": "ad8907d8211143bd",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_PAYMENTS_CANNOT_SEND_PAYMENTS_KILL_SWITCH": {
+   "fingerprint": "ad8907d8211143bd",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_PAYMENTS_CANNOT_TRANSFER_IN_KILL_SWITCH": {
+   "fingerprint": "ad8907d8211143bd",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_PAYMENTS_DEACTIVATE_PAYMENTS_CONFIRM_DESCRIPTION": {
+   "fingerprint": "a84d0233fc9f4ead",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION": {
+   "fingerprint": "bae77afdc72a0f35",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION": {
+   "fingerprint": "f4b7554b35f672da",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_PAYMENTS_HELP_CARD_ADDING_TO_YOUR_WALLET_DESCRIPTION": {
+   "fingerprint": "eef7a877c216acb6",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_PAYMENTS_OPT_IN_MESSAGE": {
+   "fingerprint": "98d73fe01bc1a461",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_PAYMENTS_PASSPHRASE_EXPLANATION": {
+   "fingerprint": "c12483ab6b1e7188",
+   "replace": [
+    true,
+    false
+   ]
+  },
+  "SETTINGS_PAYMENTS_PAYMENTS_OUTDATED_BUTTON": {
+   "fingerprint": "e50f589cd626c93f",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_PAYMENTS_TRANSFER_OUT_CANNOT_SEND_TO_SELF": {
+   "fingerprint": "5834d91e361f8dc6",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_PHONE_NUMBER_DISCOVERABILITY_NOBODY_CONFIRMATION_DESCRIPTION": {
+   "fingerprint": "d2c267c181258885",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL": {
+   "fingerprint": "c59433ca0372cd5c",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_PINS_FOOTER": {
+   "fingerprint": "4bf448c88c20cc4c",
+   "replace": [
+    false,
+    true
+   ]
+  },
+  "SETTINGS_PINS_TITLE": {
+   "fingerprint": "3f343b2827533cee",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_PIN_REMINDER_DISABLE_CONFIRMATION_EXPLANATION": {
+   "fingerprint": "d1458c82111bef36",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_PIN_REMINDER_DISABLE_CONFIRMATION_TITLE": {
+   "fingerprint": "1254dfb152fac3ba",
+   "replace": [
+    false
+   ]
+  },
+  "SETTINGS_REGISTRATION_LOCK_TURN_ON_MESSAGE": {
+   "fingerprint": "86fe841b8bc5f96f",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "SETTINGS_SECURITY_DETAIL": {
+   "fingerprint": "4d56f8cd53d7fb1e",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_SECURITY_DETAIL_FACEID": {
+   "fingerprint": "ef9fbade17f50ad6",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_SECURITY_DETAIL_OPTICID": {
+   "fingerprint": "b2af0688e3b2f343",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_SECURITY_DETAIL_PASSCODE": {
+   "fingerprint": "56a407944ccad97a",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_SECURITY_DETAIL_TOUCHID": {
+   "fingerprint": "849023d07ce8b3ee",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_SHARING_SUGGESTIONS_NOTIFICATIONS_FOOTER": {
+   "fingerprint": "4d5c04f726e95300",
+   "replace": [
+    true
+   ]
+  },
+  "SETTINGS_TWO_FACTOR_PINS_AUTH_FOOTER": {
+   "fingerprint": "90bf4b40fccf99d8",
+   "replace": [
+    false,
+    false
+   ]
+  },
+  "SHARE_EXTENSION_FAILED_SENDING_BECAUSE_CLOCK_SKEW_MESSAGE": {
+   "fingerprint": "e429a281e38fd72a",
+   "replace": [
+    true
+   ]
+  },
+  "SHARE_EXTENSION_LOW_STORAGE_SPACE_MESSAGE": {
+   "fingerprint": "32620f4c7d31128f",
+   "replace": [
+    true
+   ]
+  },
+  "SHARE_EXTENSION_NOT_REGISTERED_MESSAGE": {
+   "fingerprint": "315e4716e884f2aa",
+   "replace": [
+    true
+   ]
+  },
+  "SHARE_EXTENSION_VIEW_TITLE": {
+   "fingerprint": "8e84c20fceab4360",
+   "replace": [
+    true
+   ]
+  },
+  "SIGNAL_CALL": {
+   "fingerprint": "7db83399351632af",
+   "replace": [
+    false
+   ]
+  },
+  "SIGNAL_PROXY": {
+   "fingerprint": "19cba0ba80224812",
+   "replace": [
+    false
+   ]
+  },
+  "SMS_INVITE_BODY": {
+   "fingerprint": "431d29a9fae2f315",
+   "replace": [
+    false
+   ]
+  },
+  "SPAM_CAPTCHA_SHEET_BODY": {
+   "fingerprint": "af7b0fc108869d4c",
+   "replace": [
+    false
+   ]
+  },
+  "STICKERS_MANAGE_VIEW_AVAILABLE_BUILT_IN_PACKS_SECTION_TITLE": {
+   "fingerprint": "f30d8b294aec91e0",
+   "replace": [
+    false
+   ]
+  },
+  "STORY_SETTINGS_LEARN_MORE_SHEET_HEADER_FORMAT": {
+   "fingerprint": "5fc70e37b6d9f534",
+   "replace": [
+    false
+   ]
+  },
+  "STORY_SETTINGS_WHO_CAN_VIEW_THIS_FOOTER": {
+   "fingerprint": "491b9f9295743932",
+   "replace": [
+    false
+   ]
+  },
+  "STORY_SETTINGS_WHO_CAN_VIEW_THIS_SHEET_HEADER": {
+   "fingerprint": "362840594da75e2b",
+   "replace": [
+    false
+   ]
+  },
+  "SUPPORT_EMAIL_SUBJECT": {
+   "fingerprint": "9161afb046d2ef8b",
+   "replace": [
+    false
+   ]
+  },
+  "SYSTEM_ADDRESS_NAME": {
+   "fingerprint": "1e9806e4227ba3b9",
+   "replace": [
+    false
+   ]
+  },
+  "TRANSFER_COMPLETE_SHEET_BUTTON": {
+   "fingerprint": "410ebaa81f2ba317",
+   "replace": [
+    true
+   ]
+  },
+  "TRANSFER_COMPLETE_SHEET_SUBTITLE": {
+   "fingerprint": "36684ce4722fd4a5",
+   "replace": [
+    true
+   ]
+  },
+  "TRANSFER_RELAUNCH_NOTIFICATION": {
+   "fingerprint": "d2ac3e9e4a67e008",
+   "replace": [
+    true
+   ]
+  },
+  "UNBLOCK_LIST_BLOCK_RELEASE_NOTES_TITLE": {
+   "fingerprint": "6eb31f6fd9569437",
+   "replace": [
+    false
+   ]
+  },
+  "UNBLOCK_RELEASE_NOTES_BEHAVIOR_EXPLANATION": {
+   "fingerprint": "277572dbbda20370",
+   "replace": [
+    false
+   ]
+  },
+  "UNKNOWN_PROTOCOL_VERSION_NEED_TO_UPGRADE_FROM_LINKED_DEVICE": {
+   "fingerprint": "4ca60f3e01aa0a0c",
+   "replace": [
+    false
+   ]
+  },
+  "UNKNOWN_PROTOCOL_VERSION_NEED_TO_UPGRADE_WITHOUT_NAME": {
+   "fingerprint": "e3155a1f4c9a2411",
+   "replace": [
+    false
+   ]
+  },
+  "UNKNOWN_PROTOCOL_VERSION_NEED_TO_UPGRADE_WITH_NAME_FORMAT": {
+   "fingerprint": "1e1b21ded5a9f7ee",
+   "replace": [
+    false
+   ]
+  },
+  "UNKNOWN_PROTOCOL_VERSION_UPGRADE_BUTTON": {
+   "fingerprint": "14635557feba5ddd",
+   "replace": [
+    true
+   ]
+  },
+  "UNKNOWN_PROTOCOL_VERSION_UPGRADE_COMPLETE_FROM_LINKED_DEVICE": {
+   "fingerprint": "ff8b1fa319c52d39",
+   "replace": [
+    false
+   ]
+  },
+  "UNKNOWN_PROTOCOL_VERSION_UPGRADE_COMPLETE_WITHOUT_NAME": {
+   "fingerprint": "b2570ca03e0fd4d2",
+   "replace": [
+    false
+   ]
+  },
+  "UNKNOWN_PROTOCOL_VERSION_UPGRADE_COMPLETE_WITH_NAME_FORMAT": {
+   "fingerprint": "a8c76a4ec1affe5a",
+   "replace": [
+    false
+   ]
+  },
+  "UNLINKED_WARNING": {
+   "fingerprint": "71e963263aa1689a",
+   "replace": [
+    true
+   ]
+  },
+  "UNLINKING_FAILED_ALERT_TITLE": {
+   "fingerprint": "4ad50fa4578ea40e",
+   "replace": [
+    true
+   ]
+  },
+  "UNVERIFIED_SAFETY_NUMBER_CHANGE_DESCRIPTION_FORMAT": {
+   "fingerprint": "0cfcb3ec418769b0",
+   "replace": [
+    false
+   ]
+  },
+  "USERNAME_LOOKUP_NOT_FOUND_MESSAGE_FORMAT": {
+   "fingerprint": "8efb0d0a7a896e19",
+   "replace": [
+    false
+   ]
+  },
+  "USERNAME_QR_CODE_EXPORT_INSTRUCTIONS": {
+   "fingerprint": "6ba4f2111a7620c7",
+   "replace": [
+    false
+   ]
+  },
+  "USE_PROXY_EXPLANATION": {
+   "fingerprint": "5d1c62c535af6a87",
+   "replace": [
+    false
+   ]
+  },
+  "VERIFICATION_CODE_REQUESTED_HERO_BODY_SECOND": {
+   "fingerprint": "044246519fc0ac11",
+   "replace": [
+    false,
+    false
+   ]
+  }
+ },
+ "PluralAware.stringsdict": {
+  "GROUPS_TOO_MANY_MEMBERS_ALERT_MESSAGE_%d": {
+   "fingerprint": "edc801b3d0c566b1",
+   "replace_all": false
+  },
+  "GROUP_CALL_WILL_RING_MANY_PEOPLE_%d": {
+   "fingerprint": "b58ef18d25eaa82e",
+   "replace_all": true
+  },
+  "INACTIVE_LINKED_DEVICE_REMINDER_MEGAPHONE_BODY_%d": {
+   "fingerprint": "829ca1f1de72a64c",
+   "replace_all": false
+  },
+  "MY_STORY_VIEWERS_ALL_CONNECTIONS_%d": {
+   "fingerprint": "7efa4ccd4ca1f4fd",
+   "replace_all": false
+  },
+  "MY_STORY_VIEWERS_ALL_CONNECTIONS_EXCLUDING_%d": {
+   "fingerprint": "e3b4e350ed76921e",
+   "replace_all": false
+  }
+ },
+ "aliases": {
+  "ar": [
+   "سيجنال"
+  ],
+  "fa": [
+   "سیگنال"
+  ]
+ }
+}

@@ -1,0 +1,399 @@
+name: Mac Catalyst dependencies
+
+# Signal publishes prebuilt libsignal, RingRTC/WebRTC and MobileCoin libraries
+# for iOS devices and simulators only. This workflow builds the Mac Catalyst
+# variants from the same upstream sources and versions that the Podfile pins,
+# and publishes them as release assets. `make dependencies` downloads them.
+#
+# Each job skips its build if the release asset for that version exists.
+
+on:
+  workflow_dispatch:
+  # Push events compare only the pushed commits, so this runs exactly when the
+  # pinned versions or the build itself change.
+  push:
+    paths:
+      - Podfile
+      - Scripts/ivy/catalyst_dependencies.py
+      - .github/workflows/catalyst-dependencies.yml
+
+permissions:
+  contents: write
+
+# Builds take hours and are skipped once published, so runs queue instead of
+# cancelling each other.
+concurrency:
+  group: catalyst-dependencies
+  cancel-in-progress: false
+
+env:
+  XCODE_APP: /Applications/Xcode_26.6.app
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  versions:
+    name: Read versions
+    runs-on: ubuntu-latest
+    outputs:
+      libsignal: ${{ steps.v.outputs.libsignal }}
+      libsignal_checksum: ${{ steps.v.outputs.libsignal_checksum }}
+      ringrtc: ${{ steps.v.outputs.ringrtc }}
+      mobilecoin: ${{ steps.v.outputs.mobilecoin }}
+    steps:
+      - uses: actions/checkout@v6
+      - id: v
+        run: python3 Scripts/ivy/catalyst_dependencies.py versions >> "$GITHUB_OUTPUT"
+      - run: python3 Scripts/ivy/catalyst_dependencies.py versions
+
+  libsignal:
+    name: libsignal for Mac Catalyst
+    needs: versions
+    runs-on: macos-26
+    timeout-minutes: 120
+    env:
+      VERSION: ${{ needs.versions.outputs.libsignal }}
+      UPSTREAM_CHECKSUM: ${{ needs.versions.outputs.libsignal_checksum }}
+      # Raise the revision to rebuild a version that is already published.
+      TAG: catalyst-libsignal-v${{ needs.versions.outputs.libsignal }}-2
+    steps:
+      - name: Check for an existing build
+        id: existing
+        run: |
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Select Xcode
+        if: steps.existing.outputs.exists != 'true'
+        run: echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v6
+        if: steps.existing.outputs.exists != 'true'
+        with:
+          repository: signalapp/libsignal
+          ref: v${{ env.VERSION }}
+          submodules: recursive
+          path: libsignal
+
+      - name: Install toolchain
+        if: steps.existing.outputs.exists != 'true'
+        working-directory: libsignal
+        run: |
+          rustup toolchain install "$(cat rust-toolchain)" --profile minimal --target aarch64-apple-ios-macabi --component rust-src
+          brew install protobuf
+
+      - name: Configure CMake for Catalyst
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          # CMake treats command-line tools as app bundles when targeting iOS
+          # platforms, which breaks their install step. Turn that off.
+          REAL_CMAKE=$(command -v cmake)
+          mkdir -p "$RUNNER_TEMP/cmake-wrapper"
+          printf '#!/bin/bash\nfor a in "$@"; do [ "$a" = "-B" ] && exec "%s" -DCMAKE_MACOSX_BUNDLE=OFF "$@"; done\nexec "%s" "$@"\n' "$REAL_CMAKE" "$REAL_CMAKE" > "$RUNNER_TEMP/cmake-wrapper/cmake"
+          chmod +x "$RUNNER_TEMP/cmake-wrapper/cmake"
+          echo "CMAKE=$RUNNER_TEMP/cmake-wrapper/cmake" >> "$GITHUB_ENV"
+          # Older vendored libraries declare compatibility with CMake < 3.5.
+          echo "CMAKE_POLICY_VERSION_MINIMUM=3.5" >> "$GITHUB_ENV"
+          cat "$RUNNER_TEMP/cmake-wrapper/cmake"
+
+      - name: Compile C and assembly for Catalyst
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          # CMake adds iOS deployment flags for the ios-macabi target, which
+          # marks C and assembly objects as iOS objects. Compile through a
+          # wrapper that drops those flags and sets the Catalyst target last.
+          mkdir -p "$RUNNER_TEMP/cc-wrapper"
+          for tool in clang clang++; do
+            cat > "$RUNNER_TEMP/cc-wrapper/$tool" <<SH
+          #!/bin/bash
+          args=()
+          for a in "\$@"; do
+            case "\$a" in
+              -mios-version-min=*|-miphoneos-version-min=*|-mios-simulator-version-min=*|-mmacosx-version-min=*|-mmacos-version-min=*) ;;
+              *) args+=("\$a") ;;
+            esac
+          done
+          exec xcrun $tool "\${args[@]}" -target arm64-apple-ios14.0-macabi
+          SH
+            chmod +x "$RUNNER_TEMP/cc-wrapper/$tool"
+          done
+          echo "CC_aarch64_apple_ios_macabi=$RUNNER_TEMP/cc-wrapper/clang" >> "$GITHUB_ENV"
+          echo "CXX_aarch64_apple_ios_macabi=$RUNNER_TEMP/cc-wrapper/clang++" >> "$GITHUB_ENV"
+          cat "$RUNNER_TEMP/cc-wrapper/clang"
+
+      - name: Add the Catalyst SDK to BoringSSL's build script
+        if: steps.existing.outputs.exists != 'true'
+        working-directory: libsignal
+        run: |
+          # boring-sys only knows the iOS device and simulator SDKs. Mac
+          # Catalyst builds against the macOS SDK.
+          cargo fetch
+          python3 - <<'PY'
+          import glob, os
+          paths = glob.glob(os.path.expanduser("~/.cargo/git/checkouts/boring-*/*/boring-sys/build/main.rs"))
+          assert paths, "boring-sys source not found"
+          entry = """const CMAKE_PARAMS_APPLE: &[(&str, &[(&str, &str)])] = &[
+              (
+                  "aarch64-apple-ios-macabi",
+                  &[
+                      ("CMAKE_OSX_ARCHITECTURES", "arm64"),
+                      ("CMAKE_OSX_SYSROOT", "macosx"),
+                      ("CMAKE_MACOSX_BUNDLE", "OFF"),
+                  ],
+              ),"""
+          for p in paths:
+              s = open(p).read()
+              if "aarch64-apple-ios-macabi" not in s:
+                  s = s.replace("const CMAKE_PARAMS_APPLE: &[(&str, &[(&str, &str)])] = &[", entry, 1)
+                  open(p, "w").write(s)
+              print("patched", p)
+          PY
+
+      - name: Build
+        if: steps.existing.outputs.exists != 'true'
+        working-directory: libsignal
+        env:
+          CARGO_BUILD_TARGET: aarch64-apple-ios-macabi
+        run: swift/build_ffi.sh --release
+
+      - name: Check that every object is built for Catalyst
+        if: steps.existing.outputs.exists != 'true'
+        working-directory: libsignal
+        run: |
+          set -euo pipefail
+          LIB=target/aarch64-apple-ios-macabi/release/libsignal_ffi.a
+          # Platform 6 is Mac Catalyst. Objects without a platform carry no
+          # load command and are reported as "none".
+          otool -l "$LIB" | awk '
+            /^.*\(.*\):$/ { if (member != "" && !seen) print "none " member; member = $0; seen = 0 }
+            /LC_VERSION_MIN_IPHONEOS/ { print "iphoneos " member; seen = 1 }
+            /cmd LC_BUILD_VERSION/ { want = 1 }
+            want && $1 == "platform" { print $2 " " member; want = 0; seen = 1 }
+            END { if (member != "" && !seen) print "none " member }
+          ' > platforms.txt
+          awk '{print $1}' platforms.txt | sort | uniq -c
+          if grep -v -E '^(6|none) ' platforms.txt; then
+            echo "::error::objects above are not built for Mac Catalyst"
+            exit 1
+          fi
+
+      - name: Combine with the upstream iOS archive
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          set -euo pipefail
+          NAME="libsignal-client-ios-build-v${VERSION}.tar.gz"
+          mkdir combined && cd combined
+          curl -fsSL -o upstream.tar.gz "https://build-artifacts.signal.org/libraries/${NAME}"
+          echo "${UPSTREAM_CHECKSUM}  upstream.tar.gz" | shasum -a 256 -c
+          tar -x -f upstream.tar.gz && rm upstream.tar.gz
+          mkdir -p target/aarch64-apple-ios-macabi/release
+          cp ../libsignal/target/aarch64-apple-ios-macabi/release/libsignal_ffi.a target/aarch64-apple-ios-macabi/release/
+          tar -c --auto-compress --no-mac-metadata -f "../${NAME}" target/*/release/libsignal_ffi.a
+          cd .. && shasum -a 256 "${NAME}" | tee "${NAME}.sha256" | tee -a "$GITHUB_STEP_SUMMARY"
+          ls target 2>/dev/null || true
+          tar -t -f "${NAME}"
+
+      - name: Publish
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          NAME="libsignal-client-ios-build-v${VERSION}.tar.gz"
+          gh release create "$TAG" "$NAME" "$NAME.sha256" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "libsignal ${VERSION} with Mac Catalyst" --prerelease \
+            --notes "Upstream libsignal ${VERSION} iOS archive with an added aarch64-apple-ios-macabi build from tag v${VERSION}."
+
+  ringrtc:
+    name: RingRTC and WebRTC for Mac Catalyst
+    needs: versions
+    runs-on: macos-26
+    timeout-minutes: 360
+    env:
+      VERSION: ${{ needs.versions.outputs.ringrtc }}
+      TAG: catalyst-ringrtc-v${{ needs.versions.outputs.ringrtc }}
+    steps:
+      - name: Check for an existing build
+        id: existing
+        run: |
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Select Xcode and free disk space
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          df -h /
+          for x in /Applications/Xcode_*.app; do
+            [ "$x" = "$XCODE_APP" ] || sudo rm -rf "$x"
+          done
+          sudo rm -rf ~/Library/Android /usr/local/share/dotnet ~/.dotnet ~/.ghcup || true
+          df -h /
+
+      - uses: actions/checkout@v6
+        if: steps.existing.outputs.exists != 'true'
+        with:
+          repository: signalapp/ringrtc
+          ref: v${{ env.VERSION }}
+          path: ringrtc
+
+      - name: Install toolchain
+        if: steps.existing.outputs.exists != 'true'
+        working-directory: ringrtc
+        run: |
+          rustup toolchain install "$(cat rust-toolchain 2>/dev/null || echo stable)" --profile minimal --target aarch64-apple-ios-macabi
+          rustup target add aarch64-apple-ios-macabi
+          brew install coreutils cbindgen protobuf || true
+
+      - name: Build libringrtc for Mac Catalyst
+        if: steps.existing.outputs.exists != 'true'
+        working-directory: ringrtc/src/rust
+        env:
+          IPHONEOS_DEPLOYMENT_TARGET: "14.0"
+        run: cargo rustc --target aarch64-apple-ios-macabi --release --crate-type staticlib
+
+      - name: Install depot_tools
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git "$RUNNER_TEMP/depot_tools"
+          echo "$RUNNER_TEMP/depot_tools" >> "$GITHUB_PATH"
+
+      - name: Fetch WebRTC
+        if: steps.existing.outputs.exists != 'true'
+        working-directory: ringrtc
+        run: |
+          # Chromium's source servers occasionally fail with HTTP 5xx.
+          for attempt in 1 2 3; do
+            bin/prepare-workspace ios && exit 0
+            echo "Fetching WebRTC failed (attempt $attempt), retrying"
+            sleep 60
+          done
+          exit 1
+
+      - name: Build WebRTC for Mac Catalyst
+        if: steps.existing.outputs.exists != 'true'
+        working-directory: ringrtc
+        run: |
+          set -euo pipefail
+          WEBRTC_SRC_DIR="$PWD/src/webrtc/src"
+          # Chromium's lld rejects some macOS SDK library stubs for Catalyst;
+          # Apple's linker, which Xcode uses for Catalyst apps, accepts them.
+          EXTRA_GN_ARGS="rtc_build_examples=false rtc_build_tools=false rtc_include_tests=false rtc_enable_protobuf=false rtc_enable_sctp=false rtc_libvpx_build_vp9=true rtc_disable_metrics=true rtc_disable_trace_events=true rtc_opus_support_dred=true use_lld=false"
+          cd "${WEBRTC_SRC_DIR}"
+          ./tools_webrtc/ios/build_ios_libs.py -o out/catalyst --build_config release --arch catalyst:arm64 --deployment-target 14.0 --extra-gn-args "${EXTRA_GN_ARGS}"
+          ls out/catalyst
+          df -h /
+
+      - name: Package
+        if: steps.existing.outputs.exists != 'true'
+        working-directory: ringrtc
+        run: |
+          set -euo pipefail
+          WEBRTC_SRC_DIR="$PWD/src/webrtc/src"
+          mkdir -p ../pkg/libringrtc/aarch64-apple-ios-macabi
+          LIB=$(find ./target ./src/rust/target -path '*aarch64-apple-ios-macabi/release/libringrtc.a' 2>/dev/null | head -1 || true)
+          echo "libringrtc: $LIB"
+          [ -n "$LIB" ] || { echo "libringrtc.a not found"; exit 1; }
+          cp "$LIB" ../pkg/libringrtc/aarch64-apple-ios-macabi/
+          FW=$(find "${WEBRTC_SRC_DIR}/out/catalyst" -name WebRTC.framework -path '*catalyst*' | head -1 || true)
+          [ -n "$FW" ] || FW=$(find "${WEBRTC_SRC_DIR}/out/catalyst" -name WebRTC.framework | head -1 || true)
+          [ -n "$FW" ] || { echo "WebRTC.framework not found"; exit 1; }
+          echo "Catalyst framework: $FW"
+          cp -R "$FW" ../pkg/WebRTC.framework
+          cd ../pkg
+          NAME="ringrtc-catalyst-v${VERSION}.tar.gz"
+          tar -c --auto-compress --no-mac-metadata -f "../${NAME}" libringrtc WebRTC.framework
+          cd .. && shasum -a 256 "${NAME}" | tee "${NAME}.sha256" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          NAME="ringrtc-catalyst-v${VERSION}.tar.gz"
+          gh release create "$TAG" "$NAME" "$NAME.sha256" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "RingRTC ${VERSION} for Mac Catalyst" --prerelease \
+            --notes "libringrtc and WebRTC.framework for aarch64 Mac Catalyst, built from RingRTC v${VERSION} and its pinned WebRTC version."
+
+  mobilecoin:
+    name: MobileCoin for Mac Catalyst
+    needs: versions
+    runs-on: macos-26
+    timeout-minutes: 240
+    env:
+      VERSION: ${{ needs.versions.outputs.mobilecoin }}
+      TAG: catalyst-mobilecoin-${{ needs.versions.outputs.mobilecoin }}
+    steps:
+      - name: Check for an existing build
+        id: existing
+        run: |
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Select Xcode
+        if: steps.existing.outputs.exists != 'true'
+        run: echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v6
+        if: steps.existing.outputs.exists != 'true'
+        with:
+          repository: signalapp/libmobilecoin-ios-artifacts
+          ref: signal/${{ env.VERSION }}
+          submodules: recursive
+          path: lmc
+
+      - name: Inspect build setup
+        if: steps.existing.outputs.exists != 'true'
+        working-directory: lmc/libmobilecoin
+        run: |
+          ls -la
+          cat Makefile
+          cat ../Vendor/mobilecoin/rust-toolchain* 2>/dev/null || true
+
+      - name: Configure CMake for Catalyst
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          # CMake treats command-line tools as app bundles when targeting iOS
+          # platforms, which breaks their install step. Turn that off.
+          REAL_CMAKE=$(command -v cmake)
+          mkdir -p "$RUNNER_TEMP/cmake-wrapper"
+          printf '#!/bin/bash\nfor a in "$@"; do [ "$a" = "-B" ] && exec "%s" -DCMAKE_MACOSX_BUNDLE=OFF "$@"; done\nexec "%s" "$@"\n' "$REAL_CMAKE" "$REAL_CMAKE" > "$RUNNER_TEMP/cmake-wrapper/cmake"
+          chmod +x "$RUNNER_TEMP/cmake-wrapper/cmake"
+          echo "CMAKE=$RUNNER_TEMP/cmake-wrapper/cmake" >> "$GITHUB_ENV"
+          # Older vendored libraries declare compatibility with CMake < 3.5.
+          echo "CMAKE_POLICY_VERSION_MINIMUM=3.5" >> "$GITHUB_ENV"
+          cat "$RUNNER_TEMP/cmake-wrapper/cmake"
+
+      - name: Build
+        if: steps.existing.outputs.exists != 'true'
+        working-directory: lmc/libmobilecoin
+        run: |
+          set -euo pipefail
+          TOOLCHAIN=$(sed -n 's/^channel *= *"\(.*\)"/\1/p' ../Vendor/mobilecoin/rust-toolchain)
+          echo "Toolchain: $TOOLCHAIN"
+          rustup toolchain install "$TOOLCHAIN" --profile minimal --component rust-src --component llvm-tools-preview
+          rustup override set "$TOOLCHAIN"
+          brew install protobuf cmake || true
+          ../tools/patch-cmake.sh >/dev/null
+          export CFLAGS_aarch64_apple_ios_macabi="--target=arm64-apple-ios14.0-macabi"
+          export CXXFLAGS_aarch64_apple_ios_macabi="--target=arm64-apple-ios14.0-macabi"
+          make ALL_ARCHS_IOS=aarch64-apple-ios-macabi \
+            CARGO_ENV_FLAGS='CFLAGS=-DPB_NO_PACKED_STRUCTS=1 CXXFLAGS=-DPB_NO_PACKED_STRUCTS=1 IPHONEOS_DEPLOYMENT_TARGET=14.0' \
+            aarch64-apple-ios-macabi
+          find . -name libmobilecoin.a -path '*macabi*'
+
+      - name: Package
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          set -euo pipefail
+          LIB=$(find lmc -name libmobilecoin.a -path '*aarch64-apple-ios-macabi*' | head -1)
+          mkdir -p pkg/target/aarch64-apple-ios-macabi/release
+          cp "$LIB" pkg/target/aarch64-apple-ios-macabi/release/
+          NAME="libmobilecoin-catalyst-${VERSION}.tar.gz"
+          tar -c --auto-compress --no-mac-metadata -f "${NAME}" -C pkg target
+          shasum -a 256 "${NAME}" | tee "${NAME}.sha256" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          NAME="libmobilecoin-catalyst-${VERSION}.tar.gz"
+          gh release create "$TAG" "$NAME" "$NAME.sha256" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "LibMobileCoin ${VERSION} for Mac Catalyst" --prerelease \
+            --notes "libmobilecoin for aarch64 Mac Catalyst, built from signalapp/libmobilecoin-ios-artifacts signal/${VERSION}."

@@ -1,0 +1,119 @@
+name: CI
+
+# Draft pull requests get a fast check: both apps and all test bundles are
+# built. Pull requests that are ready for review, pushes to main and manual
+# runs also run the full test suite.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+env:
+  XCODE_APP: /Applications/Xcode_26.6.app
+
+jobs:
+  checks:
+    name: Repository checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Test Ivy scripts
+        run: python3 -m unittest discover -s Scripts/ivy -p 'test_*.py' -v
+
+      - name: Check app name rules against upstream strings
+        run: python3 Scripts/ivy/app_name.py check Scripts/ivy/app-name-rules.json Signal/translations
+
+  build:
+    name: ${{ matrix.name }} build and test
+    runs-on: macos-26
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ios
+            name: iOS
+          - platform: macos
+            name: macOS
+    steps:
+      - name: Select Xcode
+        run: |
+          ls -d /Applications/Xcode*.app
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Show environment
+        run: |
+          xcodebuild -version
+          sw_vers
+          df -h /
+          sysctl -n hw.ncpu hw.memsize
+
+      - name: Download Metal toolchain
+        run: xcodebuild -downloadComponent MetalToolchain
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Choose test mode
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ github.event.pull_request.draft }}" = "true" ]; then
+            echo "MODE=fast" >> "$GITHUB_ENV"
+          else
+            echo "MODE=full" >> "$GITHUB_ENV"
+          fi
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/Library/Caches/org.signal.libsignal
+            ~/Library/Caches/org.signal.ringrtc
+          key: deps-${{ hashFiles('Podfile.lock') }}
+
+      - name: Cache build products
+        uses: actions/cache@v4
+        with:
+          path: ~/IvyDerivedData
+          key: derived-data-${{ matrix.platform }}-${{ github.head_ref || github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            derived-data-${{ matrix.platform }}-${{ github.head_ref || github.ref_name }}-
+            derived-data-${{ matrix.platform }}-main-
+
+      - name: Install dependencies
+        run: make dependencies
+
+      - name: Check that dependency install left tracked files unchanged
+        run: git diff --exit-code
+
+      - name: Show prebuilt libraries
+        run: |
+          ls -la Pods/SignalRingRTC/out/release Pods/SignalRingRTC/out/release/libringrtc
+          ls Pods/SignalRingRTC/out/release/WebRTC.xcframework/
+          ls Pods/LibMobileCoin/Artifacts/target
+          ls -la ~/Library/Caches/org.signal.libsignal
+
+      - name: Build and test (${{ env.MODE }})
+        run: Scripts/ivy/ci-build.sh ${{ matrix.platform }} "$MODE"
+
+      - name: Upload logs
+        if: failure() || cancelled()
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ matrix.platform }}-logs
+          path: ~/Library/Logs/Ivy-CI

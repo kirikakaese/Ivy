@@ -1,0 +1,1 @@
+• Mit diesem Update gibt's jetzt eine neue Option zum Stummschalten, mit der du ganz einfach das genaue Datum und die Uhrzeit festlegen kannst, zu der du die Stummschaltung für Benachrichtigungen in einem bestimmten Chat beenden möchtest.

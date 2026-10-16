@@ -1,0 +1,1 @@
+• Una nova opció personalitzada per silenciar et permet especificar el dia i hora exactes en què t'agradaria tornar a rebre notificacions en un xat.
