@@ -61,10 +61,13 @@ def ivy_apply_pod_patches(pods_root = 'Pods')
     pod_dir = File.join(pods_root, File.basename(File.dirname(patch)))
     next unless File.directory?(pod_dir)
 
-    if system('patch', '-p1', '-R', '--dry-run', '--silent', '-d', pod_dir, '-i', patch, out: File::NULL, err: File::NULL)
+    # git apply, unlike BSD patch, reliably detects an already applied patch.
+    # --directory makes the patch paths relative to the pod directory.
+    apply = ['git', 'apply', '--directory', pod_dir]
+    if system(*apply, '--reverse', '--check', patch, out: File::NULL, err: File::NULL)
       next # already applied
     end
-    unless system('patch', '-p1', '--forward', '--silent', '-d', pod_dir, '-i', patch)
+    unless system(*apply, patch)
       raise "Ivy: #{patch} does not apply to #{pod_dir}; update the patch"
     end
     puts "Ivy: applied #{File.basename(patch)} to #{File.basename(pod_dir)}"

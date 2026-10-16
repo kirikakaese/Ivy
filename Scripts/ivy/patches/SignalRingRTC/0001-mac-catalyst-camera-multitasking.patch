@@ -1,4 +1,4 @@
-diff --git src/ios/SignalRingRTC/SignalRingRTC/VideoCaptureController.swift src/ios/SignalRingRTC/SignalRingRTC/VideoCaptureController.swift
+diff --git a/src/ios/SignalRingRTC/SignalRingRTC/VideoCaptureController.swift b/src/ios/SignalRingRTC/SignalRingRTC/VideoCaptureController.swift
 index 4abff58..18856b5 100644
 --- a/src/ios/SignalRingRTC/SignalRingRTC/VideoCaptureController.swift
 +++ b/src/ios/SignalRingRTC/SignalRingRTC/VideoCaptureController.swift
