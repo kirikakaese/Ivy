@@ -321,7 +321,9 @@ extension StoryManager {
     private static var areStoriesEnabledCache = AtomicBool(true, lock: .sharedGlobal)
 
     /// A cache of if stories are enabled for the local user. For convenience, this also factors in whether the overall feature is available to the user.
-    public static var areStoriesEnabled: Bool { areStoriesEnabledCache.get() }
+    // Ivy: Stories are hidden. The stored setting stays unchanged so it is
+    // not synced to the user's other devices.
+    public static var areStoriesEnabled: Bool { IvyConfiguration.showsStories && areStoriesEnabledCache.get() }
 
     public static func setAreStoriesEnabled(_ areStoriesEnabled: Bool, shouldUpdateStorageService: Bool = true, transaction: DBWriteTransaction) {
         keyValueStore.setBool(areStoriesEnabled, key: areStoriesEnabledKey, transaction: transaction)

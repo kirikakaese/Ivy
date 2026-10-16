@@ -212,17 +212,20 @@ class AppSettingsViewController: OWSTableViewController2 {
                 self?.navigationController?.pushViewController(vc, animated: true)
             },
         ))
-        section2.add(.disclosureItem(
-            icon: .settingsStories,
-            withText: OWSLocalizedString(
-                "STORY_SETTINGS_TITLE",
-                comment: "Label for the stories section of the settings view",
-            ),
-            actionBlock: { [weak self] in
-                let vc = StoryPrivacySettingsViewController()
-                self?.navigationController?.pushViewController(vc, animated: true)
-            },
-        ))
+        // Ivy: Stories are hidden.
+        if IvyConfiguration.showsStories {
+            section2.add(.disclosureItem(
+                icon: .settingsStories,
+                withText: OWSLocalizedString(
+                    "STORY_SETTINGS_TITLE",
+                    comment: "Label for the stories section of the settings view",
+                ),
+                actionBlock: { [weak self] in
+                    let vc = StoryPrivacySettingsViewController()
+                    self?.navigationController?.pushViewController(vc, animated: true)
+                },
+            ))
+        }
         section2.add(.disclosureItem(
             icon: .settingsNotifications,
             withText: OWSLocalizedString("SETTINGS_NOTIFICATIONS", comment: "The title for the notification settings."),
