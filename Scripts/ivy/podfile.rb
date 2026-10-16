@@ -43,13 +43,28 @@ def ivy_post_install(installer)
     File.write(path, updated) if updated != xcconfig
   end
 
-  # CocoaPods lists the slices of vendored XCFrameworks when it installs, which
-  # is before the Catalyst slice of WebRTC is added.
+  # CocoaPods records the slices of vendored XCFrameworks, with their platform
+  # variant and architectures, when it installs. That is before the Catalyst
+  # slice of WebRTC is added, so add it to the slice list and lookup tables.
   Dir.glob('Pods/Target Support Files/**/*-xcframeworks.sh') do |path|
     script = File.read(path)
-    updated = script.gsub(/(install_xcframework "[^"]*WebRTC\.xcframework" .*?)$/) do |line|
-      line.include?('ios-arm64-maccatalyst') ? line : "#{line} \"ios-arm64-maccatalyst\""
-    end
-    File.write(path, updated) if updated != script
+    File.write(path, ivy_add_webrtc_catalyst_slice(script))
   end
+end
+
+IVY_WEBRTC_CATALYST_SLICE = 'ios-arm64-maccatalyst'
+
+def ivy_add_webrtc_catalyst_slice(script)
+  return script unless script.include?('WebRTC.xcframework')
+  return script if script.include?("WebRTC.xcframework/#{IVY_WEBRTC_CATALYST_SLICE})")
+
+  updated = script.gsub(/(install_xcframework "[^"]*WebRTC\.xcframework" .*?)$/) do |line|
+    "#{line} \"#{IVY_WEBRTC_CATALYST_SLICE}\""
+  end
+  { 'variant_for_slice' => 'maccatalyst', 'archs_for_slice' => 'arm64' }.each do |function, value|
+    updated = updated.sub("#{function}()\n{\n  case \"$1\" in\n") do |head|
+      head + "  WebRTC.xcframework/#{IVY_WEBRTC_CATALYST_SLICE})\n    echo \"#{value}\"\n    ;;\n"
+    end
+  end
+  updated
 end
