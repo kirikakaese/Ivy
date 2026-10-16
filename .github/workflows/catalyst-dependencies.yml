@@ -194,7 +194,14 @@ jobs:
         run: |
           rustup toolchain install "$(cat rust-toolchain 2>/dev/null || echo stable)" --profile minimal --target aarch64-apple-ios-macabi
           rustup target add aarch64-apple-ios-macabi
-          brew install coreutils cbindgen || true
+          brew install coreutils cbindgen protobuf || true
+
+      - name: Build libringrtc for Mac Catalyst
+        if: steps.existing.outputs.exists != 'true'
+        working-directory: ringrtc/src/rust
+        env:
+          IPHONEOS_DEPLOYMENT_TARGET: "14.0"
+        run: cargo rustc --target aarch64-apple-ios-macabi --release --crate-type staticlib
 
       - name: Install depot_tools
         if: steps.existing.outputs.exists != 'true'
@@ -228,13 +235,6 @@ jobs:
           ls out/catalyst
           df -h /
 
-      - name: Build libringrtc for Mac Catalyst
-        if: steps.existing.outputs.exists != 'true'
-        working-directory: ringrtc/src/rust
-        env:
-          IPHONEOS_DEPLOYMENT_TARGET: "14.0"
-        run: cargo rustc --target aarch64-apple-ios-macabi --release --crate-type staticlib
-
       - name: Package
         if: steps.existing.outputs.exists != 'true'
         working-directory: ringrtc
@@ -242,7 +242,9 @@ jobs:
           set -euo pipefail
           WEBRTC_SRC_DIR="$PWD/src/webrtc/src"
           mkdir -p ../pkg/libringrtc/aarch64-apple-ios-macabi
-          cp src/rust/target/aarch64-apple-ios-macabi/release/libringrtc.a ../pkg/libringrtc/aarch64-apple-ios-macabi/
+          LIB=$(find ./target ./src/rust/target -path '*aarch64-apple-ios-macabi/release/libringrtc.a' 2>/dev/null | head -1)
+          echo "libringrtc: $LIB"
+          cp "$LIB" ../pkg/libringrtc/aarch64-apple-ios-macabi/
           FW=$(find "${WEBRTC_SRC_DIR}/out/catalyst" -name WebRTC.framework -path '*catalyst*' | head -1)
           [ -n "$FW" ] || FW=$(find "${WEBRTC_SRC_DIR}/out/catalyst" -name WebRTC.framework | head -1)
           echo "Catalyst framework: $FW"
