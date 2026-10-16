@@ -107,6 +107,27 @@ class ApplyTests(unittest.TestCase):
         self.assertEqual(strings, {"APP": "Ivy braucht Zugriff.", "KEEP": "Signal schreibt dir nie."})
         self.assertEqual(info, {"NSCameraUsageDescription": "Ivy verwendet die Kamera."})
 
+    def test_apply_reads_utf16_stringsdict_from_mac_builds(self):
+        # macOS builds write XML property lists as UTF-16 but keep the UTF-8
+        # declaration.
+        value = {"NSStringLocalizedFormatKey": "%#@n@", "n": {"one": "Signal will ring", "other": "Signal will ring"}}
+        xml = plistlib.dumps({"RING": value}, fmt=plistlib.FMT_XML).decode("utf-8")
+        with tempfile.TemporaryDirectory() as tmp:
+            lproj = os.path.join(tmp, "en.lproj")
+            os.mkdir(lproj)
+            path = os.path.join(lproj, "PluralAware.stringsdict")
+            with open(path, "w", encoding="utf-16") as f:
+                f.write(xml)
+            rules_path = os.path.join(tmp, "rules.json")
+            with open(rules_path, "w", encoding="utf-8") as f:
+                import json
+
+                json.dump(RULES, f)
+            app_name.cmd_apply(rules_path, tmp)
+            with open(path, "rb") as f:
+                table = plistlib.load(f)
+        self.assertEqual(table["RING"]["n"]["other"], "Ivy will ring")
+
 
 if __name__ == "__main__":
     unittest.main()

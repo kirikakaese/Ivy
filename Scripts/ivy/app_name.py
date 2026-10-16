@@ -84,6 +84,10 @@ def parse_strings_text(text):
 def _decode(data):
     if data.startswith(b"\xff\xfe") or data.startswith(b"\xfe\xff"):
         return data.decode("utf-16")
+    if data[:1] == b"\x00":
+        return data.decode("utf-16-be")
+    if data[1:2] == b"\x00":
+        return data.decode("utf-16-le")
     if data.startswith(b"\xef\xbb\xbf"):
         return data[3:].decode("utf-8")
     return data.decode("utf-8")
@@ -95,9 +99,12 @@ def load_table(path):
     try:
         return plistlib.loads(data)
     except Exception:
+        text = _decode(data)
         if path.endswith(".stringsdict"):
-            raise
-        return parse_strings_text(_decode(data))
+            # macOS builds store XML property lists as UTF-16 while their
+            # declaration still says UTF-8, which the XML parser rejects.
+            return plistlib.loads(text.encode("utf-8"))
+        return parse_strings_text(text)
 
 
 # MARK: - Replacement
