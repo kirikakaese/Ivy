@@ -43,3 +43,6 @@ debuglogs/
 /.vscode
 
 fastlane/Preview.html
+
+# CocoaPods dependencies are installed by `make dependencies`
+/Pods/

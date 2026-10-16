@@ -7,10 +7,8 @@ dependencies: pod-setup backup-tests-setup fetch-ringrtc
 
 .PHONY: pod-setup
 pod-setup:
-	git -C ${PODS} clean -xfd
-	git -C ${PODS} reset --hard
-	./Scripts/setup_private_pods
-	git submodule update --init --progress ${PODS}
+	bundle install
+	bundle exec pod install
 
 .PHONY: backup-tests-setup
 backup-tests-setup:
