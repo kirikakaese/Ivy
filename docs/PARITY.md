@@ -40,6 +40,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Multitasking camera access | Not needed; the Mac camera works while other windows are in front |
 | Limited contact access picker | Not shown; contact access is all or nothing |
 | Quick Look support check | Skipped; Quick Look shows a generic view for files it cannot render |
+| File protection classes | The strictest iOS classes are not available; FileVault encrypts the files instead |
 
 ## Organization
 
