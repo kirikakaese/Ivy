@@ -162,6 +162,12 @@ jobs:
           rustup target add aarch64-apple-ios-macabi
           brew install coreutils cbindgen || true
 
+      - name: Install depot_tools
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git "$RUNNER_TEMP/depot_tools"
+          echo "$RUNNER_TEMP/depot_tools" >> "$GITHUB_PATH"
+
       - name: Fetch WebRTC
         if: steps.existing.outputs.exists != 'true'
         working-directory: ringrtc
