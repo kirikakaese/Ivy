@@ -14,6 +14,19 @@ env:
   XCODE_APP: /Applications/Xcode_26.6.app
 
 jobs:
+  checks:
+    name: Repository checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Test Ivy scripts
+        run: python3 -m unittest discover -s Scripts/ivy -p 'test_*.py' -v
+
+      - name: Check app name rules against upstream strings
+        run: python3 Scripts/ivy/app_name.py check Scripts/ivy/app-name-rules.json Signal/translations
+
   ios:
     name: iOS build and test
     runs-on: macos-26
