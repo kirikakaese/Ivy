@@ -422,10 +422,14 @@ public class CVComponentGenericAttachment: CVComponentBase, CVComponent {
         guard let url = try? attachmentStream.makeDecryptedCopy(filename: sourceFilename) else {
             return nil
         }
+        // Ivy: canPreview is unavailable on the Mac, where Quick Look shows
+        // a generic view for files it cannot render.
+#if !targetEnvironment(macCatalyst)
         guard QLPreviewController.canPreview(url as NSURL) else {
             try? OWSFileSystem.deleteFile(url: url)
             return nil
         }
+#endif
         self.qlPreviewTmpFileUrl = url
 
         let previewController = QLPreviewController()
