@@ -32,6 +32,17 @@ public enum IvyConfiguration {
     public static let showsPayments = false
     public static let showsDonations = false
 
+    /// Debug logs stay on the device. The user can export them and share
+    /// them with whoever they choose; they are never uploaded to Signal.
+    public static let uploadsDebugLogs = false
+
+    /// Shown on the About screen.
+    public static let maintainer = "kiri"
+    public static let sourceCodeURL = URL(string: "https://github.com/kirikakaese/Ivy")!
+    public static let licenseURL = URL(string: "https://github.com/kirikakaese/Ivy/blob/main/LICENSE")!
+    /// Ivy is not supported by Signal, so problems are reported here.
+    public static let issuesURL = URL(string: "https://github.com/kirikakaese/Ivy/issues")!
+
     public static var keepsConnectionWhileInactive: Bool {
 #if targetEnvironment(macCatalyst)
         return true
