@@ -98,8 +98,11 @@ extension ConversationSettingsViewController {
             let helpSection = buildHelpSettingsSection()
             contents.add(helpSection)
 
-            let donateSection = buildDonateSettingsSection()
-            contents.add(donateSection)
+            // Ivy: donations are hidden.
+            if IvyConfiguration.showsDonations {
+                let donateSection = buildDonateSettingsSection()
+                contents.add(donateSection)
+            }
 
             contents.add(buildBlockAndLeaveSection())
         }

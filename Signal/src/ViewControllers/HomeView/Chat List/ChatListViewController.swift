@@ -1494,6 +1494,10 @@ extension ChatListViewController {
             internalCompletion = { profile.presentUsernameLinkCorruptedResolution() }
 
         case let .donate(donateMode):
+            // Ivy: donations are hidden.
+            guard IvyConfiguration.showsDonations else {
+                return
+            }
             let tsAccountManager = DependenciesBridge.shared.tsAccountManager
             guard
                 let registeredState = try? tsAccountManager.registeredStateWithMaybeSneakyTransaction(),

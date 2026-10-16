@@ -628,6 +628,11 @@ class ExperienceUpgradeManager {
         let manifest = remoteMegaphoneModel.manifest
         let translation = remoteMegaphoneModel.translation
 
+        // Ivy: donations are hidden.
+        if !IvyConfiguration.showsDonations, manifest.asksForDonation {
+            return false
+        }
+
         let minimumVersion = AppVersionNumber(manifest.minAppVersion)
         let currentVersion = AppVersionNumber(AppVersionImpl.shared.currentAppVersion)
         guard currentVersion >= minimumVersion else {

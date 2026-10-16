@@ -4161,6 +4161,8 @@
 		355667770573119A67F274F8 /* IvyLocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E00F1C5D0F2DF20E476BF00 /* IvyLocalizedString.swift */; };
 		92953FB500BC77F63885321C /* IvyLocalizedStringTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220F51BF9C4774091EA8E3F1 /* IvyLocalizedStringTest.swift */; };
 		0A52FD63DD9411D8A7E0F69E /* Ivy.strings in Resources */ = {isa = PBXBuildFile; fileRef = FDEC879B3B87B62B9659A460 /* Ivy.strings */; };
+		0611514F674AC5DF9E87C411 /* IvyDonations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74CCD38EC8CFFC9A1E961706 /* IvyDonations.swift */; };
+		00F8C399C2036A53E1DFF028 /* IvyDonationsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647900898DD319AC17164071 /* IvyDonationsTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8623,6 +8625,8 @@
 		220F51BF9C4774091EA8E3F1 /* IvyLocalizedStringTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyLocalizedStringTest.swift; sourceTree = "<group>"; };
 		ECECC2E284898DE038B18DB7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Ivy.strings; sourceTree = "<group>"; };
 		7DD0E5410AC231ED29AC78B5 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Ivy.strings; sourceTree = "<group>"; };
+		74CCD38EC8CFFC9A1E961706 /* IvyDonations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDonations.swift; sourceTree = "<group>"; };
+		647900898DD319AC17164071 /* IvyDonationsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDonationsTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16166,6 +16170,7 @@
 			children = (
 				031E0A778C927A92A8653411 /* IvyConfiguration.swift */,
 				8E00F1C5D0F2DF20E476BF00 /* IvyLocalizedString.swift */,
+				74CCD38EC8CFFC9A1E961706 /* IvyDonations.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16175,6 +16180,7 @@
 			children = (
 				D5C49E6BF4FB27335729E3A1 /* IvyClientIdentityTest.swift */,
 				220F51BF9C4774091EA8E3F1 /* IvyLocalizedStringTest.swift */,
+				647900898DD319AC17164071 /* IvyDonationsTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -20787,6 +20793,7 @@
 				724D47B02B97BE13001BE973 /* ZkParamsMigrator.swift in Sources */,
 				E81C55153069282224BF231F /* IvyConfiguration.swift in Sources */,
 				355667770573119A67F274F8 /* IvyLocalizedString.swift in Sources */,
+				0611514F674AC5DF9E87C411 /* IvyDonations.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21059,6 +21066,7 @@
 				724D47B22B97BE96001BE973 /* ZkParamsMigratorTest.swift in Sources */,
 				C0CC8F8F55D61640FCA8FD74 /* IvyClientIdentityTest.swift in Sources */,
 				92953FB500BC77F63885321C /* IvyLocalizedStringTest.swift in Sources */,
+				00F8C399C2036A53E1DFF028 /* IvyDonationsTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

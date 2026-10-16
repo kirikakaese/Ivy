@@ -24,9 +24,9 @@ Status values: `planned`, `in progress`, `done`, `removed`, `disabled` (temporar
 | Launch at login | 2 | – | – | planned | Platform-only; iOS uses background refresh |
 | App icon / Dock unread badge | 2 | planned | planned | planned | |
 | Client identity | 2 | done | done | done | Reports the upstream release, set in `Config/Ivy.xcconfig` |
-| Stories | 2 | removed | removed | removed | |
-| Payments | 2 | removed | removed | removed | |
-| Donation prompts | 2 | removed | removed | removed | |
+| Stories | 2 | removed | removed | removed | Hidden; the synced account setting is left unchanged |
+| Payments | 2 | removed | removed | removed | Hidden; the profile keeps its payment address |
+| Donation prompts | 2 | removed | removed | removed | Settings rows, badge sheet button and donation megaphones |
 | Local-only diagnostics | 2 | planned | planned | planned | |
 | About, license, privacy statement | 2 | planned | planned | planned | |
 

@@ -54,7 +54,8 @@ class BadgeDetailsSheet: HeroSheetViewController {
         }
 
         let primaryButton: HeroSheetViewController.Button? = {
-            guard !owner.isLocal else {
+            // Ivy: donations are hidden.
+            guard IvyConfiguration.showsDonations, !owner.isLocal else {
                 return nil
             }
             return HeroSheetViewController.Button(
