@@ -10,7 +10,13 @@ import SignalUI
 enum RegistrationUtils {
 
     static var isPrimaryByDefault: Bool {
+        // Ivy: the Mac links as a secondary device like the iPad, also if it
+        // ever runs with the Mac interface idiom.
+#if targetEnvironment(macCatalyst)
+        return false
+#else
         return !UIDevice.current.isIPad
+#endif
     }
 
     static func showReRegistrationPrompt(fromViewController viewController: UIViewController, deregisteredState: DeregisteredState) {
