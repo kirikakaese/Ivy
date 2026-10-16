@@ -50,15 +50,22 @@ COMMON=(
   -destination "$DESTINATION"
   -derivedDataPath "$DERIVED_DATA"
   -disableAutomaticPackageResolution
+  -IDEBuildingContinueBuildingAfterErrors=YES
   COMPILATION_CACHE_ENABLE_CACHING=YES
   ${PLATFORM_SETTINGS[@]+"${PLATFORM_SETTINGS[@]}"}
 )
 
 run() {
   local log="$1"; shift
-  NSUnbufferedIO=YES xcodebuild "${COMMON[@]}" "$@" 2>&1 \
+  if ! NSUnbufferedIO=YES xcodebuild "${COMMON[@]}" "$@" 2>&1 \
     | tee "$LOG_DIR/$log" \
-    | xcbeautify --renderer github-actions --disable-logging
+    | xcbeautify --renderer github-actions --disable-logging; then
+    # GitHub shows only the first few errors as annotations; list them all.
+    echo "::group::All errors"
+    grep -E '(^|: )error: ' "$LOG_DIR/$log" | sed -E 's#^/Users/[^/]+/work/[^/]+/[^/]+/##' | sort -u | head -300 || true
+    echo "::endgroup::"
+    return 1
+  fi
 }
 
 run build.log build-for-testing
