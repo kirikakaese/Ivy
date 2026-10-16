@@ -26,9 +26,12 @@ final class IvyAcknowledgementsViewController: OWSTableViewController2 {
             return []
         }
         return specifiers.compactMap { specifier in
+            // Entries without a title, such as the dependency manager's note at the
+            // end, are not licenses.
             guard
                 let title = specifier["Title"] as? String,
                 let text = specifier["FooterText"] as? String,
+                !title.isEmpty,
                 !text.isEmpty
             else {
                 return nil
