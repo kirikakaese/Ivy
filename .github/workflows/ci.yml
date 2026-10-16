@@ -32,10 +32,18 @@ jobs:
       - name: Check app name rules against upstream strings
         run: python3 Scripts/ivy/app_name.py check Scripts/ivy/app-name-rules.json Signal/translations
 
-  ios:
-    name: iOS build and test
+  build:
+    name: ${{ matrix.name }} build and test
     runs-on: macos-26
     timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ios
+            name: iOS
+          - platform: macos
+            name: macOS
     steps:
       - name: Select Xcode
         run: |
@@ -82,10 +90,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/IvyDerivedData
-          key: derived-data-ios-${{ github.head_ref || github.ref_name }}-${{ github.sha }}
+          key: derived-data-${{ matrix.platform }}-${{ github.head_ref || github.ref_name }}-${{ github.sha }}
           restore-keys: |
-            derived-data-ios-${{ github.head_ref || github.ref_name }}-
-            derived-data-ios-main-
+            derived-data-${{ matrix.platform }}-${{ github.head_ref || github.ref_name }}-
+            derived-data-${{ matrix.platform }}-main-
 
       - name: Install dependencies
         run: make dependencies
@@ -94,11 +102,11 @@ jobs:
         run: git diff --exit-code
 
       - name: Build and test (${{ env.MODE }})
-        run: Scripts/ivy/ci-build.sh "$MODE"
+        run: Scripts/ivy/ci-build.sh ${{ matrix.platform }} "$MODE"
 
       - name: Upload logs
         if: failure()
         uses: actions/upload-artifact@v6
         with:
-          name: ios-logs
+          name: ${{ matrix.platform }}-logs
           path: ~/Library/Logs/Ivy-CI
