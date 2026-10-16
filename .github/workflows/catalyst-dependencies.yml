@@ -9,7 +9,9 @@ name: Mac Catalyst dependencies
 
 on:
   workflow_dispatch:
-  pull_request:
+  # Push events compare only the pushed commits, so this runs exactly when the
+  # pinned versions or the build itself change.
+  push:
     paths:
       - Podfile
       - Scripts/ivy/catalyst_dependencies.py
@@ -18,9 +20,11 @@ on:
 permissions:
   contents: write
 
+# Builds take hours and are skipped once published, so runs queue instead of
+# cancelling each other.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+  group: catalyst-dependencies
+  cancel-in-progress: false
 
 env:
   XCODE_APP: /Applications/Xcode_26.6.app
