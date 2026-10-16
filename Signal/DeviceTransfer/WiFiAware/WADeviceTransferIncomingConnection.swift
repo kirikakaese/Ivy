@@ -3,6 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
+// Ivy: Wi-Fi Aware does not exist on the Mac; transfers use MultipeerConnectivity there.
+#if canImport(WiFiAware)
+
 import Foundation
 import Network
 import SignalServiceKit
@@ -237,3 +240,5 @@ private class AsyncStreamBroadcast<T> {
         }
     }
 }
+
+#endif

@@ -104,6 +104,7 @@ public class DeviceTransferCoordinator: Equatable {
         self.supportsWifiAware = supportsWifiAware
         self.transferStatusViewModel.supportsWifiAware = supportsWifiAware
         let factory: DeviceTransfer.ConnectionFactory
+#if canImport(WiFiAware) // Ivy: not available on the Mac
         if
             #available(iOS 26.0, *),
             supportsWifiAware
@@ -112,6 +113,9 @@ public class DeviceTransferCoordinator: Equatable {
         } else {
             factory = MPCDeviceTransferConnectionFactory()
         }
+#else
+        factory = MPCDeviceTransferConnectionFactory()
+#endif
 
         self.incomingDeviceTransferTask = try IncomingDeviceTransferTask(
             db: db,

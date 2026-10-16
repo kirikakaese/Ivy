@@ -3,12 +3,16 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
+#if canImport(DeviceDiscoveryUI) && canImport(WiFiAware) // Ivy: not available on the Mac
 import DeviceDiscoveryUI
+#endif
 import Lottie
 import SignalServiceKit
 import SignalUI
 import SwiftUI
+#if canImport(WiFiAware)
 import WiFiAware
+#endif
 
 // MARK: - DeviceTransferStatusViewController
 
@@ -219,6 +223,7 @@ struct TransferPairingView: View {
                 .padding(.horizontal, 8)
             TutorialStack(isNewDevice: isNewDevice)
             Spacer()
+#if canImport(DeviceDiscoveryUI) && canImport(WiFiAware)
             if !isNewDevice {
                 DevicePicker(
                     .wifiAware(
@@ -254,6 +259,7 @@ struct TransferPairingView: View {
                         .allowsHitTesting(false) // necessary to let touches pass to DevicePairingView
                 } fallback: {}
             }
+#endif
             Button(CommonStrings.cancelButton) {
                 Task {
                     await viewModel.propmtUserToCancelTransfer()

@@ -6,7 +6,9 @@
 import CryptoKit
 import Foundation
 import SignalServiceKit
+#if canImport(WiFiAware) // Ivy: not available on the Mac
 import WiFiAware
+#endif
 
 ///
 /// The following service is used to facilitate users in transferring their account from
@@ -60,6 +62,10 @@ import WiFiAware
 enum DeviceTransfer {
 
     static func platformSupportsWifiAware() -> Bool {
+        // Ivy: Wi-Fi Aware does not exist on the Mac.
+#if !canImport(WiFiAware)
+        return false
+#else
         if #available(iOS 26.0, *) {
             if WACapabilities.supportedFeatures.contains(.wifiAware) {
                 return true
@@ -71,6 +77,7 @@ enum DeviceTransfer {
             Logger.info("[DeviceTransfer][WiFiAware] OS version too low to support WifiAware")
             return false
         }
+#endif
     }
 
     enum Error: Swift.Error {
