@@ -53,7 +53,8 @@ jobs:
     env:
       VERSION: ${{ needs.versions.outputs.libsignal }}
       UPSTREAM_CHECKSUM: ${{ needs.versions.outputs.libsignal_checksum }}
-      TAG: catalyst-libsignal-v${{ needs.versions.outputs.libsignal }}
+      # Raise the revision to rebuild a version that is already published.
+      TAG: catalyst-libsignal-v${{ needs.versions.outputs.libsignal }}-2
     steps:
       - name: Check for an existing build
         id: existing
@@ -95,6 +96,31 @@ jobs:
           echo "CMAKE_POLICY_VERSION_MINIMUM=3.5" >> "$GITHUB_ENV"
           cat "$RUNNER_TEMP/cmake-wrapper/cmake"
 
+      - name: Compile C and assembly for Catalyst
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          # CMake adds iOS deployment flags for the ios-macabi target, which
+          # marks C and assembly objects as iOS objects. Compile through a
+          # wrapper that drops those flags and sets the Catalyst target last.
+          mkdir -p "$RUNNER_TEMP/cc-wrapper"
+          for tool in clang clang++; do
+            cat > "$RUNNER_TEMP/cc-wrapper/$tool" <<SH
+          #!/bin/bash
+          args=()
+          for a in "\$@"; do
+            case "\$a" in
+              -mios-version-min=*|-miphoneos-version-min=*|-mios-simulator-version-min=*|-mmacosx-version-min=*|-mmacos-version-min=*) ;;
+              *) args+=("\$a") ;;
+            esac
+          done
+          exec xcrun $tool "\${args[@]}" -target arm64-apple-ios14.0-macabi
+          SH
+            chmod +x "$RUNNER_TEMP/cc-wrapper/$tool"
+          done
+          echo "CC_aarch64_apple_ios_macabi=$RUNNER_TEMP/cc-wrapper/clang" >> "$GITHUB_ENV"
+          echo "CXX_aarch64_apple_ios_macabi=$RUNNER_TEMP/cc-wrapper/clang++" >> "$GITHUB_ENV"
+          cat "$RUNNER_TEMP/cc-wrapper/clang"
+
       - name: Add the Catalyst SDK to BoringSSL's build script
         if: steps.existing.outputs.exists != 'true'
         working-directory: libsignal
@@ -129,6 +155,27 @@ jobs:
         env:
           CARGO_BUILD_TARGET: aarch64-apple-ios-macabi
         run: swift/build_ffi.sh --release
+
+      - name: Check that every object is built for Catalyst
+        if: steps.existing.outputs.exists != 'true'
+        working-directory: libsignal
+        run: |
+          set -euo pipefail
+          LIB=target/aarch64-apple-ios-macabi/release/libsignal_ffi.a
+          # Platform 6 is Mac Catalyst. Objects without a platform carry no
+          # load command and are reported as "none".
+          otool -l "$LIB" | awk '
+            /^.*\(.*\):$/ { if (member != "" && !seen) print "none " member; member = $0; seen = 0 }
+            /LC_VERSION_MIN_IPHONEOS/ { print "iphoneos " member; seen = 1 }
+            /cmd LC_BUILD_VERSION/ { want = 1 }
+            want && $1 == "platform" { print $2 " " member; want = 0; seen = 1 }
+            END { if (member != "" && !seen) print "none " member }
+          ' > platforms.txt
+          awk '{print $1}' platforms.txt | sort | uniq -c
+          if grep -v -E '^(6|none) ' platforms.txt; then
+            echo "::error::objects above are not built for Mac Catalyst"
+            exit 1
+          fi
 
       - name: Combine with the upstream iOS archive
         if: steps.existing.outputs.exists != 'true'
