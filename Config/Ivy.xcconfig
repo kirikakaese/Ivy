@@ -1,0 +1,10 @@
+//
+// Copyright 2026 kiri
+// SPDX-License-Identifier: AGPL-3.0-only
+//
+
+// The upstream Signal-iOS release Ivy is built on. Ivy reports exactly this
+// version to Signal's servers, in the same form as the official client
+// (8.32.0.1910). Update both values with every upstream merge.
+IVY_UPSTREAM_MARKETING_VERSION = 8.32
+IVY_UPSTREAM_BUILD_NUMBER = 1910

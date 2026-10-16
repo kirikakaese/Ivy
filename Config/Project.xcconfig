@@ -8,5 +8,8 @@ GCC_TREAT_WARNINGS_AS_ERRORS = YES
 MTL_TREAT_WARNINGS_AS_ERRORS = YES
 OTHER_SWIFT_FLAGS = $(inherited) -warnings-as-errors
 
+// Ivy: client identity
+#include "Ivy.xcconfig"
+
 // User-specific overrides
 #include? "User.xcconfig"

@@ -4157,6 +4157,7 @@
 		F9FAABD829DB55940004B383 /* Progress+Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FAABD729DB55940004B383 /* Progress+Signal.swift */; };
 		FCB11D8C1A129A76002F93FB /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCB11D8B1A129A76002F93FB /* CoreMedia.framework */; };
 		E81C55153069282224BF231F /* IvyConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031E0A778C927A92A8653411 /* IvyConfiguration.swift */; };
+		C0CC8F8F55D61640FCA8FD74 /* IvyClientIdentityTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C49E6BF4FB27335729E3A1 /* IvyClientIdentityTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8613,6 +8614,8 @@
 		FF348A86F3FA1E5B5A62F033 /* Pods-SignalNSE.profiling.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SignalNSE.profiling.xcconfig"; path = "Target Support Files/Pods-SignalNSE/Pods-SignalNSE.profiling.xcconfig"; sourceTree = "<group>"; };
 		FF39DCC8D1F7DFD3708276E2 /* Pods-SignalTests.app store release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SignalTests.app store release.xcconfig"; path = "Target Support Files/Pods-SignalTests/Pods-SignalTests.app store release.xcconfig"; sourceTree = "<group>"; };
 		031E0A778C927A92A8653411 /* IvyConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyConfiguration.swift; sourceTree = "<group>"; };
+		C9FDE6F2AFAB06D4492AF543 /* Ivy.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Ivy.xcconfig; sourceTree = "<group>"; };
+		D5C49E6BF4FB27335729E3A1 /* IvyClientIdentityTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyClientIdentityTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -8847,6 +8850,7 @@
 				05EA61432CC943D200B16D4E /* Project-Release.xcconfig */,
 				05EA61442CC943DD00B16D4E /* Project.xcconfig */,
 				B96FEE2E2CDC297500836191 /* User.xcconfig */,
+				C9FDE6F2AFAB06D4492AF543 /* Ivy.xcconfig */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -15215,6 +15219,7 @@
 				724D47B12B97BE73001BE973 /* ZkParams */,
 				F942623A289B1B5500460798 /* SSKBaseTest.swift */,
 				D9C964072BE44D510058F143 /* XCTest+Thenable.swift */,
+				86D30F42136D64531F4409A6 /* Ivy */,
 			);
 			path = tests;
 			sourceTree = "<group>";
@@ -16152,6 +16157,14 @@
 			isa = PBXGroup;
 			children = (
 				031E0A778C927A92A8653411 /* IvyConfiguration.swift */,
+			);
+			path = Ivy;
+			sourceTree = "<group>";
+		};
+		86D30F42136D64531F4409A6 /* Ivy */ = {
+			isa = PBXGroup;
+			children = (
+				D5C49E6BF4FB27335729E3A1 /* IvyClientIdentityTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -21016,6 +21029,7 @@
 				F942626A289B1B5500460798 /* ViewOnceMessagesTest.swift in Sources */,
 				D9C964092BE44D700058F143 /* XCTest+Thenable.swift in Sources */,
 				724D47B22B97BE96001BE973 /* ZkParamsMigratorTest.swift in Sources */,
+				C0CC8F8F55D61640FCA8FD74 /* IvyClientIdentityTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

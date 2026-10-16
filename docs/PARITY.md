@@ -23,7 +23,7 @@ Status values: `planned`, `in progress`, `done`, `removed`, `disabled` (temporar
 | Notifications | 2 | planned | planned | planned | macOS live connection; iOS foreground and background refresh |
 | Launch at login | 2 | – | – | planned | Platform-only; iOS uses background refresh |
 | App icon / Dock unread badge | 2 | planned | planned | planned | |
-| Client identity | 2 | planned | planned | planned | |
+| Client identity | 2 | done | done | done | Reports the upstream release, set in `Config/Ivy.xcconfig` |
 | Stories | 2 | removed | removed | removed | |
 | Payments | 2 | removed | removed | removed | |
 | Donation prompts | 2 | removed | removed | removed | |
