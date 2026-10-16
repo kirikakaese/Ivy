@@ -393,7 +393,8 @@ class AppSettingsViewController: OWSTableViewController2 {
             icon: .settingsHelp,
             withText: CommonStrings.help,
             actionBlock: { [weak self] in
-                let vc = HelpViewController()
+                // Ivy: Ivy's own help points to Ivy, not to Signal support.
+                let vc = IvyHelpViewController()
                 self?.navigationController?.pushViewController(vc, animated: true)
             },
         ))

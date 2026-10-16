@@ -1,1 +1,49 @@
 /* Ivy's own strings. Upstream strings are in Signal/translations. See docs/TRANSLATIONS.md. */
+
+/* Label for the upstream release Ivy is built on. */
+"ABOUT_BASED_ON" = "Basiert auf";
+
+/* The upstream release Ivy is built on. Embeds {{ version number }}. */
+"ABOUT_BASED_ON_VALUE" = "Signal für iOS %@";
+
+/* Title of the About Ivy screen and the item that opens it. */
+"ABOUT_IVY_TITLE" = "Über Ivy";
+
+/* Item that opens Ivy's license. */
+"ABOUT_LICENSE" = "Lizenz";
+
+/* License notice on the About Ivy screen. */
+"ABOUT_LICENSE_FOOTER" = "Ivy ist freie Software unter der GNU Affero General Public License, Version 3. Ivy basiert auf Signal für iOS, Copyright Signal Messenger, LLC, das unter derselben Lizenz veröffentlicht ist. Den vollständigen Quellcode dieser Version findest du über den Link oben.";
+
+/* Label for the person who maintains Ivy. */
+"ABOUT_MAINTAINER" = "Betreut von";
+
+/* Notice on the About Ivy screen that Ivy is independent from Signal. */
+"ABOUT_NOT_AFFILIATED" = "Ivy ist eine unabhängige App, die mit dem Signal-Netzwerk kompatibel ist. Ivy steht in keiner Verbindung zu Signal Messenger LLC oder der Signal Technology Foundation und wird von ihnen weder empfohlen noch unterstützt.";
+
+/* Ivy's privacy statement on the About Ivy screen. */
+"ABOUT_PRIVACY_STATEMENT" = "Ivy verbindet sich nur mit den Servern von Signal, genauso wie die offizielle Signal-App, und deine Nachrichten sind Ende-zu-Ende-verschlüsselt. Ivy enthält keine Analyse- und keine Absturzberichte. Debug-Protokolle bleiben auf diesem Gerät, solange du sie nicht exportierst.";
+
+/* Title of the privacy statement on the About Ivy screen. */
+"ABOUT_PRIVACY_TITLE" = "Datenschutz";
+
+/* Item that opens Ivy's source code. */
+"ABOUT_SOURCE_CODE" = "Quellcode";
+
+/* Item that lists the licenses of the libraries Ivy uses. */
+"ABOUT_THIRD_PARTY_LICENSES" = "Lizenzen von Drittanbietern";
+
+/* Button below the debug log preview that exports the log. */
+"DEBUG_LOG_EXPORT_BUTTON" = "Exportieren";
+
+/* Footer of the debug log section in Help, explaining that logs stay on the device. */
+"HELP_DEBUG_LOG_FOOTER" = "Debug-Protokolle bleiben auf diesem Gerät. Exportiere sie, um einem Problem nachzugehen oder sie mit jemandem zu teilen, dem du vertraust.";
+
+/* Help item that previews and exports the debug log. */
+"HELP_EXPORT_DEBUG_LOG" = "Debug-Protokoll exportieren";
+
+/* Help item that opens Ivy's issue tracker. */
+"HELP_REPORT_PROBLEM" = "Problem melden";
+
+/* Footer below the 'Report a Problem' item in Help, explaining that Signal does not support Ivy. */
+"HELP_REPORT_PROBLEM_FOOTER" = "Signal unterstützt Ivy nicht. Bitte melde Probleme mit Ivy auf GitHub, statt dich an den Signal-Support zu wenden.";
