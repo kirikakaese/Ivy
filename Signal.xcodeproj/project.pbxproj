@@ -4156,6 +4156,7 @@
 		F9FA363629F335E500C13830 /* ProvisioningCipherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FA363529F335E500C13830 /* ProvisioningCipherTests.swift */; };
 		F9FAABD829DB55940004B383 /* Progress+Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FAABD729DB55940004B383 /* Progress+Signal.swift */; };
 		FCB11D8C1A129A76002F93FB /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCB11D8B1A129A76002F93FB /* CoreMedia.framework */; };
+		E81C55153069282224BF231F /* IvyConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031E0A778C927A92A8653411 /* IvyConfiguration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8611,6 +8612,7 @@
 		FEFD8A174F57F4C221747D51 /* Pods-SignalServiceKitTests.app store release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SignalServiceKitTests.app store release.xcconfig"; path = "Target Support Files/Pods-SignalServiceKitTests/Pods-SignalServiceKitTests.app store release.xcconfig"; sourceTree = "<group>"; };
 		FF348A86F3FA1E5B5A62F033 /* Pods-SignalNSE.profiling.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SignalNSE.profiling.xcconfig"; path = "Target Support Files/Pods-SignalNSE/Pods-SignalNSE.profiling.xcconfig"; sourceTree = "<group>"; };
 		FF39DCC8D1F7DFD3708276E2 /* Pods-SignalTests.app store release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SignalTests.app store release.xcconfig"; path = "Target Support Files/Pods-SignalTests/Pods-SignalTests.app store release.xcconfig"; sourceTree = "<group>"; };
+		031E0A778C927A92A8653411 /* IvyConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyConfiguration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -15165,6 +15167,7 @@
 				5013365D2B2BC2CD004119F1 /* ZeroKnowledge */,
 				F9C985D2289459860029F9AD /* SignalServiceKit-Prefix.pch */,
 				F9C5C899289451B900548EEE /* SignalServiceKit.h */,
+				136CA4AA333AB29DD1C0C1CB /* Ivy */,
 			);
 			path = SignalServiceKit;
 			sourceTree = "<group>";
@@ -16143,6 +16146,14 @@
 				F9C9610A29A91026001E4A09 /* ChatServiceAuthTest.swift */,
 			);
 			path = Requests;
+			sourceTree = "<group>";
+		};
+		136CA4AA333AB29DD1C0C1CB /* Ivy */ = {
+			isa = PBXGroup;
+			children = (
+				031E0A778C927A92A8653411 /* IvyConfiguration.swift */,
+			);
+			path = Ivy;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -20734,6 +20745,7 @@
 				66533E3729B7B56000E8D928 /* WhoAmIManager.swift in Sources */,
 				72454E802C9BCEA80084B483 /* YDBStorage.swift in Sources */,
 				724D47B02B97BE13001BE973 /* ZkParamsMigrator.swift in Sources */,
+				E81C55153069282224BF231F /* IvyConfiguration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
