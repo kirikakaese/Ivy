@@ -68,6 +68,13 @@ public class PushRegistrationManager: NSObject, PKPushRegistryDelegate {
         Logger.info("")
         await self.registerUserNotificationSettings()
 
+        // Ivy: never register for Apple push notifications. Registration,
+        // linking and token sync treat this like a device without push and
+        // fetch messages over the connection instead.
+        if !IvyConfiguration.usesApplePushNotifications {
+            throw PushRegistrationError.pushNotSupported(description: "Ivy fetches messages without Apple push notifications.")
+        }
+
 #if targetEnvironment(simulator)
         if TSConstants.isUsingProductionService {
             throw PushRegistrationError.pushNotSupported(description: "Production APNs isn't supported on simulators.")

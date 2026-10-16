@@ -21,6 +21,10 @@ class SyncPushTokensJob: NSObject {
     private static let hasUploadedTokensOnce = AtomicBool(false, lock: .sharedGlobal)
 
     func run() async throws {
+        // Ivy: there is no push token to upload.
+        guard IvyConfiguration.usesApplePushNotifications else {
+            return
+        }
         switch mode {
         case .normal:
             // Don't rotate.
