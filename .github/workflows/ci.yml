@@ -2,6 +2,8 @@ name: CI
 
 on:
   pull_request:
+    paths-ignore:
+      - .github/workflows/catalyst-dependencies.yml
   push:
     branches:
       - main
