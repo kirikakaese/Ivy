@@ -20,7 +20,7 @@ permissions:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   XCODE_APP: /Applications/Xcode_26.6.app
