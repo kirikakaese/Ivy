@@ -74,7 +74,6 @@ jobs:
 
       - name: Inspect prebuilt binaries
         run: |
-          for f in ~/Library/Caches/org.signal.libsignal/*.tar.gz; do echo "== $f"; tar tzf "$f" | grep -v '/$'; done
           plutil -p Pods/SignalRingRTC/out/release/WebRTC.xcframework/Info.plist | grep -E 'LibraryIdentifier|SupportedPlatformVariant' || true
           ls -la ~/Library/Caches/org.signal.ringrtc/*/release/libringrtc || true
 
