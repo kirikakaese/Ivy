@@ -32,11 +32,16 @@ case "$PLATFORM" in
     echo "Simulator: $SIMULATOR ($RUNTIME)"
     DESTINATION="platform=iOS Simulator,id=$SIMULATOR"
     PLATFORM_SETTINGS=()
+    TEST_SETTINGS=()
     ;;
   macos)
     DESTINATION="platform=macOS,variant=Mac Catalyst,arch=arm64"
     # CI has no signing identity. Sign ad hoc so the app and tests can run.
     PLATFORM_SETTINGS=(CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= PROVISIONING_PROFILE_SPECIFIER= CODE_SIGN_ENTITLEMENTS=)
+    # The Mac keychain is available only to apps signed with a development
+    # certificate, which CI does not have yet. Run this test on iOS only
+    # until it does (see docs/BUILDING.md).
+    TEST_SETTINGS=(-skip-testing:SignalTests/SelfSignedIdentityTest)
     ;;
   *)
     echo "unknown platform: $PLATFORM" >&2
@@ -179,6 +184,7 @@ run build.log build-for-testing
 
 if [ "$MODE" = "full" ]; then
   run test.log test-without-building \
+    ${TEST_SETTINGS[@]+"${TEST_SETTINGS[@]}"} \
     -resultBundlePath "$LOG_DIR/TestResult.xcresult" \
     -test-timeouts-enabled YES \
     -maximum-test-execution-time-allowance 300 \
