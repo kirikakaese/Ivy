@@ -77,6 +77,18 @@ jobs:
           rustup toolchain install "$(cat rust-toolchain)" --profile minimal --target aarch64-apple-ios-macabi --component rust-src
           brew install protobuf
 
+      - name: Configure CMake for Catalyst
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          # CMake treats command-line tools as app bundles when targeting iOS
+          # platforms, which breaks their install step. Turn that off.
+          REAL_CMAKE=$(command -v cmake)
+          mkdir -p "$RUNNER_TEMP/cmake-wrapper"
+          printf '#!/bin/bash\nfor a in "$@"; do [ "$a" = "-B" ] && exec "%s" -DCMAKE_MACOSX_BUNDLE=OFF "$@"; done\nexec "%s" "$@"\n' "$REAL_CMAKE" "$REAL_CMAKE" > "$RUNNER_TEMP/cmake-wrapper/cmake"
+          chmod +x "$RUNNER_TEMP/cmake-wrapper/cmake"
+          echo "CMAKE=$RUNNER_TEMP/cmake-wrapper/cmake" >> "$GITHUB_ENV"
+          cat "$RUNNER_TEMP/cmake-wrapper/cmake"
+
       - name: Build
         if: steps.existing.outputs.exists != 'true'
         working-directory: libsignal
@@ -234,6 +246,18 @@ jobs:
           ls -la
           cat Makefile
           cat ../Vendor/mobilecoin/rust-toolchain* 2>/dev/null || true
+
+      - name: Configure CMake for Catalyst
+        if: steps.existing.outputs.exists != 'true'
+        run: |
+          # CMake treats command-line tools as app bundles when targeting iOS
+          # platforms, which breaks their install step. Turn that off.
+          REAL_CMAKE=$(command -v cmake)
+          mkdir -p "$RUNNER_TEMP/cmake-wrapper"
+          printf '#!/bin/bash\nfor a in "$@"; do [ "$a" = "-B" ] && exec "%s" -DCMAKE_MACOSX_BUNDLE=OFF "$@"; done\nexec "%s" "$@"\n' "$REAL_CMAKE" "$REAL_CMAKE" > "$RUNNER_TEMP/cmake-wrapper/cmake"
+          chmod +x "$RUNNER_TEMP/cmake-wrapper/cmake"
+          echo "CMAKE=$RUNNER_TEMP/cmake-wrapper/cmake" >> "$GITHUB_ENV"
+          cat "$RUNNER_TEMP/cmake-wrapper/cmake"
 
       - name: Build
         if: steps.existing.outputs.exists != 'true'
