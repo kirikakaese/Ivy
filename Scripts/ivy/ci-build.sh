@@ -55,6 +55,28 @@ COMMON=(
   ${PLATFORM_SETTINGS[@]+"${PLATFORM_SETTINGS[@]}"}
 )
 
+# Prints the output of each command xcodebuild lists as failed.
+failed_command_output() {
+  python3 - "$1" <<'PY'
+import sys
+lines = open(sys.argv[1], errors="replace").read().split("\n")
+try:
+    start = lines.index("The following build commands failed:")
+except ValueError:
+    sys.exit(0)
+for entry in lines[start + 1:]:
+    if not entry.startswith("\t"):
+        break
+    command = entry.strip()
+    for i, line in enumerate(lines[:start]):
+        if line == command:
+            block = lines[i:i + 60]
+            end = next((n for n, l in enumerate(block[1:], 1) if l == ""), len(block))
+            print("\n".join(block[:end]))
+            print()
+PY
+}
+
 run() {
   local log="$1"; shift
   local status
@@ -73,6 +95,9 @@ run() {
     # phase) are summarized at the end of the raw log.
     echo "::group::End of the build log"
     tail -80 "$LOG_DIR/$log"
+    echo "::endgroup::"
+    echo "::group::Output of failed commands"
+    failed_command_output "$LOG_DIR/$log" || true
     echo "::endgroup::"
     return 1
   fi
