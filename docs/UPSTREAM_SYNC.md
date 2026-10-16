@@ -30,13 +30,14 @@ git ls-remote --tags --refs https://github.com/signalapp/Signal-iOS \
    - `.github/`: upstream workflow changes do not apply to Ivy; keep Ivy's versions.
    - `Signal.xcodeproj/project.pbxproj`: keep both sides' additions, then re-apply Ivy's settings (product name, bundle ID prefix, build phases) if upstream changed the same lines.
 5. Update dependencies: `make dependencies`. If `Podfile.lock` changed, commit it.
+   If the merge changes the libsignal, RingRTC or MobileCoin version in the `Podfile`, pushing the branch starts the "Mac Catalyst dependencies" workflow, which builds and publishes the Mac versions (WebRTC takes a few hours). Then copy each new release's tag, asset name and SHA-256 into `Scripts/ivy/catalyst-dependencies.json` and commit it; the Mac build uses them from then on.
 6. Check the app name rules against the new strings:
    ```
    python3 Scripts/ivy/app_name.py check Scripts/ivy/app-name-rules.json Signal/translations
    ```
    For every reported string, decide which occurrences of "Signal" mean the app and update `Scripts/ivy/app-name-rules.json` (see [TRANSLATIONS.md](TRANSLATIONS.md)).
 7. Build and test both apps locally, push the branch and open a pull request. CI must be green for iOS and macOS.
-8. Update the "Based on Signal-iOS" version in the README and the parity matrix if features changed.
+8. Update the upstream release named in the README, and the parity matrix if features changed.
 
 ## When an upstream change breaks an Ivy feature
 
