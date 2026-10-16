@@ -1896,8 +1896,8 @@
 		B9FF37362B9286C6005ADDB8 /* UsernameLinkScanQRCodeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF37352B9286C6005ADDB8 /* UsernameLinkScanQRCodeSheet.swift */; };
 		C100E6822C33087C000C83B8 /* PaymentsFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C100E6812C33087C000C83B8 /* PaymentsFormat.swift */; };
 		C109A8442FDB62800065225E /* ThroughputMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C109A8432FDB62790065225E /* ThroughputMonitor.swift */; };
-		C109A87A2FDC90630065225E /* WiFiAware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C109A8792FDC90630065225E /* WiFiAware.framework */; };
-		C109A87C2FDC906F0065225E /* DeviceDiscoveryUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C109A87B2FDC906F0065225E /* DeviceDiscoveryUI.framework */; };
+		C109A87A2FDC90630065225E /* WiFiAware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C109A8792FDC90630065225E /* WiFiAware.framework */; platformFilter = ios; };
+		C109A87C2FDC906F0065225E /* DeviceDiscoveryUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C109A87B2FDC906F0065225E /* DeviceDiscoveryUI.framework */; platformFilter = ios; };
 		C10E9FAF2BB778E100A609B9 /* BackupArchiveManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10E9FAE2BB778E100A609B9 /* BackupArchiveManagerMock.swift */; };
 		C113994B2CA1B32C00D4D90C /* BackupStickerPackDownloadStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C113994A2CA1B32400D4D90C /* BackupStickerPackDownloadStore.swift */; };
 		C113994D2CA1B3E200D4D90C /* QueuedBackupStickerPackDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = C113994C2CA1B3DA00D4D90C /* QueuedBackupStickerPackDownload.swift */; };
