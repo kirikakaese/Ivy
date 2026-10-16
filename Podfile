@@ -20,6 +20,10 @@ ENV['RINGRTC_PREBUILD_CHECKSUM'] = 'dc1826c6d1f0faf3dbdc380ff7b57f4858f245bc731f
 pod 'SignalRingRTC', git: 'https://github.com/signalapp/ringrtc', tag: 'v2.72.0', inhibit_warnings: true
 # pod 'SignalRingRTC', path: '../ringrtc', testspecs: ["Tests"]
 
+# Ivy: Mac Catalyst builds of the prebuilt libraries (see Scripts/ivy/podfile.rb)
+require_relative 'Scripts/ivy/podfile'
+ivy_configure_environment
+
 pod 'GRDB.swift/SQLCipher'
 # pod 'GRDB.swift/SQLCipher', path: '../GRDB.swift'
 
@@ -100,6 +104,7 @@ post_install do |installer|
   fix_ringrtc_project_symlink(installer)
   fetch_ringrtc
   copy_acknowledgements
+  ivy_post_install(installer) # Ivy
 end
 
 # Works around CocoaPods behavior designed for static libraries.

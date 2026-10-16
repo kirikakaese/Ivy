@@ -23,5 +23,22 @@ class VersionTests(unittest.TestCase):
         self.assertRegex(versions["mobilecoin"], r"^\d+\.\d+\.\d+$")
 
 
+class PinTests(unittest.TestCase):
+    VERSIONS = {"libsignal": "1.0.0", "ringrtc": "2.0.0", "mobilecoin": "3.0.0"}
+
+    def test_only_matching_versions_are_used(self):
+        pins = {
+            "libsignal": {"version": "1.0.0"},
+            "ringrtc": {"version": "1.9.0"},
+        }
+        usable = catalyst_dependencies.usable_pins(pins, self.VERSIONS)
+        self.assertEqual(set(usable), {"libsignal"})
+
+    def test_repository_pins_are_complete(self):
+        for name, pin in catalyst_dependencies.load_pins().items():
+            self.assertEqual(set(pin), {"version", "repository", "tag", "asset", "sha256"}, name)
+            self.assertRegex(pin["sha256"], r"^[0-9a-f]{64}$")
+
+
 if __name__ == "__main__":
     unittest.main()
