@@ -70,7 +70,8 @@ for entry in lines[start + 1:]:
     command = entry.strip()
     for i, line in enumerate(lines[:start]):
         if line == command:
-            block = lines[i:i + 60]
+            # Skip the environment Xcode exports for script phases.
+            block = [l for l in lines[i:i + 2000] if not l.startswith("    export ")][:80]
             end = next((n for n, l in enumerate(block[1:], 1) if l == ""), len(block))
             print("\n".join(block[:end]))
             print()

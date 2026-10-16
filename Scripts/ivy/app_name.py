@@ -188,11 +188,16 @@ def cmd_apply(rules_path, resources_dir):
             path = os.path.join(resources_dir, entry, table_name)
             if not os.path.exists(path):
                 continue
-            table = load_table(path)
-            new_table, _, _ = transform_table(table_name, table, locale, rules)
-            if new_table != table:
-                with open(path, "wb") as f:
-                    plistlib.dump(new_table, f, fmt=plistlib.FMT_BINARY)
+            try:
+                table = load_table(path)
+                new_table, _, _ = transform_table(table_name, table, locale, rules)
+                if new_table != table:
+                    with open(path, "wb") as f:
+                        plistlib.dump(new_table, f, fmt=plistlib.FMT_BINARY)
+            except Exception as e:
+                # Xcode shows lines in this form as build errors.
+                print(f"{path}: error: cannot apply the app name rules: {type(e).__name__}: {e}", file=sys.stderr)
+                raise
     return 0
 
 
