@@ -21725,6 +21725,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Ivy";
+				"TEST_HOST[sdk=macosx*]" = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Contents/MacOS/Ivy";
 			};
 			name = Debug;
 		};
@@ -21782,6 +21783,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Ivy";
+				"TEST_HOST[sdk=macosx*]" = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Contents/MacOS/Ivy";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = "App Store Release";
@@ -21840,6 +21842,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Ivy";
+				"TEST_HOST[sdk=macosx*]" = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Contents/MacOS/Ivy";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Profiling;
@@ -21898,6 +21901,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Ivy";
+				"TEST_HOST[sdk=macosx*]" = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Contents/MacOS/Ivy";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = "Testable Release";
@@ -22077,6 +22081,8 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -DTESTABLE_BUILD";
 				SDKROOT = iphoneos;
 				SIGNAL_BUNDLEID_PREFIX = io.github.kirikakaese;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SIGNAL_MERCHANTID = org.signalfoundation;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
@@ -22149,6 +22155,7 @@
 			baseConfigurationReference = BAD74FE6EBEB10FF3426D809 /* Pods-SignalTests.testable release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Ivy";
+				"BUNDLE_LOADER[sdk=macosx*]" = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Contents/MacOS/Ivy";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -22338,6 +22345,8 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -DTESTABLE_BUILD";
 				SDKROOT = iphoneos;
 				SIGNAL_BUNDLEID_PREFIX = io.github.kirikakaese;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SIGNAL_MERCHANTID = org.signalfoundation;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
@@ -22410,6 +22419,7 @@
 			baseConfigurationReference = 44B6CDDFDDD0811DBBC57CD1 /* Pods-SignalTests.profiling.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Ivy";
+				"BUNDLE_LOADER[sdk=macosx*]" = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Contents/MacOS/Ivy";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -22604,6 +22614,8 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -DTESTABLE_BUILD -DUSE_DEBUG_UI";
 				SDKROOT = iphoneos;
 				SIGNAL_BUNDLEID_PREFIX = io.github.kirikakaese;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SIGNAL_MERCHANTID = org.signalfoundation;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
@@ -22707,6 +22719,8 @@
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				SIGNAL_BUNDLEID_PREFIX = io.github.kirikakaese;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SIGNAL_MERCHANTID = org.signalfoundation;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
@@ -22821,6 +22835,7 @@
 			baseConfigurationReference = C597942EF64D456BBE9782A2 /* Pods-SignalTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Ivy";
+				"BUNDLE_LOADER[sdk=macosx*]" = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Contents/MacOS/Ivy";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -22880,6 +22895,7 @@
 			baseConfigurationReference = FF39DCC8D1F7DFD3708276E2 /* Pods-SignalTests.app store release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Ivy";
+				"BUNDLE_LOADER[sdk=macosx*]" = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Contents/MacOS/Ivy";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -23126,6 +23142,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Ivy";
+				"TEST_HOST[sdk=macosx*]" = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Contents/MacOS/Ivy";
 			};
 			name = Debug;
 		};
@@ -23185,6 +23202,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Ivy";
+				"TEST_HOST[sdk=macosx*]" = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Contents/MacOS/Ivy";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = "App Store Release";
@@ -23245,6 +23263,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Ivy";
+				"TEST_HOST[sdk=macosx*]" = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Contents/MacOS/Ivy";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Profiling;
@@ -23305,6 +23324,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Ivy";
+				"TEST_HOST[sdk=macosx*]" = "$(BUILT_PRODUCTS_DIR)/Ivy.app/Contents/MacOS/Ivy";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = "Testable Release";
