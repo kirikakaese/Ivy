@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
+import PassKit
 import XCTest
 @testable import Signal
 @testable import SignalServiceKit
@@ -506,18 +507,25 @@ final class DonateViewControllerTest: SignalBaseTest {
         state = state.selectOneTimeAmount(.choseCustomAmount(amount: 123.as("USD")))
         state = state.selectSubscriptionLevel(monthlyConfig.levels.first!)
 
+        // Ivy: Apple Pay is offered only where the device can make payments,
+        // which is not the case on every Mac.
+        var expectedPaymentMethods: Set<DonationPaymentMethod> = [.paypal]
+        if PKPaymentAuthorizationController.canMakePayments() {
+            expectedPaymentMethods.insert(.applePay)
+        }
+
         let oneTimePaymentRequest = state.oneTime!.paymentRequest
         switch oneTimePaymentRequest {
         case let .canContinue(amount, supportedPaymentMethods):
             XCTAssertEqual(amount, 123.as("USD"))
-            XCTAssertEqual(supportedPaymentMethods, [.paypal, .applePay])
+            XCTAssertEqual(supportedPaymentMethods, expectedPaymentMethods)
         default:
             XCTFail("Unexpectedly invalid one-time payment request! \(oneTimePaymentRequest)")
         }
 
         let monthlyPaymentRequest = state.monthly!.paymentRequest!
         XCTAssertEqual(monthlyPaymentRequest.amount, 15.as("USD"))
-        XCTAssertEqual(monthlyPaymentRequest.supportedPaymentMethods, [.paypal, .applePay])
+        XCTAssertEqual(monthlyPaymentRequest.supportedPaymentMethods, expectedPaymentMethods)
     }
 
     func testPaymentProcessing() {

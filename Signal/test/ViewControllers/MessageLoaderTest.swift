@@ -65,8 +65,16 @@ class MessageLoaderTest: XCTestCase {
         }
     }
 
+    // Ivy: the loader sizes its pages from the app window. Use the fixed
+    // test window so the expected page sizes hold on every platform (the
+    // Mac window is much larger than a phone screen).
+    private var oldAppContext: (any AppContext)?
+
     override func setUp() {
         super.setUp()
+
+        oldAppContext = CurrentAppContext()
+        SetCurrentAppContext(TestAppContext(), isRunningTests: true)
 
         cursorFactory = MockCursorFactory()
         interactionFetcher = MockInteractionFetcher()
@@ -75,6 +83,13 @@ class MessageLoaderTest: XCTestCase {
             interactionFetchers: [interactionFetcher],
         )
         mockDB = InMemoryDB()
+    }
+
+    override func tearDown() {
+        if let oldAppContext {
+            SetCurrentAppContext(oldAppContext, isRunningTests: true)
+        }
+        super.tearDown()
     }
 
     private func createInteractions(_ count: Int64, threadUniqueId: String) -> [TSInteraction] {
