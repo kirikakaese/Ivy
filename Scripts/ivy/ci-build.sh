@@ -78,32 +78,20 @@ for entry in lines[start + 1:]:
 PY
 }
 
-# Stops xcodebuild when it makes no progress for STALL_MINUTES, after
-# printing where the test processes are stuck. Progress is new output while
-# building, and a new test case while testing (a stuck test can keep
-# logging). Per-test time limits do not catch every hang.
+# Stops xcodebuild when its formatted output (what the job log shows) has
+# been silent for STALL_MINUTES, after printing where the test processes are
+# stuck. The raw log is not a reliable signal because a stuck test can keep
+# logging. Per-test time limits do not catch every hang.
 watchdog() {
-  local log="$1" limit=$(( ${STALL_MINUTES:-15} * 60 ))
-  local last_count=-1 last_change
-  last_change=$(date +%s)
+  local pretty="$1" raw="$2" limit=$(( ${STALL_MINUTES:-15} * 60 ))
   while sleep 30; do
-    [ -f "$log" ] || continue
-    local count
-    count=$(grep -c "^Test Case '" "$log" || true)
-    if [ "$count" -gt 0 ]; then
-      if [ "$count" != "$last_count" ]; then
-        last_count=$count
-        last_change=$(date +%s)
-      fi
-    else
-      last_change=$(stat -f %m "$log")
-    fi
-    if [ $(( $(date +%s) - last_change )) -ge "$limit" ]; then
+    [ -f "$pretty" ] || continue
+    if [ $(( $(date +%s) - $(stat -f %m "$pretty") )) -ge "$limit" ]; then
       echo "::group::No progress for ${STALL_MINUTES:-15} minutes; stopping"
-      echo "Last test cases:"
-      grep "^Test Case '" "$log" | tail -5
+      echo "Last test lines of the raw log:"
+      grep -i "^test case '" "$raw" | tail -5 | cut -c1-300
       echo "End of the raw log:"
-      tail -80 "$log" | cut -c1-300
+      tail -80 "$raw" | cut -c1-300
       for pid in $(pgrep -x Ivy) $(pgrep -f '/xctest( |$)'); do
         echo "== $(ps -o command= -p "$pid" | cut -c1-200)"
         sample "$pid" 3 2>&1 | grep -v '^ *$' | head -250
@@ -126,14 +114,15 @@ test_failures() {
 run() {
   local log="$1"; shift
   local status watchdog_pid
-  watchdog "$LOG_DIR/$log" &
+  watchdog "$LOG_DIR/$log.formatted" "$LOG_DIR/$log" &
   watchdog_pid=$!
   NSUnbufferedIO=YES xcodebuild "${COMMON[@]}" "$@" 2>&1 \
     | tee "$LOG_DIR/$log" \
     | xcbeautify --renderer github-actions --disable-logging \
-    && status=(0 0 0) || status=("${PIPESTATUS[@]}")
+    | tee "$LOG_DIR/$log.formatted" \
+    && status=(0 0 0 0) || status=("${PIPESTATUS[@]}")
   kill "$watchdog_pid" 2>/dev/null || true
-  if [ "${status[0]}" != 0 ] || [ "${status[1]}" != 0 ] || [ "${status[2]}" != 0 ]; then
+  if [ "${status[*]}" != "0 0 0 0" ]; then
     echo "xcodebuild exited with ${status[0]}, tee with ${status[1]}, xcbeautify with ${status[2]}"
     # GitHub shows only the first few errors as annotations; list them all.
     echo "::group::All errors"
