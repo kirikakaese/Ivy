@@ -588,7 +588,9 @@ public class RegistrationCoordinatorImpl: RegistrationCoordinator {
                         localFileBackupBookmarkData,
                         isStale: &isStale,
                     )
-                } catch NSFileProviderError.noSuchItem {
+                } catch let error as NSError where error.domain == "NSFileProviderErrorDomain" && error.code == -1005 {
+                    // Ivy: NSFileProviderError.noSuchItem, by domain and code because
+                    // NSFileProviderError is unavailable on the Mac.
                     throw LocalFileBackupError.unableToAccessLocalFile(.missing)
                 } catch {
                     throw OWSAssertionError("Unable to resolve bookmark data: \(error)")

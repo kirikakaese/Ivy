@@ -7,6 +7,13 @@ import Foundation
 import PassKit
 
 extension DonateViewController: PKPaymentAuthorizationControllerDelegate {
+    // Ivy: required on the Mac, where the payment sheet attaches to a window.
+#if targetEnvironment(macCatalyst)
+    func presentationWindow(for controller: PKPaymentAuthorizationController) -> UIWindow? {
+        view.window
+    }
+#endif
+
     func paymentAuthorizationControllerDidFinish(_ controller: PKPaymentAuthorizationController) {
         controller.dismiss()
     }

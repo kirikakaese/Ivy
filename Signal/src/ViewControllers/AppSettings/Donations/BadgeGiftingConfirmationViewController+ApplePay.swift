@@ -26,6 +26,13 @@ extension BadgeGiftingConfirmationViewController {
 }
 
 extension BadgeGiftingConfirmationViewController: PKPaymentAuthorizationControllerDelegate {
+    // Ivy: required on the Mac, where the payment sheet attaches to a window.
+#if targetEnvironment(macCatalyst)
+    func presentationWindow(for controller: PKPaymentAuthorizationController) -> UIWindow? {
+        view.window
+    }
+#endif
+
     func paymentAuthorizationController(
         _ controller: PKPaymentAuthorizationController,
         didAuthorizePayment payment: PKPayment,
