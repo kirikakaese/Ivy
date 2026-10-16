@@ -228,7 +228,10 @@ class PrivacySettingsViewController: OWSTableViewController2 {
                 self?.didTogglePaymentsLock(uiSwitch)
             },
         ))
-        contents.add(paymentsSection)
+        // Ivy: Payments are hidden.
+        if IvyConfiguration.showsPayments {
+            contents.add(paymentsSection)
+        }
 
         let callsSection = OWSTableSection()
         callsSection.headerTitle = OWSLocalizedString(
