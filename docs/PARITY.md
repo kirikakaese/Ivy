@@ -1,0 +1,88 @@
+# Feature Parity Matrix
+
+Every feature must work on iOS (iPhone and iPad) and macOS before it counts as done. Every pull request that touches a feature updates this table.
+
+Status values: `planned`, `in progress`, `done`, `removed`, `disabled` (temporarily off on both platforms, with a reason).
+
+## Foundation and upstream
+
+| Feature | Phase | iPhone | iPad | macOS | Notes |
+|---|---|---|---|---|---|
+| Builds and launches | 1 | planned | planned | planned | macOS via Mac Catalyst |
+| Ivy branding (name, icon, bundle IDs) | 1 | planned | planned | planned | |
+| All upstream locales (47) | 1 | planned | planned | planned | |
+| Custom string table with English fallback | 1 | planned | planned | planned | |
+| RTL layouts | 1 | planned | planned | planned | |
+| Per-app language setting | 1 | planned | planned | planned | |
+| Registration (primary) | 2 | planned | – | – | Primary is the iPhone |
+| Linking (secondary) | 2 | – | planned | planned | |
+| Send and receive messages | 2 | planned | planned | planned | |
+| Upstream messaging, media, calls, groups | 2 | planned | planned | planned | As upstream |
+| Notifications | 2 | planned | planned | planned | macOS live connection; iOS foreground and background refresh |
+| Launch at login | 2 | – | – | planned | Platform-only; iOS uses background refresh |
+| App icon / Dock unread badge | 2 | planned | planned | planned | |
+| Client identity | 2 | planned | planned | planned | |
+| Stories | 2 | removed | removed | removed | |
+| Payments | 2 | removed | removed | removed | |
+| Donation prompts | 2 | removed | removed | removed | |
+| Local-only diagnostics | 2 | planned | planned | planned | |
+| About, license, privacy statement | 2 | planned | planned | planned | |
+
+## Organization
+
+| Feature | Phase | iPhone | iPad | macOS | Notes |
+|---|---|---|---|---|---|
+| Chat folders (official format) | 3 | planned | planned | planned | Tabs on iPhone, sidebar on iPad and Mac |
+| Folder icon, color, unread badge | 3 | planned | planned | planned | |
+| Folder reordering and bulk actions | 3 | planned | planned | planned | |
+| Suggested folders | 3 | planned | planned | planned | |
+| Per-folder pins | 3 | planned | planned | planned | |
+| Pinned chat reordering | 3 | planned | planned | planned | |
+| Ivy data store and device sync | 3 | planned | planned | planned | |
+| Ivy data export and import | 3 | planned | planned | planned | |
+| Remind me in… (messages and chats) | 3 | planned | planned | planned | |
+
+## Productivity
+
+| Feature | Phase | iPhone | iPad | macOS | Notes |
+|---|---|---|---|---|---|
+| Tasks | 4 | planned | planned | planned | |
+| Calendar views | 4 | planned | planned | planned | |
+| Events from messages and date detection | 4 | planned | planned | planned | |
+| ICS export, import and sending | 4 | planned | planned | planned | |
+| Home tab | 4 | planned | planned | planned | |
+| Navigation and start tab setting | 4 | planned | planned | planned | |
+
+## Integrations
+
+| Feature | Phase | iPhone | iPad | macOS | Notes |
+|---|---|---|---|---|---|
+| Apple Calendar and Reminders (one-way) | 5 | planned | planned | planned | |
+| Apple Calendar and Reminders (two-way) | 5 | planned | planned | planned | |
+| Widgets | 5 | planned | planned | planned | |
+| Menu bar extra / Control Center control | 5 | planned | planned | planned | Agreed equivalents |
+| Shortcuts and Siri | 5 | planned | planned | planned | |
+| Keyboard shortcuts | 5 | – | planned | planned | iPhone has no hardware keyboard support |
+| Share extension | 5 | planned | planned | planned | |
+
+## Extras
+
+| Feature | Phase | iPhone | iPad | macOS | Notes |
+|---|---|---|---|---|---|
+| Scheduled messages | 6 | planned | planned | planned | |
+| Starred messages | 6 | planned | planned | planned | |
+| Chat notes | 6 | planned | planned | planned | |
+| Voice note speed and transcription | 6 | planned | planned | planned | On-device only |
+| Hidden chats | 6 | planned | planned | planned | |
+| Ivy passcode and app lock | 6 | planned | planned | planned | |
+| Instant lock | 6 | planned | planned | planned | |
+| Duress passcode and decoy mode | 6 | planned | planned | planned | |
+| Metadata trimming | 6 | planned | planned | planned | |
+
+## Release
+
+| Feature | Phase | iPhone | iPad | macOS | Notes |
+|---|---|---|---|---|---|
+| Accessibility review | 7 | planned | planned | planned | |
+| Signed and notarized builds | 7 | planned | planned | planned | |
+| Sparkle updates | 7 | – | – | planned | Platform-only distribution mechanism |
