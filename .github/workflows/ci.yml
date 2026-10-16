@@ -1,0 +1,14 @@
+name: CI
+
+# The full workflow lives on the branches that contain the app. This file
+# registers the workflow on the default branch so runs can be started
+# manually for any branch.
+on:
+  workflow_dispatch:
+
+jobs:
+  placeholder:
+    name: Placeholder
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Start this workflow on a branch that contains the app."
