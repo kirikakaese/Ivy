@@ -46,3 +46,7 @@ fastlane/Preview.html
 
 # CocoaPods dependencies are installed by `make dependencies`
 /Pods/
+
+# Ruby gems installed by Bundler
+/.bundle/
+/vendor/bundle/
