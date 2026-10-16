@@ -16295,6 +16295,7 @@
 				D221A086169C9E5E00537ABF /* Frameworks */,
 				34C239432180B01B00B6108F /* Run Script: update_plist_info */,
 				D221A087169C9E5E00537ABF /* Resources */,
+				1A7E0C0D2E9F4A0100D1A001 /* Run Script: Ivy app name */,
 				453518771FC635DD00210559 /* Embed Foundation Extensions */,
 				4535189F1FC63DBF00210559 /* Embed Frameworks */,
 				73B038A9B680719715E2A2B1 /* [CP] Embed Pods Frameworks */,
@@ -17948,6 +17949,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1A7E0C0D2E9F4A0100D1A001 /* Run Script: Ivy app name */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script: Ivy app name";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/bin/env python3 \"${PROJECT_DIR}/Scripts/ivy/app_name.py\" apply \"${PROJECT_DIR}/Scripts/ivy/app-name-rules.json\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\n";
+		};
 		34C239432180B01B00B6108F /* Run Script: update_plist_info */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
