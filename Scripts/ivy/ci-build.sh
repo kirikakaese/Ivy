@@ -78,16 +78,32 @@ for entry in lines[start + 1:]:
 PY
 }
 
-# Stops xcodebuild when its output has been silent for STALL_MINUTES, after
-# printing where the test processes are stuck. Per-test time limits do not
-# catch every hang.
+# Stops xcodebuild when it makes no progress for STALL_MINUTES, after
+# printing where the test processes are stuck. Progress is new output while
+# building, and a new test case while testing (a stuck test can keep
+# logging). Per-test time limits do not catch every hang.
 watchdog() {
   local log="$1" limit=$(( ${STALL_MINUTES:-15} * 60 ))
+  local last_count=-1 last_change
+  last_change=$(date +%s)
   while sleep 30; do
     [ -f "$log" ] || continue
-    if [ $(( $(date +%s) - $(stat -f %m "$log") )) -ge "$limit" ]; then
-      echo "::group::No output for ${STALL_MINUTES:-15} minutes; stopping"
-      tail -60 "$log"
+    local count
+    count=$(grep -c "^Test Case '" "$log" || true)
+    if [ "$count" -gt 0 ]; then
+      if [ "$count" != "$last_count" ]; then
+        last_count=$count
+        last_change=$(date +%s)
+      fi
+    else
+      last_change=$(stat -f %m "$log")
+    fi
+    if [ $(( $(date +%s) - last_change )) -ge "$limit" ]; then
+      echo "::group::No progress for ${STALL_MINUTES:-15} minutes; stopping"
+      echo "Last test cases:"
+      grep "^Test Case '" "$log" | tail -5
+      echo "End of the raw log:"
+      tail -80 "$log" | cut -c1-300
       for pid in $(pgrep -x Ivy) $(pgrep -f '/xctest( |$)'); do
         echo "== $(ps -o command= -p "$pid" | cut -c1-200)"
         sample "$pid" 3 2>&1 | grep -v '^ *$' | head -250
