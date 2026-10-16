@@ -119,8 +119,20 @@ public enum OWSFileSystem {
         } catch CocoaError.fileReadNoSuchFile, CocoaError.fileNoSuchFile {
             return false
         } catch {
+#if targetEnvironment(macCatalyst)
+            // Ivy: the Mac rejects some iOS protection classes (EINVAL); FileVault
+            // protects the files there instead.
+            let underlying = (error as NSError).userInfo[NSUnderlyingErrorKey] as? NSError
+            if underlying?.domain == NSPOSIXErrorDomain, underlying?.code == Int(EINVAL) {
+                Logger.info("File protection \(fileProtectionType.rawValue) is not supported here")
+            } else {
+                owsFailDebug("Could not protect file or folder: \(error)")
+                return false
+            }
+#else
             owsFailDebug("Could not protect file or folder: \(error)")
             return false
+#endif
         }
 
         var resourceAttrs = URLResourceValues()
