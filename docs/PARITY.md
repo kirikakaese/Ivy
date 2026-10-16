@@ -13,7 +13,7 @@ Status values: `planned`, `in progress`, `done`, `removed`, `disabled` (temporar
 | "Ivy" in upstream strings that name the app | 1 | done | done | done | Reviewed rule list, applied at build time |
 | Alternate app icons | 1 | disabled | disabled | disabled | Hidden until Ivy has its own variants |
 | All upstream locales (47) | 1 | done | done | done | |
-| Custom string table with English fallback | 2 | planned | planned | planned | Added with the first Ivy strings |
+| Custom string table with English fallback | 2 | done | done | done | English and German |
 | RTL layouts | 1 | done | done | done | As upstream |
 | Per-app language setting | 1 | done | done | done | System setting |
 | Registration (primary) | 2 | planned | – | – | Primary is the iPhone |
