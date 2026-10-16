@@ -47,3 +47,27 @@
 
 /* Footer below the 'Report a Problem' item in Help, explaining that Signal does not support Ivy. */
 "HELP_REPORT_PROBLEM_FOOTER" = "Signal does not support Ivy. Please report problems with Ivy on GitHub instead of contacting Signal support.";
+
+/* Item showing whether Background App Refresh is on; opens the system settings. */
+"NOTIFICATIONS_BACKGROUND_REFRESH" = "Background App Refresh";
+
+/* Footer explaining that on iPhone and iPad messages arrive in the background only through Background App Refresh. */
+"NOTIFICATIONS_BACKGROUND_REFRESH_FOOTER" = "Ivy receives messages right away while it is open. In the background, the system lets Ivy check for new messages from time to time, so notifications can arrive late. Keep Background App Refresh turned on for Ivy.";
+
+/* Background App Refresh is turned off. */
+"NOTIFICATIONS_BACKGROUND_REFRESH_OFF" = "Off";
+
+/* Background App Refresh is turned on. */
+"NOTIFICATIONS_BACKGROUND_REFRESH_ON" = "On";
+
+/* Header of the section in notification settings that explains how messages arrive. */
+"NOTIFICATIONS_DELIVERY_TITLE" = "Message Delivery";
+
+/* Switch that opens Ivy when the user logs in to the Mac. */
+"NOTIFICATIONS_OPEN_AT_LOGIN" = "Open at Login";
+
+/* Shown when Ivy could not add or remove its login item. */
+"NOTIFICATIONS_OPEN_AT_LOGIN_ERROR" = "Ivy could not change its login item. You can add Ivy in System Settings > General > Login Items.";
+
+/* Footer of the 'Open at Login' switch on the Mac. */
+"NOTIFICATIONS_OPEN_AT_LOGIN_FOOTER" = "Ivy receives messages only while it is running. Open it at login so that messages arrive as soon as you log in to your Mac.";

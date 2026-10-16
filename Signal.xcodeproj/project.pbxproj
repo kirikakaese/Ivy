@@ -4167,6 +4167,7 @@
 		E18F31BDEC0A84CA7400B313 /* AboutIvyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3786016D3CC95274F67DF435 /* AboutIvyViewController.swift */; };
 		8308AA4BC70DDC8927572B4C /* IvyAcknowledgementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825ADF136594B1BC4E797938 /* IvyAcknowledgementsViewController.swift */; };
 		7F973C414706DC2CA5814E98 /* IvyAboutTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFF5944C2B1D0088D02A5C1 /* IvyAboutTest.swift */; };
+		6037CED95C21886FC324446B /* IvyMessageDeliverySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D69353B8FF23EB372F639F /* IvyMessageDeliverySettings.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8635,6 +8636,7 @@
 		3786016D3CC95274F67DF435 /* AboutIvyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutIvyViewController.swift; sourceTree = "<group>"; };
 		825ADF136594B1BC4E797938 /* IvyAcknowledgementsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAcknowledgementsViewController.swift; sourceTree = "<group>"; };
 		8BFF5944C2B1D0088D02A5C1 /* IvyAboutTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAboutTest.swift; sourceTree = "<group>"; };
+		49D69353B8FF23EB372F639F /* IvyMessageDeliverySettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMessageDeliverySettings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16217,6 +16219,7 @@
 				A53AB4C7AE60E93183054947 /* IvyHelpViewController.swift */,
 				3786016D3CC95274F67DF435 /* AboutIvyViewController.swift */,
 				825ADF136594B1BC4E797938 /* IvyAcknowledgementsViewController.swift */,
+				49D69353B8FF23EB372F639F /* IvyMessageDeliverySettings.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -19485,6 +19488,7 @@
 				165A62FA94D9E5629EC47CAF /* IvyHelpViewController.swift in Sources */,
 				E18F31BDEC0A84CA7400B313 /* AboutIvyViewController.swift in Sources */,
 				8308AA4BC70DDC8927572B4C /* IvyAcknowledgementsViewController.swift in Sources */,
+				6037CED95C21886FC324446B /* IvyMessageDeliverySettings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

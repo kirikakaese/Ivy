@@ -47,3 +47,27 @@
 
 /* Footer below the 'Report a Problem' item in Help, explaining that Signal does not support Ivy. */
 "HELP_REPORT_PROBLEM_FOOTER" = "Signal unterstützt Ivy nicht. Bitte melde Probleme mit Ivy auf GitHub, statt dich an den Signal-Support zu wenden.";
+
+/* Item showing whether Background App Refresh is on; opens the system settings. */
+"NOTIFICATIONS_BACKGROUND_REFRESH" = "Hintergrundaktualisierung";
+
+/* Footer explaining that on iPhone and iPad messages arrive in the background only through Background App Refresh. */
+"NOTIFICATIONS_BACKGROUND_REFRESH_FOOTER" = "Ivy empfängt Nachrichten sofort, solange die App geöffnet ist. Im Hintergrund lässt das System Ivy nur ab und zu nach neuen Nachrichten sehen, deshalb können Mitteilungen verspätet ankommen. Lass die Hintergrundaktualisierung für Ivy eingeschaltet.";
+
+/* Background App Refresh is turned off. */
+"NOTIFICATIONS_BACKGROUND_REFRESH_OFF" = "Aus";
+
+/* Background App Refresh is turned on. */
+"NOTIFICATIONS_BACKGROUND_REFRESH_ON" = "Ein";
+
+/* Header of the section in notification settings that explains how messages arrive. */
+"NOTIFICATIONS_DELIVERY_TITLE" = "Nachrichtenempfang";
+
+/* Switch that opens Ivy when the user logs in to the Mac. */
+"NOTIFICATIONS_OPEN_AT_LOGIN" = "Beim Anmelden öffnen";
+
+/* Shown when Ivy could not add or remove its login item. */
+"NOTIFICATIONS_OPEN_AT_LOGIN_ERROR" = "Ivy konnte das Anmeldeobjekt nicht ändern. Du kannst Ivy unter Systemeinstellungen > Allgemein > Anmeldeobjekte hinzufügen.";
+
+/* Footer of the 'Open at Login' switch on the Mac. */
+"NOTIFICATIONS_OPEN_AT_LOGIN_FOOTER" = "Ivy empfängt Nachrichten nur, solange die App läuft. Öffne sie beim Anmelden, damit Nachrichten ankommen, sobald du dich an deinem Mac anmeldest.";
