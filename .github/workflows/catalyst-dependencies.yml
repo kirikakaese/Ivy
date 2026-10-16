@@ -91,6 +91,34 @@ jobs:
           echo "CMAKE_POLICY_VERSION_MINIMUM=3.5" >> "$GITHUB_ENV"
           cat "$RUNNER_TEMP/cmake-wrapper/cmake"
 
+      - name: Add the Catalyst SDK to BoringSSL's build script
+        if: steps.existing.outputs.exists != 'true'
+        working-directory: libsignal
+        run: |
+          # boring-sys only knows the iOS device and simulator SDKs. Mac
+          # Catalyst builds against the macOS SDK.
+          cargo fetch
+          python3 - <<'PY'
+          import glob, os
+          paths = glob.glob(os.path.expanduser("~/.cargo/git/checkouts/boring-*/*/boring-sys/build/main.rs"))
+          assert paths, "boring-sys source not found"
+          entry = """const CMAKE_PARAMS_APPLE: &[(&str, &[(&str, &str)])] = &[
+              (
+                  "aarch64-apple-ios-macabi",
+                  &[
+                      ("CMAKE_OSX_ARCHITECTURES", "arm64"),
+                      ("CMAKE_OSX_SYSROOT", "macosx"),
+                      ("CMAKE_MACOSX_BUNDLE", "OFF"),
+                  ],
+              ),"""
+          for p in paths:
+              s = open(p).read()
+              if "aarch64-apple-ios-macabi" not in s:
+                  s = s.replace("const CMAKE_PARAMS_APPLE: &[(&str, &[(&str, &str)])] = &[", entry, 1)
+                  open(p, "w").write(s)
+              print("patched", p)
+          PY
+
       - name: Build
         if: steps.existing.outputs.exists != 'true'
         working-directory: libsignal
