@@ -112,12 +112,14 @@ def download(pin, dest):
 
 
 def install_libsignal(pin):
+    print(f"installing libsignal {pin['version']} with Mac Catalyst")
     # The libsignal pod extracts this archive at build time; its checksum is
     # set in the Podfile environment (Scripts/ivy/podfile.rb).
     download(pin, os.path.join(CACHES, "org.signal.libsignal", pin["asset"]))
 
 
 def install_ringrtc(pin, version):
+    print(f"installing RingRTC {version} with Mac Catalyst")
     archive = download(pin, os.path.join(CACHES, "org.signal.ringrtc", "ivy-" + pin["asset"]))
     release = os.path.join(CACHES, "org.signal.ringrtc", f"prebuild-{version}", "release")
     pod_release = os.path.join(ROOT, "Pods", "SignalRingRTC", "out", "release")
@@ -134,8 +136,10 @@ def install_ringrtc(pin, version):
         os.symlink(lib_dir, link)
 
         xcframework = os.path.join(release, "WebRTC.xcframework")
+        print(f"WebRTC.xcframework at {xcframework}: {sorted(os.listdir(xcframework))}")
         with open(os.path.join(xcframework, "Info.plist"), "rb") as f:
             if b"maccatalyst" in f.read():
+                print("WebRTC.xcframework already has a Mac Catalyst slice")
                 return
         frameworks = []
         for entry in sorted(os.listdir(xcframework)):
@@ -150,9 +154,11 @@ def install_ringrtc(pin, version):
                 shutil.copy(os.path.join(xcframework, extra), combined)
         shutil.rmtree(xcframework)
         shutil.copytree(combined, xcframework, symlinks=True)
+        print(f"WebRTC.xcframework now has: {sorted(os.listdir(xcframework))}")
 
 
 def install_mobilecoin(pin):
+    print(f"installing MobileCoin {pin['version']} with Mac Catalyst")
     archive = download(pin, os.path.join(CACHES, "org.signal.ivy", pin["asset"]))
     artifacts = os.path.join(ROOT, "Pods", "LibMobileCoin", "Artifacts")
     extract(archive, artifacts)

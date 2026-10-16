@@ -101,6 +101,13 @@ jobs:
       - name: Check that dependency install left tracked files unchanged
         run: git diff --exit-code
 
+      - name: Show prebuilt libraries
+        run: |
+          ls -la Pods/SignalRingRTC/out/release Pods/SignalRingRTC/out/release/libringrtc
+          ls Pods/SignalRingRTC/out/release/WebRTC.xcframework/
+          ls Pods/LibMobileCoin/Artifacts/target
+          ls -la ~/Library/Caches/org.signal.libsignal
+
       - name: Build and test (${{ env.MODE }})
         run: Scripts/ivy/ci-build.sh ${{ matrix.platform }} "$MODE"
 
