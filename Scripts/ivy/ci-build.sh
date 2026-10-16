@@ -78,13 +78,45 @@ for entry in lines[start + 1:]:
 PY
 }
 
+# Stops xcodebuild when its output has been silent for STALL_MINUTES, after
+# printing where the test processes are stuck. Per-test time limits do not
+# catch every hang.
+watchdog() {
+  local log="$1" limit=$(( ${STALL_MINUTES:-15} * 60 ))
+  while sleep 30; do
+    [ -f "$log" ] || continue
+    if [ $(( $(date +%s) - $(stat -f %m "$log") )) -ge "$limit" ]; then
+      echo "::group::No output for ${STALL_MINUTES:-15} minutes; stopping"
+      tail -60 "$log"
+      for pid in $(pgrep -x Ivy) $(pgrep -f '/xctest( |$)'); do
+        echo "== $(ps -o command= -p "$pid" | cut -c1-200)"
+        sample "$pid" 3 2>&1 | grep -v '^ *$' | head -250
+      done
+      echo "::endgroup::"
+      pkill -x xcodebuild || true
+      return
+    fi
+  done
+}
+
+# Prints the details of test failures recorded in the result bundle.
+test_failures() {
+  local bundle="$1"
+  [ -d "$bundle" ] || return 0
+  xcrun xcresulttool get test-results summary --path "$bundle" > "$LOG_DIR/TestResultSummary.json" 2>/dev/null || return 0
+  python3 Scripts/parse-xcresult.py "$LOG_DIR/TestResultSummary.json" | head -400
+}
+
 run() {
   local log="$1"; shift
-  local status
+  local status watchdog_pid
+  watchdog "$LOG_DIR/$log" &
+  watchdog_pid=$!
   NSUnbufferedIO=YES xcodebuild "${COMMON[@]}" "$@" 2>&1 \
     | tee "$LOG_DIR/$log" \
     | xcbeautify --renderer github-actions --disable-logging \
     && status=(0 0 0) || status=("${PIPESTATUS[@]}")
+  kill "$watchdog_pid" 2>/dev/null || true
   if [ "${status[0]}" != 0 ] || [ "${status[1]}" != 0 ] || [ "${status[2]}" != 0 ]; then
     echo "xcodebuild exited with ${status[0]}, tee with ${status[1]}, xcbeautify with ${status[2]}"
     # GitHub shows only the first few errors as annotations; list them all.
@@ -99,6 +131,9 @@ run() {
     echo "::endgroup::"
     echo "::group::Output of failed commands"
     failed_command_output "$LOG_DIR/$log" || true
+    echo "::endgroup::"
+    echo "::group::Test failures"
+    test_failures "$LOG_DIR/TestResult.xcresult" || true
     echo "::endgroup::"
     return 1
   fi

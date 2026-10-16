@@ -35,7 +35,7 @@ jobs:
   build:
     name: ${{ matrix.name }} build and test
     runs-on: macos-26
-    timeout-minutes: 180
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
@@ -112,7 +112,7 @@ jobs:
         run: Scripts/ivy/ci-build.sh ${{ matrix.platform }} "$MODE"
 
       - name: Upload logs
-        if: failure()
+        if: failure() || cancelled()
         uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.platform }}-logs
