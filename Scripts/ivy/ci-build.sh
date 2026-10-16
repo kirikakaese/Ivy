@@ -103,6 +103,8 @@ watchdog() {
       done
       echo "::endgroup::"
       pkill -x xcodebuild || true
+      sleep 20
+      pkill -9 -x xcodebuild || true
       return
     fi
   done
