@@ -21,6 +21,7 @@ end
 # Lets every pod build for Mac Catalyst and points the prebuilt Rust libraries
 # at their Catalyst builds.
 def ivy_post_install(installer)
+  ivy_apply_pod_patches
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
       config.build_settings['SUPPORTS_MACCATALYST'] = 'YES'
@@ -49,6 +50,24 @@ def ivy_post_install(installer)
   Dir.glob('Pods/Target Support Files/**/*-xcframeworks.sh') do |path|
     script = File.read(path)
     File.write(path, ivy_add_webrtc_catalyst_slice(script))
+  end
+end
+
+# Applies Scripts/ivy/patches/<Pod>/*.patch to the installed pod sources.
+# A patch that no longer applies (for example after a pod update) stops the
+# installation so it can be updated.
+def ivy_apply_pod_patches(pods_root = 'Pods')
+  Dir.glob(File.join(__dir__, 'patches', '*', '*.patch')).sort.each do |patch|
+    pod_dir = File.join(pods_root, File.basename(File.dirname(patch)))
+    next unless File.directory?(pod_dir)
+
+    if system('patch', '-p1', '-R', '--dry-run', '--silent', '-d', pod_dir, '-i', patch, out: File::NULL, err: File::NULL)
+      next # already applied
+    end
+    unless system('patch', '-p1', '--forward', '--silent', '-d', pod_dir, '-i', patch)
+      raise "Ivy: #{patch} does not apply to #{pod_dir}; update the patch"
+    end
+    puts "Ivy: applied #{File.basename(patch)} to #{File.basename(pod_dir)}"
   end
 end
 
