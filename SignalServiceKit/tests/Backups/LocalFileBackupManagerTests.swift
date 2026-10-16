@@ -623,7 +623,14 @@ struct LocalFileBackupManagerTests {
         }
 
         var presentedItemURL: URL? { directoryURL }
-        let presentedItemOperationQueue = OperationQueue()
+        let presentedItemOperationQueue: OperationQueue = {
+            // Ivy: a private serial queue always gets its own thread, so the
+            // presenter can answer while the test blocks in file coordination,
+            // even when parallel tests have used up the shared threads.
+            let queue = OperationQueue()
+            queue.underlyingQueue = DispatchQueue(label: "PendingDeletionPresenter")
+            return queue
+        }()
 
         func savePresentedItemChanges(completionHandler: @escaping (Error?) -> Void) {
             didReceiveSaveRequest = true

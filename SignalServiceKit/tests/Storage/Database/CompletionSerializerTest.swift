@@ -36,7 +36,13 @@ private struct CompletionSerializerTest {
         let secondCompletion = DispatchSemaphore(value: 0)
         let thirdCompletion = DispatchSemaphore(value: 0)
 
-        DispatchQueue.global().async {
+        // Ivy: private queues always get their own thread. Blocking work on the
+        // shared global queue can starve when tests run in parallel on a
+        // machine with few cores, and the test then never finishes.
+        let firstQueue = DispatchQueue(label: "CompletionSerializerTest.first")
+        let secondQueue = DispatchQueue(label: "CompletionSerializerTest.second")
+
+        firstQueue.async {
             inMemoryDb.write { tx in
                 firstWrite.signal()
                 tx.addSyncCompletion {
@@ -51,7 +57,7 @@ private struct CompletionSerializerTest {
             }
         }
 
-        DispatchQueue.global().async {
+        secondQueue.async {
             firstWrite.wait()
             inMemoryDb.write { tx in
                 enqueueInOrder(tx, {
