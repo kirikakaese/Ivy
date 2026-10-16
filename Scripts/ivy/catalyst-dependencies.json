@@ -12,5 +12,12 @@
     "tag": "catalyst-mobilecoin-6.0.2",
     "asset": "libmobilecoin-catalyst-6.0.2.tar.gz",
     "sha256": "2b90bbfce0d03b444276270e9bb4541b61e947363590901d3fa6439aee7db6f6"
+  },
+  "ringrtc": {
+    "version": "2.72.0",
+    "repository": "kirikakaese/Ivy",
+    "tag": "catalyst-ringrtc-v2.72.0",
+    "asset": "ringrtc-catalyst-v2.72.0.tar.gz",
+    "sha256": "a68f80ab164471a6ab1204ee37c4ece5d88a7142ad95586145d9e9b9c286dc83"
   }
 }
