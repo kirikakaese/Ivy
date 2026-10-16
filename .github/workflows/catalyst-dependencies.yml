@@ -87,6 +87,8 @@ jobs:
           printf '#!/bin/bash\nfor a in "$@"; do [ "$a" = "-B" ] && exec "%s" -DCMAKE_MACOSX_BUNDLE=OFF "$@"; done\nexec "%s" "$@"\n' "$REAL_CMAKE" "$REAL_CMAKE" > "$RUNNER_TEMP/cmake-wrapper/cmake"
           chmod +x "$RUNNER_TEMP/cmake-wrapper/cmake"
           echo "CMAKE=$RUNNER_TEMP/cmake-wrapper/cmake" >> "$GITHUB_ENV"
+          # Older vendored libraries declare compatibility with CMake < 3.5.
+          echo "CMAKE_POLICY_VERSION_MINIMUM=3.5" >> "$GITHUB_ENV"
           cat "$RUNNER_TEMP/cmake-wrapper/cmake"
 
       - name: Build
@@ -263,6 +265,8 @@ jobs:
           printf '#!/bin/bash\nfor a in "$@"; do [ "$a" = "-B" ] && exec "%s" -DCMAKE_MACOSX_BUNDLE=OFF "$@"; done\nexec "%s" "$@"\n' "$REAL_CMAKE" "$REAL_CMAKE" > "$RUNNER_TEMP/cmake-wrapper/cmake"
           chmod +x "$RUNNER_TEMP/cmake-wrapper/cmake"
           echo "CMAKE=$RUNNER_TEMP/cmake-wrapper/cmake" >> "$GITHUB_ENV"
+          # Older vendored libraries declare compatibility with CMake < 3.5.
+          echo "CMAKE_POLICY_VERSION_MINIMUM=3.5" >> "$GITHUB_ENV"
           cat "$RUNNER_TEMP/cmake-wrapper/cmake"
 
       - name: Build
