@@ -213,7 +213,9 @@ jobs:
         run: |
           set -euo pipefail
           WEBRTC_SRC_DIR="$PWD/src/webrtc/src"
-          EXTRA_GN_ARGS="rtc_build_examples=false rtc_build_tools=false rtc_include_tests=false rtc_enable_protobuf=false rtc_enable_sctp=false rtc_libvpx_build_vp9=true rtc_disable_metrics=true rtc_disable_trace_events=true rtc_opus_support_dred=true"
+          # Chromium's lld rejects some macOS SDK library stubs for Catalyst;
+          # Apple's linker, which Xcode uses for Catalyst apps, accepts them.
+          EXTRA_GN_ARGS="rtc_build_examples=false rtc_build_tools=false rtc_include_tests=false rtc_enable_protobuf=false rtc_enable_sctp=false rtc_libvpx_build_vp9=true rtc_disable_metrics=true rtc_disable_trace_events=true rtc_opus_support_dred=true use_lld=false"
           cd "${WEBRTC_SRC_DIR}"
           ./tools_webrtc/ios/build_ios_libs.py -o out/catalyst --build_config release --arch catalyst:arm64 --deployment-target 14.0 --extra-gn-args "${EXTRA_GN_ARGS}"
           ls out/catalyst
