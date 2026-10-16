@@ -57,12 +57,22 @@ COMMON=(
 
 run() {
   local log="$1"; shift
-  if ! NSUnbufferedIO=YES xcodebuild "${COMMON[@]}" "$@" 2>&1 \
+  local status
+  NSUnbufferedIO=YES xcodebuild "${COMMON[@]}" "$@" 2>&1 \
     | tee "$LOG_DIR/$log" \
-    | xcbeautify --renderer github-actions --disable-logging; then
+    | xcbeautify --renderer github-actions --disable-logging \
+    && status=(0 0 0) || status=("${PIPESTATUS[@]}")
+  if [ "${status[0]}" != 0 ] || [ "${status[1]}" != 0 ] || [ "${status[2]}" != 0 ]; then
+    echo "xcodebuild exited with ${status[0]}, tee with ${status[1]}, xcbeautify with ${status[2]}"
     # GitHub shows only the first few errors as annotations; list them all.
     echo "::group::All errors"
-    grep -E '(^|: )error: ' "$LOG_DIR/$log" | sed -E 's#^/Users/[^/]+/work/[^/]+/[^/]+/##' | sort -u | head -300 || true
+    grep -E '(^|: |fatal )error: |\*\* .*FAILED \*\*|failed with a nonzero exit code' "$LOG_DIR/$log" \
+      | sed -E 's#^/Users/[^/]+/work/[^/]+/[^/]+/##' | sort -u | head -300 || true
+    echo "::endgroup::"
+    # Failures that are not compiler errors (for example a failing script
+    # phase) are summarized at the end of the raw log.
+    echo "::group::End of the build log"
+    tail -80 "$LOG_DIR/$log"
     echo "::endgroup::"
     return 1
   fi
