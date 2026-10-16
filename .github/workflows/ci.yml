@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - '**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+env:
+  XCODE_APP: /Applications/Xcode_26.6.app
+
+jobs:
+  ios:
+    name: iOS build and test
+    runs-on: macos-26
+    timeout-minutes: 180
+    steps:
+      - name: Select Xcode
+        run: |
+          ls -d /Applications/Xcode*.app
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Show environment
+        run: |
+          xcodebuild -version
+          sw_vers
+          df -h /
+          sysctl -n hw.ncpu hw.memsize
+
+      - name: Download Metal toolchain
+        run: xcodebuild -downloadComponent MetalToolchain
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/Library/Caches/org.signal.libsignal
+            ~/Library/Caches/org.signal.ringrtc
+          key: deps-${{ hashFiles('Podfile.lock') }}
+
+      - name: Install dependencies
+        run: make dependencies
+
+      - name: Check that dependency install left tracked files unchanged
+        run: git status --porcelain && git diff --exit-code
+
+      - name: Inspect prebuilt binaries
+        run: |
+          for f in ~/Library/Caches/org.signal.libsignal/*.tar.gz; do echo "== $f"; tar tzf "$f" | grep -v '/$'; done
+          plutil -p Pods/SignalRingRTC/out/release/WebRTC.xcframework/Info.plist | grep -E 'LibraryIdentifier|SupportedPlatformVariant' || true
+          ls -la ~/Library/Caches/org.signal.ringrtc/*/release/libringrtc || true
+
+      - name: Build and test
+        run: Scripts/build-and-test.sh
+
+      - name: Upload logs
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: ios-logs
+          path: ~/Library/Logs/Signal-CI
