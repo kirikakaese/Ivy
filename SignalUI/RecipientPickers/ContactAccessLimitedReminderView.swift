@@ -65,8 +65,11 @@ struct ContactAccessLimitedReminderView: View {
                 }
             }
         }
+        // Ivy: the contact access picker does not exist on the Mac.
+#if !targetEnvironment(macCatalyst)
         .contactAccessPicker(isPresented: $displayPicker) { _ in
             completion()
         }
+#endif
     }
 }

@@ -743,11 +743,14 @@ private class QRCodeScanner {
         self.prefersFrontFacingCamera = prefersFrontFacingCamera
         self.output = QRCodeScanOutput(scannerDelegate: scannerDelegate)
 
+        // Ivy: multitasking camera access does not exist on the Mac.
+#if !targetEnvironment(macCatalyst)
         if #available(iOS 16.0, *) {
             if session.isMultitaskingCameraAccessSupported {
                 session.isMultitaskingCameraAccessEnabled = true
             }
         }
+#endif
     }
 
     deinit {

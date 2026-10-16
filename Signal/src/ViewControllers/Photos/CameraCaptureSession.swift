@@ -103,6 +103,8 @@ class CameraCaptureSession: NSObject {
         audioCaptureSession.automaticallyConfiguresApplicationAudioSession = false
         audioCaptureSession.usesApplicationAudioSession = true
 
+        // Ivy: multitasking camera access does not exist on the Mac.
+#if !targetEnvironment(macCatalyst)
         if #available(iOS 16.0, *) {
             if avCaptureSession.isMultitaskingCameraAccessSupported {
                 avCaptureSession.isMultitaskingCameraAccessEnabled = true
@@ -111,6 +113,7 @@ class CameraCaptureSession: NSObject {
                 audioCaptureSession.isMultitaskingCameraAccessEnabled = true
             }
         }
+#endif
 
         videoCapture.delegate = self
     }
