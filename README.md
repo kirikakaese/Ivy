@@ -12,3 +12,4 @@ Ivy is based on [Signal-iOS](https://github.com/signalapp/Signal-iOS) and is lic
 
 - [Specification](docs/SPECIFICATION.md)
 - [Feature parity matrix](docs/PARITY.md)
+- [Building](docs/BUILDING.md)
