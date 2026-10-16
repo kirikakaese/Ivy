@@ -167,6 +167,10 @@ run() {
     echo "::group::Test failures"
     test_failures "$LOG_DIR/TestResult.xcresult" || true
     echo "::endgroup::"
+    # Some tests log the reason for a failure instead of reporting it.
+    echo "::group::Logged test failure details"
+    grep -n -A14 -m4 -E "Test case failed|Fatal error:" "$LOG_DIR/$log" | cut -c1-400 || true
+    echo "::endgroup::"
     return 1
   fi
 }
