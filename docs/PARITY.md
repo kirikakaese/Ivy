@@ -8,12 +8,14 @@ Status values: `planned`, `in progress`, `done`, `removed`, `disabled` (temporar
 
 | Feature | Phase | iPhone | iPad | macOS | Notes |
 |---|---|---|---|---|---|
-| Builds and launches | 1 | planned | planned | planned | macOS via Mac Catalyst |
-| Ivy branding (name, icon, bundle IDs) | 1 | planned | planned | planned | |
-| All upstream locales (47) | 1 | planned | planned | planned | |
-| Custom string table with English fallback | 1 | planned | planned | planned | |
-| RTL layouts | 1 | planned | planned | planned | |
-| Per-app language setting | 1 | planned | planned | planned | |
+| Builds and launches | 1 | done | done | done | macOS via Mac Catalyst, iPad interface; Apple Silicon only |
+| Ivy branding (name, icon, bundle IDs) | 1 | done | done | done | Placeholder icon and green palette |
+| "Ivy" in upstream strings that name the app | 1 | done | done | done | Reviewed rule list, applied at build time |
+| Alternate app icons | 1 | disabled | disabled | disabled | Hidden until Ivy has its own variants |
+| All upstream locales (47) | 1 | done | done | done | |
+| Custom string table with English fallback | 2 | planned | planned | planned | Added with the first Ivy strings |
+| RTL layouts | 1 | done | done | done | As upstream |
+| Per-app language setting | 1 | done | done | done | System setting |
 | Registration (primary) | 2 | planned | – | – | Primary is the iPhone |
 | Linking (secondary) | 2 | – | planned | planned | |
 | Send and receive messages | 2 | planned | planned | planned | |
