@@ -1,0 +1,3 @@
+[submodule "SignalServiceKit/tests/MessageBackup/Signal-Message-Backup-Tests"]
+	path = SignalServiceKit/tests/MessageBackup/Signal-Message-Backup-Tests
+	url = https://github.com/signalapp/Signal-Message-Backup-Tests

@@ -1,0 +1,1 @@
+• Esta actualización introduce una nueva opción personalizada para silenciar la aplicación. Puedes configurar fácilmente la fecha y hora exactas en las que quieres volver a recibir notificaciones de un chat concreto.

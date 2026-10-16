@@ -1,0 +1,1 @@
+• Nová volba pro ztlumení umožní nastavit přesné datum a čas, od kdy chcete oznámení z chatu obnovit.
