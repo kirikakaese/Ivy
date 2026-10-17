@@ -122,8 +122,14 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
 
     var selectedHomeTab: Tabs {
         get { Tabs(rawValue: selectedIndex) ?? .chatList }
-        set { selectedIndex = newValue.rawValue }
+        set {
+            selectedIndex = newValue.rawValue
+            ivyUpdateTabSwitcherSelection() // Ivy: tab switcher on the Mac
+        }
     }
+
+    /// Ivy: the Chats and Calls switcher on the Mac, see HomeTabSwitcher.swift.
+    lazy var ivyTabSwitcher = UISegmentedControl()
 
     private lazy var storyBadgeCountManager = StoryBadgeCountManager()
 
@@ -148,6 +154,7 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
         storyBadgeCountManager.beginObserving(observer: self)
 
         setTabBarHidden(false, animated: false)
+        ivyInstallTabSwitcher() // Ivy: tab switcher on the Mac
     }
 
     @objc
@@ -230,6 +237,14 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
             _isTabBarHidden = hidden
         }
 
+        // Ivy: on the Mac, the switcher at the bottom of the chat list
+        // replaces the tab bar.
+        if Self.ivyUsesTabSwitcher {
+            ivySetTabSwitcherHidden(hidden, animated: animated)
+            completion?(true)
+            return
+        }
+
         guard _isTabBarHidden != hidden else {
             tabBar.isHidden = hidden
             completion?(true)
@@ -280,6 +295,10 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
             return badgeValue > 0 ? badgeValue.formatted() : nil
         }
 
+        ivyUpdateTabSwitcherBadges( // Ivy: tab switcher on the Mac
+            unreadChatCount: badgeCount.unreadChatCount,
+            unreadCallsCount: badgeCount.unreadCallsCount,
+        )
         if #available(iOS 18, *) {
             uiTab(for: .chatList).badgeValue = stringify(badgeCount.unreadChatCount)
             uiTab(for: .chatList).accessibilityValue = stringify(badgeCount.unreadChatCount)

@@ -649,8 +649,18 @@ public class ConversationInputToolbar: UIView, QuotedReplyPreviewDelegate {
             contentView.topAnchor.constraint(equalTo: topAnchor),
             contentView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            contentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Self.ivyBottomInset),
         ])
+    }
+
+    /// Ivy: a Mac window has no home indicator area, so the input field
+    /// would sit on the window's bottom edge.
+    private static var ivyBottomInset: CGFloat {
+#if targetEnvironment(macCatalyst)
+        return 10
+#else
+        return 0
+#endif
     }
 
     private func createContentsWithMessageDraft(

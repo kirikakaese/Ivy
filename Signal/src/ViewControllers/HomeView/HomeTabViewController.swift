@@ -66,7 +66,7 @@ extension HomeTabViewController {
 
         avatarView.autoPinEdgesToSuperviewEdges(with: .init(
             top: 0,
-            leading: isInFloatingSidebar ? 2 : 0,
+            leading: isInFloatingSidebar ? Self.ivyFloatingSidebarAvatarInset : 0,
             bottom: 0,
             trailing: 0,
         ))
@@ -93,5 +93,16 @@ extension HomeTabViewController {
             barButtonItem.hidesSharedBackground = true
         }
         return barButtonItem
+    }
+}
+
+// Ivy: on the Mac, the profile picture lines up with the search field.
+private extension HomeTabViewController {
+    static var ivyFloatingSidebarAvatarInset: CGFloat {
+#if targetEnvironment(macCatalyst)
+        return 10
+#else
+        return 2
+#endif
     }
 }
