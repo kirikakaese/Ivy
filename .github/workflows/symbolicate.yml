@@ -1,0 +1,28 @@
+name: Symbolicate
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/symbolicate.yml
+
+jobs:
+  symbolicate:
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - name: Restore the beta build
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/IvyBetaDerivedData
+          key: beta-derived-data-874fdb771e72126c54e7fc387e1ff28e9b050760
+          restore-keys: |
+            beta-derived-data-874fdb771e
+
+      - name: Symbolicate
+        run: |
+          P="$HOME/IvyBetaDerivedData/Build/Products/App Store Release-maccatalyst"
+          ls "$P" | head -50
+          find "$P" -maxdepth 1 -name '*.dSYM' | head
+          dwarfdump --uuid "$P/SignalServiceKit.framework.dSYM" "$P/Ivy.app.dSYM" || true
+          xcrun atos -arch arm64 -o "$P/SignalServiceKit.framework.dSYM/Contents/Resources/DWARF/SignalServiceKit" -l 0x110f3c000 -i 0x110fcdc1c || true
+          xcrun atos -arch arm64 -o "$P/Ivy.app.dSYM/Contents/Resources/DWARF/Ivy" -l 0x1002bc000 -i 0x1002f1d08 0x1002f173d || true
