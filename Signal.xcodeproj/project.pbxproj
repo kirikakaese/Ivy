@@ -4168,6 +4168,13 @@
 		8308AA4BC70DDC8927572B4C /* IvyAcknowledgementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825ADF136594B1BC4E797938 /* IvyAcknowledgementsViewController.swift */; };
 		7F973C414706DC2CA5814E98 /* IvyAboutTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFF5944C2B1D0088D02A5C1 /* IvyAboutTest.swift */; };
 		6037CED95C21886FC324446B /* IvyMessageDeliverySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D69353B8FF23EB372F639F /* IvyMessageDeliverySettings.swift */; };
+		46EFE3B8F0734071F30FD608 /* ChatFolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3905BE073796FB7A19E7DB58 /* ChatFolder.swift */; };
+		5AD7AA92E3C5DFC3A0335BFF /* ChatFolderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17531D1FF3CF3739AD74A281 /* ChatFolderManager.swift */; };
+		90319EA6DD0F3ABAEC8E1360 /* IvyStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AAE636D663AE9D2F8833E3 /* IvyStorageService.swift */; };
+		2B5AA8D38314064857F70DFA /* StorageServiceChatFolderRecordUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263F4C1A28E6E76741351712 /* StorageServiceChatFolderRecordUpdater.swift */; };
+		6D6596973DECCED5C7068001 /* ChatFolderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9775DD7ABAE348516965A7 /* ChatFolderTest.swift */; };
+		3519F5C7E0C3E38FFDF1FB67 /* ChatFolderManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B655EED9D79A1C325955CA4B /* ChatFolderManagerTest.swift */; };
+		4C117AA3E620C8F573849DB6 /* IvyStorageServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D97BD6AF16E94BE0BA2690 /* IvyStorageServiceTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8637,6 +8644,14 @@
 		825ADF136594B1BC4E797938 /* IvyAcknowledgementsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAcknowledgementsViewController.swift; sourceTree = "<group>"; };
 		8BFF5944C2B1D0088D02A5C1 /* IvyAboutTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAboutTest.swift; sourceTree = "<group>"; };
 		49D69353B8FF23EB372F639F /* IvyMessageDeliverySettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMessageDeliverySettings.swift; sourceTree = "<group>"; };
+		3905BE073796FB7A19E7DB58 /* ChatFolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolder.swift; sourceTree = "<group>"; };
+		17531D1FF3CF3739AD74A281 /* ChatFolderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderManager.swift; sourceTree = "<group>"; };
+		B9AAE636D663AE9D2F8833E3 /* IvyStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyStorageService.swift; sourceTree = "<group>"; };
+		263F4C1A28E6E76741351712 /* StorageServiceChatFolderRecordUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageServiceChatFolderRecordUpdater.swift; sourceTree = "<group>"; };
+		91D07DD224A4A1AE759C551F /* IvyStorageService.proto */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.protobuf; path = IvyStorageService.proto; sourceTree = "<group>"; };
+		EA9775DD7ABAE348516965A7 /* ChatFolderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderTest.swift; sourceTree = "<group>"; };
+		B655EED9D79A1C325955CA4B /* ChatFolderManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderManagerTest.swift; sourceTree = "<group>"; };
+		12D97BD6AF16E94BE0BA2690 /* IvyStorageServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyStorageServiceTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16183,6 +16198,7 @@
 				031E0A778C927A92A8653411 /* IvyConfiguration.swift */,
 				8E00F1C5D0F2DF20E476BF00 /* IvyLocalizedString.swift */,
 				74CCD38EC8CFFC9A1E961706 /* IvyDonations.swift */,
+				CB6201C2440C0A9F73820858 /* ChatFolders */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16193,6 +16209,9 @@
 				D5C49E6BF4FB27335729E3A1 /* IvyClientIdentityTest.swift */,
 				220F51BF9C4774091EA8E3F1 /* IvyLocalizedStringTest.swift */,
 				647900898DD319AC17164071 /* IvyDonationsTest.swift */,
+				EA9775DD7ABAE348516965A7 /* ChatFolderTest.swift */,
+				B655EED9D79A1C325955CA4B /* ChatFolderManagerTest.swift */,
+				12D97BD6AF16E94BE0BA2690 /* IvyStorageServiceTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16230,6 +16249,18 @@
 				8BFF5944C2B1D0088D02A5C1 /* IvyAboutTest.swift */,
 			);
 			path = Ivy;
+			sourceTree = "<group>";
+		};
+		CB6201C2440C0A9F73820858 /* ChatFolders */ = {
+			isa = PBXGroup;
+			children = (
+				3905BE073796FB7A19E7DB58 /* ChatFolder.swift */,
+				17531D1FF3CF3739AD74A281 /* ChatFolderManager.swift */,
+				B9AAE636D663AE9D2F8833E3 /* IvyStorageService.swift */,
+				263F4C1A28E6E76741351712 /* StorageServiceChatFolderRecordUpdater.swift */,
+				91D07DD224A4A1AE759C551F /* IvyStorageService.proto */,
+			);
+			path = ChatFolders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -20830,6 +20861,10 @@
 				E81C55153069282224BF231F /* IvyConfiguration.swift in Sources */,
 				355667770573119A67F274F8 /* IvyLocalizedString.swift in Sources */,
 				0611514F674AC5DF9E87C411 /* IvyDonations.swift in Sources */,
+				46EFE3B8F0734071F30FD608 /* ChatFolder.swift in Sources */,
+				5AD7AA92E3C5DFC3A0335BFF /* ChatFolderManager.swift in Sources */,
+				90319EA6DD0F3ABAEC8E1360 /* IvyStorageService.swift in Sources */,
+				2B5AA8D38314064857F70DFA /* StorageServiceChatFolderRecordUpdater.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21103,6 +21138,9 @@
 				C0CC8F8F55D61640FCA8FD74 /* IvyClientIdentityTest.swift in Sources */,
 				92953FB500BC77F63885321C /* IvyLocalizedStringTest.swift in Sources */,
 				00F8C399C2036A53E1DFF028 /* IvyDonationsTest.swift in Sources */,
+				6D6596973DECCED5C7068001 /* ChatFolderTest.swift in Sources */,
+				3519F5C7E0C3E38FFDF1FB67 /* ChatFolderManagerTest.swift in Sources */,
+				4C117AA3E620C8F573849DB6 /* IvyStorageServiceTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
