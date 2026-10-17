@@ -3,7 +3,8 @@
 # Copyright 2026 kiri
 # SPDX-License-Identifier: AGPL-3.0-only
 #
-# Builds the Mac beta: a Release build for Mac Catalyst, signed ad hoc,
+# Builds the Mac beta: a Release build for Mac Catalyst on Apple Silicon
+# (the Mac WebRTC library has no Intel slice), signed ad hoc,
 # without extensions, zipped for a GitHub release.
 #
 #   Scripts/ivy/mac-beta.sh [output directory]
@@ -26,6 +27,8 @@ NSUnbufferedIO=YES xcodebuild \
   -derivedDataPath "$DERIVED_DATA" \
   -disableAutomaticPackageResolution \
   COMPILATION_CACHE_ENABLE_CACHING=YES \
+  ARCHS=arm64 \
+  ONLY_ACTIVE_ARCH=YES \
   CODE_SIGN_IDENTITY=- \
   CODE_SIGN_STYLE=Manual \
   DEVELOPMENT_TEAM= \
