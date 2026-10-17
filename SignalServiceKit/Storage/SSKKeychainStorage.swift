@@ -44,25 +44,17 @@ public class KeychainStorageImpl: KeychainStorage {
     }
 
     private func baseQuery(service: String, key: String) -> [String: Any] {
-#if IVY_MAC_BETA
-        // Ivy: the Mac beta has no certificate, which the data protection
-        // keychain requires; it uses the login keychain.
-        return [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: normalizeService(service),
-            kSecAttrAccount as String: key,
-            kSecUseDataProtectionKeychain as String: false,
-        ]
-#else
         return [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: normalizeService(service),
             kSecAttrAccount as String: key,
         ]
-#endif
     }
 
     public func dataValue(service: String, key: String) throws -> Data {
+        if IvyMacBeta.isEnabled { // Ivy: no keychain in the Mac beta
+            return try IvyMacBeta.keyFile.dataValue(service: normalizeService(service), key: key)
+        }
         var query = self.baseQuery(service: service, key: key)
         query[kSecMatchLimit as String] = kSecMatchLimitOne
         query[kSecReturnData as String] = true
@@ -76,18 +68,14 @@ public class KeychainStorageImpl: KeychainStorage {
     }
 
     public func setDataValue(_ dataValue: Data, service: String, key: String) throws {
+        if IvyMacBeta.isEnabled { // Ivy: no keychain in the Mac beta
+            return try IvyMacBeta.keyFile.setDataValue(dataValue, service: normalizeService(service), key: key)
+        }
         let query = self.baseQuery(service: service, key: key)
-#if IVY_MAC_BETA
-        // Ivy: accessibility classes exist only in the data protection keychain.
-        let setValueQuery: [String: Any] = [
-            kSecValueData as String: dataValue,
-        ]
-#else
         let setValueQuery: [String: Any] = [
             kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
             kSecValueData as String: dataValue,
         ]
-#endif
 
         Logger.info("Inserting \(service)/\(key)")
 
@@ -120,6 +108,9 @@ public class KeychainStorageImpl: KeychainStorage {
     }
 
     public func removeValue(service: String, key: String) throws {
+        if IvyMacBeta.isEnabled { // Ivy: no keychain in the Mac beta
+            return try IvyMacBeta.keyFile.removeValue(service: normalizeService(service), key: key)
+        }
         Logger.info("Removing \(service)/\(key)")
         let query = self.baseQuery(service: service, key: key)
         let status = SecItemDelete(query as CFDictionary)

@@ -51,8 +51,6 @@
 	<string>$(IVY_UPSTREAM_BUILD_NUMBER)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>LOGS_EMAIL</key>
-	<string>support@signal.org</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.social-networking</string>
 	<key>LSApplicationQueriesSchemes</key>

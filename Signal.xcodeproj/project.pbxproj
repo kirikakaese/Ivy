@@ -4202,6 +4202,7 @@
 		58EAA1AB89DCD5AC78F3ABD9 /* IvyRemindersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2792977E1C26ED85697BC21 /* IvyRemindersViewController.swift */; };
 		8316A9C1E6F641C270C3732D /* IvyDataSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01AF7E0740A2AB47FE00B3B /* IvyDataSettingsViewController.swift */; };
 		1A335A3E65DA4F1222E44016 /* IvyMacBeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062F195C7A1A072FB64208E4 /* IvyMacBeta.swift */; };
+		34B153E52A8A7DF7EAA844DA /* IvyMacBetaKeyFileTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7271F0173D173AFC1CE39360 /* IvyMacBetaKeyFileTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8706,6 +8707,7 @@
 		D2792977E1C26ED85697BC21 /* IvyRemindersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyRemindersViewController.swift; sourceTree = "<group>"; };
 		E01AF7E0740A2AB47FE00B3B /* IvyDataSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDataSettingsViewController.swift; sourceTree = "<group>"; };
 		062F195C7A1A072FB64208E4 /* IvyMacBeta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBeta.swift; sourceTree = "<group>"; };
+		7271F0173D173AFC1CE39360 /* IvyMacBetaKeyFileTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBetaKeyFileTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16273,6 +16275,7 @@
 				189EA5908D30EB7E6343B3FD /* PinnedChatOrderTest.swift */,
 				F8B8BA707EB07375977AD268 /* IvyDataStoreTest.swift */,
 				98AF4AD049190C49031C4151 /* IvyReminderTest.swift */,
+				7271F0173D173AFC1CE39360 /* IvyMacBetaKeyFileTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -21297,6 +21300,7 @@
 				0903888A0731A1AAB5B02E61 /* PinnedChatOrderTest.swift in Sources */,
 				8CE0D6C46581E2B50FBBD757 /* IvyDataStoreTest.swift in Sources */,
 				D6524696F6F40422BC7F8F81 /* IvyReminderTest.swift in Sources */,
+				34B153E52A8A7DF7EAA844DA /* IvyMacBetaKeyFileTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

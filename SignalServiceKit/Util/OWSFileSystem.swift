@@ -143,8 +143,15 @@ public enum OWSFileSystem {
         } catch CocoaError.fileReadNoSuchFile, CocoaError.fileNoSuchFile {
             return false
         } catch {
+#if targetEnvironment(macCatalyst)
+            // Ivy: some Mac folders, like the temporary folder, can't be
+            // excluded from Time Machine. That only affects backups, so the
+            // folder is still usable.
+            Logger.warn("Could not exclude from backup: \(error)")
+#else
             owsFailDebug("Could not protect file or folder: \(error)")
             return false
+#endif
         }
 
         return true

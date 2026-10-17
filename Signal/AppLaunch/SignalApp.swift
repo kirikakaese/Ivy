@@ -326,9 +326,13 @@ public class SignalApp {
         wipeUserDefaults(CurrentAppContext().appUserDefaults())
 
         OWSFileSystem.deleteContents(ofDirectory: OWSFileSystem.appSharedDataDirectoryPath())
-        OWSFileSystem.deleteContents(ofDirectory: OWSFileSystem.appDocumentDirectoryPath())
-        OWSFileSystem.deleteContents(ofDirectory: OWSFileSystem.cachesDirectoryPath())
-        OWSFileSystem.deleteContents(ofDirectory: NSTemporaryDirectory())
+        // Ivy: outside the App Sandbox, a Mac app's documents, caches and
+        // temporary folders are the user's own; never empty those.
+        if IvyMacBeta.hasOwnContainer {
+            OWSFileSystem.deleteContents(ofDirectory: OWSFileSystem.appDocumentDirectoryPath())
+            OWSFileSystem.deleteContents(ofDirectory: OWSFileSystem.cachesDirectoryPath())
+            OWSFileSystem.deleteContents(ofDirectory: NSTemporaryDirectory())
+        }
 
         UserNotificationPresenter().clearAllNotifications()
         UIApplication.shared.applicationIconBadgeNumber = 0

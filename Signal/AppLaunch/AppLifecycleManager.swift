@@ -1123,9 +1123,10 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
                     "APP_LAUNCH_FAILURE_COULD_NOT_LOAD_DATABASE",
                     comment: "Error indicating that the app could not launch because the database could not be loaded.",
                 ),
-                message: OWSLocalizedString(
-                    "APP_LAUNCH_FAILURE_ALERT_MESSAGE",
-                    comment: "Default message for the 'app launch failed' alert.",
+                // Ivy: Signal's support doesn't help with Ivy.
+                message: IvyLocalizedString(
+                    "LAUNCH_FAILURE_MESSAGE",
+                    comment: "Message when Ivy can't start. Asks the user to export a debug log and report the problem.",
                 ),
                 actions: [
                     .submitDebugLogsAndCrash,
@@ -1145,8 +1146,9 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
                     "APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_TITLE",
                     comment: "Title for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status.",
                 ),
-                message: OWSLocalizedString(
-                    "APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_MESSAGE",
+                // Ivy: Signal's support doesn't help with Ivy.
+                message: IvyLocalizedString(
+                    "LAUNCH_FAILURE_CORRUPT_REGISTRATION_MESSAGE",
                     comment: "Message for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status.",
                 ),
                 actions: [.submitDebugLogsAndCrash],
@@ -1260,8 +1262,9 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
                 "APP_LAUNCH_FAILURE_RESTORE_FAILED_TITLE",
                 comment: "Error indicating that the app could not restore transferred data.",
             )
-            message = OWSLocalizedString(
-                "APP_LAUNCH_FAILURE_RESTORE_FAILED_MESSAGE",
+            // Ivy: Signal's support doesn't help with Ivy.
+            message = IvyLocalizedString(
+                "LAUNCH_FAILURE_RESTORE_FAILED_MESSAGE",
                 comment: "Error indicating that the app could not restore transferred data.",
             )
             actions = [.submitDebugLogsAndCrash]
@@ -1271,8 +1274,9 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
                 "APP_LAUNCH_FAILURE_LAST_LAUNCH_CRASHED_TITLE",
                 comment: "Error indicating that the app crashed during the previous launch.",
             )
-            message = OWSLocalizedString(
-                "APP_LAUNCH_FAILURE_LAST_LAUNCH_CRASHED_MESSAGE",
+            // Ivy: Signal's support doesn't help with Ivy.
+            message = IvyLocalizedString(
+                "LAUNCH_FAILURE_LAST_LAUNCH_CRASHED_MESSAGE",
                 comment: "Error indicating that the app crashed during the previous launch.",
             )
             actions = [

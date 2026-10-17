@@ -1225,7 +1225,8 @@ public class NotificationPresenterImpl: NotificationPresenter {
             "ERROR_NOTIFICATION_TITLE",
             comment: "Format string for an error alert notification title.",
         )
-        let messageFormat = OWSLocalizedString(
+        // Ivy: Signal's support doesn't help with Ivy.
+        let messageFormat = IvyLocalizedString(
             "ERROR_NOTIFICATION_MESSAGE_FORMAT",
             comment: "Format string for an error alert notification message. Embeds {{ error string }}",
         )

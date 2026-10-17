@@ -43,8 +43,9 @@ final class HelpViewController: OWSTableViewController2 {
                         "EMAIL_SIGNAL_TITLE",
                         comment: "Title for the fallback support sheet if user cannot send email",
                     )
-                    let localizedSheetMessage = OWSLocalizedString(
-                        "EMAIL_SIGNAL_MESSAGE",
+                    // Ivy: Signal's support doesn't help with Ivy.
+                    let localizedSheetMessage = IvyLocalizedString(
+                        "SUPPORT_REPORT_FALLBACK_MESSAGE",
                         comment: "Description for the fallback support sheet if user cannot send email",
                     )
                     let fallbackSheet = ActionSheetController(

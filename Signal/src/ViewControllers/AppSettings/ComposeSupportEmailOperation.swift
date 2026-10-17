@@ -46,8 +46,9 @@ struct SupportEmailModel {
         hasRecentChallenge: Bool,
         backupPlan: BackupPlan,
     ) {
-        self.localizedSubject = OWSLocalizedString(
-            "SUPPORT_EMAIL_SUBJECT",
+        // Ivy: requests become problem reports on Ivy's issue page.
+        self.localizedSubject = IvyLocalizedString(
+            "SUPPORT_REQUEST_TITLE",
             comment: "Localized subject for support request emails",
         )
         self.deviceType = UIDevice.current.model
@@ -110,7 +111,9 @@ final class ComposeSupportEmailOperation: NSObject {
     }
 
     static var canSendEmails: Bool {
-        return UIApplication.shared.canOpenURL(MailtoLink(to: "", subject: "", body: "").url!)
+        // Ivy: requests open Ivy's issue page in the browser instead of an
+        // email to Signal's support, so they can always be sent.
+        return true
     }
 
     private var model: SupportEmailModel
@@ -174,6 +177,10 @@ final class ComposeSupportEmailOperation: NSObject {
         switch model.debugLogPolicy {
         case nil:
             debugUrlString = nil
+        case .attemptUpload where !IvyConfiguration.uploadsDebugLogs, .requireUpload where !IvyConfiguration.uploadsDebugLogs:
+            // Ivy: logs are never uploaded. The user saves them and attaches
+            // them to the report.
+            debugUrlString = nil
         case .link(let url):
             debugUrlString = url.absoluteString
         case .attemptUpload(let logs):
@@ -223,13 +230,22 @@ final class ComposeSupportEmailOperation: NSObject {
         }
     }
 
+    // Ivy: a new issue on Ivy's issue page, never an email to Signal.
     private var emailURL: URL? {
-        let linkBuilder = MailtoLink(
-            to: "support@signal.org",
-            subject: model.localizedSubject,
-            body: emailBody,
-        )
-        return linkBuilder.url
+        guard var components = URLComponents(
+            url: IvyConfiguration.issuesURL.appendingPathComponent("new"),
+            resolvingAgainstBaseURL: false,
+        ) else {
+            return nil
+        }
+        components.queryItems = [
+            URLQueryItem(name: "title", value: model.localizedSubject),
+            URLQueryItem(name: "body", value: emailBody),
+        ]
+        // "+" would be read as a space.
+        let query = components.percentEncodedQuery
+        components.percentEncodedQuery = query?.replacingOccurrences(of: "+", with: "%2B")
+        return components.url
     }
 
     private var emailBody: String {
@@ -275,7 +291,7 @@ final class ComposeSupportEmailOperation: NSObject {
                 ),
                 model.iosVersion,
             ),
-            "Signal Version: \(model.signalAppVersion)",
+            "Ivy Version: \(model.signalAppVersion)", // Ivy
             {
                 let backupPlanCode: String
                 switch model.backupPlan {
