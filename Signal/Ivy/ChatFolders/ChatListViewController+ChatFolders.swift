@@ -19,6 +19,19 @@ extension ChatListViewController {
             name: ChatFolderManager.foldersDidChange,
             object: nil,
         )
+        // Folder colors, folder pins and reminders.
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ivyChatFoldersDidChange),
+            name: IvyReminderManager.remindersDidChange,
+            object: nil,
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ivyChatFoldersDidChange),
+            name: IvyDataStore.dataDidChange,
+            object: nil,
+        )
         ivyUpdateChatFolderBar()
     }
 
@@ -56,9 +69,12 @@ extension ChatListViewController {
         let layout: ChatFolderBar.Layout = (splitViewController?.isCollapsed == false) ? .sidebar : .tabs
         let bar = ivyChatFolderBar(layout: layout)
         let counts = ChatFolderChats.unreadCounts(folders: folders, chats: chats)
+        let extras = ChatFolderExtras.fetchAll(store: IvyData.shared?.store)
         let selectedId = viewState.ivyChatFolderId ?? folders.first { $0.kind == .allChats }?.id
         bar.update(
-            items: folders.map { ChatFolderBar.Item(folder: $0, unreadCount: counts[$0.id] ?? 0) },
+            items: folders.map { folder in
+                ChatFolderBar.Item(folder: folder, unreadCount: counts[folder.id] ?? 0, extras: extras[folder.id] ?? ChatFolderExtras())
+            },
             selectedFolderId: selectedId,
         )
 

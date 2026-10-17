@@ -313,6 +313,7 @@ public class SignalApp {
         } catch {
             owsFailDebug("Could not clear keychain: \(error)")
         }
+        IvyData.deleteAll() // Ivy: Ivy's own database and its key
 
         func wipeUserDefaults(_ userDefaults: UserDefaults) {
             for (key, _) in userDefaults.dictionaryRepresentation() {

@@ -12,10 +12,17 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
     private var folder: ChatFolder
     private let isNew: Bool
     private let nameField = UITextField()
+    private let emojiField = UITextField()
+
+    /// Ivy's additions, saved in the Ivy data store.
+    private var extras: ChatFolderExtras
+    private let originalExtras: ChatFolderExtras
 
     init(folder: ChatFolder?) {
         self.folder = folder ?? ChatFolder(name: "")
         self.isNew = folder == nil
+        self.originalExtras = folder.map { ChatFolderExtras.fetch(folderId: $0.id, store: IvyData.shared?.store) } ?? ChatFolderExtras()
+        self.extras = originalExtras
         super.init()
     }
 
@@ -26,6 +33,11 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
             : IvyLocalizedString("CHAT_FOLDER_EDIT", comment: "Action that opens the settings of one chat folder.")
 
         nameField.text = folder.name
+        emojiField.text = extras.emoji
+        emojiField.placeholder = IvyLocalizedString("CHAT_FOLDER_EMOJI_PLACEHOLDER", comment: "Placeholder of the emoji field of a chat folder.")
+        emojiField.font = .dynamicTypeBody
+        emojiField.clearButtonMode = .whileEditing
+        emojiField.addAction(UIAction { [weak self] _ in self?.emojiDidChange() }, for: .editingChanged)
         nameField.placeholder = IvyLocalizedString("CHAT_FOLDER_NAME_PLACEHOLDER", comment: "Placeholder of the name field of a chat folder.")
         nameField.font = .dynamicTypeBody
         nameField.clearButtonMode = .whileEditing
@@ -108,6 +120,10 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
             contents.add(excludedSection)
         }
 
+        if IvyData.shared != nil {
+            contents.add(appearanceSection())
+        }
+
         let optionsSection = OWSTableSection()
         optionsSection.headerTitle = IvyLocalizedString("CHAT_FOLDER_OPTIONS", comment: "Header of the options of a chat folder.")
         optionsSection.add(.switch(
@@ -135,6 +151,74 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
         }
 
         self.contents = contents
+    }
+
+    // MARK: - Emoji and color
+
+    private func emojiDidChange() {
+        // Keep only the last character typed, which is one emoji.
+        let text = emojiField.text ?? ""
+        let emoji = text.last.map(String.init)
+        if emojiField.text != (emoji ?? "") {
+            emojiField.text = emoji ?? ""
+        }
+        extras.emoji = emoji
+    }
+
+    private func appearanceSection() -> OWSTableSection {
+        let section = OWSTableSection()
+        section.headerTitle = IvyLocalizedString("CHAT_FOLDER_APPEARANCE", comment: "Header of the emoji and color of a chat folder.")
+        section.footerTitle = IvyLocalizedString("CHAT_FOLDER_APPEARANCE_FOOTER", comment: "Footer explaining that a folder's emoji, color and pins only appear in Ivy.")
+        section.add(.textFieldItem(emojiField))
+
+        let colorButton = UIButton(type: .system)
+        var configuration = UIButton.Configuration.plain()
+        configuration.title = extras.color.map { Self.colorName($0) } ?? IvyLocalizedString("CHAT_FOLDER_COLOR_NONE", comment: "Chat folder has no color.")
+        configuration.image = UIImage(systemName: "circle.fill")
+        configuration.baseForegroundColor = extras.color.map { ChatFolderBar.uiColor(for: $0) } ?? .Signal.secondaryLabel
+        configuration.imagePadding = 6
+        colorButton.configuration = configuration
+        colorButton.showsMenuAsPrimaryAction = true
+        let noColor = UIAction(title: IvyLocalizedString("CHAT_FOLDER_COLOR_NONE", comment: "Chat folder has no color.")) { [weak self] _ in
+            self?.extras.color = nil
+            self?.updateTableContents()
+        }
+        colorButton.menu = UIMenu(children: [noColor] + ChatFolderColor.allCases.map { color in
+            UIAction(
+                title: Self.colorName(color),
+                image: UIImage(systemName: "circle.fill")?.withTintColor(ChatFolderBar.uiColor(for: color), renderingMode: .alwaysOriginal),
+                state: extras.color == color ? .on : .off,
+            ) { [weak self] _ in
+                self?.extras.color = color
+                self?.updateTableContents()
+            }
+        })
+        section.add(OWSTableItem(customCellBlock: {
+            let cell = OWSTableItem.newCell()
+            cell.selectionStyle = .none
+            var content = cell.defaultContentConfiguration()
+            content.text = IvyLocalizedString("CHAT_FOLDER_COLOR", comment: "Label of the color of a chat folder.")
+            cell.contentConfiguration = content
+            cell.accessoryView = colorButton
+            colorButton.sizeToFit()
+            return cell
+        }))
+        return section
+    }
+
+    static func colorName(_ color: ChatFolderColor) -> String {
+        switch color {
+        case .green: return IvyLocalizedString("COLOR_GREEN", comment: "Color name.")
+        case .teal: return IvyLocalizedString("COLOR_TEAL", comment: "Color name.")
+        case .blue: return IvyLocalizedString("COLOR_BLUE", comment: "Color name.")
+        case .indigo: return IvyLocalizedString("COLOR_INDIGO", comment: "Color name.")
+        case .purple: return IvyLocalizedString("COLOR_PURPLE", comment: "Color name.")
+        case .pink: return IvyLocalizedString("COLOR_PINK", comment: "Color name.")
+        case .red: return IvyLocalizedString("COLOR_RED", comment: "Color name.")
+        case .orange: return IvyLocalizedString("COLOR_ORANGE", comment: "Color name.")
+        case .yellow: return IvyLocalizedString("COLOR_YELLOW", comment: "Color name.")
+        case .gray: return IvyLocalizedString("COLOR_GRAY", comment: "Color name.")
+        }
     }
 
     private func chatNames(_ threadIds: [String]) -> [String] {
@@ -172,6 +256,7 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
         SSKEnvironment.shared.databaseStorageRef.write { tx in
             ChatFolderManager.shared.save(folder, tx: tx)
         }
+        extras.save(folderId: folder.id, comparedTo: originalExtras, store: IvyData.shared?.store)
         close()
     }
 
@@ -189,6 +274,7 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
             SSKEnvironment.shared.databaseStorageRef.write { tx in
                 ChatFolderManager.shared.delete(id: id, tx: tx)
             }
+            ChatFolderExtras.delete(folderId: id, store: IvyData.shared?.store)
             close()
         })
         sheet.addAction(OWSActionSheets.cancelAction)

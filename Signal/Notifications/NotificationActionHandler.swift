@@ -19,6 +19,11 @@ public class NotificationActionHandler {
     ) async throws {
         owsAssertDebug(appReadiness.isAppReady)
 
+        // Ivy: reminders
+        if IvyReminderActionHandler.handle(response) {
+            return
+        }
+
         let userInfo = AppNotificationUserInfo(response.notification.request.content.userInfo)
 
         switch response.actionIdentifier {

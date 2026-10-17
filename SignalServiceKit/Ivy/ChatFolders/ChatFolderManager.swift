@@ -64,6 +64,15 @@ public final class ChatFolderManager {
         return folder
     }
 
+    /// The unique ids of the chats pinned in a folder, in order.
+    public func pinnedThreadIds(in folder: ChatFolder?, tx: DBReadTransaction) -> [String] {
+        guard let folder, folder.kind == .custom else {
+            return []
+        }
+        return ChatFolderExtras.fetch(folderId: folder.id, store: IvyData.shared?.store).pinnedChats
+            .compactMap { $0.thread(tx: tx)?.uniqueId }
+    }
+
     /// Whether the folder list should be shown: there is at least one folder
     /// besides "All chats".
     public func hasCustomFolders(tx: DBReadTransaction) -> Bool {
@@ -287,6 +296,22 @@ public enum ChatFolderChats {
         }
         let members = Set(inboxChats(tx: tx).filter { folder.contains($0) }.map(\.threadId))
         return threadIds.filter { members.contains($0) || required.contains($0) }
+    }
+
+    /// The chat list order with Ivy's additions: chats pinned in the folder
+    /// come before the other pinned chats, and chats with a due reminder come
+    /// first among the chats that aren't pinned.
+    public static func order(
+        pinned: [String],
+        visible: [String],
+        folderPinned: [String],
+        due: [String],
+    ) -> (pinned: [String], visible: [String]) {
+        let pinned = folderPinned + pinned.filter { !folderPinned.contains($0) }
+        let visibleSet = Set(visible)
+        let dueVisible = due.filter { visibleSet.contains($0) && !pinned.contains($0) }
+        let visible = dueVisible + visible.filter { !dueVisible.contains($0) }
+        return (pinned, visible)
     }
 
     /// The number of chats with unread messages in each folder.

@@ -21,6 +21,9 @@ struct CLVViewInfo: Equatable {
     let requiredVisibleThreadIds: Set<String>
     // Ivy: the selected chat folder, nil for all chats
     var ivyChatFolder: ChatFolder?
+    // Ivy: chats pinned in the selected folder, and chats with a due reminder
+    var ivyFolderPinnedThreadIds: [String] = []
+    var ivyDueReminderThreadIds: [String] = []
 
     var hasArchivedThreadsRow: Bool {
         chatListMode == .inbox
@@ -89,6 +92,8 @@ struct CLVViewInfo: Equatable {
             lastSelectedThreadId: lastSelectedThreadId,
             requiredVisibleThreadIds: requiredThreadIds,
             ivyChatFolder: ivyChatFolder, // Ivy: chat folders
+            ivyFolderPinnedThreadIds: ChatFolderManager.shared.pinnedThreadIds(in: ivyChatFolder, tx: transaction),
+            ivyDueReminderThreadIds: IvyReminderManager.shared.dueThreadIds(tx: transaction),
         )
     }
 }

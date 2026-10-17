@@ -64,8 +64,8 @@ public class CLVLoader {
         let threadFinder = ThreadFinder()
         let isViewingArchive = viewInfo.chatListMode == .archive
 
-        let pinnedThreadUniqueIds: [String]
-        let visibleThreadUniqueIds: [String]
+        var pinnedThreadUniqueIds: [String]
+        var visibleThreadUniqueIds: [String]
         if isViewingArchive {
             pinnedThreadUniqueIds = []
             visibleThreadUniqueIds = threadFinder.visibleArchivedThreadUniqueIds(transaction: transaction)
@@ -84,6 +84,17 @@ public class CLVLoader {
                 tx: transaction,
             )
         }
+
+        // Ivy: chats pinned in the folder first, chats with a due reminder at
+        // the top of the other chats
+        let (pinnedIds, visibleIds) = ChatFolderChats.order(
+            pinned: pinnedThreadUniqueIds,
+            visible: visibleThreadUniqueIds,
+            folderPinned: isViewingArchive ? [] : viewInfo.ivyFolderPinnedThreadIds,
+            due: isViewingArchive ? [] : viewInfo.ivyDueReminderThreadIds,
+        )
+        pinnedThreadUniqueIds = pinnedIds
+        visibleThreadUniqueIds = visibleIds
 
         let pinnedThreadUniqueIdsToRender = Set(pinnedThreadUniqueIds).intersection(visibleThreadUniqueIds)
 

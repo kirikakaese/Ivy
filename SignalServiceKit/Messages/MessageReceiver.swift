@@ -377,6 +377,8 @@ public final class MessageReceiver {
             return
         }
 
+        IvyDataSync.handleIncomingSyncMessage(syncMessage, tx: tx) // Ivy: data from the user's other Ivy devices
+
         let envelope = decryptedEnvelope.envelope
         if let sent = syncMessage.sent {
             guard SDS.fitsInInt64(sent.timestamp) else {
