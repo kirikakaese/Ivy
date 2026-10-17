@@ -1,0 +1,61 @@
+//
+// Copyright 2026 kiri
+// SPDX-License-Identifier: AGPL-3.0-only
+//
+
+// Storage service records that Ivy reads and writes but upstream Signal-iOS
+// 8.32 does not know. The messages and field numbers match Signal's official
+// StorageService.proto, so official clients that support chat folders read
+// the same records. IvyStorageService.swift implements these messages for
+// SwiftProtobuf by hand; keep both files in sync.
+
+syntax = "proto3";
+
+package IvyStorageProtos;
+
+// The subset of StorageRecord that holds the records above.
+message StorageRecord {
+  oneof record {
+    ChatFolderRecord chatFolder = 8;
+  }
+}
+
+// ManifestRecord.Key.Type
+enum KeyType {
+  UNKNOWN = 0;
+  CHAT_FOLDER = 8;
+}
+
+message Recipient {
+  message Contact {
+    string serviceId      = 1;
+    string e164           = 2;
+    bytes serviceIdBinary = 3;
+  }
+
+  oneof identifier {
+    Contact contact = 1;
+    bytes legacyGroupId = 2;
+    bytes groupMasterKey = 3;
+  }
+}
+
+message ChatFolderRecord {
+  enum FolderType {
+    UNKNOWN = 0;
+    ALL = 1;
+    CUSTOM = 2;
+  }
+
+  bytes identifier = 1;
+  string name = 2;
+  uint32 position = 3;
+  bool showOnlyUnread = 4;
+  bool showMutedChats = 5;
+  bool includeAllIndividualChats = 6;
+  bool includeAllGroupChats = 7;
+  FolderType folderType = 8;
+  repeated Recipient includedRecipients = 9;
+  repeated Recipient excludedRecipients = 10;
+  uint64 deletedAtTimestampMs = 11;
+}

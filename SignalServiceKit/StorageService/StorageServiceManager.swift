@@ -551,6 +551,11 @@ public class StorageServiceManagerImpl: NSObject, StorageServiceManager {
         updatePendingMutations { $0.updatedCallLinkRootKeys.formUnion(callLinkRootKeys.lazy.map(\.bytes)) }
     }
 
+    // Ivy: chat folders
+    public func recordPendingUpdates(chatFolderIds: [Data]) {
+        updatePendingMutations { $0.updatedChatFolderIds.formUnion(chatFolderIds) }
+    }
+
     public func recordPendingLocalAccountUpdates() {
         Logger.info("Recording pending local account updates")
 
@@ -713,6 +718,7 @@ private struct PendingMutations {
     var insertedGroupMasterKeys = Set<Data>()
     var updatedStoryDistributionListIds = Set<Data>()
     var updatedCallLinkRootKeys = Set<Data>()
+    var updatedChatFolderIds = Set<Data>() // Ivy: chat folders
     var updatedLocalAccount = false
 
     var hasChanges: Bool {
@@ -724,6 +730,7 @@ private struct PendingMutations {
                 || !insertedGroupMasterKeys.isEmpty
                 || !updatedStoryDistributionListIds.isEmpty
                 || !updatedCallLinkRootKeys.isEmpty
+                || !updatedChatFolderIds.isEmpty // Ivy: chat folders
 
     }
 }
@@ -944,6 +951,11 @@ class StorageServiceOperation {
         pendingMutations.updatedCallLinkRootKeys.forEach {
             state.callLinkRootKeyChangeMap[$0] = .updated
         }
+
+        // Ivy: chat folders
+        pendingMutations.updatedChatFolderIds.forEach {
+            state.ivyChatFolderChangeMap[$0] = .updated
+        }
     }
 
     private func normalizePendingMutations(in state: inout State, transaction: DBReadTransaction) {
@@ -1073,6 +1085,12 @@ class StorageServiceOperation {
             updateRecords(
                 state: &state,
                 stateUpdater: buildCallLinkUpdater(),
+                transaction: transaction,
+            )
+            // Ivy: chat folders
+            updateRecords(
+                state: &state,
+                stateUpdater: buildChatFolderUpdater(),
                 transaction: transaction,
             )
 
@@ -1361,6 +1379,12 @@ class StorageServiceOperation {
             let callLinkStore = callLinkUpdater.recordUpdater.callLinkStore
             callLinkStore.fetchAll(tx: transaction).forEach {
                 createRecord(localId: $0.rootKey.bytes, stateUpdater: callLinkUpdater)
+            }
+
+            // Ivy: chat folders
+            let chatFolderUpdater = buildChatFolderUpdater()
+            chatFolderUpdater.recordUpdater.chatFolderManager.allFolders(tx: transaction).forEach {
+                createRecord(localId: $0.id, stateUpdater: chatFolderUpdater)
             }
         }
 
@@ -1842,6 +1866,7 @@ class StorageServiceOperation {
         let groupV2Updater = buildGroupV2Updater()
         let storyDistributionListUpdater = buildStoryDistributionListUpdater()
         let callLinkUpdater = buildCallLinkUpdater()
+        let chatFolderUpdater = buildChatFolderUpdater() // Ivy: chat folders
         for item in items {
             func _mergeRecord<StateUpdater: StorageServiceStateUpdater>(
                 _ record: StateUpdater.RecordType,
@@ -1866,6 +1891,8 @@ class StorageServiceOperation {
                 _mergeRecord(storyDistributionListRecord, stateUpdater: storyDistributionListUpdater)
             } else if let callLinkRecord = item.callLinkRecord {
                 _mergeRecord(callLinkRecord, stateUpdater: callLinkUpdater)
+            } else if let chatFolderRecord = item.ivyChatFolderRecord { // Ivy: chat folders
+                _mergeRecord(chatFolderRecord, stateUpdater: chatFolderUpdater)
             } else if case .account = item.identifier.type {
                 owsFailDebug("unexpectedly found account record in remaining items")
             } else {
@@ -1926,7 +1953,10 @@ class StorageServiceOperation {
             return true
         case .callLink:
             return true
-        case .unknown, .UNRECOGNIZED, nil:
+        case .UNRECOGNIZED(let rawValue):
+            // Ivy: chat folders
+            return rawValue == IvyStorageProtos_KeyType.chatFolder
+        case .unknown, nil:
             return false
         }
     }
@@ -2003,6 +2033,7 @@ class StorageServiceOperation {
                 buildGroupV2Updater(),
                 buildStoryDistributionListUpdater(),
                 buildCallLinkUpdater(),
+                buildChatFolderUpdater(), // Ivy: chat folders
             ]
             stateUpdaters.forEach { mergeRecordsWithUnknownFields(stateUpdater: $0, tx: tx) }
             Logger.info("Resolved unknown fields using manifest version \(state.manifestVersion)")
@@ -2218,6 +2249,21 @@ class StorageServiceOperation {
         )
     }
 
+    // Ivy: chat folders
+    private func buildChatFolderUpdater() -> MultipleElementStateUpdater<StorageServiceChatFolderRecordUpdater> {
+        return MultipleElementStateUpdater(
+            recordUpdater: StorageServiceChatFolderRecordUpdater(
+                chatFolderManager: ChatFolderManager.shared,
+                recipientDatabaseTable: DependenciesBridge.shared.recipientDatabaseTable,
+                recipientFetcher: DependenciesBridge.shared.recipientFetcher,
+                threadStore: DependenciesBridge.shared.threadStore,
+            ),
+            changeState: \.ivyChatFolderChangeMap,
+            storageIdentifier: \.ivyChatFolderIdToStorageIdentifierMap,
+            recordWithUnknownFields: \.ivyChatFolderIdToRecordWithUnknownFields,
+        )
+    }
+
     // MARK: - State
 
     private static var maxConsecutiveConflicts = 3
@@ -2331,6 +2377,25 @@ class StorageServiceOperation {
             set { _callLinkRootKeyToRecordWithUnknownFields = newValue }
         }
 
+        // Ivy: chat folders
+        private var _ivyChatFolderChangeMap: [Data: ChangeState]?
+        fileprivate var ivyChatFolderChangeMap: [Data: ChangeState] {
+            get { _ivyChatFolderChangeMap ?? [:] }
+            set { _ivyChatFolderChangeMap = newValue }
+        }
+
+        private var _ivyChatFolderIdToStorageIdentifierMap: [Data: StorageService.StorageIdentifier]?
+        fileprivate var ivyChatFolderIdToStorageIdentifierMap: [Data: StorageService.StorageIdentifier] {
+            get { _ivyChatFolderIdToStorageIdentifierMap ?? [:] }
+            set { _ivyChatFolderIdToStorageIdentifierMap = newValue }
+        }
+
+        private var _ivyChatFolderIdToRecordWithUnknownFields: [Data: IvyStorageProtos_ChatFolderRecord]?
+        fileprivate var ivyChatFolderIdToRecordWithUnknownFields: [Data: IvyStorageProtos_ChatFolderRecord] {
+            get { _ivyChatFolderIdToRecordWithUnknownFields ?? [:] }
+            set { _ivyChatFolderIdToRecordWithUnknownFields = newValue }
+        }
+
         fileprivate var allIdentifiers: [StorageService.StorageIdentifier] {
             var allIdentifiers = [StorageService.StorageIdentifier]()
             if let localAccountIdentifier {
@@ -2342,6 +2407,7 @@ class StorageServiceOperation {
             allIdentifiers += groupV2MasterKeyToIdentifierMap.values
             allIdentifiers += storyDistributionListIdentifierToStorageIdentifierMap.values
             allIdentifiers += callLinkRootKeyToStorageIdentifierMap.values
+            allIdentifiers += ivyChatFolderIdToStorageIdentifierMap.values // Ivy: chat folders
 
             // We must persist any unknown identifiers, as they are potentially associated with
             // valid records that this version of the app doesn't yet understand how to parse.

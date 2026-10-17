@@ -103,6 +103,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         updateUsernameReminderView()
         updateTableViewPaddingIfNeeded()
         observeNotifications()
+        ivyObserveChatFolders() // Ivy: chat folders
     }
 
     private var viewHasAppeared = false
@@ -651,6 +652,15 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
                     )
                 }
 
+                // Ivy: chat folders
+                contextMenuActions.append(UIAction(
+                    title: IvyLocalizedString("CHAT_FOLDERS_TITLE", comment: "Title of the chat folder settings."),
+                    image: UIImage(systemName: "folder"),
+                    handler: { [weak self] _ in
+                        self?.ivyShowChatFolderSettings()
+                    },
+                ))
+
                 contextMenuActions.append(settingsAction)
 
                 if viewState.settingsButtonCreator.hasArchivedChats {
@@ -777,6 +787,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
     func updateBarButtonItems() {
         updateLeftBarButtonItem()
         updateRightBarButtonItems()
+        ivyUpdateChatFolderBar() // Ivy: tabs or sidebar, depending on the split view
     }
 
     private func updateLeftBarButtonItem() {
