@@ -195,9 +195,9 @@ final class IvyDataSettingsViewController: OWSTableViewController2, UIDocumentPi
                             IvyLocalizedString("IVY_DATA_IMPORTED_FORMAT", comment: "Shown after an Ivy data import. Embeds {{ the number of changed values }}."),
                             applied ?? 0,
                         ))
-                    case .failure(IvyDataBackup.Error.wrongPassphrase):
+                    case .failure(let error as IvyDataBackup.Error) where error == .wrongPassphrase:
                         self.showError(IvyLocalizedString("IVY_DATA_WRONG_PASSPHRASE", comment: "Shown when the passphrase of an Ivy data file is wrong."))
-                    case .failure(IvyDataBackup.Error.notAnIvyDataFile):
+                    case .failure(let error as IvyDataBackup.Error) where error == .notAnIvyDataFile:
                         self.showError(IvyLocalizedString("IVY_DATA_NOT_A_FILE", comment: "Shown when the chosen file is not an Ivy data file."))
                     case .failure:
                         self.showError()
