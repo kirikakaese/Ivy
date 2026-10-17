@@ -232,18 +232,20 @@ final class ComposeSupportEmailOperation: NSObject {
 
     // Ivy: a new issue on Ivy's issue page, never an email to Signal.
     private var emailURL: URL? {
-        var components = URLComponents(
+        guard var components = URLComponents(
             url: IvyConfiguration.issuesURL.appendingPathComponent("new"),
             resolvingAgainstBaseURL: false,
-        )
-        components?.queryItems = [
+        ) else {
+            return nil
+        }
+        components.queryItems = [
             URLQueryItem(name: "title", value: model.localizedSubject),
             URLQueryItem(name: "body", value: emailBody),
         ]
         // "+" would be read as a space.
-        components?.percentEncodedQuery = components?.percentEncodedQuery?
-            .replacingOccurrences(of: "+", with: "%2B")
-        return components?.url
+        let query = components.percentEncodedQuery
+        components.percentEncodedQuery = query?.replacingOccurrences(of: "+", with: "%2B")
+        return components.url
     }
 
     private var emailBody: String {
