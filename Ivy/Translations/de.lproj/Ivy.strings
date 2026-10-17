@@ -195,6 +195,9 @@
 /* Color name. */
 "COLOR_YELLOW" = "Gelb";
 
+/* Note below the explanation of Signal connections, which mentions stories. Ivy doesn't show stories. */
+"CONNECTIONS_NO_STORIES_NOTE" = "Ivy zeigt keine Storys an. Wenn du Storys in einer anderen Signal-App postest, können deine Kontakte sie weiterhin sehen.";
+
 /* Button below the debug log preview that exports the log. */
 "DEBUG_LOG_EXPORT_BUTTON" = "Exportieren";
 
