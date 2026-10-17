@@ -1123,9 +1123,10 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
                     "APP_LAUNCH_FAILURE_COULD_NOT_LOAD_DATABASE",
                     comment: "Error indicating that the app could not launch because the database could not be loaded.",
                 ),
-                message: OWSLocalizedString(
-                    "APP_LAUNCH_FAILURE_ALERT_MESSAGE",
-                    comment: "Default message for the 'app launch failed' alert.",
+                // Ivy: Signal's support doesn't help with Ivy.
+                message: IvyLocalizedString(
+                    "LAUNCH_FAILURE_MESSAGE",
+                    comment: "Message when Ivy can't start. Asks the user to export a debug log and report the problem.",
                 ),
                 actions: [
                     .submitDebugLogsAndCrash,

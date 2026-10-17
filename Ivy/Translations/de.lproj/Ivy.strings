@@ -261,6 +261,9 @@
 /* Shown when the passphrase of an Ivy data file is wrong. */
 "IVY_DATA_WRONG_PASSPHRASE" = "Die Passphrase ist falsch.";
 
+/* Message when Ivy can't start. Asks the user to export a debug log and report the problem. */
+"LAUNCH_FAILURE_MESSAGE" = "Ivy kann nicht starten. Bitte speichere ein Diagnoseprotokoll und melde das Problem unter github.com/kirikakaese/Ivy/issues.";
+
 /* Item showing whether Background App Refresh is on; opens the system settings. */
 "NOTIFICATIONS_BACKGROUND_REFRESH" = "Hintergrundaktualisierung";
 
