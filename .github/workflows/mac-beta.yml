@@ -1,0 +1,102 @@
+name: Mac beta
+
+# Builds the Mac beta (signed ad hoc, see docs/MAC_BETA.md). Every push to
+# main publishes it as a pre-release; pull requests that change the beta
+# build only build it and keep the zip as a workflow artifact.
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - .github/workflows/mac-beta.yml
+      - Scripts/ivy/mac-beta.sh
+      - SignalServiceKit/Ivy/IvyMacBeta.swift
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+env:
+  XCODE_APP: /Applications/Xcode_26.6.app
+
+jobs:
+  build:
+    name: Build the Mac beta
+    runs-on: macos-26
+    timeout-minutes: 150
+    steps:
+      - name: Select Xcode
+        run: echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Download Metal toolchain
+        run: xcodebuild -downloadComponent MetalToolchain
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/Library/Caches/org.signal.libsignal
+            ~/Library/Caches/org.signal.ringrtc
+          key: deps-${{ hashFiles('Podfile.lock') }}
+
+      - name: Cache build products
+        uses: actions/cache@v4
+        with:
+          path: ~/IvyBetaDerivedData
+          key: beta-derived-data-${{ github.sha }}
+          restore-keys: |
+            beta-derived-data-
+
+      - name: Install dependencies
+        run: make dependencies
+
+      - name: Build
+        run: Scripts/ivy/mac-beta.sh build/mac-beta
+
+      - name: Keep the build
+        uses: actions/upload-artifact@v6
+        with:
+          name: Ivy-Mac-Beta
+          path: build/mac-beta
+
+      - name: Upload logs
+        if: failure() || cancelled()
+        uses: actions/upload-artifact@v6
+        with:
+          name: mac-beta-logs
+          path: ~/Library/Logs/Ivy-CI
+
+      - name: Publish the pre-release
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="mac-beta-${{ github.run_number }}"
+          SHORT_SHA="$(git rev-parse --short HEAD)"
+          cat > notes.md <<NOTES
+          Mac beta built from ${SHORT_SHA}. Signed ad hoc, without a developer certificate.
+
+          How to install and update: see [docs/MAC_BETA.md](https://github.com/${{ github.repository }}/blob/main/docs/MAC_BETA.md).
+
+          SHA-256: $(cut -d' ' -f1 build/mac-beta/Ivy-Mac-Beta.zip.sha256)
+          NOTES
+          gh release create "$TAG" build/mac-beta/Ivy-Mac-Beta.zip \
+            --prerelease \
+            --target "${{ github.sha }}" \
+            --title "Ivy Mac beta ${{ github.run_number }}" \
+            --notes-file notes.md

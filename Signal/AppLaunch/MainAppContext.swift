@@ -168,12 +168,24 @@ class MainAppContext: NSObject, AppContext {
     }
 
     func appSharedDataDirectoryPath() -> String {
+#if IVY_MAC_BETA
+        // Ivy: the Mac beta has no app group container.
+        return IvyMacBeta.dataDirectory.path
+#else
         FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: TSConstants.applicationGroup)!.path
+#endif
     }
 
     func appDatabaseBaseDirectoryPath() -> String { appSharedDataDirectoryPath() }
 
-    func appUserDefaults() -> UserDefaults { UserDefaults(suiteName: TSConstants.applicationGroup)! }
+    func appUserDefaults() -> UserDefaults {
+#if IVY_MAC_BETA
+        // Ivy: the Mac beta has no app group container.
+        return .standard
+#else
+        UserDefaults(suiteName: TSConstants.applicationGroup)!
+#endif
+    }
 
     func canPresentNotifications() -> Bool { true }
 

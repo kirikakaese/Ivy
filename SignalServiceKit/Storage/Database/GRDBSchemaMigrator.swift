@@ -4993,7 +4993,9 @@ public class GRDBSchemaMigrator {
         migrator.registerMigration(.dropTSAttachment) { tx in
             // Delete the legacy attachments folder, which is hopefully already
             // deleted.
+            // Ivy: the Mac beta has no app group container and no such folder.
             if
+                !IvyMacBeta.isEnabled,
                 let containerURL = FileManager.default.containerURL(
                     forSecurityApplicationGroupIdentifier: TSConstants.applicationGroup,
                 )
