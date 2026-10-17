@@ -11,6 +11,7 @@ on:
     paths:
       - .github/workflows/mac-beta.yml
       - Scripts/ivy/mac-beta.sh
+      - Scripts/ivy/IvyMacBeta.entitlements
       - SignalServiceKit/Ivy/IvyMacBeta.swift
   workflow_dispatch:
 

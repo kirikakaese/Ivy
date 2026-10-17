@@ -59,8 +59,11 @@ APP="$STAGE/Ivy Beta.app"
 # The extensions need the app group, which an ad hoc signature can't have.
 rm -rf "$APP/Contents/PlugIns" "$APP/Contents/Extensions"
 
-# Sign everything again ad hoc, without entitlements.
+# Sign everything again ad hoc. The app itself gets the App Sandbox (and
+# what Ivy needs inside it), so it has its own container like any Mac app;
+# entitlements that need a certificate are left out.
 codesign --force --deep --sign - "$APP"
+codesign --force --sign - --entitlements "$(dirname "$0")/IvyMacBeta.entitlements" "$APP"
 codesign --verify --deep --strict --verbose=2 "$APP"
 codesign --display --entitlements - "$APP" || true
 

@@ -22,6 +22,16 @@ public enum IvyMacBeta {
 #endif
     }
 
+    /// Whether the app's documents, caches and temporary folders belong to
+    /// the app alone. On the Mac that's only the case inside the App Sandbox.
+    public static var hasOwnContainer: Bool {
+#if targetEnvironment(macCatalyst)
+        return ProcessInfo.processInfo.environment["APP_SANDBOX_CONTAINER_ID"] != nil
+#else
+        return true
+#endif
+    }
+
     /// Where the beta keeps the keys that the regular app keeps in the
     /// keychain.
     public static let keyFile = IvyMacBetaKeyFile(directory: dataDirectory.appendingPathComponent("Keys", isDirectory: true))

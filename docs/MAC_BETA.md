@@ -2,10 +2,10 @@
 
 Until Ivy has an Apple developer certificate (needed for a signed and notarized app, Phase 7), there is a beta for the Mac. Every change merged into `main` builds a new one and publishes it as a pre-release named "Ivy Mac beta" on the [releases page](https://github.com/kirikakaese/Ivy/releases).
 
-The beta is signed ad hoc. macOS gives such apps neither an app group container nor keychain sharing, so the beta differs from the real app:
+The beta is signed ad hoc. It runs in the App Sandbox, so everything it stores is in its own container, `~/Library/Containers/io.github.kirikakaese.ivy`. macOS gives apps signed ad hoc neither an app group container nor the keychain, so the beta differs from the real app:
 
-- Its data is in `~/Library/Application Support/Ivy Beta` instead of the app group container.
-- Its database keys are in `~/Library/Application Support/Ivy Beta/Keys`, readable only by your user account, instead of the keychain (a Mac Catalyst app needs a certificate for the keychain). FileVault encrypts them with the rest of your disk.
+- Its data is in `Library/Application Support/Ivy Beta` inside the container instead of the app group container.
+- Its database keys are in `Library/Application Support/Ivy Beta/Keys` inside the container, readable only by your user account, instead of the keychain. FileVault encrypts them with the rest of your disk.
 - It has no share extension.
 - It is a separate install: the signed app will not take over the beta's data, so you link it again then.
 
@@ -30,7 +30,9 @@ Like the regular Mac app, the beta receives messages while it runs. Settings > N
 
 ## Remove
 
-Unlink the Mac on your phone (Settings > Linked Devices), delete Ivy Beta from Applications, and delete `~/Library/Application Support/Ivy Beta`, which also holds the keys.
+Unlink the Mac on your phone (Settings > Linked Devices), delete Ivy Beta from Applications, and delete `~/Library/Containers/io.github.kirikakaese.ivy`, which holds all of its data and keys.
+
+The first two betas ran outside the App Sandbox. If you tried them, also delete `~/Library/Application Support/Ivy Beta`, the Ivy log files in `~/Library/Caches/Logs`, and `~/Documents/ProfileAvatars` if it exists.
 
 ## Building it yourself
 
@@ -39,4 +41,4 @@ make dependencies
 Scripts/ivy/mac-beta.sh build/mac-beta
 ```
 
-The script builds the App Store Release configuration with the compilation condition `IVY_MAC_BETA`, removes the extensions, signs the app ad hoc and zips it. The code paths that differ are marked `IVY_MAC_BETA` (`SignalServiceKit/Ivy/IvyMacBeta.swift`, `MainAppContext`, `KeychainStorageImpl`, `GRDBSchemaMigrator`).
+The script builds the App Store Release configuration with the compilation condition `IVY_MAC_BETA`, removes the extensions, signs the app ad hoc with the App Sandbox (`Scripts/ivy/IvyMacBeta.entitlements`) and zips it. The code paths that differ are marked `IVY_MAC_BETA` (`SignalServiceKit/Ivy/IvyMacBeta.swift`, `MainAppContext`, `KeychainStorageImpl`, `GRDBSchemaMigrator`).
