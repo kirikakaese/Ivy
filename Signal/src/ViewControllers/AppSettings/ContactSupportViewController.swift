@@ -235,8 +235,9 @@ final class ContactSupportViewController: OWSTableViewController2, TextViewWithP
                 self.navigationController?.presentingViewController?.dismiss(animated: true, completion: nil)
             } catch {
                 let alertTitle = error.userErrorDescription
-                let alertMessage = OWSLocalizedString(
-                    "SUPPORT_EMAIL_ERROR_ALERT_DESCRIPTION",
+                // Ivy: Signal's support doesn't help with Ivy.
+                let alertMessage = IvyLocalizedString(
+                    "SUPPORT_REPORT_FALLBACK_MESSAGE",
                     comment: "Message for alert dialog presented when a support email failed to send",
                 )
                 OWSActionSheets.showActionSheet(title: alertTitle, message: alertMessage)

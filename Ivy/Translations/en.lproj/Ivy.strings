@@ -198,6 +198,9 @@
 /* Button below the debug log preview that exports the log. */
 "DEBUG_LOG_EXPORT_BUTTON" = "Export";
 
+/* Message of an error notification for testers. Embeds {{ error description }}. */
+"ERROR_NOTIFICATION_MESSAGE_FORMAT" = "Please help improve Ivy by reporting this error with a debug log at github.com/kirikakaese/Ivy/issues: %@";
+
 /* Footer of the debug log section in Help, explaining that logs stay on the device. */
 "HELP_DEBUG_LOG_FOOTER" = "Debug logs stay on this device. Export them to look into a problem or to share them with someone you trust.";
 
@@ -261,8 +264,17 @@
 /* Shown when the passphrase of an Ivy data file is wrong. */
 "IVY_DATA_WRONG_PASSPHRASE" = "The passphrase is wrong.";
 
+/* Message when Ivy can't start because its registration state is broken. */
+"LAUNCH_FAILURE_CORRUPT_REGISTRATION_MESSAGE" = "Please save a debug log and report the problem at github.com/kirikakaese/Ivy/issues.";
+
+/* Message when Ivy crashed during the previous launch. */
+"LAUNCH_FAILURE_LAST_LAUNCH_CRASHED_MESSAGE" = "Ivy had a problem while opening. Please save a debug log and report the problem at github.com/kirikakaese/Ivy/issues.";
+
 /* Message when Ivy can't start. Asks the user to export a debug log and report the problem. */
 "LAUNCH_FAILURE_MESSAGE" = "Ivy can't start. Please save a debug log and report the problem at github.com/kirikakaese/Ivy/issues.";
+
+/* Message when the data transferred from the old device could not be restored. */
+"LAUNCH_FAILURE_RESTORE_FAILED_MESSAGE" = "The data transferred from your old device could not be restored. Please save a debug log and report the problem at github.com/kirikakaese/Ivy/issues. If you reinstall Ivy, your message history may be lost.";
 
 /* Item showing whether Background App Refresh is on; opens the system settings. */
 "NOTIFICATIONS_BACKGROUND_REFRESH" = "Background App Refresh";
@@ -374,3 +386,9 @@
 
 /* Notification action that reminds the user again tomorrow morning. */
 "REMINDER_TOMORROW" = "Tomorrow";
+
+/* Shown when the problem report page can't be opened. Tells the user where to report problems. */
+"SUPPORT_REPORT_FALLBACK_MESSAGE" = "Please report the problem at github.com/kirikakaese/Ivy/issues.";
+
+/* Default title of a problem report on Ivy's issue page. */
+"SUPPORT_REQUEST_TITLE" = "Problem report";

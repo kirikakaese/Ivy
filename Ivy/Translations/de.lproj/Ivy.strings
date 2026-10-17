@@ -198,6 +198,9 @@
 /* Button below the debug log preview that exports the log. */
 "DEBUG_LOG_EXPORT_BUTTON" = "Exportieren";
 
+/* Message of an error notification for testers. Embeds {{ error description }}. */
+"ERROR_NOTIFICATION_MESSAGE_FORMAT" = "Bitte hilf, Ivy zu verbessern, und melde diesen Fehler mit einem Diagnoseprotokoll unter github.com/kirikakaese/Ivy/issues: %@";
+
 /* Footer of the debug log section in Help, explaining that logs stay on the device. */
 "HELP_DEBUG_LOG_FOOTER" = "Debug-Protokolle bleiben auf diesem Gerät. Exportiere sie, um einem Problem nachzugehen oder sie mit jemandem zu teilen, dem du vertraust.";
 
@@ -261,8 +264,17 @@
 /* Shown when the passphrase of an Ivy data file is wrong. */
 "IVY_DATA_WRONG_PASSPHRASE" = "Die Passphrase ist falsch.";
 
+/* Message when Ivy can't start because its registration state is broken. */
+"LAUNCH_FAILURE_CORRUPT_REGISTRATION_MESSAGE" = "Bitte speichere ein Diagnoseprotokoll und melde das Problem unter github.com/kirikakaese/Ivy/issues.";
+
+/* Message when Ivy crashed during the previous launch. */
+"LAUNCH_FAILURE_LAST_LAUNCH_CRASHED_MESSAGE" = "Beim Öffnen von Ivy gab es ein Problem. Bitte speichere ein Diagnoseprotokoll und melde das Problem unter github.com/kirikakaese/Ivy/issues.";
+
 /* Message when Ivy can't start. Asks the user to export a debug log and report the problem. */
 "LAUNCH_FAILURE_MESSAGE" = "Ivy kann nicht starten. Bitte speichere ein Diagnoseprotokoll und melde das Problem unter github.com/kirikakaese/Ivy/issues.";
+
+/* Message when the data transferred from the old device could not be restored. */
+"LAUNCH_FAILURE_RESTORE_FAILED_MESSAGE" = "Die von deinem alten Gerät übertragenen Daten konnten nicht wiederhergestellt werden. Bitte speichere ein Diagnoseprotokoll und melde das Problem unter github.com/kirikakaese/Ivy/issues. Wenn du Ivy neu installierst, kann dein Nachrichtenverlauf verloren gehen.";
 
 /* Item showing whether Background App Refresh is on; opens the system settings. */
 "NOTIFICATIONS_BACKGROUND_REFRESH" = "Hintergrundaktualisierung";
@@ -374,3 +386,9 @@
 
 /* Notification action that reminds the user again tomorrow morning. */
 "REMINDER_TOMORROW" = "Morgen";
+
+/* Shown when the problem report page can't be opened. Tells the user where to report problems. */
+"SUPPORT_REPORT_FALLBACK_MESSAGE" = "Bitte melde das Problem unter github.com/kirikakaese/Ivy/issues.";
+
+/* Default title of a problem report on Ivy's issue page. */
+"SUPPORT_REQUEST_TITLE" = "Problembericht";
