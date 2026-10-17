@@ -355,6 +355,7 @@ extension ChatListViewController: DatabaseChangeDelegate {
 
         if !databaseChanges.threadUniqueIdsForChatListUpdate.isEmpty {
             self.loadCoordinator.scheduleLoad(updatedThreadIds: databaseChanges.threadUniqueIdsForChatListUpdate)
+            ivyChatsDidChange() // Ivy: folder unread counts
         }
     }
 

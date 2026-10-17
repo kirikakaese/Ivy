@@ -56,6 +56,14 @@ public final class ChatFolderManager {
         return try? store.getCodableValue(forKey: Self.key(id), transaction: tx)
     }
 
+    /// The folder to show in the chat list, or nil for all chats.
+    public func selectableFolder(id: Data?, tx: DBReadTransaction) -> ChatFolder? {
+        guard let id, let folder = folder(id: id, tx: tx), !folder.isDeleted, folder.kind == .custom else {
+            return nil
+        }
+        return folder
+    }
+
     /// Whether the folder list should be shown: there is at least one folder
     /// besides "All chats".
     public func hasCustomFolders(tx: DBReadTransaction) -> Bool {
@@ -264,6 +272,21 @@ public enum ChatFolderChats {
                 ChatFolderChat(threadId: row[0], isGroup: row[1], isUnread: row[2], isMuted: row[3])
             }
         }
+    }
+
+    /// The chats of `threadIds` that belong in `folder`, in the same order.
+    /// Chats in `required` are always kept.
+    public static func threadIds(
+        _ threadIds: [String],
+        in folder: ChatFolder?,
+        keeping required: Set<String>,
+        tx: DBReadTransaction,
+    ) -> [String] {
+        guard let folder, folder.kind == .custom else {
+            return threadIds
+        }
+        let members = Set(inboxChats(tx: tx).filter { folder.contains($0) }.map(\.threadId))
+        return threadIds.filter { members.contains($0) || required.contains($0) }
     }
 
     /// The number of chats with unread messages in each folder.

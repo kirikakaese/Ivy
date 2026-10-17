@@ -72,10 +72,16 @@ public class CLVLoader {
         } else {
             let pinnedThreadManager = DependenciesBridge.shared.pinnedThreadManager
             pinnedThreadUniqueIds = pinnedThreadManager.pinnedThreads(tx: transaction).map(\.uniqueId)
-            visibleThreadUniqueIds = threadFinder.visibleInboxThreadUniqueIds(
-                filteredBy: viewInfo.inboxFilter,
-                requiredVisibleThreadIds: viewInfo.requiredVisibleThreadIds,
-                transaction: transaction,
+            visibleThreadUniqueIds = ChatFolderChats.threadIds(
+                threadFinder.visibleInboxThreadUniqueIds(
+                    filteredBy: viewInfo.inboxFilter,
+                    requiredVisibleThreadIds: viewInfo.requiredVisibleThreadIds,
+                    transaction: transaction,
+                ),
+                // Ivy: only the chats of the selected folder
+                in: viewInfo.ivyChatFolder,
+                keeping: viewInfo.requiredVisibleThreadIds,
+                tx: transaction,
             )
         }
 

@@ -33,6 +33,111 @@
 /* Item that lists the licenses of the libraries Ivy uses. */
 "ABOUT_THIRD_PARTY_LICENSES" = "Third-Party Licenses";
 
+/* Button that opens the chat folder settings. */
+"CHAT_FOLDERS_EDIT" = "Edit Folders";
+
+/* Footer of the list of chat folders, explaining that folders sync with the user's other devices. */
+"CHAT_FOLDERS_FOOTER" = "Folders appear on all your linked devices, also in other apps that support chat folders.";
+
+/* Shown when the user tries to create more chat folders than allowed. Embeds {{ the maximum number of folders }}. */
+"CHAT_FOLDERS_LIMIT_FORMAT" = "You can create up to %d folders.";
+
+/* Item that opens the screen to change the order of chat folders. */
+"CHAT_FOLDERS_REORDER" = "Change Order";
+
+/* Header of the list of chat folders. */
+"CHAT_FOLDERS_SECTION" = "Folders";
+
+/* Header of the list of suggested chat folders. */
+"CHAT_FOLDERS_SUGGESTED" = "Suggested Folders";
+
+/* Title of the chat folder settings. */
+"CHAT_FOLDERS_TITLE" = "Chat Folders";
+
+/* Context menu of a chat: submenu that adds the chat to a folder or removes it. */
+"CHAT_FOLDER_ADD_CHAT" = "Folders";
+
+/* Item that opens a list to choose the chats of a folder. */
+"CHAT_FOLDER_ADD_CHATS" = "Add Chats";
+
+/* Name of the chat folder that shows every chat. */
+"CHAT_FOLDER_ALL_CHATS" = "All Chats";
+
+/* Chat folder option: the folder contains all group chats. */
+"CHAT_FOLDER_ALL_GROUPS" = "All Group Chats";
+
+/* Chat folder option: the folder contains all 1:1 chats. */
+"CHAT_FOLDER_ALL_INDIVIDUAL" = "All 1:1 Chats";
+
+/* Number of chats added to a folder. Embeds {{ the number of chats }}. */
+"CHAT_FOLDER_CHAT_COUNT_FORMAT" = "Chats: %d";
+
+/* Title of the list to choose chats for a folder. */
+"CHAT_FOLDER_CHOOSE_CHATS" = "Choose Chats";
+
+/* Item that creates a new chat folder. */
+"CHAT_FOLDER_CREATE" = "Create a Folder";
+
+/* Item that deletes a chat folder. */
+"CHAT_FOLDER_DELETE" = "Delete Folder";
+
+/* Message of the confirmation before deleting a chat folder. */
+"CHAT_FOLDER_DELETE_CONFIRM_MESSAGE" = "The chats in this folder stay in All Chats. The folder is also deleted on your linked devices.";
+
+/* Title of the confirmation before deleting a chat folder. */
+"CHAT_FOLDER_DELETE_CONFIRM_TITLE" = "Delete this folder?";
+
+/* Action that opens the settings of one chat folder. */
+"CHAT_FOLDER_EDIT" = "Edit Folder";
+
+/* Header of the chats that a folder leaves out. */
+"CHAT_FOLDER_EXCLUDED" = "Excluded Chats";
+
+/* Item that opens a list to choose chats that a folder leaves out. */
+"CHAT_FOLDER_EXCLUDE_CHATS" = "Exclude Chats";
+
+/* Header of the chats that a folder contains. */
+"CHAT_FOLDER_INCLUDED" = "Included Chats";
+
+/* Footer of the chats that a folder contains. */
+"CHAT_FOLDER_INCLUDED_FOOTER" = "Choose chats or include all 1:1 or group chats.";
+
+/* Action that marks every chat in a folder as read. */
+"CHAT_FOLDER_MARK_READ" = "Mark All as Read";
+
+/* Action that mutes every chat in a folder. */
+"CHAT_FOLDER_MUTE" = "Mute All";
+
+/* Header of the name field of a chat folder. */
+"CHAT_FOLDER_NAME" = "Name";
+
+/* Placeholder of the name field of a chat folder. */
+"CHAT_FOLDER_NAME_PLACEHOLDER" = "Folder name";
+
+/* Chat folder option: the folder only shows chats with unread messages. */
+"CHAT_FOLDER_ONLY_UNREAD" = "Only Unread Chats";
+
+/* Header of the options of a chat folder. */
+"CHAT_FOLDER_OPTIONS" = "Options";
+
+/* Chat folder option: the folder shows muted chats. */
+"CHAT_FOLDER_SHOW_MUTED" = "Show Muted Chats";
+
+/* Name of the suggested chat folder with all group chats. */
+"CHAT_FOLDER_SUGGESTED_GROUPS" = "Groups";
+
+/* Name of the suggested chat folder with all 1:1 chats. */
+"CHAT_FOLDER_SUGGESTED_INDIVIDUAL" = "1:1 Chats";
+
+/* Name of the suggested chat folder with unread chats. */
+"CHAT_FOLDER_SUGGESTED_UNREAD" = "Unread";
+
+/* Action that unmutes every chat in a folder. */
+"CHAT_FOLDER_UNMUTE" = "Unmute All";
+
+/* Accessibility value of a chat folder tab. Embeds {{ the number of chats with unread messages }}. */
+"CHAT_FOLDER_UNREAD_COUNT_FORMAT" = "Unread chats: %d";
+
 /* Button below the debug log preview that exports the log. */
 "DEBUG_LOG_EXPORT_BUTTON" = "Export";
 
@@ -71,3 +176,9 @@
 
 /* Footer of the 'Open at Login' switch on the Mac. */
 "NOTIFICATIONS_OPEN_AT_LOGIN_FOOTER" = "Ivy receives messages only while it is running. Open it at login so that messages arrive as soon as you log in to your Mac.";
+
+/* Context menu action that moves a pinned chat down. */
+"PINNED_CHAT_MOVE_DOWN" = "Move Down";
+
+/* Context menu action that moves a pinned chat up. */
+"PINNED_CHAT_MOVE_UP" = "Move Up";

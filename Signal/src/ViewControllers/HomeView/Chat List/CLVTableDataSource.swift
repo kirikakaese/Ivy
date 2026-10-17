@@ -123,6 +123,7 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
         tableView.register(ArchivedConversationsCell.self)
         tableView.register(ChatListFilterFooterCell.self)
         tableView.tableFooterView = UIView()
+        ivyEnablePinnedChatDragging() // Ivy: rearrange pinned chats
     }
 
     func threadViewModel(threadUniqueId: String) -> ThreadViewModel {
@@ -442,7 +443,9 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
                 actionProvider: { [weak chatListViewController] _ in
                     guard let chatListViewController else { return nil }
                     let actions = chatListViewController.contextMenuActions(threadViewModel: threadViewModel)
-                    return UIMenu(children: actions)
+                    // Ivy: chat folders and pinned chat order
+                    let ivyActions = chatListViewController.ivyContextMenuElements(threadViewModel: threadViewModel)
+                    return UIMenu(children: ivyActions + actions)
                 },
             )
         case .backupExportProgressView:

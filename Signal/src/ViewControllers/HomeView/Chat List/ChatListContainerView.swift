@@ -23,7 +23,30 @@ final class ChatListContainerView: UIView {
         didSet {
             guard oldValue != tableViewHorizontalInset else { return }
             tableViewHorizontalEdgeConstraints.forEach { $0.constant = tableViewHorizontalInset }
+            tableViewHorizontalEdgeConstraints.first?.constant += ivySidebarWidth // Ivy: chat folder sidebar
         }
+    }
+
+    // MARK: Ivy: chat folder sidebar on iPad and Mac
+
+    private(set) var ivySidebar: UIView?
+    private var ivySidebarWidth: CGFloat { ivySidebar?.intrinsicContentSize.width ?? 0 }
+
+    /// Shows `sidebar` next to the chats, or removes the sidebar.
+    func setIvySidebar(_ sidebar: UIView?) {
+        guard sidebar !== ivySidebar else { return }
+        ivySidebar?.removeFromSuperview()
+        ivySidebar = sidebar
+        if let sidebar {
+            addSubview(sidebar)
+            sidebar.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                sidebar.leadingAnchor.constraint(equalTo: leadingAnchor),
+                sidebar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+                sidebar.bottomAnchor.constraint(equalTo: bottomAnchor),
+            ])
+        }
+        tableViewHorizontalEdgeConstraints.first?.constant = tableViewHorizontalInset + ivySidebarWidth
     }
 
     private var tableViewHorizontalEdgeConstraints: [NSLayoutConstraint] = []

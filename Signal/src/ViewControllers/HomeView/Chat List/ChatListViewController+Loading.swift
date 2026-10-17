@@ -110,6 +110,7 @@ extension ChatListViewController {
             .difference(from: previousRenderState.sections)
             .batchedChanges()
         let isChangingFilter = previousRenderState.viewInfo.inboxFilter != renderState.viewInfo.inboxFilter
+            || previousRenderState.viewInfo.ivyChatFolder?.id != renderState.viewInfo.ivyChatFolder?.id // Ivy: chat folders
 
         let tableView = self.tableView
         let threadViewModelCache = self.threadViewModelCache
@@ -290,6 +291,7 @@ public class CLVLoadCoordinator {
             shouldBackupExportProgressViewBeVisible: Bool,
             shouldLocalFileBackupRestoreProgressViewBeVisible: Bool,
             shouldLocalFileBackupExportProgressViewBeVisible: Bool,
+            ivyChatFolderId: Data?, // Ivy: chat folders
             lastViewInfo: CLVViewInfo,
             transaction: DBReadTransaction,
         ) -> CLVLoadInfo {
@@ -305,12 +307,17 @@ public class CLVLoadCoordinator {
                 shouldBackupExportProgressViewBeVisible: shouldBackupExportProgressViewBeVisible,
                 shouldLocalFileBackupRestoreProgressViewBeVisible: shouldLocalFileBackupRestoreProgressViewBeVisible,
                 shouldLocalFileBackupExportProgressViewBeVisible: shouldLocalFileBackupExportProgressViewBeVisible,
+                ivyChatFolderId: ivyChatFolderId, // Ivy: chat folders
                 transaction: transaction,
             )
 
             if shouldResetAll {
                 return CLVLoadInfo(viewInfo: viewInfo, loadType: .resetAll)
-            } else if !updatedThreadIds.isEmpty || viewInfo.inboxFilter != lastViewInfo.inboxFilter {
+            } else if
+                !updatedThreadIds.isEmpty
+                || viewInfo.inboxFilter != lastViewInfo.inboxFilter
+                || viewInfo.ivyChatFolder != lastViewInfo.ivyChatFolder // Ivy: chat folders
+            {
                 return CLVLoadInfo(viewInfo: viewInfo, loadType: .incrementalDiff(updatedThreadIds: updatedThreadIds))
             } else if viewInfo != lastViewInfo {
                 return CLVLoadInfo(viewInfo: viewInfo, loadType: .incrementalWithoutThreadUpdates)
@@ -408,6 +415,7 @@ public class CLVLoadCoordinator {
                 shouldBackupExportProgressViewBeVisible: viewController.viewState.backupExportProgressView.shouldBeVisible,
                 shouldLocalFileBackupRestoreProgressViewBeVisible: viewController.viewState.localFileBackupRestoreProgressView.shouldBeVisible,
                 shouldLocalFileBackupExportProgressViewBeVisible: viewController.viewState.localFileBackupExportProgressView.shouldBeVisible,
+                ivyChatFolderId: viewController.viewState.ivyChatFolderId, // Ivy: chat folders
                 lastViewInfo: viewController.renderState.viewInfo,
                 transaction: transaction,
             )

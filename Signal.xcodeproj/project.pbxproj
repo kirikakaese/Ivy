@@ -4175,6 +4175,13 @@
 		6D6596973DECCED5C7068001 /* ChatFolderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9775DD7ABAE348516965A7 /* ChatFolderTest.swift */; };
 		3519F5C7E0C3E38FFDF1FB67 /* ChatFolderManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B655EED9D79A1C325955CA4B /* ChatFolderManagerTest.swift */; };
 		4C117AA3E620C8F573849DB6 /* IvyStorageServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D97BD6AF16E94BE0BA2690 /* IvyStorageServiceTest.swift */; };
+		30B826606242C737B3B744C8 /* ChatFolderBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3AB589D66C90E9FA23B39D4 /* ChatFolderBar.swift */; };
+		A0EC4A789107403623CA1CF4 /* ChatListViewController+ChatFolders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46BB62C0053FD933E3FFAF02 /* ChatListViewController+ChatFolders.swift */; };
+		D64411C744040C1FC2C9F9DD /* ChatFoldersSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE91F361622F1C29D797A7DF /* ChatFoldersSettingsViewController.swift */; };
+		DBFA16B9E7828D64CCF0915D /* ChatFolderEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862127934C791B7BC2BE5F37 /* ChatFolderEditorViewController.swift */; };
+		3EF80573D5C5C4A049468139 /* ChatListViewController+PinnedOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FAD4699DB9180A3E612E89 /* ChatListViewController+PinnedOrder.swift */; };
+		F316CC5D68CC838A248A5C8A /* PinnedChatOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BACFFE6CE72FA16C437079DA /* PinnedChatOrder.swift */; };
+		0903888A0731A1AAB5B02E61 /* PinnedChatOrderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189EA5908D30EB7E6343B3FD /* PinnedChatOrderTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8652,6 +8659,13 @@
 		EA9775DD7ABAE348516965A7 /* ChatFolderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderTest.swift; sourceTree = "<group>"; };
 		B655EED9D79A1C325955CA4B /* ChatFolderManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderManagerTest.swift; sourceTree = "<group>"; };
 		12D97BD6AF16E94BE0BA2690 /* IvyStorageServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyStorageServiceTest.swift; sourceTree = "<group>"; };
+		F3AB589D66C90E9FA23B39D4 /* ChatFolderBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderBar.swift; sourceTree = "<group>"; };
+		46BB62C0053FD933E3FFAF02 /* ChatListViewController+ChatFolders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatListViewController+ChatFolders.swift"; sourceTree = "<group>"; };
+		FE91F361622F1C29D797A7DF /* ChatFoldersSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFoldersSettingsViewController.swift; sourceTree = "<group>"; };
+		862127934C791B7BC2BE5F37 /* ChatFolderEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderEditorViewController.swift; sourceTree = "<group>"; };
+		37FAD4699DB9180A3E612E89 /* ChatListViewController+PinnedOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatListViewController+PinnedOrder.swift"; sourceTree = "<group>"; };
+		BACFFE6CE72FA16C437079DA /* PinnedChatOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedChatOrder.swift; sourceTree = "<group>"; };
+		189EA5908D30EB7E6343B3FD /* PinnedChatOrderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedChatOrderTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16199,6 +16213,7 @@
 				8E00F1C5D0F2DF20E476BF00 /* IvyLocalizedString.swift */,
 				74CCD38EC8CFFC9A1E961706 /* IvyDonations.swift */,
 				CB6201C2440C0A9F73820858 /* ChatFolders */,
+				BACFFE6CE72FA16C437079DA /* PinnedChatOrder.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16212,6 +16227,7 @@
 				EA9775DD7ABAE348516965A7 /* ChatFolderTest.swift */,
 				B655EED9D79A1C325955CA4B /* ChatFolderManagerTest.swift */,
 				12D97BD6AF16E94BE0BA2690 /* IvyStorageServiceTest.swift */,
+				189EA5908D30EB7E6343B3FD /* PinnedChatOrderTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16239,6 +16255,8 @@
 				3786016D3CC95274F67DF435 /* AboutIvyViewController.swift */,
 				825ADF136594B1BC4E797938 /* IvyAcknowledgementsViewController.swift */,
 				49D69353B8FF23EB372F639F /* IvyMessageDeliverySettings.swift */,
+				7C8C9D4C368E13D630A5B3BA /* ChatFolders */,
+				092E24E121CA5903C4EC2FC4 /* PinnedChats */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16261,6 +16279,25 @@
 				91D07DD224A4A1AE759C551F /* IvyStorageService.proto */,
 			);
 			path = ChatFolders;
+			sourceTree = "<group>";
+		};
+		7C8C9D4C368E13D630A5B3BA /* ChatFolders */ = {
+			isa = PBXGroup;
+			children = (
+				F3AB589D66C90E9FA23B39D4 /* ChatFolderBar.swift */,
+				46BB62C0053FD933E3FFAF02 /* ChatListViewController+ChatFolders.swift */,
+				FE91F361622F1C29D797A7DF /* ChatFoldersSettingsViewController.swift */,
+				862127934C791B7BC2BE5F37 /* ChatFolderEditorViewController.swift */,
+			);
+			path = ChatFolders;
+			sourceTree = "<group>";
+		};
+		092E24E121CA5903C4EC2FC4 /* PinnedChats */ = {
+			isa = PBXGroup;
+			children = (
+				37FAD4699DB9180A3E612E89 /* ChatListViewController+PinnedOrder.swift */,
+			);
+			path = PinnedChats;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -19520,6 +19557,11 @@
 				E18F31BDEC0A84CA7400B313 /* AboutIvyViewController.swift in Sources */,
 				8308AA4BC70DDC8927572B4C /* IvyAcknowledgementsViewController.swift in Sources */,
 				6037CED95C21886FC324446B /* IvyMessageDeliverySettings.swift in Sources */,
+				30B826606242C737B3B744C8 /* ChatFolderBar.swift in Sources */,
+				A0EC4A789107403623CA1CF4 /* ChatListViewController+ChatFolders.swift in Sources */,
+				D64411C744040C1FC2C9F9DD /* ChatFoldersSettingsViewController.swift in Sources */,
+				DBFA16B9E7828D64CCF0915D /* ChatFolderEditorViewController.swift in Sources */,
+				3EF80573D5C5C4A049468139 /* ChatListViewController+PinnedOrder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20865,6 +20907,7 @@
 				5AD7AA92E3C5DFC3A0335BFF /* ChatFolderManager.swift in Sources */,
 				90319EA6DD0F3ABAEC8E1360 /* IvyStorageService.swift in Sources */,
 				2B5AA8D38314064857F70DFA /* StorageServiceChatFolderRecordUpdater.swift in Sources */,
+				F316CC5D68CC838A248A5C8A /* PinnedChatOrder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21141,6 +21184,7 @@
 				6D6596973DECCED5C7068001 /* ChatFolderTest.swift in Sources */,
 				3519F5C7E0C3E38FFDF1FB67 /* ChatFolderManagerTest.swift in Sources */,
 				4C117AA3E620C8F573849DB6 /* IvyStorageServiceTest.swift in Sources */,
+				0903888A0731A1AAB5B02E61 /* PinnedChatOrderTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

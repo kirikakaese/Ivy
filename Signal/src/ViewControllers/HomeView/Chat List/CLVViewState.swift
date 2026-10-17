@@ -37,6 +37,7 @@ class CLVViewState {
 
     let chatListMode: ChatListMode
     var inboxFilter: InboxFilter?
+    var ivyChatFolderId: Data? // Ivy: the selected chat folder
     var shouldBeUpdatingView = false
     var shouldFocusSearchOnAppear = false
     var isViewVisible = false

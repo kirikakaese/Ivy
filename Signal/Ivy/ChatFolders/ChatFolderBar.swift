@@ -1,0 +1,198 @@
+//
+// Copyright 2026 kiri
+// SPDX-License-Identifier: AGPL-3.0-only
+//
+
+import SignalServiceKit
+import SignalUI
+
+/// The folder list of the chat list: scrollable tabs above the chats on
+/// iPhone, a sidebar next to them on iPad and Mac.
+final class ChatFolderBar: UIView {
+
+    enum Layout {
+        case tabs
+        case sidebar
+    }
+
+    struct Item: Equatable {
+        let folder: ChatFolder
+        let unreadCount: Int
+    }
+
+    static let sidebarWidth: CGFloat = 84
+
+    var onSelect: ((ChatFolder) -> Void)?
+    var menuProvider: ((ChatFolder) -> UIMenu?)?
+    var onEditFolders: (() -> Void)?
+
+    private(set) var layout: Layout
+    private(set) var items: [Item] = []
+    private(set) var selectedFolderId: Data?
+
+    private let scrollView = UIScrollView()
+    private let stackView = UIStackView()
+
+    init(layout: Layout) {
+        self.layout = layout
+        super.init(frame: .zero)
+
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.showsVerticalScrollIndicator = false
+        addSubview(scrollView)
+        scrollView.addSubview(stackView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            stackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+        ])
+        applyLayout()
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func setLayout(_ layout: Layout) {
+        guard layout != self.layout else {
+            return
+        }
+        self.layout = layout
+        applyLayout()
+        reloadButtons()
+    }
+
+    func update(items: [Item], selectedFolderId: Data?) {
+        guard items != self.items || selectedFolderId != self.selectedFolderId else {
+            return
+        }
+        self.items = items
+        self.selectedFolderId = selectedFolderId
+        reloadButtons()
+    }
+
+    override var intrinsicContentSize: CGSize {
+        switch layout {
+        case .tabs:
+            return CGSize(width: UIView.noIntrinsicMetric, height: 52)
+        case .sidebar:
+            return CGSize(width: Self.sidebarWidth, height: UIView.noIntrinsicMetric)
+        }
+    }
+
+    // MARK: - Private
+
+    private var stackConstraints: [NSLayoutConstraint] = []
+
+    private func applyLayout() {
+        NSLayoutConstraint.deactivate(stackConstraints)
+        switch layout {
+        case .tabs:
+            stackView.axis = .horizontal
+            stackView.spacing = 8
+            stackView.alignment = .center
+            stackView.isLayoutMarginsRelativeArrangement = true
+            stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
+            scrollView.alwaysBounceHorizontal = true
+            scrollView.alwaysBounceVertical = false
+            stackConstraints = [stackView.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor)]
+        case .sidebar:
+            stackView.axis = .vertical
+            stackView.spacing = 4
+            stackView.alignment = .fill
+            stackView.isLayoutMarginsRelativeArrangement = true
+            stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6)
+            scrollView.alwaysBounceHorizontal = false
+            scrollView.alwaysBounceVertical = true
+            stackConstraints = [stackView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)]
+        }
+        NSLayoutConstraint.activate(stackConstraints)
+        invalidateIntrinsicContentSize()
+    }
+
+    private func reloadButtons() {
+        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        for item in items {
+            stackView.addArrangedSubview(button(for: item))
+        }
+        stackView.addArrangedSubview(editButton())
+    }
+
+    private func button(for item: Item) -> UIButton {
+        let isSelected = item.folder.id == selectedFolderId
+        var configuration: UIButton.Configuration = isSelected ? .filled() : .plain()
+        configuration.baseBackgroundColor = .Signal.secondaryFill
+        configuration.baseForegroundColor = isSelected ? .Signal.label : .Signal.secondaryLabel
+        configuration.cornerStyle = .capsule
+
+        let title = Self.title(for: item.folder)
+        var attributedTitle = AttributedString(title)
+        attributedTitle.font = UIFont.dynamicTypeSubheadlineClamped.semibold()
+        if item.unreadCount > 0 {
+            var count = AttributedString(layout == .tabs ? "  \(item.unreadCount)" : "\n\(item.unreadCount)")
+            count.font = UIFont.dynamicTypeCaption1Clamped.semibold()
+            count.foregroundColor = UIColor.Signal.accent
+            attributedTitle += count
+        }
+        configuration.attributedTitle = attributedTitle
+
+        switch layout {
+        case .tabs:
+            configuration.contentInsets = NSDirectionalEdgeInsets(top: 6, leading: 14, bottom: 6, trailing: 14)
+        case .sidebar:
+            configuration.image = UIImage(systemName: item.folder.kind == .allChats ? "bubble.left.and.bubble.right" : "folder")
+            configuration.imagePlacement = .top
+            configuration.imagePadding = 4
+            configuration.titleAlignment = .center
+            configuration.titleLineBreakMode = .byTruncatingTail
+            configuration.cornerStyle = .large
+            configuration.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 4, bottom: 8, trailing: 4)
+        }
+
+        let folder = item.folder
+        let button = UIButton(configuration: configuration, primaryAction: UIAction { [weak self] _ in
+            self?.onSelect?(folder)
+        })
+        button.menu = menuProvider?(folder)
+        button.isSelected = isSelected
+        button.accessibilityLabel = title
+        if item.unreadCount > 0 {
+            button.accessibilityValue = String.localizedStringWithFormat(
+                IvyLocalizedString("CHAT_FOLDER_UNREAD_COUNT_FORMAT", comment: "Accessibility value of a chat folder tab. Embeds {{ the number of chats with unread messages }}."),
+                item.unreadCount,
+            )
+        }
+        if isSelected {
+            button.accessibilityTraits.insert(.selected)
+        }
+        return button
+    }
+
+    private func editButton() -> UIButton {
+        var configuration = UIButton.Configuration.plain()
+        configuration.image = UIImage(systemName: "ellipsis.circle")
+        configuration.baseForegroundColor = .Signal.secondaryLabel
+        let button = UIButton(configuration: configuration, primaryAction: UIAction { [weak self] _ in
+            self?.onEditFolders?()
+        })
+        button.accessibilityLabel = IvyLocalizedString("CHAT_FOLDERS_EDIT", comment: "Button that opens the chat folder settings.")
+        return button
+    }
+
+    static func title(for folder: ChatFolder) -> String {
+        switch folder.kind {
+        case .allChats:
+            return IvyLocalizedString("CHAT_FOLDER_ALL_CHATS", comment: "Name of the chat folder that shows every chat.")
+        case .custom:
+            return folder.name
+        }
+    }
+}

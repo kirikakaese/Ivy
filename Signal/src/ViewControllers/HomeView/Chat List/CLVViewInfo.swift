@@ -19,11 +19,14 @@ struct CLVViewInfo: Equatable {
     let shouldLocalFileBackupExportProgressViewBeVisible: Bool
     let lastSelectedThreadId: String?
     let requiredVisibleThreadIds: Set<String>
+    // Ivy: the selected chat folder, nil for all chats
+    var ivyChatFolder: ChatFolder?
 
     var hasArchivedThreadsRow: Bool {
         chatListMode == .inbox
             && !isMultiselectActive
             && inboxFilter == .unfiltered
+            && ivyChatFolder == nil // Ivy: chat folders
             && archiveCount > 0
     }
 
@@ -54,13 +57,20 @@ struct CLVViewInfo: Equatable {
         shouldBackupExportProgressViewBeVisible: Bool,
         shouldLocalFileBackupRestoreProgressViewBeVisible: Bool,
         shouldLocalFileBackupExportProgressViewBeVisible: Bool,
+        ivyChatFolderId: Data? = nil, // Ivy: chat folders
         transaction: DBReadTransaction,
     ) -> CLVViewInfo {
-        let requiredThreadIds: Set<String> = switch (inboxFilter, lastSelectedThreadId) {
+        // Ivy: chat folders
+        let ivyChatFolder = ChatFolderManager.shared.selectableFolder(id: ivyChatFolderId, tx: transaction)
+        var requiredThreadIds: Set<String> = switch (inboxFilter, lastSelectedThreadId) {
         case (.unread, .some(let lastSelectedThreadId)):
             [lastSelectedThreadId]
         case (.unread, nil), (.unfiltered, _):
             []
+        }
+        // Ivy: keep the open chat visible in a folder
+        if ivyChatFolder != nil, let lastSelectedThreadId {
+            requiredThreadIds.insert(lastSelectedThreadId)
         }
         let threadFinder = ThreadFinder()
         let archiveCount = threadFinder.visibleThreadCount(isArchived: true, transaction: transaction)
@@ -78,6 +88,7 @@ struct CLVViewInfo: Equatable {
             shouldLocalFileBackupExportProgressViewBeVisible: shouldLocalFileBackupExportProgressViewBeVisible,
             lastSelectedThreadId: lastSelectedThreadId,
             requiredVisibleThreadIds: requiredThreadIds,
+            ivyChatFolder: ivyChatFolder, // Ivy: chat folders
         )
     }
 }
