@@ -222,12 +222,12 @@ extension StorageService.StorageItem {
 }
 
 extension IvyStorageProtos_ChatFolderRecord: Codable {
-    public init(from decoder: Swift.Decoder) throws {
+    init(from decoder: Swift.Decoder) throws {
         let data = try decoder.singleValueContainer().decode(Data.self)
         try self.init(serializedBytes: data)
     }
 
-    public func encode(to encoder: Swift.Encoder) throws {
+    func encode(to encoder: Swift.Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(try serializedData())
     }

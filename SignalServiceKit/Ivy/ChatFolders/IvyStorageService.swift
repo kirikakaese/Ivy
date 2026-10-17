@@ -9,57 +9,57 @@ import SwiftProtobuf
 // SwiftProtobuf messages for IvyStorageService.proto, written in the same
 // shape as the code that protoc-gen-swift produces for upstream protos.
 
-public struct IvyStorageProtos_StorageRecord: Sendable {
-    public var chatFolder: IvyStorageProtos_ChatFolderRecord?
+struct IvyStorageProtos_StorageRecord: Sendable {
+    var chatFolder: IvyStorageProtos_ChatFolderRecord?
 
-    public var unknownFields = SwiftProtobuf.UnknownStorage()
+    var unknownFields = SwiftProtobuf.UnknownStorage()
 
-    public init() {}
+    init() {}
 }
 
-public enum IvyStorageProtos_KeyType {
+enum IvyStorageProtos_KeyType {
     /// `ManifestRecord.Key.Type.CHAT_FOLDER`
-    public static let chatFolder = 8
+    static let chatFolder = 8
 }
 
-public struct IvyStorageProtos_Recipient: Sendable {
-    public enum Identifier: Equatable, Sendable {
+struct IvyStorageProtos_Recipient: Sendable {
+    enum Identifier: Equatable, Sendable {
         case contact(IvyStorageProtos_Recipient.Contact)
         case legacyGroupID(Data)
         case groupMasterKey(Data)
     }
 
-    public struct Contact: Sendable {
-        public var serviceID: String = String()
-        public var e164: String = String()
-        public var serviceIDBinary: Data = Data()
+    struct Contact: Sendable {
+        var serviceID: String = String()
+        var e164: String = String()
+        var serviceIDBinary: Data = Data()
 
-        public var unknownFields = SwiftProtobuf.UnknownStorage()
+        var unknownFields = SwiftProtobuf.UnknownStorage()
 
-        public init() {}
+        init() {}
     }
 
-    public var identifier: Identifier?
+    var identifier: Identifier?
 
-    public var unknownFields = SwiftProtobuf.UnknownStorage()
+    var unknownFields = SwiftProtobuf.UnknownStorage()
 
-    public init() {}
+    init() {}
 }
 
-public struct IvyStorageProtos_ChatFolderRecord: Sendable {
-    public enum FolderType: SwiftProtobuf.Enum, Swift.CaseIterable {
-        public typealias RawValue = Int
+struct IvyStorageProtos_ChatFolderRecord: Sendable {
+    enum FolderType: SwiftProtobuf.Enum, Swift.CaseIterable {
+        typealias RawValue = Int
 
         case unknown // = 0
         case all // = 1
         case custom // = 2
         case UNRECOGNIZED(Int)
 
-        public init() {
+        init() {
             self = .unknown
         }
 
-        public init?(rawValue: Int) {
+        init?(rawValue: Int) {
             switch rawValue {
             case 0: self = .unknown
             case 1: self = .all
@@ -68,7 +68,7 @@ public struct IvyStorageProtos_ChatFolderRecord: Sendable {
             }
         }
 
-        public var rawValue: Int {
+        var rawValue: Int {
             switch self {
             case .unknown: return 0
             case .all: return 1
@@ -77,24 +77,24 @@ public struct IvyStorageProtos_ChatFolderRecord: Sendable {
             }
         }
 
-        public static let allCases: [IvyStorageProtos_ChatFolderRecord.FolderType] = [.unknown, .all, .custom]
+        static let allCases: [IvyStorageProtos_ChatFolderRecord.FolderType] = [.unknown, .all, .custom]
     }
 
-    public var identifier: Data = Data()
-    public var name: String = String()
-    public var position: UInt32 = 0
-    public var showOnlyUnread: Bool = false
-    public var showMutedChats: Bool = false
-    public var includeAllIndividualChats: Bool = false
-    public var includeAllGroupChats: Bool = false
-    public var folderType: FolderType = .unknown
-    public var includedRecipients: [IvyStorageProtos_Recipient] = []
-    public var excludedRecipients: [IvyStorageProtos_Recipient] = []
-    public var deletedAtTimestampMs: UInt64 = 0
+    var identifier: Data = Data()
+    var name: String = String()
+    var position: UInt32 = 0
+    var showOnlyUnread: Bool = false
+    var showMutedChats: Bool = false
+    var includeAllIndividualChats: Bool = false
+    var includeAllGroupChats: Bool = false
+    var folderType: FolderType = .unknown
+    var includedRecipients: [IvyStorageProtos_Recipient] = []
+    var excludedRecipients: [IvyStorageProtos_Recipient] = []
+    var deletedAtTimestampMs: UInt64 = 0
 
-    public var unknownFields = SwiftProtobuf.UnknownStorage()
+    var unknownFields = SwiftProtobuf.UnknownStorage()
 
-    public init() {}
+    init() {}
 }
 
 // MARK: - SwiftProtobuf runtime support
@@ -102,9 +102,9 @@ public struct IvyStorageProtos_ChatFolderRecord: Sendable {
 private let _protobuf_package = "IvyStorageProtos"
 
 extension IvyStorageProtos_StorageRecord: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase {
-    public static let protoMessageName: String = _protobuf_package + ".StorageRecord"
+    static let protoMessageName: String = _protobuf_package + ".StorageRecord"
 
-    public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
         while let fieldNumber = try decoder.nextFieldNumber() {
             switch fieldNumber {
             case 8: try decoder.decodeSingularMessageField(value: &self.chatFolder)
@@ -113,22 +113,22 @@ extension IvyStorageProtos_StorageRecord: SwiftProtobuf.Message, SwiftProtobuf._
         }
     }
 
-    public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
         if let chatFolder {
             try visitor.visitSingularMessageField(value: chatFolder, fieldNumber: 8)
         }
         try unknownFields.traverse(visitor: &visitor)
     }
 
-    public static func ==(lhs: Self, rhs: Self) -> Bool {
+    static func ==(lhs: Self, rhs: Self) -> Bool {
         return lhs.chatFolder == rhs.chatFolder && lhs.unknownFields == rhs.unknownFields
     }
 }
 
 extension IvyStorageProtos_Recipient: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase {
-    public static let protoMessageName: String = _protobuf_package + ".Recipient"
+    static let protoMessageName: String = _protobuf_package + ".Recipient"
 
-    public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
         while let fieldNumber = try decoder.nextFieldNumber() {
             switch fieldNumber {
             case 1:
@@ -162,7 +162,7 @@ extension IvyStorageProtos_Recipient: SwiftProtobuf.Message, SwiftProtobuf._Mess
         }
     }
 
-    public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
         switch self.identifier {
         case .contact(let value)?:
             try visitor.visitSingularMessageField(value: value, fieldNumber: 1)
@@ -176,15 +176,15 @@ extension IvyStorageProtos_Recipient: SwiftProtobuf.Message, SwiftProtobuf._Mess
         try unknownFields.traverse(visitor: &visitor)
     }
 
-    public static func ==(lhs: Self, rhs: Self) -> Bool {
+    static func ==(lhs: Self, rhs: Self) -> Bool {
         return lhs.identifier == rhs.identifier && lhs.unknownFields == rhs.unknownFields
     }
 }
 
 extension IvyStorageProtos_Recipient.Contact: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase {
-    public static let protoMessageName: String = IvyStorageProtos_Recipient.protoMessageName + ".Contact"
+    static let protoMessageName: String = IvyStorageProtos_Recipient.protoMessageName + ".Contact"
 
-    public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
         while let fieldNumber = try decoder.nextFieldNumber() {
             switch fieldNumber {
             case 1: try decoder.decodeSingularStringField(value: &self.serviceID)
@@ -195,7 +195,7 @@ extension IvyStorageProtos_Recipient.Contact: SwiftProtobuf.Message, SwiftProtob
         }
     }
 
-    public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
         if !self.serviceID.isEmpty {
             try visitor.visitSingularStringField(value: self.serviceID, fieldNumber: 1)
         }
@@ -208,7 +208,7 @@ extension IvyStorageProtos_Recipient.Contact: SwiftProtobuf.Message, SwiftProtob
         try unknownFields.traverse(visitor: &visitor)
     }
 
-    public static func ==(lhs: Self, rhs: Self) -> Bool {
+    static func ==(lhs: Self, rhs: Self) -> Bool {
         return lhs.serviceID == rhs.serviceID
             && lhs.e164 == rhs.e164
             && lhs.serviceIDBinary == rhs.serviceIDBinary
@@ -217,9 +217,9 @@ extension IvyStorageProtos_Recipient.Contact: SwiftProtobuf.Message, SwiftProtob
 }
 
 extension IvyStorageProtos_ChatFolderRecord: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase {
-    public static let protoMessageName: String = _protobuf_package + ".ChatFolderRecord"
+    static let protoMessageName: String = _protobuf_package + ".ChatFolderRecord"
 
-    public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
         while let fieldNumber = try decoder.nextFieldNumber() {
             switch fieldNumber {
             case 1: try decoder.decodeSingularBytesField(value: &self.identifier)
@@ -238,7 +238,7 @@ extension IvyStorageProtos_ChatFolderRecord: SwiftProtobuf.Message, SwiftProtobu
         }
     }
 
-    public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
         if !self.identifier.isEmpty {
             try visitor.visitSingularBytesField(value: self.identifier, fieldNumber: 1)
         }
@@ -275,7 +275,7 @@ extension IvyStorageProtos_ChatFolderRecord: SwiftProtobuf.Message, SwiftProtobu
         try unknownFields.traverse(visitor: &visitor)
     }
 
-    public static func ==(lhs: Self, rhs: Self) -> Bool {
+    static func ==(lhs: Self, rhs: Self) -> Bool {
         return lhs.identifier == rhs.identifier
             && lhs.name == rhs.name
             && lhs.position == rhs.position
