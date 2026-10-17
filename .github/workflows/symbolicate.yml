@@ -14,9 +14,9 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ~/IvyBetaDerivedData
-          key: beta-derived-data-874fdb771e72126c54e7fc387e1ff28e9b050760
+          key: beta-derived-data-none
           restore-keys: |
-            beta-derived-data-874fdb771e
+            beta-derived-data-
 
       - name: Symbolicate
         run: |
