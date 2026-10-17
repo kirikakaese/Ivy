@@ -224,7 +224,8 @@ Each phase is one branch and one pull request. The next phase starts after the p
 | 0 – Discovery | Specification, parity matrix and phase plan |
 | 1 – Foundation | Ivy builds and runs, rebranded, on iPhone, iPad and Mac in all upstream languages: upstream import, rebrand, Catalyst, CI for both platforms, translation handling, documentation. The custom string table is added in Phase 2 together with the first Ivy strings |
 | 2 – Working messenger | Register, link, send and receive on both platforms with the agreed notification strategy; removals; custom string table; client identity; local-only diagnostics; About, privacy statement and non-affiliation notice |
-| 3 – Organization | Folders, pinned chat reordering, Ivy data store with device sync and export/import, "Remind me in…" |
+| 3a – Chat folders | Folders in the official format with tabs and sidebar, unread badges, reordering, bulk actions, suggested folders; pinned chat reordering |
+| 3b – Ivy data | Ivy data store with device sync and export/import, folder icon and color, per-folder pins, "Remind me in…" |
 | 4 – Productivity | Tasks, calendar, ICS, Home tab and new navigation |
 | 5 – Integrations | Apple Calendar and Reminders sync (one-way and two-way), widgets, menu bar extra, Shortcuts and Siri, keyboard shortcuts, share extension |
 | 6 – Extras | Scheduled messages, starred messages, chat notes, voice note features, hidden chats, decoy mode and duress passcode, app lock, metadata trimming |

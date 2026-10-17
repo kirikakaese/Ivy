@@ -46,15 +46,16 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 
 | Feature | Phase | iPhone | iPad | macOS | Notes |
 |---|---|---|---|---|---|
-| Chat folders (official format) | 3 | planned | planned | planned | Tabs on iPhone, sidebar on iPad and Mac |
-| Folder icon, color, unread badge | 3 | planned | planned | planned | |
-| Folder reordering and bulk actions | 3 | planned | planned | planned | |
-| Suggested folders | 3 | planned | planned | planned | |
-| Per-folder pins | 3 | planned | planned | planned | |
-| Pinned chat reordering | 3 | planned | planned | planned | |
-| Ivy data store and device sync | 3 | planned | planned | planned | |
-| Ivy data export and import | 3 | planned | planned | planned | |
-| Remind me in… (messages and chats) | 3 | planned | planned | planned | |
+| Chat folders (official format) | 3a | done | done | done | Synced as storage service `ChatFolderRecord`; tabs above the chats, a sidebar when the chat list is next to a chat |
+| Folder unread badge | 3a | done | done | done | Number of chats with unread messages |
+| Folder icon and color | 3b | planned | planned | planned | |
+| Folder reordering and bulk actions | 3a | done | done | done | Mark all as read, mute, unmute |
+| Suggested folders | 3a | done | done | done | Unread, 1:1 chats, groups |
+| Per-folder pins | 3b | planned | planned | planned | |
+| Pinned chat reordering | 3a | done | done | done | Drag and drop, plus Move Up and Move Down |
+| Ivy data store and device sync | 3b | planned | planned | planned | |
+| Ivy data export and import | 3b | planned | planned | planned | |
+| Remind me in… (messages and chats) | 3b | planned | planned | planned | |
 
 ## Productivity
 

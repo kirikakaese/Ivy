@@ -4182,6 +4182,7 @@
 		3EF80573D5C5C4A049468139 /* ChatListViewController+PinnedOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FAD4699DB9180A3E612E89 /* ChatListViewController+PinnedOrder.swift */; };
 		F316CC5D68CC838A248A5C8A /* PinnedChatOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BACFFE6CE72FA16C437079DA /* PinnedChatOrder.swift */; };
 		0903888A0731A1AAB5B02E61 /* PinnedChatOrderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189EA5908D30EB7E6343B3FD /* PinnedChatOrderTest.swift */; };
+		F2943E1696CC59D5B9F86325 /* ChatFolderBarTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BE1D5E6A5F06FA74F493DD /* ChatFolderBarTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8666,6 +8667,7 @@
 		37FAD4699DB9180A3E612E89 /* ChatListViewController+PinnedOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatListViewController+PinnedOrder.swift"; sourceTree = "<group>"; };
 		BACFFE6CE72FA16C437079DA /* PinnedChatOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedChatOrder.swift; sourceTree = "<group>"; };
 		189EA5908D30EB7E6343B3FD /* PinnedChatOrderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedChatOrderTest.swift; sourceTree = "<group>"; };
+		F3BE1D5E6A5F06FA74F493DD /* ChatFolderBarTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderBarTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16265,6 +16267,7 @@
 			isa = PBXGroup;
 			children = (
 				8BFF5944C2B1D0088D02A5C1 /* IvyAboutTest.swift */,
+				F3BE1D5E6A5F06FA74F493DD /* ChatFolderBarTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -19649,6 +19652,7 @@
 				5042EAA3287F96FB00C9B19F /* VisibleBadgeResolverTest.swift in Sources */,
 				17E6049028A17BD300127680 /* ZkGroupIntegrationTest.swift in Sources */,
 				7F973C414706DC2CA5814E98 /* IvyAboutTest.swift in Sources */,
+				F2943E1696CC59D5B9F86325 /* ChatFolderBarTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
