@@ -4183,6 +4183,11 @@
 		F316CC5D68CC838A248A5C8A /* PinnedChatOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BACFFE6CE72FA16C437079DA /* PinnedChatOrder.swift */; };
 		0903888A0731A1AAB5B02E61 /* PinnedChatOrderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189EA5908D30EB7E6343B3FD /* PinnedChatOrderTest.swift */; };
 		F2943E1696CC59D5B9F86325 /* ChatFolderBarTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BE1D5E6A5F06FA74F493DD /* ChatFolderBarTest.swift */; };
+		991EFF7922E1FCC788301CFA /* IvyDataChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1469684B11BAFFA583A0FB2 /* IvyDataChange.swift */; };
+		9219D0105AAC59AE77EC7876 /* IvyDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199C2063BEFFCB57193AAE87 /* IvyDataStore.swift */; };
+		6485FB7C04245540F9D2AAB4 /* IvyDataBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18107227297CA9E6752EDBA8 /* IvyDataBackup.swift */; };
+		848E1440301C97842D176723 /* IvySyncPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE6F0521D348C6CA78D4CDB /* IvySyncPayload.swift */; };
+		8CE0D6C46581E2B50FBBD757 /* IvyDataStoreTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B8BA707EB07375977AD268 /* IvyDataStoreTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8668,6 +8673,11 @@
 		BACFFE6CE72FA16C437079DA /* PinnedChatOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedChatOrder.swift; sourceTree = "<group>"; };
 		189EA5908D30EB7E6343B3FD /* PinnedChatOrderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedChatOrderTest.swift; sourceTree = "<group>"; };
 		F3BE1D5E6A5F06FA74F493DD /* ChatFolderBarTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderBarTest.swift; sourceTree = "<group>"; };
+		A1469684B11BAFFA583A0FB2 /* IvyDataChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDataChange.swift; sourceTree = "<group>"; };
+		199C2063BEFFCB57193AAE87 /* IvyDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDataStore.swift; sourceTree = "<group>"; };
+		18107227297CA9E6752EDBA8 /* IvyDataBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDataBackup.swift; sourceTree = "<group>"; };
+		6FE6F0521D348C6CA78D4CDB /* IvySyncPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySyncPayload.swift; sourceTree = "<group>"; };
+		F8B8BA707EB07375977AD268 /* IvyDataStoreTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDataStoreTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16216,6 +16226,7 @@
 				74CCD38EC8CFFC9A1E961706 /* IvyDonations.swift */,
 				CB6201C2440C0A9F73820858 /* ChatFolders */,
 				BACFFE6CE72FA16C437079DA /* PinnedChatOrder.swift */,
+				DC62E9921A27504DADA00218 /* Data */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16230,6 +16241,7 @@
 				B655EED9D79A1C325955CA4B /* ChatFolderManagerTest.swift */,
 				12D97BD6AF16E94BE0BA2690 /* IvyStorageServiceTest.swift */,
 				189EA5908D30EB7E6343B3FD /* PinnedChatOrderTest.swift */,
+				F8B8BA707EB07375977AD268 /* IvyDataStoreTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16301,6 +16313,17 @@
 				37FAD4699DB9180A3E612E89 /* ChatListViewController+PinnedOrder.swift */,
 			);
 			path = PinnedChats;
+			sourceTree = "<group>";
+		};
+		DC62E9921A27504DADA00218 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				A1469684B11BAFFA583A0FB2 /* IvyDataChange.swift */,
+				199C2063BEFFCB57193AAE87 /* IvyDataStore.swift */,
+				18107227297CA9E6752EDBA8 /* IvyDataBackup.swift */,
+				6FE6F0521D348C6CA78D4CDB /* IvySyncPayload.swift */,
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -20912,6 +20935,10 @@
 				90319EA6DD0F3ABAEC8E1360 /* IvyStorageService.swift in Sources */,
 				2B5AA8D38314064857F70DFA /* StorageServiceChatFolderRecordUpdater.swift in Sources */,
 				F316CC5D68CC838A248A5C8A /* PinnedChatOrder.swift in Sources */,
+				991EFF7922E1FCC788301CFA /* IvyDataChange.swift in Sources */,
+				9219D0105AAC59AE77EC7876 /* IvyDataStore.swift in Sources */,
+				6485FB7C04245540F9D2AAB4 /* IvyDataBackup.swift in Sources */,
+				848E1440301C97842D176723 /* IvySyncPayload.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21189,6 +21216,7 @@
 				3519F5C7E0C3E38FFDF1FB67 /* ChatFolderManagerTest.swift in Sources */,
 				4C117AA3E620C8F573849DB6 /* IvyStorageServiceTest.swift in Sources */,
 				0903888A0731A1AAB5B02E61 /* PinnedChatOrderTest.swift in Sources */,
+				8CE0D6C46581E2B50FBBD757 /* IvyDataStoreTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
