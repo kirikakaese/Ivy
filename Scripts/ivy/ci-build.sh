@@ -143,6 +143,38 @@ test_failures() {
   python3 Scripts/parse-xcresult.py "$LOG_DIR/TestResultSummary.json" | head -400
 }
 
+# Prints the crashed thread of each crash report the test run left behind.
+crash_backtraces() {
+  local reports=()
+  while IFS= read -r report; do
+    reports+=("$report")
+  done < <(find "$HOME/Library/Logs/DiagnosticReports" -name 'Ivy*.ips' -newer "$LOG_DIR/build.log" 2>/dev/null | sort | head -5)
+  [ "${#reports[@]}" -gt 0 ] || { echo "No crash reports."; return 0; }
+  mkdir -p "$LOG_DIR/CrashReports"
+  cp "${reports[@]}" "$LOG_DIR/CrashReports/" 2>/dev/null || true
+  python3 - "${reports[@]}" <<'PY'
+import json, sys
+for path in sys.argv[1:]:
+    with open(path) as f:
+        f.readline()  # The first line is a summary; the report follows.
+        try:
+            report = json.load(f)
+        except ValueError:
+            continue
+    images = report.get("usedImages", [])
+    print(f"== {path.rsplit('/', 1)[-1]}")
+    for thread in report.get("threads", []):
+        if not thread.get("triggered"):
+            continue
+        for frame in thread.get("frames", [])[:40]:
+            index = frame.get("imageIndex")
+            image = images[index].get("name", "?") if index is not None and index < len(images) else "?"
+            symbol = frame.get("symbol", hex(frame.get("imageOffset", 0)))
+            location = f" {frame['sourceFile']}:{frame.get('sourceLine', '')}" if "sourceFile" in frame else ""
+            print(f"  {image:28} {symbol[:160]}{location}")
+PY
+}
+
 run() {
   local log="$1"; shift
   local status watchdog_pid
@@ -175,6 +207,10 @@ run() {
     # Some tests log the reason for a failure instead of reporting it.
     echo "::group::Logged test failure details"
     grep -n -A14 -m4 -E "Test case failed|Fatal error:" "$LOG_DIR/$log" | cut -c1-400 || true
+    echo "::endgroup::"
+    # Tests that crash leave a crash report with the backtrace.
+    echo "::group::Crash backtraces"
+    crash_backtraces || true
     echo "::endgroup::"
     return 1
   fi
