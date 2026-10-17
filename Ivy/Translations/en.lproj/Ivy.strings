@@ -69,11 +69,23 @@
 /* Chat folder option: the folder contains all 1:1 chats. */
 "CHAT_FOLDER_ALL_INDIVIDUAL" = "All 1:1 Chats";
 
+/* Header of the emoji and color of a chat folder. */
+"CHAT_FOLDER_APPEARANCE" = "Emoji and Color";
+
+/* Footer explaining that a folder's emoji, color and pins only appear in Ivy. */
+"CHAT_FOLDER_APPEARANCE_FOOTER" = "The emoji, the color and chats pinned in this folder appear only in Ivy, on all your Ivy devices.";
+
 /* Number of chats added to a folder. Embeds {{ the number of chats }}. */
 "CHAT_FOLDER_CHAT_COUNT_FORMAT" = "Chats: %d";
 
 /* Title of the list to choose chats for a folder. */
 "CHAT_FOLDER_CHOOSE_CHATS" = "Choose Chats";
+
+/* Label of the color of a chat folder. */
+"CHAT_FOLDER_COLOR" = "Color";
+
+/* Chat folder has no color. */
+"CHAT_FOLDER_COLOR_NONE" = "None";
 
 /* Item that creates a new chat folder. */
 "CHAT_FOLDER_CREATE" = "Create a Folder";
@@ -89,6 +101,9 @@
 
 /* Action that opens the settings of one chat folder. */
 "CHAT_FOLDER_EDIT" = "Edit Folder";
+
+/* Placeholder of the emoji field of a chat folder. */
+"CHAT_FOLDER_EMOJI_PLACEHOLDER" = "Emoji";
 
 /* Header of the chats that a folder leaves out. */
 "CHAT_FOLDER_EXCLUDED" = "Excluded Chats";
@@ -120,6 +135,12 @@
 /* Header of the options of a chat folder. */
 "CHAT_FOLDER_OPTIONS" = "Options";
 
+/* Context menu action that pins a chat in the open folder only. */
+"CHAT_FOLDER_PIN" = "Pin in Folder";
+
+/* Shown when a folder already has the most pinned chats. Embeds {{ the maximum number }}. */
+"CHAT_FOLDER_PIN_LIMIT_FORMAT" = "You can pin up to %d chats in a folder.";
+
 /* Chat folder option: the folder shows muted chats. */
 "CHAT_FOLDER_SHOW_MUTED" = "Show Muted Chats";
 
@@ -135,8 +156,41 @@
 /* Action that unmutes every chat in a folder. */
 "CHAT_FOLDER_UNMUTE" = "Unmute All";
 
+/* Context menu action that unpins a chat from the open folder. */
+"CHAT_FOLDER_UNPIN" = "Unpin from Folder";
+
 /* Accessibility value of a chat folder tab. Embeds {{ the number of chats with unread messages }}. */
 "CHAT_FOLDER_UNREAD_COUNT_FORMAT" = "Unread chats: %d";
+
+/* Color name. */
+"COLOR_BLUE" = "Blue";
+
+/* Color name. */
+"COLOR_GRAY" = "Gray";
+
+/* Color name. */
+"COLOR_GREEN" = "Green";
+
+/* Color name. */
+"COLOR_INDIGO" = "Indigo";
+
+/* Color name. */
+"COLOR_ORANGE" = "Orange";
+
+/* Color name. */
+"COLOR_PINK" = "Pink";
+
+/* Color name. */
+"COLOR_PURPLE" = "Purple";
+
+/* Color name. */
+"COLOR_RED" = "Red";
+
+/* Color name. */
+"COLOR_TEAL" = "Teal";
+
+/* Color name. */
+"COLOR_YELLOW" = "Yellow";
 
 /* Button below the debug log preview that exports the log. */
 "DEBUG_LOG_EXPORT_BUTTON" = "Export";
@@ -152,6 +206,57 @@
 
 /* Footer below the 'Report a Problem' item in Help, explaining that Signal does not support Ivy. */
 "HELP_REPORT_PROBLEM_FOOTER" = "Signal does not support Ivy. Please report problems with Ivy on GitHub instead of contacting Signal support.";
+
+/* Footer explaining Ivy data export and import. */
+"IVY_DATA_BACKUP_FOOTER" = "Saves folder emojis and colors, folder pins and reminders to a file encrypted with a passphrase. Importing merges the file with the data on this device.";
+
+/* Header of the Ivy data export and import section. */
+"IVY_DATA_BACKUP_HEADER" = "Backup";
+
+/* Title shown when an Ivy data export or import failed. */
+"IVY_DATA_ERROR" = "Something went wrong";
+
+/* Item that exports all Ivy data to an encrypted file. */
+"IVY_DATA_EXPORT" = "Export Ivy Data";
+
+/* Shown after Ivy data was exported. */
+"IVY_DATA_EXPORTED" = "Ivy data exported";
+
+/* Explains the export passphrase. Embeds {{ the minimum length }}. */
+"IVY_DATA_EXPORT_PASSPHRASE_MESSAGE_FORMAT" = "Choose a passphrase with at least %d characters. You need it to import the file.";
+
+/* Title of the prompt for the passphrase that encrypts an Ivy data export. */
+"IVY_DATA_EXPORT_PASSPHRASE_TITLE" = "Passphrase for the Export";
+
+/* Item that imports Ivy data from an encrypted file. */
+"IVY_DATA_IMPORT" = "Import Ivy Data";
+
+/* Shown after an Ivy data import. Embeds {{ the number of changed values }}. */
+"IVY_DATA_IMPORTED_FORMAT" = "Imported. Changed values: %d";
+
+/* Title of the prompt for the passphrase of an Ivy data file. */
+"IVY_DATA_IMPORT_PASSPHRASE_TITLE" = "Passphrase of the File";
+
+/* Shown when the chosen file is not an Ivy data file. */
+"IVY_DATA_NOT_A_FILE" = "This is not an Ivy data file.";
+
+/* Footer explaining how Ivy data syncs between the user's devices. */
+"IVY_DATA_SYNC_FOOTER" = "Ivy data syncs between your Ivy devices with end-to-end encrypted messages to your own devices. Other apps on your account ignore them.";
+
+/* Header of the Ivy data sync section. */
+"IVY_DATA_SYNC_HEADER" = "Sync";
+
+/* Item that asks the user's other Ivy devices for all Ivy data. */
+"IVY_DATA_SYNC_NOW" = "Get Data from Other Devices";
+
+/* Shown after asking the other devices for Ivy data. */
+"IVY_DATA_SYNC_REQUESTED" = "Asked your other devices";
+
+/* Title of the settings for Ivy's own data: folders, reminders, sync and backup. */
+"IVY_DATA_TITLE" = "Folders, Reminders and Sync";
+
+/* Shown when the passphrase of an Ivy data file is wrong. */
+"IVY_DATA_WRONG_PASSPHRASE" = "The passphrase is wrong.";
 
 /* Item showing whether Background App Refresh is on; opens the system settings. */
 "NOTIFICATIONS_BACKGROUND_REFRESH" = "Background App Refresh";
@@ -182,3 +287,84 @@
 
 /* Context menu action that moves a pinned chat up. */
 "PINNED_CHAT_MOVE_UP" = "Move Up";
+
+/* Header of the reminders that are due. */
+"REMINDERS_DUE" = "Due";
+
+/* Shown in the list of reminders when there are none. Explains how to add one. */
+"REMINDERS_EMPTY" = "No reminders. Long press a message or a chat and choose Remind Me.";
+
+/* Title of the list of reminders. */
+"REMINDERS_TITLE" = "Reminders";
+
+/* Header of the reminders that are not due yet. */
+"REMINDERS_UPCOMING" = "Upcoming";
+
+/* Body of a reminder notification about a whole chat. */
+"REMINDER_BODY_CHAT" = "Reminder for this chat";
+
+/* Body of a reminder notification about a message without text. */
+"REMINDER_BODY_MESSAGE" = "Reminder for a message";
+
+/* Menu that changes when a reminder is due. */
+"REMINDER_CHANGE_TIME" = "Change Time";
+
+/* Action that deletes a reminder. */
+"REMINDER_DELETE" = "Delete Reminder";
+
+/* Notification action that marks a reminder as done. */
+"REMINDER_DONE" = "Done";
+
+/* Reminder option: in one hour. */
+"REMINDER_PRESET_1_HOUR" = "In 1 Hour";
+
+/* Reminder option: in 20 minutes. */
+"REMINDER_PRESET_20_MINUTES" = "In 20 Minutes";
+
+/* Reminder option: in three hours. */
+"REMINDER_PRESET_3_HOURS" = "In 3 Hours";
+
+/* Reminder option: choose a date and time. */
+"REMINDER_PRESET_CUSTOM" = "Choose Date and Time…";
+
+/* Reminder option: later today. */
+"REMINDER_PRESET_LATER_TODAY" = "Later Today";
+
+/* Reminder option: next Monday morning. */
+"REMINDER_PRESET_NEXT_WEEK" = "Next Week";
+
+/* Reminder option: tomorrow morning. */
+"REMINDER_PRESET_TOMORROW" = "Tomorrow Morning";
+
+/* Reminder option: tonight at 8 pm. */
+"REMINDER_PRESET_TONIGHT" = "Tonight";
+
+/* Action that sets a reminder for a message or a chat. */
+"REMINDER_REMIND_ME" = "Remind Me";
+
+/* Label of the option that makes a reminder repeat. */
+"REMINDER_REPEAT" = "Repeat";
+
+/* Reminder repeat option: every day. */
+"REMINDER_REPEAT_DAILY" = "Daily";
+
+/* Reminder repeat option: every month. */
+"REMINDER_REPEAT_MONTHLY" = "Monthly";
+
+/* Reminder repeat option: does not repeat. */
+"REMINDER_REPEAT_NEVER" = "Never";
+
+/* Reminder repeat option: every week. */
+"REMINDER_REPEAT_WEEKLY" = "Weekly";
+
+/* Shown after setting a reminder. Embeds {{ the date and time }}. */
+"REMINDER_SET_FORMAT" = "Reminder set for %@";
+
+/* Notification action that reminds the user again in one hour. */
+"REMINDER_SNOOZE_ONE_HOUR" = "Snooze 1 h";
+
+/* Title of a reminder notification when the chat is unknown. */
+"REMINDER_TITLE" = "Reminder";
+
+/* Notification action that reminds the user again tomorrow morning. */
+"REMINDER_TOMORROW" = "Tomorrow";

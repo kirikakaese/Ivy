@@ -17,6 +17,7 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
     private let typingIndicatorView = TypingIndicatorView()
     private let badgeView = CVImageView()
     private let muteIconView = CVImageView()
+    private let ivyReminderIconView = CVImageView() // Ivy: reminder marker
 
     private let unreadBadge = NeverClearView(name: "unreadBadge")
     private let unreadLabel = CVLabel()
@@ -42,6 +43,7 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
     private struct ReuseToken {
         let hasVerifiedBadge: Bool
         let hasMuteIndicator: Bool
+        let ivyHasReminderIndicator: Bool // Ivy: reminder marker
         let hasMessageStatusToken: Bool
         let hasUnreadBadge: Bool
     }
@@ -210,6 +212,7 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
             isBlocked: configuration.threadViewModel.isBlocked,
             shouldShowVerifiedBadge: configuration.threadViewModel.threadRecord.isNoteToSelf || configuration.threadViewModel.threadRecord.isReleaseNotesThread,
             shouldShowMuteIndicator: Self.shouldShowMuteIndicator(configuration: configuration),
+            ivyShouldShowReminderIndicator: IvyReminderManager.shared.hasReminder(thread: configuration.threadViewModel.threadRecord),
             hasOverrideSnippet: configuration.hasOverrideSnippet,
             messageStatusToken: Self.buildMessageStatusToken(configuration: configuration),
             unreadIndicatorLabelConfig: Self.buildUnreadIndicatorLabelConfig(configuration: configuration),
@@ -246,6 +249,9 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
             topRowStackSubviewInfos.append(CGSize(square: muteIconSize).asManualSubviewInfo(hasFixedSize: true))
         }
         if shouldShowMuteIndicator {
+            topRowStackSubviewInfos.append(CGSize(square: muteIconSize).asManualSubviewInfo(hasFixedSize: true))
+        }
+        if configuration.ivyShouldShowReminderIndicator { // Ivy: reminder marker
             topRowStackSubviewInfos.append(CGSize(square: muteIconSize).asManualSubviewInfo(hasFixedSize: true))
         }
         let dateLabelSize = CVText.measureLabel(config: dateTimeLabelConfig, maxWidth: CGFloat.greatestFiniteMagnitude)
@@ -414,6 +420,14 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
             topRowStackSubviews.append(muteIconView)
         }
 
+        // Ivy: reminder marker
+        if configuration.ivyShouldShowReminderIndicator {
+            ivyReminderIconView.image = UIImage(systemName: "bell.badge")
+            ivyReminderIconView.tintColor = .Signal.accent
+            ivyReminderIconView.contentMode = .scaleAspectFit
+            topRowStackSubviews.append(ivyReminderIconView)
+        }
+
         dateTimeLabelConfig.applyForRendering(label: dateTimeLabel)
         self.nextUpdateTimestamp = nil
         if
@@ -488,6 +502,7 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
         let newReuseToken = ReuseToken(
             hasVerifiedBadge: configuration.shouldShowVerifiedBadge,
             hasMuteIndicator: configuration.shouldShowMuteIndicator,
+            ivyHasReminderIndicator: configuration.ivyShouldShowReminderIndicator,
             hasMessageStatusToken: configuration.messageStatusToken != nil,
             hasUnreadBadge: measurements.unreadBadgeMeasurements != nil,
         )
@@ -504,6 +519,7 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
         if
             let oldReuseToken = self.reuseToken,
             oldReuseToken.hasMuteIndicator == newReuseToken.hasMuteIndicator,
+            oldReuseToken.ivyHasReminderIndicator == newReuseToken.ivyHasReminderIndicator,
             oldReuseToken.hasVerifiedBadge == newReuseToken.hasVerifiedBadge
         {
             topRowStack.configureForReuse(
@@ -943,6 +959,7 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
             messageStatusIconView,
             badgeView,
             muteIconView,
+            ivyReminderIconView, // Ivy: reminder marker
             unreadLabel,
             bottomRowWrapper,
         ] as [CVView] {
@@ -1044,6 +1061,7 @@ private struct CLVCellContentConfiguration {
     let isBlocked: Bool
     let shouldShowVerifiedBadge: Bool
     let shouldShowMuteIndicator: Bool
+    let ivyShouldShowReminderIndicator: Bool // Ivy: reminder marker
     let hasOverrideSnippet: Bool
     let messageStatusToken: CLVMessageStatusToken?
 

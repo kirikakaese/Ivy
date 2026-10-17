@@ -25,7 +25,7 @@ public final class IvyDataStore {
     /// Called with local edits, which then go to the user's other devices.
     var onLocalChanges: (([IvyDataChange]) -> Void)?
 
-    public init(database: DatabaseWriter, clock: IvyDataClock) throws {
+    init(database: DatabaseWriter, clock: IvyDataClock) throws {
         self.database = database
         self.clock = clock
         try Self.migrator.migrate(database)
@@ -161,6 +161,16 @@ public final class IvyDataStore {
             }
         }
         return applied
+    }
+
+    /// Applies the changes of an imported file and sends what won to the
+    /// user's other devices. Returns the number of changed values.
+    public func applyImported(_ changes: [IvyDataChange]) -> Int {
+        let applied = apply(changes)
+        if !applied.isEmpty {
+            onLocalChanges?(applied)
+        }
+        return applied.count
     }
 
     // MARK: - Private

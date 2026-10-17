@@ -215,6 +215,14 @@ class AppSettingsViewController: OWSTableViewController2 {
                 self?.navigationController?.pushViewController(vc, animated: true)
             },
         ))
+        // Ivy: folders, reminders and Ivy's own data
+        section2.add(.disclosureItem(
+            icon: .settingsChats,
+            withText: IvyLocalizedString("IVY_DATA_TITLE", comment: "Title of the settings for Ivy's own data: folders, reminders, sync and backup."),
+            actionBlock: { [weak self] in
+                self?.navigationController?.pushViewController(IvyDataSettingsViewController(), animated: true)
+            },
+        ))
         // Ivy: Stories are hidden.
         if IvyConfiguration.showsStories {
             section2.add(.disclosureItem(

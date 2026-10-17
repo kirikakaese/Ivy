@@ -284,6 +284,10 @@ struct CVItemModelBuilder: CVItemBuilding {
                 timestampMode: timestampMode,
                 transaction: transaction,
             )
+            // Ivy: reminder marker
+            if let message = interaction as? TSMessage {
+                itemViewState.footerState?.ivyHasReminder = IvyReminderManager.shared.hasReminder(message: message, thread: thread)
+            }
         }
 
         if let giftBadge = item.componentState.giftBadge {

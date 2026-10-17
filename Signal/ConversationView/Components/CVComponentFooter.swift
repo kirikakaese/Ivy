@@ -61,6 +61,8 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
 
         let expiration: Expiration?
 
+        // Ivy: the message has a reminder
+        var ivyHasReminder = false
     }
 
     private let footerState: State
@@ -205,6 +207,13 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
             let pinIconView = componentView.pinnedImageView
             pinIconView.configure(tintColor: textColor)
             innerViews.append(pinIconView)
+        }
+
+        // Ivy: reminder marker
+        if footerState.ivyHasReminder {
+            let reminderIconView = componentView.ivyReminderImageView
+            reminderIconView.configure(tintColor: textColor)
+            innerViews.append(reminderIconView)
         }
 
         if displayEditedLabel {
@@ -763,6 +772,10 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
             innerSubviewInfos.append(pinIconSize.asManualSubviewInfo(hasFixedWidth: true))
         }
 
+        if footerState.ivyHasReminder { // Ivy: reminder marker
+            innerSubviewInfos.append(ReminderMessageIconView.size.asManualSubviewInfo(hasFixedWidth: true))
+        }
+
         if displayEditedLabel {
             let editedLabelConfig = self.editedLabelConfig(textColor: .black)
             let editedLabelSize = CVText.measureLabel(config: editedLabelConfig, maxWidth: maxWidth)
@@ -880,6 +893,7 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         fileprivate let messageTimerView = MessageTimerView()
         fileprivate let smsLockIconView = SmsLockIconView()
         fileprivate let pinnedImageView = PinnedMessageIconView()
+        fileprivate let ivyReminderImageView = ReminderMessageIconView() // Ivy: reminder marker
 
         // Bubble view when there is no chat wallpaper.
         fileprivate let chatColorView = CVColorOrGradientView()
@@ -923,6 +937,7 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
 
             smsLockIconView.removeFromSuperview()
             pinnedImageView.removeFromSuperview()
+            ivyReminderImageView.removeFromSuperview() // Ivy: reminder marker
 
             chatColorView.reset()
             chatColorView.removeFromSuperview()

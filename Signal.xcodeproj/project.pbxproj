@@ -4188,6 +4188,19 @@
 		6485FB7C04245540F9D2AAB4 /* IvyDataBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18107227297CA9E6752EDBA8 /* IvyDataBackup.swift */; };
 		848E1440301C97842D176723 /* IvySyncPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE6F0521D348C6CA78D4CDB /* IvySyncPayload.swift */; };
 		8CE0D6C46581E2B50FBBD757 /* IvyDataStoreTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B8BA707EB07375977AD268 /* IvyDataStoreTest.swift */; };
+		932B37AF4CB141A2EF4EB473 /* IvyDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EF0B2E0A4CA544A66AF9C3D /* IvyDatabase.swift */; };
+		32D108923AEE019928852AA4 /* IvyDataSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDDBF39A1B002E35447EE757 /* IvyDataSync.swift */; };
+		E1B55ADF951945BD5EA59C23 /* IvyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A1F200C07193199A9921DBE /* IvyData.swift */; };
+		03CD5666EE019225E45531B7 /* IvyChatReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B174E4D6A0AA9EAC069A8B /* IvyChatReference.swift */; };
+		3655452458E952F9D83AFFF4 /* ChatFolderExtras.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF3D8BFD8EEE35D589850D0 /* ChatFolderExtras.swift */; };
+		F785C85D0B3FE0877E2F26D1 /* IvyReminder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9D22C8970CAD521FFDD8607 /* IvyReminder.swift */; };
+		EF5A4D4F8DD2544567638A8F /* IvyReminderNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A353BC4E601FC54C98AE0BD /* IvyReminderNotifications.swift */; };
+		A947F0DCFA574F4FFFBC19B2 /* IvyReminderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CF98B8FE86F631FB15E8E0 /* IvyReminderManager.swift */; };
+		D6524696F6F40422BC7F8F81 /* IvyReminderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4AD049190C49031C4151 /* IvyReminderTest.swift */; };
+		5969700E3405F5B5A247BD67 /* IvyReminderUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9F588AC070A4444E8D18DC /* IvyReminderUI.swift */; };
+		72F5F60F9E42C2ED01994525 /* ReminderMessageIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6E84F83F04F373F39ECA78 /* ReminderMessageIconView.swift */; };
+		58EAA1AB89DCD5AC78F3ABD9 /* IvyRemindersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2792977E1C26ED85697BC21 /* IvyRemindersViewController.swift */; };
+		8316A9C1E6F641C270C3732D /* IvyDataSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01AF7E0740A2AB47FE00B3B /* IvyDataSettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8678,6 +8691,19 @@
 		18107227297CA9E6752EDBA8 /* IvyDataBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDataBackup.swift; sourceTree = "<group>"; };
 		6FE6F0521D348C6CA78D4CDB /* IvySyncPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySyncPayload.swift; sourceTree = "<group>"; };
 		F8B8BA707EB07375977AD268 /* IvyDataStoreTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDataStoreTest.swift; sourceTree = "<group>"; };
+		7EF0B2E0A4CA544A66AF9C3D /* IvyDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDatabase.swift; sourceTree = "<group>"; };
+		FDDBF39A1B002E35447EE757 /* IvyDataSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDataSync.swift; sourceTree = "<group>"; };
+		5A1F200C07193199A9921DBE /* IvyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyData.swift; sourceTree = "<group>"; };
+		D9B174E4D6A0AA9EAC069A8B /* IvyChatReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatReference.swift; sourceTree = "<group>"; };
+		5FF3D8BFD8EEE35D589850D0 /* ChatFolderExtras.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderExtras.swift; sourceTree = "<group>"; };
+		B9D22C8970CAD521FFDD8607 /* IvyReminder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyReminder.swift; sourceTree = "<group>"; };
+		7A353BC4E601FC54C98AE0BD /* IvyReminderNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyReminderNotifications.swift; sourceTree = "<group>"; };
+		E4CF98B8FE86F631FB15E8E0 /* IvyReminderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyReminderManager.swift; sourceTree = "<group>"; };
+		98AF4AD049190C49031C4151 /* IvyReminderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyReminderTest.swift; sourceTree = "<group>"; };
+		EB9F588AC070A4444E8D18DC /* IvyReminderUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyReminderUI.swift; sourceTree = "<group>"; };
+		FA6E84F83F04F373F39ECA78 /* ReminderMessageIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderMessageIconView.swift; sourceTree = "<group>"; };
+		D2792977E1C26ED85697BC21 /* IvyRemindersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyRemindersViewController.swift; sourceTree = "<group>"; };
+		E01AF7E0740A2AB47FE00B3B /* IvyDataSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDataSettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16227,6 +16253,7 @@
 				CB6201C2440C0A9F73820858 /* ChatFolders */,
 				BACFFE6CE72FA16C437079DA /* PinnedChatOrder.swift */,
 				DC62E9921A27504DADA00218 /* Data */,
+				6DA1F09E6584ACCFCF8C33CA /* Reminders */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16242,6 +16269,7 @@
 				12D97BD6AF16E94BE0BA2690 /* IvyStorageServiceTest.swift */,
 				189EA5908D30EB7E6343B3FD /* PinnedChatOrderTest.swift */,
 				F8B8BA707EB07375977AD268 /* IvyDataStoreTest.swift */,
+				98AF4AD049190C49031C4151 /* IvyReminderTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16271,6 +16299,8 @@
 				49D69353B8FF23EB372F639F /* IvyMessageDeliverySettings.swift */,
 				7C8C9D4C368E13D630A5B3BA /* ChatFolders */,
 				092E24E121CA5903C4EC2FC4 /* PinnedChats */,
+				827EDF94F2BEF4539A1D282D /* Reminders */,
+				3B2DA13B15D0EF6B85F85B5A /* Data */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16292,6 +16322,7 @@
 				B9AAE636D663AE9D2F8833E3 /* IvyStorageService.swift */,
 				263F4C1A28E6E76741351712 /* StorageServiceChatFolderRecordUpdater.swift */,
 				91D07DD224A4A1AE759C551F /* IvyStorageService.proto */,
+				5FF3D8BFD8EEE35D589850D0 /* ChatFolderExtras.swift */,
 			);
 			path = ChatFolders;
 			sourceTree = "<group>";
@@ -16322,6 +16353,38 @@
 				199C2063BEFFCB57193AAE87 /* IvyDataStore.swift */,
 				18107227297CA9E6752EDBA8 /* IvyDataBackup.swift */,
 				6FE6F0521D348C6CA78D4CDB /* IvySyncPayload.swift */,
+				7EF0B2E0A4CA544A66AF9C3D /* IvyDatabase.swift */,
+				FDDBF39A1B002E35447EE757 /* IvyDataSync.swift */,
+				5A1F200C07193199A9921DBE /* IvyData.swift */,
+				D9B174E4D6A0AA9EAC069A8B /* IvyChatReference.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		6DA1F09E6584ACCFCF8C33CA /* Reminders */ = {
+			isa = PBXGroup;
+			children = (
+				B9D22C8970CAD521FFDD8607 /* IvyReminder.swift */,
+				7A353BC4E601FC54C98AE0BD /* IvyReminderNotifications.swift */,
+				E4CF98B8FE86F631FB15E8E0 /* IvyReminderManager.swift */,
+			);
+			path = Reminders;
+			sourceTree = "<group>";
+		};
+		827EDF94F2BEF4539A1D282D /* Reminders */ = {
+			isa = PBXGroup;
+			children = (
+				EB9F588AC070A4444E8D18DC /* IvyReminderUI.swift */,
+				FA6E84F83F04F373F39ECA78 /* ReminderMessageIconView.swift */,
+				D2792977E1C26ED85697BC21 /* IvyRemindersViewController.swift */,
+			);
+			path = Reminders;
+			sourceTree = "<group>";
+		};
+		3B2DA13B15D0EF6B85F85B5A /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				E01AF7E0740A2AB47FE00B3B /* IvyDataSettingsViewController.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -19588,6 +19651,10 @@
 				D64411C744040C1FC2C9F9DD /* ChatFoldersSettingsViewController.swift in Sources */,
 				DBFA16B9E7828D64CCF0915D /* ChatFolderEditorViewController.swift in Sources */,
 				3EF80573D5C5C4A049468139 /* ChatListViewController+PinnedOrder.swift in Sources */,
+				5969700E3405F5B5A247BD67 /* IvyReminderUI.swift in Sources */,
+				72F5F60F9E42C2ED01994525 /* ReminderMessageIconView.swift in Sources */,
+				58EAA1AB89DCD5AC78F3ABD9 /* IvyRemindersViewController.swift in Sources */,
+				8316A9C1E6F641C270C3732D /* IvyDataSettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20939,6 +21006,14 @@
 				9219D0105AAC59AE77EC7876 /* IvyDataStore.swift in Sources */,
 				6485FB7C04245540F9D2AAB4 /* IvyDataBackup.swift in Sources */,
 				848E1440301C97842D176723 /* IvySyncPayload.swift in Sources */,
+				932B37AF4CB141A2EF4EB473 /* IvyDatabase.swift in Sources */,
+				32D108923AEE019928852AA4 /* IvyDataSync.swift in Sources */,
+				E1B55ADF951945BD5EA59C23 /* IvyData.swift in Sources */,
+				03CD5666EE019225E45531B7 /* IvyChatReference.swift in Sources */,
+				3655452458E952F9D83AFFF4 /* ChatFolderExtras.swift in Sources */,
+				F785C85D0B3FE0877E2F26D1 /* IvyReminder.swift in Sources */,
+				EF5A4D4F8DD2544567638A8F /* IvyReminderNotifications.swift in Sources */,
+				A947F0DCFA574F4FFFBC19B2 /* IvyReminderManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21217,6 +21292,7 @@
 				4C117AA3E620C8F573849DB6 /* IvyStorageServiceTest.swift in Sources */,
 				0903888A0731A1AAB5B02E61 /* PinnedChatOrderTest.swift in Sources */,
 				8CE0D6C46581E2B50FBBD757 /* IvyDataStoreTest.swift in Sources */,
+				D6524696F6F40422BC7F8F81 /* IvyReminderTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

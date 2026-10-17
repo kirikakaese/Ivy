@@ -18,6 +18,7 @@ final class ChatFolderBar: UIView {
     struct Item: Equatable {
         let folder: ChatFolder
         let unreadCount: Int
+        var extras = ChatFolderExtras()
     }
 
     static let sidebarWidth: CGFloat = 84
@@ -132,9 +133,14 @@ final class ChatFolderBar: UIView {
         configuration.baseBackgroundColor = .Signal.secondaryFill
         configuration.baseForegroundColor = isSelected ? .Signal.label : .Signal.secondaryLabel
         configuration.cornerStyle = .capsule
+        if let color = item.extras.color {
+            configuration.baseBackgroundColor = Self.uiColor(for: color).withAlphaComponent(0.22)
+            configuration.baseForegroundColor = isSelected ? .Signal.label : Self.uiColor(for: color)
+        }
 
         let title = Self.title(for: item.folder)
-        var attributedTitle = AttributedString(title)
+        let emojiPrefix = (layout == .tabs ? item.extras.emoji.map { $0 + " " } : nil) ?? ""
+        var attributedTitle = AttributedString(emojiPrefix + title)
         attributedTitle.font = UIFont.dynamicTypeSubheadlineClamped.semibold()
         if item.unreadCount > 0 {
             var count = AttributedString(layout == .tabs ? "  \(item.unreadCount)" : "\n\(item.unreadCount)")
@@ -148,7 +154,11 @@ final class ChatFolderBar: UIView {
         case .tabs:
             configuration.contentInsets = NSDirectionalEdgeInsets(top: 6, leading: 14, bottom: 6, trailing: 14)
         case .sidebar:
-            configuration.image = UIImage(systemName: item.folder.kind == .allChats ? "bubble.left.and.bubble.right" : "folder")
+            if let emoji = item.extras.emoji {
+                configuration.image = Self.image(emoji: emoji)
+            } else {
+                configuration.image = UIImage(systemName: item.folder.kind == .allChats ? "bubble.left.and.bubble.right" : "folder")
+            }
             configuration.imagePlacement = .top
             configuration.imagePadding = 4
             configuration.titleAlignment = .center
@@ -185,6 +195,31 @@ final class ChatFolderBar: UIView {
         })
         button.accessibilityLabel = IvyLocalizedString("CHAT_FOLDERS_EDIT", comment: "Button that opens the chat folder settings.")
         return button
+    }
+
+    static func uiColor(for color: ChatFolderColor) -> UIColor {
+        switch color {
+        case .green: return .systemGreen
+        case .teal: return .systemTeal
+        case .blue: return .systemBlue
+        case .indigo: return .systemIndigo
+        case .purple: return .systemPurple
+        case .pink: return .systemPink
+        case .red: return .systemRed
+        case .orange: return .systemOrange
+        case .yellow: return .systemYellow
+        case .gray: return .systemGray
+        }
+    }
+
+    /// An emoji drawn as an image, for the sidebar.
+    static func image(emoji: String) -> UIImage {
+        let font = UIFont.systemFont(ofSize: 20)
+        let text = emoji as NSString
+        let size = text.size(withAttributes: [.font: font])
+        return UIGraphicsImageRenderer(size: size).image { _ in
+            text.draw(at: .zero, withAttributes: [.font: font])
+        }.withRenderingMode(.alwaysOriginal)
     }
 
     static func title(for folder: ChatFolder) -> String {

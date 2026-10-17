@@ -660,6 +660,13 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
                         self?.ivyShowChatFolderSettings()
                     },
                 ))
+                contextMenuActions.append(UIAction(
+                    title: IvyLocalizedString("REMINDERS_TITLE", comment: "Title of the list of reminders."),
+                    image: UIImage(systemName: "bell.badge"),
+                    handler: { [weak self] _ in
+                        self?.presentFormSheet(OWSNavigationController(rootViewController: IvyRemindersViewController()), animated: true)
+                    },
+                ))
 
                 contextMenuActions.append(settingsAction)
 

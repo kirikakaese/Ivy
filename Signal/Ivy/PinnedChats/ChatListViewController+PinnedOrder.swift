@@ -14,8 +14,14 @@ extension ChatListViewController {
     /// pinned chats, "Move Up" and "Move Down".
     func ivyContextMenuElements(threadViewModel: ThreadViewModel) -> [UIMenuElement] {
         var elements = [UIMenuElement]()
+        if let chat = IvyChatReference(thread: threadViewModel.threadRecord) {
+            elements.append(IvyReminderUI.menu(chat: chat, from: self))
+        }
         if let folderMenu = ivyAddToFolderMenu(threadViewModel: threadViewModel) {
             elements.append(folderMenu)
+        }
+        if let folderPinAction = ivyFolderPinAction(threadViewModel: threadViewModel) {
+            elements.append(folderPinAction)
         }
         if threadViewModel.isPinned {
             let threadId = threadViewModel.threadUniqueId
@@ -59,9 +65,64 @@ extension ChatListViewController {
     }
 
     fileprivate func ivySetVisiblePinnedOrder(_ visible: [String]) {
+        let folderPinned = renderState.viewInfo.ivyFolderPinnedThreadIds
         SSKEnvironment.shared.databaseStorageRef.write { tx in
+            // Chats pinned in the folder keep their own order; the others are
+            // pinned everywhere.
+            if let folder = renderState.viewInfo.ivyChatFolder, !folderPinned.isEmpty {
+                let newFolderOrder = visible.filter { folderPinned.contains($0) }
+                let threadStore = DependenciesBridge.shared.threadStore
+                let references = newFolderOrder.compactMap { threadId in
+                    threadStore.fetchThread(uniqueId: threadId, tx: tx).flatMap { IvyChatReference(thread: $0) }
+                }
+                Self.ivySetFolderPins(references, folderId: folder.id)
+            }
+            let globalVisible = visible.filter { !folderPinned.contains($0) }
             let all = DependenciesBridge.shared.pinnedThreadManager.pinnedThreads(tx: tx).map(\.uniqueId)
-            PinnedChatOrder.setOrder(PinnedChatOrder.order(all: all, visibleInNewOrder: visible), tx: tx)
+            PinnedChatOrder.setOrder(PinnedChatOrder.order(all: all, visibleInNewOrder: globalVisible), tx: tx)
+        }
+    }
+
+    // MARK: - Pins in a folder
+
+    private static func ivySetFolderPins(_ pinnedChats: [IvyChatReference], folderId: Data) {
+        let store = IvyData.shared?.store
+        let old = ChatFolderExtras.fetch(folderId: folderId, store: store)
+        var new = old
+        new.pinnedChats = pinnedChats
+        new.save(folderId: folderId, comparedTo: old, store: store)
+    }
+
+    /// "Pin in Folder" or "Unpin from Folder" while a folder is open.
+    private func ivyFolderPinAction(threadViewModel: ThreadViewModel) -> UIAction? {
+        guard
+            let folder = renderState.viewInfo.ivyChatFolder,
+            IvyData.shared != nil,
+            let chat = IvyChatReference(thread: threadViewModel.threadRecord)
+        else {
+            return nil
+        }
+        let pinned = ChatFolderExtras.fetch(folderId: folder.id, store: IvyData.shared?.store).pinnedChats
+        if pinned.contains(chat) {
+            return UIAction(
+                title: IvyLocalizedString("CHAT_FOLDER_UNPIN", comment: "Context menu action that unpins a chat from the open folder."),
+                image: UIImage(systemName: "pin.slash"),
+            ) { _ in
+                Self.ivySetFolderPins(pinned.filter { $0 != chat }, folderId: folder.id)
+            }
+        }
+        return UIAction(
+            title: IvyLocalizedString("CHAT_FOLDER_PIN", comment: "Context menu action that pins a chat in the open folder only."),
+            image: UIImage(systemName: "pin"),
+        ) { [weak self] _ in
+            guard pinned.count < ChatFolderExtras.maxPinnedChats else {
+                self?.presentToast(text: String.localizedStringWithFormat(
+                    IvyLocalizedString("CHAT_FOLDER_PIN_LIMIT_FORMAT", comment: "Shown when a folder already has the most pinned chats. Embeds {{ the maximum number }}."),
+                    ChatFolderExtras.maxPinnedChats,
+                ))
+                return
+            }
+            Self.ivySetFolderPins(pinned + [chat], folderId: folder.id)
         }
     }
 }
