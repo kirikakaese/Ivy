@@ -173,9 +173,9 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
 
         let colorButton = UIButton(type: .system)
         var configuration = UIButton.Configuration.plain()
-        configuration.title = extras.color.map(Self.colorName) ?? IvyLocalizedString("CHAT_FOLDER_COLOR_NONE", comment: "Chat folder has no color.")
+        configuration.title = extras.color.map { Self.colorName($0) } ?? IvyLocalizedString("CHAT_FOLDER_COLOR_NONE", comment: "Chat folder has no color.")
         configuration.image = UIImage(systemName: "circle.fill")
-        configuration.baseForegroundColor = extras.color.map(ChatFolderBar.uiColor(for:)) ?? .Signal.secondaryLabel
+        configuration.baseForegroundColor = extras.color.map { ChatFolderBar.uiColor(for: $0) } ?? .Signal.secondaryLabel
         configuration.imagePadding = 6
         colorButton.configuration = configuration
         colorButton.showsMenuAsPrimaryAction = true
