@@ -48,14 +48,14 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 |---|---|---|---|---|---|
 | Chat folders (official format) | 3a | done | done | done | Synced as storage service `ChatFolderRecord`; tabs above the chats, a sidebar when the chat list is next to a chat |
 | Folder unread badge | 3a | done | done | done | Number of chats with unread messages |
-| Folder icon and color | 3b | planned | planned | planned | |
+| Folder emoji and color | 3b | done | done | done | Stored in the Ivy data store |
 | Folder reordering and bulk actions | 3a | done | done | done | Mark all as read, mute, unmute |
 | Suggested folders | 3a | done | done | done | Unread, 1:1 chats, groups |
-| Per-folder pins | 3b | planned | planned | planned | |
+| Per-folder pins | 3b | done | done | done | Up to 4 per folder, above the other pinned chats |
 | Pinned chat reordering | 3a | done | done | done | Drag and drop, plus Move Up and Move Down |
-| Ivy data store and device sync | 3b | planned | planned | planned | |
-| Ivy data export and import | 3b | planned | planned | planned | |
-| Remind me in… (messages and chats) | 3b | planned | planned | planned | |
+| Ivy data store and device sync | 3b | done | done | done | Own SQLCipher database; end-to-end encrypted sync messages to the user's own devices, per-field last edit wins |
+| Ivy data export and import | 3b | done | done | done | Passphrase-encrypted file (PBKDF2, AES-GCM) |
+| Remind me in… (messages and chats) | 3b | done | done | done | Presets, custom date with repeat, notification actions, list, markers; calendar view in Phase 4 |
 
 ## Productivity
 

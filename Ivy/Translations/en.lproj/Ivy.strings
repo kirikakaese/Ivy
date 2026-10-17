@@ -22,7 +22,7 @@
 "ABOUT_NOT_AFFILIATED" = "Ivy is an independent app that is compatible with the Signal network. It is not affiliated with, endorsed by or supported by Signal Messenger LLC or the Signal Technology Foundation.";
 
 /* Ivy's privacy statement on the About Ivy screen. */
-"ABOUT_PRIVACY_STATEMENT" = "Ivy connects only to Signal's servers, in the same way as the official Signal app, and your messages are end-to-end encrypted. Ivy contains no analytics and no crash reporting. Debug logs stay on this device unless you export them.";
+"ABOUT_PRIVACY_STATEMENT" = "Ivy connects only to Signal's servers, in the same way as the official Signal app, and your messages are end-to-end encrypted. Ivy contains no analytics and no crash reporting. Debug logs stay on this device unless you export them. Ivy's own data, such as reminders and folder colors, is stored encrypted on your devices and synced only to your own devices, end-to-end encrypted.";
 
 /* Title of the privacy statement on the About Ivy screen. */
 "ABOUT_PRIVACY_TITLE" = "Privacy";
