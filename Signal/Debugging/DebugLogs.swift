@@ -189,6 +189,13 @@ final class DebugLogs {
 
     @MainActor
     private func submitLogs(supportTag: String?, from viewController: UIViewController) async {
+        // Ivy: debug logs are never uploaded. The user gets the packaged logs
+        // to save or share themselves.
+        guard IvyConfiguration.uploadsDebugLogs else {
+            await exportLogs(from: viewController)
+            return
+        }
+
         var supportFilter = "Signal - iOS Debug Log"
         if let supportTag {
             supportFilter += " - \(supportTag)"
@@ -330,7 +337,30 @@ final class DebugLogs {
         return collectLogs()
     }
 
-    func uploadLogs() async throws(DebugLogsError) -> URL {
+    /// Ivy: shares the packaged logs, for example to save them to Files.
+    @MainActor
+    private func exportLogs(from viewController: UIViewController) async {
+        let zipFileUrl: URL
+        do {
+            zipFileUrl = try await packageLogs()
+        } catch {
+            await handleError(error: error, viewController: viewController)
+            return
+        }
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            AttachmentSharing.showShareUI(
+                for: zipFileUrl,
+                sender: nil,
+                from: viewController,
+                completion: {
+                    OWSFileSystem.deleteFile(zipFileUrl.path)
+                    continuation.resume()
+                },
+            )
+        }
+    }
+
+    private func packageLogs() async throws(DebugLogsError) -> URL {
         guard let logsDirPath = await collectLogsTask.value else {
             throw DebugLogsError.noLogs
         }
@@ -352,6 +382,16 @@ final class DebugLogs {
         }
 
         OWSFileSystem.protectFileOrFolder(atPath: zipFileUrl.path)
+        return zipFileUrl
+    }
+
+    func uploadLogs() async throws(DebugLogsError) -> URL {
+        let zipFileUrl = try await packageLogs()
+
+        // Ivy: debug logs are never uploaded to Signal's servers.
+        guard IvyConfiguration.uploadsDebugLogs else {
+            throw DebugLogsError.uploadError(zipFilePath: zipFileUrl.path)
+        }
 
         // Upload the log files.
         do {

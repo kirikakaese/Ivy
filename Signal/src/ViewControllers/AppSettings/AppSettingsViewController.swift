@@ -172,27 +172,30 @@ class AppSettingsViewController: OWSTableViewController2 {
                 },
             ))
         }
-        section1.add(.init(customCellBlock: { [weak self] in
-            guard let self else { return UITableViewCell() }
-            let accessoryContentView: UIView?
-            if self.hasExpiredGiftBadge {
-                let imageView = UIImageView(image: UIImage(imageLiteralResourceName: "info-fill"))
-                imageView.tintColor = .Signal.accent
-                imageView.autoSetDimensions(to: CGSize(square: 24))
-                accessoryContentView = imageView
-            } else {
-                accessoryContentView = nil
-            }
-            return OWSTableItem.buildCell(
-                icon: .settingsDonate,
-                itemName: OWSLocalizedString("SETTINGS_DONATE", comment: "Title for the 'donate to signal' link in settings."),
-                accessoryType: .disclosureIndicator,
-                accessoryContentView: accessoryContentView,
-                accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "donate"),
-            )
-        }, actionBlock: { [weak self] in
-            self?.didTapDonate()
-        }))
+        // Ivy: donations are hidden.
+        if IvyConfiguration.showsDonations {
+            section1.add(.init(customCellBlock: { [weak self] in
+                guard let self else { return UITableViewCell() }
+                let accessoryContentView: UIView?
+                if self.hasExpiredGiftBadge {
+                    let imageView = UIImageView(image: UIImage(imageLiteralResourceName: "info-fill"))
+                    imageView.tintColor = .Signal.accent
+                    imageView.autoSetDimensions(to: CGSize(square: 24))
+                    accessoryContentView = imageView
+                } else {
+                    accessoryContentView = nil
+                }
+                return OWSTableItem.buildCell(
+                    icon: .settingsDonate,
+                    itemName: OWSLocalizedString("SETTINGS_DONATE", comment: "Title for the 'donate to signal' link in settings."),
+                    accessoryType: .disclosureIndicator,
+                    accessoryContentView: accessoryContentView,
+                    accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "donate"),
+                )
+            }, actionBlock: { [weak self] in
+                self?.didTapDonate()
+            }))
+        }
         contents.add(section1)
 
         let section2 = OWSTableSection()
@@ -212,17 +215,20 @@ class AppSettingsViewController: OWSTableViewController2 {
                 self?.navigationController?.pushViewController(vc, animated: true)
             },
         ))
-        section2.add(.disclosureItem(
-            icon: .settingsStories,
-            withText: OWSLocalizedString(
-                "STORY_SETTINGS_TITLE",
-                comment: "Label for the stories section of the settings view",
-            ),
-            actionBlock: { [weak self] in
-                let vc = StoryPrivacySettingsViewController()
-                self?.navigationController?.pushViewController(vc, animated: true)
-            },
-        ))
+        // Ivy: Stories are hidden.
+        if IvyConfiguration.showsStories {
+            section2.add(.disclosureItem(
+                icon: .settingsStories,
+                withText: OWSLocalizedString(
+                    "STORY_SETTINGS_TITLE",
+                    comment: "Label for the stories section of the settings view",
+                ),
+                actionBlock: { [weak self] in
+                    let vc = StoryPrivacySettingsViewController()
+                    self?.navigationController?.pushViewController(vc, animated: true)
+                },
+            ))
+        }
         section2.add(.disclosureItem(
             icon: .settingsNotifications,
             withText: OWSLocalizedString("SETTINGS_NOTIFICATIONS", comment: "The title for the notification settings."),
@@ -387,7 +393,8 @@ class AppSettingsViewController: OWSTableViewController2 {
             icon: .settingsHelp,
             withText: CommonStrings.help,
             actionBlock: { [weak self] in
-                let vc = HelpViewController()
+                // Ivy: Ivy's own help points to Ivy, not to Signal support.
+                let vc = IvyHelpViewController()
                 self?.navigationController?.pushViewController(vc, animated: true)
             },
         ))

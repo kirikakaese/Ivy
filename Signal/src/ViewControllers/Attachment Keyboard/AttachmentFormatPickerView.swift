@@ -185,7 +185,8 @@ class AttachmentFormatPickerView: UIView {
 
         private static var contactCases: [AttachmentType] {
             var casesToExclude: [AttachmentType] = []
-            if !SSKEnvironment.shared.paymentsHelperRef.arePaymentsEnabled {
+            // Ivy: Payments are hidden.
+            if !IvyConfiguration.showsPayments || !SSKEnvironment.shared.paymentsHelperRef.arePaymentsEnabled {
                 casesToExclude.append(.payment)
             }
 

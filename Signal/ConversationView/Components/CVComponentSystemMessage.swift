@@ -1406,6 +1406,7 @@ extension CVComponentSystemMessage {
             )
         case .paymentsActivationRequest:
             if
+                IvyConfiguration.showsPayments, // Ivy: Payments are hidden.
                 infoMessage.isIncomingPaymentsActivationRequest(transaction),
                 !SSKEnvironment.shared.paymentsHelperRef.arePaymentsEnabled(tx: transaction)
             {
@@ -1421,7 +1422,8 @@ extension CVComponentSystemMessage {
                 return nil
             }
         case .paymentsActivated:
-            if infoMessage.isIncomingPaymentsActivated(transaction) {
+            // Ivy: Payments are hidden.
+            if IvyConfiguration.showsPayments, infoMessage.isIncomingPaymentsActivated(transaction) {
                 return CVMessageAction(
                     title: OWSLocalizedString(
                         "SETTINGS_PAYMENTS_SEND_PAYMENT",

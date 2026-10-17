@@ -32,6 +32,9 @@ jobs:
       - name: Check app name rules against upstream strings
         run: python3 Scripts/ivy/app_name.py check Scripts/ivy/app-name-rules.json Signal/translations
 
+      - name: Check Ivy's own strings
+        run: python3 Scripts/ivy/ivy_strings.py check
+
   build:
     name: ${{ matrix.name }} build and test
     runs-on: macos-26

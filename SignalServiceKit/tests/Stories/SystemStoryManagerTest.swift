@@ -36,6 +36,13 @@ class SystemStoryManagerTest: SSKBaseTest {
     }
 
     override func tearDown() {
+        // Ivy: the manager schedules work on the main queue that reads the
+        // database. Let it run while the test environment still exists;
+        // otherwise it runs after teardown and crashes the next test.
+        let drainedMainQueue = expectation(description: "main queue drained")
+        DispatchQueue.main.async { drainedMainQueue.fulfill() }
+        wait(for: [drainedMainQueue], timeout: 10)
+
         self.manager = nil
         super.tearDown()
     }

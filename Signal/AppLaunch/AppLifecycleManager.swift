@@ -115,6 +115,12 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
         if shouldKillAppWhenBackgrounded {
             owsFail("")
         }
+
+        // Ivy: request the next background fetch each time Ivy leaves the
+        // foreground, because it receives no push notifications.
+        appReadiness.runNowOrWhenAppDidBecomeReadySync {
+            self.scheduleBgAppRefresh()
+        }
     }
 
     func didReceiveMemoryWarning() {
@@ -1608,6 +1614,15 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
     @MainActor
     private func refreshConnection(isAppActive: Bool) {
         let chatConnectionManager = DependenciesBridge.shared.chatConnectionManager
+
+        // Ivy: keep the connection (and with it message delivery) while Ivy
+        // runs on the Mac, instead of handing over to a short background fetch.
+        if !isAppActive, IvyConfiguration.keepsConnectionWhileInactive {
+            if self.activeConnectionTokens.isEmpty {
+                self.activeConnectionTokens = chatConnectionManager.requestConnections()
+            }
+            return
+        }
 
         let oldActiveConnectionTokens = self.activeConnectionTokens
         if isAppActive {

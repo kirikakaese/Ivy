@@ -13,22 +13,22 @@ Status values: `planned`, `in progress`, `done`, `removed`, `disabled` (temporar
 | "Ivy" in upstream strings that name the app | 1 | done | done | done | Reviewed rule list, applied at build time |
 | Alternate app icons | 1 | disabled | disabled | disabled | Hidden until Ivy has its own variants |
 | All upstream locales (47) | 1 | done | done | done | |
-| Custom string table with English fallback | 2 | planned | planned | planned | Added with the first Ivy strings |
+| Custom string table with English fallback | 2 | done | done | done | English and German |
 | RTL layouts | 1 | done | done | done | As upstream |
 | Per-app language setting | 1 | done | done | done | System setting |
-| Registration (primary) | 2 | planned | – | – | Primary is the iPhone |
-| Linking (secondary) | 2 | – | planned | planned | |
-| Send and receive messages | 2 | planned | planned | planned | |
-| Upstream messaging, media, calls, groups | 2 | planned | planned | planned | As upstream |
-| Notifications | 2 | planned | planned | planned | macOS live connection; iOS foreground and background refresh |
-| Launch at login | 2 | – | – | planned | Platform-only; iOS uses background refresh |
-| App icon / Dock unread badge | 2 | planned | planned | planned | |
-| Client identity | 2 | planned | planned | planned | |
-| Stories | 2 | removed | removed | removed | |
-| Payments | 2 | removed | removed | removed | |
-| Donation prompts | 2 | removed | removed | removed | |
-| Local-only diagnostics | 2 | planned | planned | planned | |
-| About, license, privacy statement | 2 | planned | planned | planned | |
+| Registration (primary) | 2 | done | – | – | Primary is the iPhone; without push, Signal asks for a captcha |
+| Linking (secondary) | 2 | – | done | done | The Mac always links, like the iPad |
+| Send and receive messages | 2 | done | done | done | |
+| Upstream messaging, media, calls, groups | 2 | done | done | done | As upstream |
+| Notifications | 2 | done | done | done | No Apple push: macOS keeps a live connection; iOS in the foreground and through Background App Refresh |
+| Launch at login | 2 | – | – | done | Settings > Notifications > Open at Login |
+| App icon / Dock unread badge | 2 | done | done | done | As upstream |
+| Client identity | 2 | done | done | done | Reports the upstream release, set in `Config/Ivy.xcconfig` |
+| Stories | 2 | removed | removed | removed | Hidden; the synced account setting is left unchanged |
+| Payments | 2 | removed | removed | removed | Hidden; the profile keeps its payment address |
+| Donation prompts | 2 | removed | removed | removed | Settings rows, badge sheet button and donation megaphones |
+| Local-only diagnostics | 2 | done | done | done | Debug logs are exported, never uploaded |
+| About, license, privacy statement | 2 | done | done | done | Settings > Help > About Ivy; Help points to Ivy's issue tracker |
 
 ## Platform differences
 

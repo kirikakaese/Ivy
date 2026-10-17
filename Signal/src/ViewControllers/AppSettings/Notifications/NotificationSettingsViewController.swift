@@ -24,6 +24,10 @@ class NotificationSettingsViewController: OWSTableViewController2 {
     func updateTableContents() {
         let contents = OWSTableContents()
 
+        // Ivy: how messages arrive without push notifications.
+        if let deliverySection = IvyMessageDeliverySettings.buildSection(from: self, onChange: { [weak self] in self?.updateTableContents() }) {
+            contents.add(deliverySection)
+        }
         contents.add(buildSoundsSection())
         contents.add(buildNotificationsSection())
         if BuildFlags.improvedNotifications {
@@ -31,7 +35,10 @@ class NotificationSettingsViewController: OWSTableViewController2 {
         }
         contents.add(buildContactJoinedSignalSection())
         contents.add(buildAppBadgeSection())
-        contents.add(buildReregisterPushSection())
+        // Ivy: there is no push registration to renew.
+        if IvyConfiguration.usesApplePushNotifications {
+            contents.add(buildReregisterPushSection())
+        }
         contents.add(buildResetSection())
 
         self.contents = contents

@@ -80,10 +80,14 @@ final class DebugLogPreviewViewController: OWSViewController {
         if let onSubmit {
             cellContainer.setContentHuggingPriority(.defaultLow, for: .vertical)
 
+            // Ivy: logs are exported, not submitted.
             let submitButton = UIButton(
-                configuration: .largePrimary(title: OWSLocalizedString(
+                configuration: .largePrimary(title: IvyConfiguration.uploadsDebugLogs ? OWSLocalizedString(
                     "DEBUG_LOG_PREVIEW_SUBMIT_BUTTON",
                     comment: "Button below the debug log preview which continues the submission flow",
+                ) : IvyLocalizedString(
+                    "DEBUG_LOG_EXPORT_BUTTON",
+                    comment: "Button below the debug log preview that exports the log.",
                 )),
                 primaryAction: UIAction { _ in
                     onSubmit()

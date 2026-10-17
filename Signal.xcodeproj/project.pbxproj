@@ -4156,6 +4156,18 @@
 		F9FA363629F335E500C13830 /* ProvisioningCipherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FA363529F335E500C13830 /* ProvisioningCipherTests.swift */; };
 		F9FAABD829DB55940004B383 /* Progress+Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FAABD729DB55940004B383 /* Progress+Signal.swift */; };
 		FCB11D8C1A129A76002F93FB /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCB11D8B1A129A76002F93FB /* CoreMedia.framework */; };
+		E81C55153069282224BF231F /* IvyConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031E0A778C927A92A8653411 /* IvyConfiguration.swift */; };
+		C0CC8F8F55D61640FCA8FD74 /* IvyClientIdentityTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C49E6BF4FB27335729E3A1 /* IvyClientIdentityTest.swift */; };
+		355667770573119A67F274F8 /* IvyLocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E00F1C5D0F2DF20E476BF00 /* IvyLocalizedString.swift */; };
+		92953FB500BC77F63885321C /* IvyLocalizedStringTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220F51BF9C4774091EA8E3F1 /* IvyLocalizedStringTest.swift */; };
+		0A52FD63DD9411D8A7E0F69E /* Ivy.strings in Resources */ = {isa = PBXBuildFile; fileRef = FDEC879B3B87B62B9659A460 /* Ivy.strings */; };
+		0611514F674AC5DF9E87C411 /* IvyDonations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74CCD38EC8CFFC9A1E961706 /* IvyDonations.swift */; };
+		00F8C399C2036A53E1DFF028 /* IvyDonationsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647900898DD319AC17164071 /* IvyDonationsTest.swift */; };
+		165A62FA94D9E5629EC47CAF /* IvyHelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53AB4C7AE60E93183054947 /* IvyHelpViewController.swift */; };
+		E18F31BDEC0A84CA7400B313 /* AboutIvyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3786016D3CC95274F67DF435 /* AboutIvyViewController.swift */; };
+		8308AA4BC70DDC8927572B4C /* IvyAcknowledgementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825ADF136594B1BC4E797938 /* IvyAcknowledgementsViewController.swift */; };
+		7F973C414706DC2CA5814E98 /* IvyAboutTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BFF5944C2B1D0088D02A5C1 /* IvyAboutTest.swift */; };
+		6037CED95C21886FC324446B /* IvyMessageDeliverySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D69353B8FF23EB372F639F /* IvyMessageDeliverySettings.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8611,6 +8623,20 @@
 		FEFD8A174F57F4C221747D51 /* Pods-SignalServiceKitTests.app store release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SignalServiceKitTests.app store release.xcconfig"; path = "Target Support Files/Pods-SignalServiceKitTests/Pods-SignalServiceKitTests.app store release.xcconfig"; sourceTree = "<group>"; };
 		FF348A86F3FA1E5B5A62F033 /* Pods-SignalNSE.profiling.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SignalNSE.profiling.xcconfig"; path = "Target Support Files/Pods-SignalNSE/Pods-SignalNSE.profiling.xcconfig"; sourceTree = "<group>"; };
 		FF39DCC8D1F7DFD3708276E2 /* Pods-SignalTests.app store release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SignalTests.app store release.xcconfig"; path = "Target Support Files/Pods-SignalTests/Pods-SignalTests.app store release.xcconfig"; sourceTree = "<group>"; };
+		031E0A778C927A92A8653411 /* IvyConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyConfiguration.swift; sourceTree = "<group>"; };
+		C9FDE6F2AFAB06D4492AF543 /* Ivy.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Ivy.xcconfig; sourceTree = "<group>"; };
+		D5C49E6BF4FB27335729E3A1 /* IvyClientIdentityTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyClientIdentityTest.swift; sourceTree = "<group>"; };
+		8E00F1C5D0F2DF20E476BF00 /* IvyLocalizedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyLocalizedString.swift; sourceTree = "<group>"; };
+		220F51BF9C4774091EA8E3F1 /* IvyLocalizedStringTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyLocalizedStringTest.swift; sourceTree = "<group>"; };
+		ECECC2E284898DE038B18DB7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Ivy.strings; sourceTree = "<group>"; };
+		7DD0E5410AC231ED29AC78B5 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Ivy.strings; sourceTree = "<group>"; };
+		74CCD38EC8CFFC9A1E961706 /* IvyDonations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDonations.swift; sourceTree = "<group>"; };
+		647900898DD319AC17164071 /* IvyDonationsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDonationsTest.swift; sourceTree = "<group>"; };
+		A53AB4C7AE60E93183054947 /* IvyHelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyHelpViewController.swift; sourceTree = "<group>"; };
+		3786016D3CC95274F67DF435 /* AboutIvyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutIvyViewController.swift; sourceTree = "<group>"; };
+		825ADF136594B1BC4E797938 /* IvyAcknowledgementsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAcknowledgementsViewController.swift; sourceTree = "<group>"; };
+		8BFF5944C2B1D0088D02A5C1 /* IvyAboutTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAboutTest.swift; sourceTree = "<group>"; };
+		49D69353B8FF23EB372F639F /* IvyMessageDeliverySettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMessageDeliverySettings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -8845,6 +8871,7 @@
 				05EA61432CC943D200B16D4E /* Project-Release.xcconfig */,
 				05EA61442CC943DD00B16D4E /* Project.xcconfig */,
 				B96FEE2E2CDC297500836191 /* User.xcconfig */,
+				C9FDE6F2AFAB06D4492AF543 /* Ivy.xcconfig */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -12011,6 +12038,7 @@
 				F9B93CDF28E246D900B3F8A0 /* AppDelegateTest.swift */,
 				B928D1052C237E4BD2B13718 /* ContactShareViewHelperTests.swift */,
 				4C83AC4123C55D9C00D4F2E6 /* SignalBaseTest.swift */,
+				AAF891C26DB57406A8FB57E1 /* Ivy */,
 			);
 			path = test;
 			sourceTree = "<group>";
@@ -12352,6 +12380,7 @@
 				D221A08C169C9E5E00537ABF /* Frameworks */,
 				D221A08A169C9E5E00537ABF /* Products */,
 				07B6BFA4D17E1353B0696C14 /* Pods */,
+				5F9769ECCA8949129CF7748F /* Ivy */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
@@ -12471,6 +12500,7 @@
 				881FF30623B5B1520023B620 /* Signal-AppStore.entitlements */,
 				B657DDC91911A40500F45B0C /* Signal.entitlements */,
 				7665BC9C2A3A72910060279B /* Symbols.xcassets */,
+				4DBCF56DA40AA8E2E9A31EE1 /* Ivy */,
 			);
 			path = Signal;
 			sourceTree = "<group>";
@@ -15165,6 +15195,7 @@
 				5013365D2B2BC2CD004119F1 /* ZeroKnowledge */,
 				F9C985D2289459860029F9AD /* SignalServiceKit-Prefix.pch */,
 				F9C5C899289451B900548EEE /* SignalServiceKit.h */,
+				136CA4AA333AB29DD1C0C1CB /* Ivy */,
 			);
 			path = SignalServiceKit;
 			sourceTree = "<group>";
@@ -15212,6 +15243,7 @@
 				724D47B12B97BE73001BE973 /* ZkParams */,
 				F942623A289B1B5500460798 /* SSKBaseTest.swift */,
 				D9C964072BE44D510058F143 /* XCTest+Thenable.swift */,
+				86D30F42136D64531F4409A6 /* Ivy */,
 			);
 			path = tests;
 			sourceTree = "<group>";
@@ -16145,6 +16177,61 @@
 			path = Requests;
 			sourceTree = "<group>";
 		};
+		136CA4AA333AB29DD1C0C1CB /* Ivy */ = {
+			isa = PBXGroup;
+			children = (
+				031E0A778C927A92A8653411 /* IvyConfiguration.swift */,
+				8E00F1C5D0F2DF20E476BF00 /* IvyLocalizedString.swift */,
+				74CCD38EC8CFFC9A1E961706 /* IvyDonations.swift */,
+			);
+			path = Ivy;
+			sourceTree = "<group>";
+		};
+		86D30F42136D64531F4409A6 /* Ivy */ = {
+			isa = PBXGroup;
+			children = (
+				D5C49E6BF4FB27335729E3A1 /* IvyClientIdentityTest.swift */,
+				220F51BF9C4774091EA8E3F1 /* IvyLocalizedStringTest.swift */,
+				647900898DD319AC17164071 /* IvyDonationsTest.swift */,
+			);
+			path = Ivy;
+			sourceTree = "<group>";
+		};
+		5F9769ECCA8949129CF7748F /* Ivy */ = {
+			isa = PBXGroup;
+			children = (
+				E8BCB9069B521ADD858529EE /* Translations */,
+			);
+			path = Ivy;
+			sourceTree = "<group>";
+		};
+		E8BCB9069B521ADD858529EE /* Translations */ = {
+			isa = PBXGroup;
+			children = (
+				FDEC879B3B87B62B9659A460 /* Ivy.strings */,
+			);
+			path = Translations;
+			sourceTree = "<group>";
+		};
+		4DBCF56DA40AA8E2E9A31EE1 /* Ivy */ = {
+			isa = PBXGroup;
+			children = (
+				A53AB4C7AE60E93183054947 /* IvyHelpViewController.swift */,
+				3786016D3CC95274F67DF435 /* AboutIvyViewController.swift */,
+				825ADF136594B1BC4E797938 /* IvyAcknowledgementsViewController.swift */,
+				49D69353B8FF23EB372F639F /* IvyMessageDeliverySettings.swift */,
+			);
+			path = Ivy;
+			sourceTree = "<group>";
+		};
+		AAF891C26DB57406A8FB57E1 /* Ivy */ = {
+			isa = PBXGroup;
+			children = (
+				8BFF5944C2B1D0088D02A5C1 /* IvyAboutTest.swift */,
+			);
+			path = Ivy;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -16701,6 +16788,7 @@
 				346EFC3D25FFDC6A00F493C7 /* update-pin-dark.json in Resources */,
 				346EFC3E25FFDC6A00F493C7 /* update-pin.json in Resources */,
 				88BFD4732335C2B3001797D7 /* waveformLoading.json in Resources */,
+				0A52FD63DD9411D8A7E0F69E /* Ivy.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19397,6 +19485,10 @@
 				45906C6B29D238560025906D /* WidePhotoCell.swift in Sources */,
 				C1CDD49E2F604F4200F5C3D5 /* WiFiAware+Extensions.swift in Sources */,
 				76616C9D2A266A05005F7001 /* WindowManager.swift in Sources */,
+				165A62FA94D9E5629EC47CAF /* IvyHelpViewController.swift in Sources */,
+				E18F31BDEC0A84CA7400B313 /* AboutIvyViewController.swift in Sources */,
+				8308AA4BC70DDC8927572B4C /* IvyAcknowledgementsViewController.swift in Sources */,
+				6037CED95C21886FC324446B /* IvyMessageDeliverySettings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19483,6 +19575,7 @@
 				45A3579827DAAC6A0051CE8B /* UserProfileTest.swift in Sources */,
 				5042EAA3287F96FB00C9B19F /* VisibleBadgeResolverTest.swift in Sources */,
 				17E6049028A17BD300127680 /* ZkGroupIntegrationTest.swift in Sources */,
+				7F973C414706DC2CA5814E98 /* IvyAboutTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20734,6 +20827,9 @@
 				66533E3729B7B56000E8D928 /* WhoAmIManager.swift in Sources */,
 				72454E802C9BCEA80084B483 /* YDBStorage.swift in Sources */,
 				724D47B02B97BE13001BE973 /* ZkParamsMigrator.swift in Sources */,
+				E81C55153069282224BF231F /* IvyConfiguration.swift in Sources */,
+				355667770573119A67F274F8 /* IvyLocalizedString.swift in Sources */,
+				0611514F674AC5DF9E87C411 /* IvyDonations.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21004,6 +21100,9 @@
 				F942626A289B1B5500460798 /* ViewOnceMessagesTest.swift in Sources */,
 				D9C964092BE44D700058F143 /* XCTest+Thenable.swift in Sources */,
 				724D47B22B97BE96001BE973 /* ZkParamsMigratorTest.swift in Sources */,
+				C0CC8F8F55D61640FCA8FD74 /* IvyClientIdentityTest.swift in Sources */,
+				92953FB500BC77F63885321C /* IvyLocalizedStringTest.swift in Sources */,
+				00F8C399C2036A53E1DFF028 /* IvyDonationsTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21243,6 +21342,15 @@
 				3478505C1FD99A1F007B8332 /* zh_TW */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		FDEC879B3B87B62B9659A460 /* Ivy.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ECECC2E284898DE038B18DB7 /* en */,
+				7DD0E5410AC231ED29AC78B5 /* de */,
+			);
+			name = Ivy.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

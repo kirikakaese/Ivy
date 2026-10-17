@@ -334,7 +334,8 @@ extension ChatListViewController {
     public func updateUnreadPaymentNotificationsCountWithSneakyTransaction() {
         AssertIsOnMainThread()
 
-        guard SSKEnvironment.shared.paymentsHelperRef.arePaymentsEnabled else {
+        // Ivy: Payments are hidden.
+        guard IvyConfiguration.showsPayments, SSKEnvironment.shared.paymentsHelperRef.arePaymentsEnabled else {
             var needsUpdate = false
 
             if unreadPaymentNotificationsCount > 0 {

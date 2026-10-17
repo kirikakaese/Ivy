@@ -49,11 +49,21 @@ If `check` reports problems:
 
 Strings for Ivy's own features have no official translation. They live in a separate table that upstream never touches:
 
-- `Ivy/Translations/<locale>.lproj/Ivy.strings` (and `Ivy.stringsdict` for plurals).
-- English is required for every string.
+- `Ivy/Translations/<locale>.lproj/Ivy.strings` (and `Ivy.stringsdict` for plurals, once a string needs one).
+- English is required for every string. German is maintained alongside.
 - Other languages are added when translations are available. A string missing in a language falls back to English.
 
-The table and its lookup helper are added with the first Ivy feature that has strings.
+In code, use `IvyLocalizedString("KEY", comment: "...")` instead of `OWSLocalizedString`. Keys are upper case with underscores and start with the feature, for example `ABOUT_LICENSE_TITLE`.
+
+CI checks the table on every pull request:
+
+```
+python3 Scripts/ivy/ivy_strings.py check
+```
+
+It fails when code uses a key without an English string, an English string is unused, a translation has a key English does not have, or a translation uses different placeholders (`%@`, `%d`, `%1$@`) than English.
+
+To add a language, create `Ivy/Translations/<locale>.lproj/Ivy.strings` with the translated keys and add it to the `Ivy.strings` variant group in Xcode (select the file, then add the localization in the File inspector).
 
 ## Language selection
 

@@ -151,7 +151,12 @@ public class PaymentsImpl: NSObject, PaymentsSwift {
     }
 
     public var shouldShowPaymentsUI: Bool {
-        arePaymentsEnabled || canUsePayments()
+        // Ivy: Payments are hidden. The payment state itself is unchanged so
+        // the profile keeps its payment address for the user's other devices.
+        guard IvyConfiguration.showsPayments else {
+            return false
+        }
+        return arePaymentsEnabled || canUsePayments()
     }
 
     // MARK: - PaymentsState
