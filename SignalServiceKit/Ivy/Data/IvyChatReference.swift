@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import LibSignalClient
 
 /// Names a chat in a way that is the same on all of the user's devices, as
 /// opposed to a thread's unique id, which each device makes up itself.

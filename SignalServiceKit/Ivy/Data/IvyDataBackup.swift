@@ -24,7 +24,7 @@ public enum IvyDataBackup {
     }
 
     private static let magic = Data("IVYDATA1".utf8)
-    static let defaultIterations: UInt32 = 310_000
+    public static let defaultIterations: UInt32 = 310_000
 
     public static func export(_ changes: [IvyDataChange], passphrase: String, iterations: UInt32 = defaultIterations) throws -> Data {
         let payload = try JSONEncoder().encode(changes)
