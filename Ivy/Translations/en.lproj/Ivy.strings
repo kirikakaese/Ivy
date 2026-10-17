@@ -15,6 +15,9 @@
 /* License notice on the About Ivy screen. */
 "ABOUT_LICENSE_FOOTER" = "Ivy is free software under the GNU Affero General Public License, version 3. It is based on Signal for iOS, copyright Signal Messenger, LLC, which is published under the same license. The complete source code of this version is available from the link above.";
 
+/* Version of the Mac beta. Embeds {{ version number }}. */
+"ABOUT_MAC_BETA_VERSION_FORMAT" = "%@ (Mac beta)";
+
 /* Label for the person who maintains Ivy. */
 "ABOUT_MAINTAINER" = "Maintainer";
 

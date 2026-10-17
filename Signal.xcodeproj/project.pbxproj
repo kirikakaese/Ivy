@@ -4201,6 +4201,7 @@
 		72F5F60F9E42C2ED01994525 /* ReminderMessageIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6E84F83F04F373F39ECA78 /* ReminderMessageIconView.swift */; };
 		58EAA1AB89DCD5AC78F3ABD9 /* IvyRemindersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2792977E1C26ED85697BC21 /* IvyRemindersViewController.swift */; };
 		8316A9C1E6F641C270C3732D /* IvyDataSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01AF7E0740A2AB47FE00B3B /* IvyDataSettingsViewController.swift */; };
+		1A335A3E65DA4F1222E44016 /* IvyMacBeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062F195C7A1A072FB64208E4 /* IvyMacBeta.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8704,6 +8705,7 @@
 		FA6E84F83F04F373F39ECA78 /* ReminderMessageIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderMessageIconView.swift; sourceTree = "<group>"; };
 		D2792977E1C26ED85697BC21 /* IvyRemindersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyRemindersViewController.swift; sourceTree = "<group>"; };
 		E01AF7E0740A2AB47FE00B3B /* IvyDataSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDataSettingsViewController.swift; sourceTree = "<group>"; };
+		062F195C7A1A072FB64208E4 /* IvyMacBeta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBeta.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16254,6 +16256,7 @@
 				BACFFE6CE72FA16C437079DA /* PinnedChatOrder.swift */,
 				DC62E9921A27504DADA00218 /* Data */,
 				6DA1F09E6584ACCFCF8C33CA /* Reminders */,
+				062F195C7A1A072FB64208E4 /* IvyMacBeta.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -21014,6 +21017,7 @@
 				F785C85D0B3FE0877E2F26D1 /* IvyReminder.swift in Sources */,
 				EF5A4D4F8DD2544567638A8F /* IvyReminderNotifications.swift in Sources */,
 				A947F0DCFA574F4FFFBC19B2 /* IvyReminderManager.swift in Sources */,
+				1A335A3E65DA4F1222E44016 /* IvyMacBeta.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -42,6 +42,10 @@ Select the `Signal` scheme and an iPhone or iPad simulator, then build and run. 
 2. If your team cannot use the bundle ID prefix `io.github.kirikakaese`, change `SIGNAL_BUNDLEID_PREFIX` in the project's build settings.
 3. Some capabilities in the upstream entitlements need a paid developer account. Remove the ones your account cannot use (Apple Pay, carrier-constrained networking, Wi-Fi Aware, iCloud) from the entitlements of your local build.
 
+### Mac beta
+
+Until Ivy has a developer certificate, `Scripts/ivy/mac-beta.sh` builds a Mac app signed ad hoc, and every push to `main` publishes it as a pre-release. See [MAC_BETA.md](MAC_BETA.md).
+
 ## Tests
 
 ```

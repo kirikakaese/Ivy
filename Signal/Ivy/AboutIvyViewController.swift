@@ -29,7 +29,12 @@ final class AboutIvyViewController: OWSTableViewController2 {
         )
         appSection.add(.copyableItem(
             label: OWSLocalizedString("SETTINGS_VERSION", comment: ""),
-            value: AppVersionImpl.shared.prettyAppVersion,
+            value: IvyMacBeta.isEnabled
+                ? String(
+                    format: IvyLocalizedString("ABOUT_MAC_BETA_VERSION_FORMAT", comment: "Version of the Mac beta. Embeds {{ version number }}."),
+                    AppVersionImpl.shared.prettyAppVersion,
+                )
+                : AppVersionImpl.shared.prettyAppVersion,
         ))
         appSection.add(.copyableItem(
             label: IvyLocalizedString("ABOUT_BASED_ON", comment: "Label for the upstream release Ivy is built on."),
