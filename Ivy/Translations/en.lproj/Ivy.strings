@@ -195,6 +195,9 @@
 /* Color name. */
 "COLOR_YELLOW" = "Yellow";
 
+/* Note below the explanation of Signal connections, which mentions stories. Ivy doesn't show stories. */
+"CONNECTIONS_NO_STORIES_NOTE" = "Ivy doesn't show stories. If you post stories from another Signal app, your connections can still see them.";
+
 /* Button below the debug log preview that exports the log. */
 "DEBUG_LOG_EXPORT_BUTTON" = "Export";
 
@@ -209,9 +212,6 @@
 
 /* Help item that opens Ivy's issue tracker. */
 "HELP_REPORT_PROBLEM" = "Report a Problem";
-
-/* Footer below the 'Report a Problem' item in Help, explaining that Signal does not support Ivy. */
-"HELP_REPORT_PROBLEM_FOOTER" = "Signal does not support Ivy. Please report problems with Ivy on GitHub instead of contacting Signal support.";
 
 /* Footer explaining Ivy data export and import. */
 "IVY_DATA_BACKUP_FOOTER" = "Saves folder emojis and colors, folder pins and reminders to a file encrypted with a passphrase. Importing merges the file with the data on this device.";
@@ -309,8 +309,14 @@
 /* Header of the reminders that are due. */
 "REMINDERS_DUE" = "Due";
 
-/* Shown in the list of reminders when there are none. Explains how to add one. */
-"REMINDERS_EMPTY" = "No reminders. Long press a message or a chat and choose Remind Me.";
+/* Shown in the list of reminders when there are none, on the Mac. Embeds {{ the name of the Remind Me action }}. */
+"REMINDERS_EMPTY_CLICK_FORMAT" = "Right-click a message or a chat, then choose “%@”.";
+
+/* Title shown in the list of reminders when there are none. */
+"REMINDERS_EMPTY_TITLE" = "No Reminders";
+
+/* Shown in the list of reminders when there are none, on iPhone and iPad. Embeds {{ the name of the Remind Me action }}. */
+"REMINDERS_EMPTY_TOUCH_FORMAT" = "Touch and hold a message or a chat, then choose “%@”.";
 
 /* Title of the list of reminders. */
 "REMINDERS_TITLE" = "Reminders";

@@ -4203,6 +4203,9 @@
 		8316A9C1E6F641C270C3732D /* IvyDataSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01AF7E0740A2AB47FE00B3B /* IvyDataSettingsViewController.swift */; };
 		1A335A3E65DA4F1222E44016 /* IvyMacBeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062F195C7A1A072FB64208E4 /* IvyMacBeta.swift */; };
 		34B153E52A8A7DF7EAA844DA /* IvyMacBetaKeyFileTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7271F0173D173AFC1CE39360 /* IvyMacBetaKeyFileTest.swift */; };
+		E2B36C8DE7202550CCF9D7EF /* IvyMenuIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = B519478E5010D9D590D14AAD /* IvyMenuIcons.swift */; };
+		32ABDCA60FAF85AB11A9A006 /* IvyMenuIconsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCB0CC5300EFB6EA1D09031 /* IvyMenuIconsTest.swift */; };
+		729D6ABD1BC97E4B127DCF95 /* HomeTabSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3695CB1082888E57A6BB769B /* HomeTabSwitcher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8708,6 +8711,9 @@
 		E01AF7E0740A2AB47FE00B3B /* IvyDataSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDataSettingsViewController.swift; sourceTree = "<group>"; };
 		062F195C7A1A072FB64208E4 /* IvyMacBeta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBeta.swift; sourceTree = "<group>"; };
 		7271F0173D173AFC1CE39360 /* IvyMacBetaKeyFileTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBetaKeyFileTest.swift; sourceTree = "<group>"; };
+		B519478E5010D9D590D14AAD /* IvyMenuIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMenuIcons.swift; sourceTree = "<group>"; };
+		9DCB0CC5300EFB6EA1D09031 /* IvyMenuIconsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMenuIconsTest.swift; sourceTree = "<group>"; };
+		3695CB1082888E57A6BB769B /* HomeTabSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabSwitcher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16307,6 +16313,8 @@
 				092E24E121CA5903C4EC2FC4 /* PinnedChats */,
 				827EDF94F2BEF4539A1D282D /* Reminders */,
 				3B2DA13B15D0EF6B85F85B5A /* Data */,
+				B519478E5010D9D590D14AAD /* IvyMenuIcons.swift */,
+				3695CB1082888E57A6BB769B /* HomeTabSwitcher.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16316,6 +16324,7 @@
 			children = (
 				8BFF5944C2B1D0088D02A5C1 /* IvyAboutTest.swift */,
 				F3BE1D5E6A5F06FA74F493DD /* ChatFolderBarTest.swift */,
+				9DCB0CC5300EFB6EA1D09031 /* IvyMenuIconsTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -19661,6 +19670,8 @@
 				72F5F60F9E42C2ED01994525 /* ReminderMessageIconView.swift in Sources */,
 				58EAA1AB89DCD5AC78F3ABD9 /* IvyRemindersViewController.swift in Sources */,
 				8316A9C1E6F641C270C3732D /* IvyDataSettingsViewController.swift in Sources */,
+				E2B36C8DE7202550CCF9D7EF /* IvyMenuIcons.swift in Sources */,
+				729D6ABD1BC97E4B127DCF95 /* HomeTabSwitcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19749,6 +19760,7 @@
 				17E6049028A17BD300127680 /* ZkGroupIntegrationTest.swift in Sources */,
 				7F973C414706DC2CA5814E98 /* IvyAboutTest.swift in Sources */,
 				F2943E1696CC59D5B9F86325 /* ChatFolderBarTest.swift in Sources */,
+				32ABDCA60FAF85AB11A9A006 /* IvyMenuIconsTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

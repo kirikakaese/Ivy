@@ -195,6 +195,9 @@
 /* Color name. */
 "COLOR_YELLOW" = "Gelb";
 
+/* Note below the explanation of Signal connections, which mentions stories. Ivy doesn't show stories. */
+"CONNECTIONS_NO_STORIES_NOTE" = "Ivy zeigt keine Storys an. Wenn du Storys in einer anderen Signal-App postest, können deine Kontakte sie weiterhin sehen.";
+
 /* Button below the debug log preview that exports the log. */
 "DEBUG_LOG_EXPORT_BUTTON" = "Exportieren";
 
@@ -209,9 +212,6 @@
 
 /* Help item that opens Ivy's issue tracker. */
 "HELP_REPORT_PROBLEM" = "Problem melden";
-
-/* Footer below the 'Report a Problem' item in Help, explaining that Signal does not support Ivy. */
-"HELP_REPORT_PROBLEM_FOOTER" = "Signal unterstützt Ivy nicht. Bitte melde Probleme mit Ivy auf GitHub, statt dich an den Signal-Support zu wenden.";
 
 /* Footer explaining Ivy data export and import. */
 "IVY_DATA_BACKUP_FOOTER" = "Sichert Ordner-Emojis und -Farben, Ordner-Anheftungen und Erinnerungen in einer mit einer Passphrase verschlüsselten Datei. Beim Importieren wird die Datei mit den Daten auf diesem Gerät zusammengeführt.";
@@ -309,8 +309,14 @@
 /* Header of the reminders that are due. */
 "REMINDERS_DUE" = "Fällig";
 
-/* Shown in the list of reminders when there are none. Explains how to add one. */
-"REMINDERS_EMPTY" = "Keine Erinnerungen. Halte eine Nachricht oder einen Chat gedrückt und wähle „Erinnern“.";
+/* Shown in the list of reminders when there are none, on the Mac. Embeds {{ the name of the Remind Me action }}. */
+"REMINDERS_EMPTY_CLICK_FORMAT" = "Klicke mit der rechten Maustaste auf eine Nachricht oder einen Chat und wähle „%@“.";
+
+/* Title shown in the list of reminders when there are none. */
+"REMINDERS_EMPTY_TITLE" = "Keine Erinnerungen";
+
+/* Shown in the list of reminders when there are none, on iPhone and iPad. Embeds {{ the name of the Remind Me action }}. */
+"REMINDERS_EMPTY_TOUCH_FORMAT" = "Halte eine Nachricht oder einen Chat gedrückt und wähle „%@“.";
 
 /* Title of the list of reminders. */
 "REMINDERS_TITLE" = "Erinnerungen";

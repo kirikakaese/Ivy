@@ -35,7 +35,7 @@ public class ContextMenuAction {
         handler: @escaping ContextMenuActionHandler,
     ) {
         self.title = title
-        self.image = image
+        self.image = IvyMenuIcons.normalized(image) // Ivy: icons of the same size
         self.attributes = attributes
         self.handler = handler
     }

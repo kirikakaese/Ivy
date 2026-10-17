@@ -44,6 +44,16 @@ public class ConnectionsEducationSheetViewController: HeroSheetViewController {
                     alignment: .natural,
                     color: .Signal.label,
                 ),
+                // Ivy: the footer mentions stories, which Ivy doesn't show.
+                .customSpacing(16),
+                .text(
+                    .plain(IvyLocalizedString(
+                        "CONNECTIONS_NO_STORIES_NOTE",
+                        comment: "Note below the explanation of Signal connections, which mentions stories. Ivy doesn't show stories.",
+                    )),
+                    alignment: .natural,
+                    color: .Signal.secondaryLabel,
+                ),
             ]),
             primary: nil,
             secondary: nil,

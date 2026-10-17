@@ -127,6 +127,14 @@ open class StackSheetViewController: OWSViewController {
             owsFailDebug("doesn't support being in a nav controller. use NavStackSheetViewController")
         }
 
+#if targetEnvironment(macCatalyst)
+        // Ivy: a Mac can't swipe a sheet down, so it gets a close button
+        // and closes with Escape.
+        if canBeDismissed {
+            ivyAddCloseButton(to: contentContainer)
+        }
+#endif
+
         contentContainer.addSubview(contentScrollView)
         contentScrollView.autoPinEdgesToSuperviewEdges()
         contentScrollView.contentInsetAdjustmentBehavior = .never
@@ -167,6 +175,38 @@ open class StackSheetViewController: OWSViewController {
             dismissalDelegate?.didDismissPresentedSheet()
         }
     }
+
+#if targetEnvironment(macCatalyst)
+    private func ivyAddCloseButton(to container: UIView) {
+        var configuration = UIButton.Configuration.gray()
+        configuration.image = UIImage(systemName: "xmark")
+        configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 13, weight: .semibold)
+        configuration.cornerStyle = .capsule
+        configuration.baseForegroundColor = .Signal.secondaryLabel
+        let closeButton = UIButton(configuration: configuration, primaryAction: UIAction { [weak self] _ in
+            self?.ivyClose()
+        })
+        closeButton.accessibilityLabel = CommonStrings.dismissButton
+        // Added after the content, so it stays on top.
+        DispatchQueue.main.async {
+            container.addSubview(closeButton)
+            closeButton.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                closeButton.topAnchor.constraint(equalTo: container.topAnchor, constant: 14),
+                closeButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -14),
+                closeButton.widthAnchor.constraint(equalToConstant: 30),
+                closeButton.heightAnchor.constraint(equalToConstant: 30),
+            ])
+        }
+        addKeyCommand(UIKeyCommand(input: UIKeyCommand.inputEscape, modifierFlags: [], action: #selector(ivyClose)))
+    }
+
+    @objc
+    private func ivyClose() {
+        guard presentingViewController != nil else { return }
+        dismiss(animated: true)
+    }
+#endif
 
     override open func accessibilityPerformEscape() -> Bool {
         if canBeDismissed, presentingViewController != nil {

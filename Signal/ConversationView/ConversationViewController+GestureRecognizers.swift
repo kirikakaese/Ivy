@@ -33,6 +33,13 @@ extension ConversationViewController: UIGestureRecognizerDelegate {
         collectionViewContextMenuSecondaryClickRecognizer.delegate = self
         collectionView.addGestureRecognizer(collectionViewContextMenuSecondaryClickRecognizer)
 
+#if targetEnvironment(macCatalyst)
+        // Ivy: on the Mac, menus open with a right-click, not by holding
+        // the mouse button.
+        collectionViewLongPressGestureRecognizer.isEnabled = false
+        collectionViewContextMenuGestureRecognizer.isEnabled = false
+#endif
+
         collectionViewPanGestureRecognizer.addTarget(self, action: #selector(handlePanGesture))
         collectionViewPanGestureRecognizer.delegate = self
         collectionView.addGestureRecognizer(collectionViewPanGestureRecognizer)
@@ -216,6 +223,12 @@ extension ConversationViewController {
             return
         }
 
+        // Ivy: links and mentions have their own menu, which otherwise only
+        // opens by holding them.
+        if case .bodyText = longPressHandler.gestureLocation {
+            longPressHandler.startGesture(cell: cell)
+            return
+        }
         longPressHandler.startContextMenuGesture(cell: cell)
     }
 

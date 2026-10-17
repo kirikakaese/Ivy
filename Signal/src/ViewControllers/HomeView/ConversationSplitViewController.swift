@@ -744,6 +744,12 @@ private class NoSelectedConversationViewController: OWSViewController {
         logoImageView.autoSetDimension(.height, toSize: 112)
         view.addSubview(logoImageView)
 
-        logoImageView.autoCenterInSuperview()
+        // Ivy: the chat list floats over this view, so center the logo in
+        // the visible part.
+        logoImageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            logoImageView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            logoImageView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
+        ])
     }
 }
