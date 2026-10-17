@@ -306,8 +306,14 @@
 /* Header of the reminders that are due. */
 "REMINDERS_DUE" = "Fällig";
 
-/* Shown in the list of reminders when there are none. Explains how to add one. */
-"REMINDERS_EMPTY" = "Keine Erinnerungen. Halte eine Nachricht oder einen Chat gedrückt und wähle „Erinnern“.";
+/* Shown in the list of reminders when there are none, on the Mac. Embeds {{ the name of the Remind Me action }}. */
+"REMINDERS_EMPTY_CLICK_FORMAT" = "Klicke mit der rechten Maustaste auf eine Nachricht oder einen Chat und wähle „%@“.";
+
+/* Title shown in the list of reminders when there are none. */
+"REMINDERS_EMPTY_TITLE" = "Keine Erinnerungen";
+
+/* Shown in the list of reminders when there are none, on iPhone and iPad. Embeds {{ the name of the Remind Me action }}. */
+"REMINDERS_EMPTY_TOUCH_FORMAT" = "Halte eine Nachricht oder einen Chat gedrückt und wähle „%@“.";
 
 /* Title of the list of reminders. */
 "REMINDERS_TITLE" = "Erinnerungen";
