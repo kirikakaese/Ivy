@@ -21,7 +21,7 @@ final class ChatFolderBar: UIView {
         var extras = ChatFolderExtras()
     }
 
-    static let sidebarWidth: CGFloat = 84
+    static let sidebarWidth: CGFloat = 80
 
     var onSelect: ((ChatFolder) -> Void)?
     var menuProvider: ((ChatFolder) -> UIMenu?)?
@@ -107,10 +107,11 @@ final class ChatFolderBar: UIView {
             stackConstraints = [stackView.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor)]
         case .sidebar:
             stackView.axis = .vertical
-            stackView.spacing = 4
+            stackView.spacing = 6
             stackView.alignment = .fill
             stackView.isLayoutMarginsRelativeArrangement = true
-            stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6)
+            // The trailing margin keeps the folders apart from the chats.
+            stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 4, leading: 4, bottom: 8, trailing: 8)
             scrollView.alwaysBounceHorizontal = false
             scrollView.alwaysBounceVertical = true
             stackConstraints = [stackView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)]
@@ -141,10 +142,12 @@ final class ChatFolderBar: UIView {
         let title = Self.title(for: item.folder)
         let emojiPrefix = (layout == .tabs ? item.extras.emoji.map { $0 + " " } : nil) ?? ""
         var attributedTitle = AttributedString(emojiPrefix + title)
-        attributedTitle.font = UIFont.dynamicTypeSubheadlineClamped.semibold()
+        attributedTitle.font = layout == .tabs
+            ? UIFont.dynamicTypeSubheadlineClamped.semibold()
+            : UIFont.dynamicTypeCaption1Clamped.medium()
         if item.unreadCount > 0 {
             var count = AttributedString(layout == .tabs ? "  \(item.unreadCount)" : "\n\(item.unreadCount)")
-            count.font = UIFont.dynamicTypeCaption1Clamped.semibold()
+            count.font = (layout == .tabs ? UIFont.dynamicTypeCaption1Clamped : UIFont.dynamicTypeCaption2Clamped).semibold()
             count.foregroundColor = UIColor.Signal.accent
             attributedTitle += count
         }
@@ -159,12 +162,13 @@ final class ChatFolderBar: UIView {
             } else {
                 configuration.image = UIImage(systemName: item.folder.kind == .allChats ? "bubble.left.and.bubble.right" : "folder")
             }
+            configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 17, weight: .regular)
             configuration.imagePlacement = .top
-            configuration.imagePadding = 4
+            configuration.imagePadding = 3
             configuration.titleAlignment = .center
             configuration.titleLineBreakMode = .byTruncatingTail
-            configuration.cornerStyle = .large
-            configuration.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 4, bottom: 8, trailing: 4)
+            configuration.cornerStyle = .medium
+            configuration.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 2, bottom: 7, trailing: 2)
         }
 
         let folder = item.folder

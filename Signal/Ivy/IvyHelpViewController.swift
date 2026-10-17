@@ -21,10 +21,6 @@ final class IvyHelpViewController: OWSTableViewController2 {
         let contents = OWSTableContents(title: CommonStrings.help)
 
         let supportSection = OWSTableSection()
-        supportSection.footerTitle = IvyLocalizedString(
-            "HELP_REPORT_PROBLEM_FOOTER",
-            comment: "Footer below the 'Report a Problem' item in Help, explaining that Signal does not support Ivy.",
-        )
         supportSection.add(.disclosureItem(
             withText: IvyLocalizedString("HELP_REPORT_PROBLEM", comment: "Help item that opens Ivy's issue tracker."),
             actionBlock: { [weak self] in

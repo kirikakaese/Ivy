@@ -418,11 +418,31 @@ class CameraCaptureSession: NSObject {
     private class func availableVideoCaptureDevices(forPosition position: AVCaptureDevice.Position) -> [AVCaptureDevice.DeviceType: AVCaptureDevice] {
         var queryDeviceTypes: [AVCaptureDevice.DeviceType] = [.builtInWideAngleCamera, .builtInTelephotoCamera, .builtInDualCamera]
         queryDeviceTypes.append(contentsOf: [.builtInUltraWideCamera, .builtInDualWideCamera, .builtInTripleCamera])
+#if targetEnvironment(macCatalyst)
+        // Ivy: a Mac has no rear camera, and macOS doesn't report a position
+        // for its cameras. Every camera counts as a front camera there, and
+        // an external or Continuity camera is used when there is no built-in one.
+        guard position != .back else {
+            return [:]
+        }
+        if #available(macCatalyst 17.0, *) {
+            queryDeviceTypes.append(contentsOf: [.external, .continuityCamera])
+        }
+        let session = AVCaptureDevice.DiscoverySession(deviceTypes: queryDeviceTypes, mediaType: .video, position: .unspecified)
+        return session.devices.reduce(into: [AVCaptureDevice.DeviceType: AVCaptureDevice]()) { deviceMap, device in
+            // External cameras stand in for the wide-angle camera.
+            let deviceType: AVCaptureDevice.DeviceType = queryDeviceTypes.prefix(6).contains(device.deviceType) ? device.deviceType : .builtInWideAngleCamera
+            if deviceMap[deviceType] == nil {
+                deviceMap[deviceType] = device
+            }
+        }
+#else
         let session = AVCaptureDevice.DiscoverySession(deviceTypes: queryDeviceTypes, mediaType: .video, position: position)
         let deviceMap = session.devices.reduce(into: [AVCaptureDevice.DeviceType: AVCaptureDevice]()) { deviceMap, device in
             deviceMap[device.deviceType] = device
         }
         return deviceMap
+#endif
     }
 
     private func availableVideoCaptureDeviceTypes(forPosition position: AVCaptureDevice.Position) -> [AVCaptureDevice.DeviceType] {
@@ -509,7 +529,11 @@ class CameraCaptureSession: NSObject {
         return devices[.builtInDualCamera] ?? devices[.builtInWideAngleCamera]
     }
 
+#if targetEnvironment(macCatalyst)
+    private(set) var desiredPosition: AVCaptureDevice.Position = .front // Ivy: Macs have no rear camera
+#else
     private(set) var desiredPosition: AVCaptureDevice.Position = .back
+#endif
 
     func switchCameraPosition() -> Promise<Void> {
         AssertIsOnMainThread()
@@ -1502,8 +1526,9 @@ private class PhotoCapture {
         avCaptureConnection.videoOrientation = captureOrientation
 
         let photoSettings = AVCapturePhotoSettings()
-        photoSettings.flashMode = flashMode
-        photoSettings.isHighResolutionPhotoEnabled = true
+        // Ivy: Mac cameras have no flash and may not offer high resolution.
+        photoSettings.flashMode = avCaptureOutput.supportedFlashModes.contains(flashMode) ? flashMode : .off
+        photoSettings.isHighResolutionPhotoEnabled = avCaptureOutput.isHighResolutionCaptureEnabled
 
         let photoProcessor = PhotoProcessor(delegate: delegate, captureRect: captureRect) { [weak self] in
             self?.photoProcessors[photoSettings.uniqueID] = nil

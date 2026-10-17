@@ -210,9 +210,6 @@
 /* Help item that opens Ivy's issue tracker. */
 "HELP_REPORT_PROBLEM" = "Problem melden";
 
-/* Footer below the 'Report a Problem' item in Help, explaining that Signal does not support Ivy. */
-"HELP_REPORT_PROBLEM_FOOTER" = "Signal unterstützt Ivy nicht. Bitte melde Probleme mit Ivy auf GitHub, statt dich an den Signal-Support zu wenden.";
-
 /* Footer explaining Ivy data export and import. */
 "IVY_DATA_BACKUP_FOOTER" = "Sichert Ordner-Emojis und -Farben, Ordner-Anheftungen und Erinnerungen in einer mit einer Passphrase verschlüsselten Datei. Beim Importieren wird die Datei mit den Daten auf diesem Gerät zusammengeführt.";
 

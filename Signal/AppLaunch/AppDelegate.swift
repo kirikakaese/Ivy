@@ -21,6 +21,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil,
     ) -> Bool {
+        IvyMenuIcons.install() // Ivy: icons of the same size in Mac menus
         return lifecycleManager.didFinishLaunching(launchOptions: launchOptions)
     }
 

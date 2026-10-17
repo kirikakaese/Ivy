@@ -1549,7 +1549,11 @@ final class CameraBottomBar: UIView {
     func setIsRecordingVideo(_ isRecording: Bool, animated: Bool) {
         _isRecordingVideo = isRecording
         photoLibraryButton.setIsHidden(isRecording, animated: animated)
+#if targetEnvironment(macCatalyst)
+        switchCameraButton.isHidden = true // Ivy: Macs have one camera side
+#else
         switchCameraButton.setIsHidden(isRecording, animated: animated)
+#endif
     }
 
     private var _isFrontCameraActive = false

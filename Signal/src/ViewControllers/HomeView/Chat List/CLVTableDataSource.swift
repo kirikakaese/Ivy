@@ -426,20 +426,22 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
         switch renderState.sections[indexPath.section].type {
         case .pinned,
              .unpinned:
+            // Ivy: the open chat has a menu too, just without a preview.
             guard
                 let chatListViewController = viewController,
-                chatListViewController.canPresentPreview(fromIndexPath: indexPath),
+                !tableView.isEditing,
                 let threadViewModel = threadViewModel(forIndexPath: indexPath)
             else {
                 return nil
             }
+            let canPresentPreview = chatListViewController.canPresentPreview(fromIndexPath: indexPath)
 
             return UIContextMenuConfiguration(
                 identifier: threadViewModel.threadUniqueId as NSString,
-                previewProvider: { [weak chatListViewController] in
+                previewProvider: canPresentPreview ? { [weak chatListViewController] in
                     guard let chatListViewController else { return nil }
                     return chatListViewController.createPreviewController(atIndexPath: indexPath)
-                },
+                } : nil,
                 actionProvider: { [weak chatListViewController] _ in
                     guard let chatListViewController else { return nil }
                     let actions = chatListViewController.contextMenuActions(threadViewModel: threadViewModel)
@@ -529,8 +531,7 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
             return
         }
         guard let vc = animator.previewViewController else {
-            owsFailDebug("Missing previewViewController.")
-            return
+            return // Ivy: the open chat's menu has no preview
         }
         animator.addAnimations { [weak viewController] in
             viewController?.commitPreviewController(vc)

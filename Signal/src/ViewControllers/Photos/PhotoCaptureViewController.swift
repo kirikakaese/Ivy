@@ -1019,6 +1019,9 @@ class PhotoCaptureViewController: OWSViewController, OWSNavigationChildControlle
             UIAction { [weak self] _ in self?.switchCameraPosition() },
             for: .primaryActionTriggered,
         )
+#if targetEnvironment(macCatalyst)
+        cameraBottomBar.switchCameraButton.isHidden = true // Ivy: Macs have one camera side
+#endif
         view.addSubview(cameraBottomBar)
         NSLayoutConstraint.activate([
             cameraBottomBar.photoLibraryButton.leadingAnchor.constraint(
@@ -1104,6 +1107,11 @@ class PhotoCaptureViewController: OWSViewController, OWSNavigationChildControlle
             UIAction { [weak self] _ in self?.switchCameraPosition() },
             for: .primaryActionTriggered,
         )
+#if targetEnvironment(macCatalyst)
+        // Ivy: Macs have one camera side and no flash.
+        sideBar.switchCameraButton.isHidden = true
+        sideBar.flashModeButton.isHidden = true
+#endif
         sideBar.photoLibraryButton.addAction(
             UIAction { [weak self] _ in self?.didTapPhotoLibrary() },
             for: .primaryActionTriggered,

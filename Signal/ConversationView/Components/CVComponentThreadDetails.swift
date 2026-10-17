@@ -688,7 +688,8 @@ public class CVComponentThreadDetails: CVComponentBase, CVRootComponent {
             axis: .vertical,
             alignment: .center,
             spacing: 0,
-            layoutMargins: UIEdgeInsets(top: 0, left: 0, bottom: 24, right: 0),
+            // Ivy: the avatar sits inside the outline instead of over its edge.
+            layoutMargins: UIEdgeInsets(top: vOffsetThreadDetailsOutline + 20, left: 0, bottom: 24, right: 0),
         )
     }
 
