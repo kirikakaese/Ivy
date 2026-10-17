@@ -120,7 +120,26 @@ final class ChatFolderBar: UIView {
         invalidateIntrinsicContentSize()
     }
 
+    /// Keeps the right-click menus alive; interactions hold their delegates weakly.
+    private var rightClickMenus: [RightClickMenu] = []
+
+    private final class RightClickMenu: NSObject, UIContextMenuInteractionDelegate {
+        let menu: UIMenu
+
+        init(menu: UIMenu) {
+            self.menu = menu
+        }
+
+        func contextMenuInteraction(
+            _ interaction: UIContextMenuInteraction,
+            configurationForMenuAtLocation location: CGPoint,
+        ) -> UIContextMenuConfiguration? {
+            UIContextMenuConfiguration(actionProvider: { [menu] _ in menu })
+        }
+    }
+
     private func reloadButtons() {
+        rightClickMenus = []
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         for item in items {
             stackView.addArrangedSubview(button(for: item))
@@ -175,7 +194,17 @@ final class ChatFolderBar: UIView {
         let button = UIButton(configuration: configuration, primaryAction: UIAction { [weak self] _ in
             self?.onSelect?(folder)
         })
+#if targetEnvironment(macCatalyst)
+        // On the Mac, the folder menu opens with a right-click, not by
+        // holding the button.
+        if let menu = menuProvider?(folder) {
+            let menuDelegate = RightClickMenu(menu: menu)
+            rightClickMenus.append(menuDelegate)
+            button.addInteraction(UIContextMenuInteraction(delegate: menuDelegate))
+        }
+#else
         button.menu = menuProvider?(folder)
+#endif
         button.isSelected = isSelected
         button.accessibilityLabel = title
         if item.unreadCount > 0 {
