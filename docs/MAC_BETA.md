@@ -41,4 +41,4 @@ make dependencies
 Scripts/ivy/mac-beta.sh build/mac-beta
 ```
 
-The script builds the Release configuration with the compilation condition `IVY_MAC_BETA`, removes the extensions, signs the app ad hoc and zips it. The code paths that differ are marked `IVY_MAC_BETA` (`SignalServiceKit/Ivy/IvyMacBeta.swift`, `MainAppContext`, `KeychainStorageImpl`).
+The script builds the App Store Release configuration with the compilation condition `IVY_MAC_BETA`, removes the extensions, signs the app ad hoc and zips it. The code paths that differ are marked `IVY_MAC_BETA` (`SignalServiceKit/Ivy/IvyMacBeta.swift`, `MainAppContext`, `KeychainStorageImpl`).

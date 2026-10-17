@@ -3,7 +3,7 @@
 # Copyright 2026 kiri
 # SPDX-License-Identifier: AGPL-3.0-only
 #
-# Builds the Mac beta: a Release build for Mac Catalyst on Apple Silicon
+# Builds the Mac beta: an App Store Release build for Mac Catalyst on Apple Silicon
 # (the Mac WebRTC library has no Intel slice), signed ad hoc,
 # without extensions, zipped for a GitHub release.
 #
@@ -22,7 +22,7 @@ set +e
 NSUnbufferedIO=YES xcodebuild \
   -workspace Signal.xcworkspace \
   -scheme Signal \
-  -configuration Release \
+  -configuration "App Store Release" \
   -destination "platform=macOS,variant=Mac Catalyst,arch=arm64" \
   -derivedDataPath "$DERIVED_DATA" \
   -disableAutomaticPackageResolution \
@@ -45,8 +45,8 @@ if [ "${status[0]}" -ne 0 ]; then
   exit 1
 fi
 
-APP="$DERIVED_DATA/Build/Products/Release-maccatalyst/Ivy.app"
-if [ ! -d "$APP" ]; then
+APP=$(ls -d "$DERIVED_DATA"/Build/Products/*-maccatalyst/Ivy.app | head -1)
+if [ -z "$APP" ] || [ ! -d "$APP" ]; then
   echo "Ivy.app not found in $DERIVED_DATA/Build/Products" >&2
   ls "$DERIVED_DATA/Build/Products" >&2 || true
   exit 1
