@@ -326,17 +326,13 @@ final class IvyCalendarViewController: UIViewController, UITableViewDataSource, 
 
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let item = sections[indexPath.section].items[indexPath.row]
-        guard case .task(let task) = item.kind else {
-            return nil
-        }
         return UIContextMenuConfiguration(actionProvider: { _ in
-            UIMenu(children: [
-                UIAction(
-                    title: IvyLocalizedString("TASK_MARK_DONE", comment: "Action that marks a task as done."),
-                    image: UIImage(systemName: "checkmark.circle"),
-                ) { _ in IvyTaskManager.shared.setDone(id: task.id, true) },
-            ])
+            UIMenu(children: IvyCalendarUI.menuActions(for: item))
         })
+    }
+
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        IvyCalendarUI.swipeActions(for: sections[indexPath.section].items[indexPath.row])
     }
 
     private func openReminder(_ reminder: IvyReminder) {

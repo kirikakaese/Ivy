@@ -78,6 +78,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Menu bar extra / Control Center control | 5b | done | done | done | Agreed equivalents. iPhone and iPad (iOS 18): a New Task control. Mac: unread count, today's agenda, open tasks, new task or event |
 | Shortcuts and Siri | 5c | done | done | done | Add Task (with due date and reminder), What's on Today, Open in Ivy (Home, Chats, Calendar, Calls, Tasks); Siri phrases in English and German; iOS 17 and later |
 | Keyboard shortcuts | 5c | – | done | done | iPhone has no hardware keyboard support. ⌘1–⌘4 for Home, Chats, Calendar and Calls, ⌥⌘T new task, ⌥⌘E new event; on the Mac in the View and File menus |
+| Text size | 5c | – | done | done | View > Make Text Bigger (⌘+), Make Text Smaller (⌘−), Actual Size (⌘0), kept per device; iPhone uses the system text size |
 | Share extension | 5b | done | done | in progress | Upstream's share extension. The Mac needs the signed app (Phase 7) |
 
 ## Extras

@@ -87,6 +87,7 @@ final class IvyPrimaryViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         Self.configureWindow(view.window?.windowScene)
+        IvyZoom.apply(to: view.window)
     }
 
     override func viewWillLayoutSubviews() {
@@ -174,6 +175,13 @@ extension ConversationSplitViewController {
     /// "Show Sidebar" or "Hide Sidebar" in the View menu.
     override func validate(_ command: UICommand) {
         super.validate(command)
+        if command.action == #selector(ivyZoomIn) {
+            command.attributes = IvyZoom.canZoomIn ? [] : .disabled
+        } else if command.action == #selector(ivyZoomOut) {
+            command.attributes = IvyZoom.canZoomOut ? [] : .disabled
+        } else if command.action == #selector(ivyZoomReset) {
+            command.attributes = IvyZoom.isActualSize ? .disabled : []
+        }
         if command.action == #selector(ivyToggleSidebar) {
             command.title = ivyPrimaryViewController?.isSidebarShown == true
                 ? IvyLocalizedString("SIDEBAR_HIDE", comment: "Menu command that hides the sidebar.")

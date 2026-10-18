@@ -4255,6 +4255,8 @@
 		71DC3B590CEE43F1C7F4B7E7 /* IvySidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE247619001C57723ACE23D /* IvySidebarViewController.swift */; };
 		EE19D2353B95E4933E40298C /* IvyPrimaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC216AB444FBF7C7CCA561D /* IvyPrimaryViewController.swift */; };
 		BE3A83359DC6FE41F23DC29B /* IvySidebarTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31AF9968B65D08EC44B0AF6 /* IvySidebarTest.swift */; };
+		1D754A30157C7AF5E106C43A /* IvyZoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A6E9773DC07A24DD075BBF /* IvyZoom.swift */; };
+		30436A6008B99465BB9225E1 /* IvyZoomTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D780AFE9BE1218FD97BEA166 /* IvyZoomTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8840,6 +8842,8 @@
 		BEE247619001C57723ACE23D /* IvySidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySidebarViewController.swift; sourceTree = "<group>"; };
 		2EC216AB444FBF7C7CCA561D /* IvyPrimaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPrimaryViewController.swift; sourceTree = "<group>"; };
 		D31AF9968B65D08EC44B0AF6 /* IvySidebarTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySidebarTest.swift; sourceTree = "<group>"; };
+		C9A6E9773DC07A24DD075BBF /* IvyZoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyZoom.swift; sourceTree = "<group>"; };
+		D780AFE9BE1218FD97BEA166 /* IvyZoomTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyZoomTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16478,6 +16482,7 @@
 				3718E9E3A59C461F45C9F438 /* Glance */,
 				78B13E8942A91E19F0B0533C /* Shortcuts */,
 				92F97B16B10E55C6B869FD26 /* Sidebar */,
+				2DAE7B476D88350A51DFF9E3 /* Zoom */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16495,6 +16500,7 @@
 				1A3D2F7C1B539037C6F295C2 /* IvyGlanceWriterTest.swift */,
 				EAFD5B5A9212369C80B61116 /* IvyShortcutsTest.swift */,
 				D31AF9968B65D08EC44B0AF6 /* IvySidebarTest.swift */,
+				D780AFE9BE1218FD97BEA166 /* IvyZoomTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16703,6 +16709,14 @@
 				2EC216AB444FBF7C7CCA561D /* IvyPrimaryViewController.swift */,
 			);
 			path = Sidebar;
+			sourceTree = "<group>";
+		};
+		2DAE7B476D88350A51DFF9E3 /* Zoom */ = {
+			isa = PBXGroup;
+			children = (
+				C9A6E9773DC07A24DD075BBF /* IvyZoom.swift */,
+			);
+			path = Zoom;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -20046,6 +20060,7 @@
 				B4418F88E3817F6CC76EF5C2 /* IvyKeyCommands.swift in Sources */,
 				71DC3B590CEE43F1C7F4B7E7 /* IvySidebarViewController.swift in Sources */,
 				EE19D2353B95E4933E40298C /* IvyPrimaryViewController.swift in Sources */,
+				1D754A30157C7AF5E106C43A /* IvyZoom.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20142,6 +20157,7 @@
 				C5B7E921B29412A498B9A871 /* IvyGlanceWriterTest.swift in Sources */,
 				7CD7D977A63E4BFC4EE01F9E /* IvyShortcutsTest.swift in Sources */,
 				BE3A83359DC6FE41F23DC29B /* IvySidebarTest.swift in Sources */,
+				30436A6008B99465BB9225E1 /* IvyZoomTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,7 +13,7 @@ import SignalUI
 enum IvyKeyCommands {
 
     static func commands() -> [UIKeyCommand] {
-        sectionCommands() + newItemCommands()
+        sectionCommands() + newItemCommands() + zoomCommands()
     }
 
     /// ⌘1 to ⌘4, in the order of the sections.
@@ -58,6 +58,33 @@ enum IvyKeyCommands {
         ]
     }
 
+    /// ⌘+, ⌘− and ⌘0 for the text size (see IvyZoom).
+    static func zoomCommands() -> [UIKeyCommand] {
+        [
+            UIKeyCommand(
+                title: IvyLocalizedString("ZOOM_IN", comment: "Menu command that makes the app's text bigger."),
+                action: #selector(ConversationSplitViewController.ivyZoomIn),
+                input: "+",
+                modifierFlags: .command,
+            ),
+            UIKeyCommand(
+                title: IvyLocalizedString("ZOOM_OUT", comment: "Menu command that makes the app's text smaller."),
+                action: #selector(ConversationSplitViewController.ivyZoomOut),
+                input: "-",
+                modifierFlags: .command,
+            ),
+            UIKeyCommand(
+                title: IvyLocalizedString("ZOOM_RESET", comment: "Menu command that sets the app's text back to its normal size."),
+                action: #selector(ConversationSplitViewController.ivyZoomReset),
+                input: "0",
+                modifierFlags: .command,
+            ),
+        ].map {
+            $0.discoverabilityTitle = $0.title
+            return $0
+        }
+    }
+
     /// Adds the commands to the Mac's menus.
     static func build(_ builder: UIMenuBuilder) {
         guard builder.system == .main else {
@@ -76,6 +103,10 @@ enum IvyKeyCommands {
         builder.insertChild(
             UIMenu(identifier: UIMenu.Identifier("ivy.new"), options: .displayInline, children: newItemCommands()),
             atEndOfMenu: .file,
+        )
+        builder.insertSibling(
+            UIMenu(identifier: UIMenu.Identifier("ivy.zoom"), options: .displayInline, children: zoomCommands()),
+            afterMenu: UIMenu.Identifier("ivy.sections"),
         )
     }
 }
