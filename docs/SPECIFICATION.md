@@ -226,7 +226,9 @@ Each phase is one branch and one pull request. The next phase starts after the p
 | 2 – Working messenger | Register, link, send and receive on both platforms with the agreed notification strategy; removals; custom string table; client identity; local-only diagnostics; About, privacy statement and non-affiliation notice |
 | 3a – Chat folders | Folders in the official format with tabs and sidebar, unread badges, reordering, bulk actions, suggested folders; pinned chat reordering |
 | 3b – Ivy data | Ivy data store with device sync and export/import, folder icon and color, per-folder pins, "Remind me in…" |
-| 4 – Productivity | Tasks, calendar, ICS, Home tab and new navigation |
+| 4a – Tasks | Tasks from messages or from scratch, with notes, due date and reminder, lists, priority and subtasks; synced with the Ivy data store |
+| 4b – Calendar | Events, calendar views, date detection in messages, ICS export, import and sending |
+| 4c – Home and navigation | Home tab and the new navigation: Home, Chats, Calendar, Calls; start tab setting |
 | 5 – Integrations | Apple Calendar and Reminders sync (one-way and two-way), widgets, menu bar extra, Shortcuts and Siri, keyboard shortcuts, share extension |
 | 6 – Extras | Scheduled messages, starred messages, chat notes, voice note features, hidden chats, decoy mode and duress passcode, app lock, metadata trimming |
 | 7 – Polish and release | Accessibility, performance, upstream merge rehearsal, signing, notarization, Sparkle, user documentation and maintenance guide |

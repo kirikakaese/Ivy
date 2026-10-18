@@ -33,6 +33,12 @@ final class IvyDataSettingsViewController: OWSTableViewController2, UIDocumentPi
                 self?.navigationController?.pushViewController(IvyRemindersViewController(), animated: true)
             },
         ))
+        organizeSection.add(.disclosureItem(
+            withText: IvyTaskUI.tasksTitle,
+            actionBlock: { [weak self] in
+                self?.navigationController?.pushViewController(IvyTasksViewController(), animated: true)
+            },
+        ))
         contents.add(organizeSection)
 
         let syncSection = OWSTableSection()

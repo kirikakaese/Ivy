@@ -61,12 +61,12 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 
 | Feature | Phase | iPhone | iPad | macOS | Notes |
 |---|---|---|---|---|---|
-| Tasks | 4 | planned | planned | planned | |
-| Calendar views | 4 | planned | planned | planned | |
-| Events from messages and date detection | 4 | planned | planned | planned | |
-| ICS export, import and sending | 4 | planned | planned | planned | |
-| Home tab | 4 | planned | planned | planned | |
-| Navigation and start tab setting | 4 | planned | planned | planned | |
+| Tasks | 4a | done | done | done | From a message or from scratch; notes, due date with reminder, lists, priority, subtasks; the link and quote go when the message is deleted or disappears |
+| Calendar views | 4b | planned | planned | planned | |
+| Events from messages and date detection | 4b | planned | planned | planned | |
+| ICS export, import and sending | 4b | planned | planned | planned | |
+| Home tab | 4c | planned | planned | planned | |
+| Navigation and start tab setting | 4c | planned | planned | planned | |
 
 ## Integrations
 
