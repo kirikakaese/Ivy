@@ -22,6 +22,9 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
         case chatList = 0
         case calls = 1
         case stories = 2
+        // Ivy: Home and Calendar
+        case home = 3
+        case calendar = 4
 
         var title: String {
             switch self {
@@ -40,6 +43,8 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
                     "STORIES_TITLE",
                     comment: "Title for the stories view.",
                 )
+            case .home, .calendar:
+                return ivyTitle // Ivy
             }
         }
 
@@ -51,6 +56,8 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
                 return UIImage(named: "tab-calls")
             case .stories:
                 return UIImage(named: "tab-stories")
+            case .home, .calendar:
+                return ivyImage // Ivy
             }
         }
 
@@ -62,6 +69,8 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
                 return UIImage(named: "tab-calls")
             case .stories:
                 return UIImage(named: "tab-stories")
+            case .home, .calendar:
+                return ivyImage // Ivy
             }
         }
 
@@ -81,6 +90,10 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
                 return "calls"
             case .stories:
                 return "stories"
+            case .home:
+                return "home" // Ivy
+            case .calendar:
+                return "calendar" // Ivy
             }
         }
     }
@@ -97,6 +110,16 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
     lazy var callsListViewController = CallsListViewController()
     lazy var callsListNavController = OWSNavigationController(rootViewController: callsListViewController)
     lazy var callsListTabBarItem = Tabs.calls.tabBarItem
+
+    // Ivy: Home and Calendar, see HomeTabSwitcher.swift.
+    lazy var ivyHomeViewController = IvyHomeViewController()
+    lazy var ivyHomeNavController = OWSNavigationController(rootViewController: ivyHomeViewController)
+    lazy var ivyHomeTabBarItem = Tabs.home.tabBarItem
+    lazy var ivyCalendarViewController = IvyCalendarViewController()
+    lazy var ivyCalendarNavController = OWSNavigationController(rootViewController: ivyCalendarViewController)
+    lazy var ivyCalendarTabBarItem = Tabs.calendar.tabBarItem
+    /// The tabs in the order shown.
+    private(set) var ivyShownTabs: [Tabs] = []
 
     // There are two things going on here that require this code. The first is a stored property can't
     // conditionally include itself with an @available property, so some type erasing hoops need to be
@@ -121,9 +144,10 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
     }
 
     var selectedHomeTab: Tabs {
-        get { Tabs(rawValue: selectedIndex) ?? .chatList }
+        // Ivy: the tabs' order no longer matches their raw values.
+        get { ivyShownTabs.indices.contains(selectedIndex) ? ivyShownTabs[selectedIndex] : .chatList }
         set {
-            selectedIndex = newValue.rawValue
+            selectedIndex = ivyShownTabs.firstIndex(of: newValue) ?? 0
             ivyUpdateTabSwitcherSelection() // Ivy: tab switcher on the Mac
         }
     }
@@ -155,6 +179,7 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
 
         setTabBarHidden(false, animated: false)
         ivyInstallTabSwitcher() // Ivy: tab switcher on the Mac
+        ivySelectStartTab() // Ivy: start tab setting
     }
 
     @objc
@@ -166,6 +191,7 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
 
     private func updateTabBars(areStoriesEnabled: Bool) {
         let newTabs = tabsToShow(areStoriesEnabled: areStoriesEnabled)
+        ivyShownTabs = newTabs // Ivy
         if #available(iOS 18, *) {
             self.tabs = newTabs.map(uiTab(for:))
         } else {
@@ -198,11 +224,15 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
             return (callsListNavController, callsListTabBarItem)
         case .stories:
             return (storiesNavController, storiesTabBarItem)
+        case .home:
+            return (ivyHomeNavController, ivyHomeTabBarItem) // Ivy
+        case .calendar:
+            return (ivyCalendarNavController, ivyCalendarTabBarItem) // Ivy
         }
     }
 
     private func tabsToShow(areStoriesEnabled: Bool) -> [Tabs] {
-        var tabs = [Tabs.chatList, Tabs.calls]
+        var tabs = [Tabs.home, Tabs.chatList, Tabs.calendar, Tabs.calls] // Ivy: Home · Chats · Calendar · Calls
         if areStoriesEnabled {
             tabs.append(Tabs.stories)
         }
@@ -360,6 +390,11 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
                 tableView = storiesViewController.tableView
             case .calls:
                 tableView = callsListViewController.tableView
+            case .home:
+                tableView = ivyHomeViewController.tableView // Ivy
+            case .calendar:
+                ivyCalendarViewController.select(day: Date()) // Ivy: back to today
+                return true
             }
 
             tableView.setContentOffset(CGPoint(x: 0, y: -tableView.safeAreaInsets.top), animated: true)

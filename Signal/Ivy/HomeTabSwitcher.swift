@@ -6,9 +6,9 @@
 import SignalServiceKit
 import SignalUI
 
-/// On the Mac, the system shows the Chats and Calls tabs at the top of the
-/// window, above the conversation. Ivy hides them there and shows a switcher
-/// at the bottom of the chat list instead.
+/// On the Mac, the system shows the tabs at the top of the window, above the
+/// conversation. Ivy hides them there and shows a switcher at the bottom of
+/// the sidebar instead: Home, Chats, Calendar, Calls.
 extension HomeTabBarController {
 
     static var ivyUsesTabSwitcher: Bool {
@@ -23,7 +23,13 @@ extension HomeTabBarController {
     static let ivyTabSwitcherInset: CGFloat = 56
 
     private var ivySwitcherTabs: [Tabs] {
-        IvyConfiguration.showsStories ? [.chatList, .calls, .stories] : [.chatList, .calls]
+        ivyShownTabs
+    }
+
+    /// Opens the section chosen in Settings, Chats by default.
+    func ivySelectStartTab() {
+        let section = SSKEnvironment.shared.databaseStorageRef.read { tx in IvyHomeSettings.startSection(tx: tx) }
+        selectedHomeTab = Tabs(section)
     }
 
     func ivyInstallTabSwitcher() {
@@ -39,6 +45,7 @@ extension HomeTabBarController {
         for (index, tab) in ivySwitcherTabs.enumerated() {
             switcher.insertSegment(withTitle: tab.title, at: index, animated: false)
         }
+        switcher.apportionsSegmentWidthsByContent = true
         ivyUpdateTabSwitcherSelection()
         switcher.addAction(UIAction { [weak self] _ in
             self?.ivyDidChangeTabSwitcher()
@@ -53,7 +60,7 @@ extension HomeTabBarController {
             switcher.leadingAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
         ])
 
-        for navigationController in [chatListNavController, callsListNavController, storiesNavController] {
+        for navigationController in [chatListNavController, callsListNavController, storiesNavController, ivyHomeNavController, ivyCalendarNavController] {
             navigationController.additionalSafeAreaInsets.bottom += Self.ivyTabSwitcherInset
         }
     }
@@ -94,7 +101,7 @@ extension HomeTabBarController {
             switch tab {
             case .chatList: count = unreadChatCount
             case .calls: count = unreadCallsCount
-            case .stories: count = 0
+            case .stories, .home, .calendar: count = 0
             }
             let title = count > 0 ? "\(tab.title) \(count.formatted())" : tab.title
             ivyTabSwitcher.setTitle(title, forSegmentAt: index)
@@ -109,6 +116,42 @@ extension HomeTabBarController {
         selectedHomeTab = ivySwitcherTabs[index]
         if let selectedViewController {
             tabBarController(self, didSelect: selectedViewController)
+        }
+    }
+}
+
+// MARK: - Sections
+
+extension HomeTabBarController.Tabs {
+
+    init(_ section: IvySection) {
+        switch section {
+        case .home: self = .home
+        case .chats: self = .chatList
+        case .calendar: self = .calendar
+        case .calls: self = .calls
+        }
+    }
+
+    var ivyTitle: String {
+        switch self {
+        case .home:
+            return IvyLocalizedString("HOME_TITLE", comment: "Title of the Home section with today's agenda, tasks and important messages.")
+        case .calendar:
+            return IvyCalendarUI.calendarTitle
+        case .chatList, .calls, .stories:
+            return title
+        }
+    }
+
+    var ivyImage: UIImage? {
+        switch self {
+        case .home:
+            return UIImage(systemName: "house")
+        case .calendar:
+            return UIImage(systemName: "calendar")
+        case .chatList, .calls, .stories:
+            return image
         }
     }
 }

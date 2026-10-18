@@ -53,6 +53,10 @@ class ConversationSplitViewController: UISplitViewController, ConversationSplit 
             callsListNavController
         case .stories:
             storiesNavController
+        case .home:
+            homeVC.ivyHomeNavController // Ivy
+        case .calendar:
+            homeVC.ivyCalendarNavController // Ivy
         }
 
         if isCollapsed {
@@ -148,6 +152,10 @@ class ConversationSplitViewController: UISplitViewController, ConversationSplit 
             chatListNavController.popToRootViewController(animated: animated)
         case .stories:
             storiesNavController.popToRootViewController(animated: animated)
+        case .home:
+            homeVC.ivyHomeNavController.popToRootViewController(animated: animated) // Ivy
+        case .calendar:
+            homeVC.ivyCalendarNavController.popToRootViewController(animated: animated) // Ivy
         }
     }
 
