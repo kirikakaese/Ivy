@@ -106,6 +106,9 @@
 	<string>Ivy keeps your tasks in a list named Ivy when you turn on Apple Reminders sync.</string>
 	<key>NSRemindersUsageDescription</key>
 	<string>Ivy keeps your tasks in a list named Ivy when you turn on Apple Reminders sync.</string>
+	<!-- Ivy: transcribing voice messages on the device -->
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Ivy turns voice messages into text on this device when you ask it to. The audio never leaves the device.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>INSendMessageIntent</string>

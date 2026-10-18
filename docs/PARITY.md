@@ -86,9 +86,9 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Feature | Phase | iPhone | iPad | macOS | Notes |
 |---|---|---|---|---|---|
 | Scheduled messages | 6a | planned | planned | planned | |
-| Starred messages | 6a | planned | planned | planned | |
-| Chat notes | 6a | planned | planned | planned | |
-| Voice note speed and transcription | 6a | planned | planned | planned | On-device only |
+| Starred messages | 6a | done | done | done | Star or Remove Star in a message's menu; a star next to the time; list on Home; synced; removed when the message is deleted |
+| Chat notes | 6a | done | done | done | Chat settings > Note; synced, only on the user's devices |
+| Voice note speed and transcription | 6a | done | done | done | Speed is remembered per chat (as upstream); Transcribe in the message menu, on the device only |
 | Hidden chats | 6a | planned | planned | planned | |
 | Ivy passcode and app lock | 6a | planned | planned | planned | |
 | Instant lock | 6a | planned | planned | planned | |

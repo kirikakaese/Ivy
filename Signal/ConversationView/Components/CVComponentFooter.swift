@@ -63,6 +63,8 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
 
         // Ivy: the message has a reminder
         var ivyHasReminder = false
+        // Ivy: the message is starred
+        var ivyIsStarred = false
     }
 
     private let footerState: State
@@ -214,6 +216,13 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
             let reminderIconView = componentView.ivyReminderImageView
             reminderIconView.configure(tintColor: textColor)
             innerViews.append(reminderIconView)
+        }
+
+        // Ivy: star marker
+        if footerState.ivyIsStarred {
+            let starIconView = componentView.ivyStarImageView
+            starIconView.configure(tintColor: textColor, systemName: "star.fill")
+            innerViews.append(starIconView)
         }
 
         if displayEditedLabel {
@@ -776,6 +785,10 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
             innerSubviewInfos.append(ReminderMessageIconView.size.asManualSubviewInfo(hasFixedWidth: true))
         }
 
+        if footerState.ivyIsStarred { // Ivy: star marker
+            innerSubviewInfos.append(ReminderMessageIconView.size.asManualSubviewInfo(hasFixedWidth: true))
+        }
+
         if displayEditedLabel {
             let editedLabelConfig = self.editedLabelConfig(textColor: .black)
             let editedLabelSize = CVText.measureLabel(config: editedLabelConfig, maxWidth: maxWidth)
@@ -894,6 +907,7 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         fileprivate let smsLockIconView = SmsLockIconView()
         fileprivate let pinnedImageView = PinnedMessageIconView()
         fileprivate let ivyReminderImageView = ReminderMessageIconView() // Ivy: reminder marker
+        fileprivate let ivyStarImageView = ReminderMessageIconView() // Ivy: star marker
 
         // Bubble view when there is no chat wallpaper.
         fileprivate let chatColorView = CVColorOrGradientView()
@@ -938,6 +952,7 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
             smsLockIconView.removeFromSuperview()
             pinnedImageView.removeFromSuperview()
             ivyReminderImageView.removeFromSuperview() // Ivy: reminder marker
+            ivyStarImageView.removeFromSuperview() // Ivy: star marker
 
             chatColorView.reset()
             chatColorView.removeFromSuperview()

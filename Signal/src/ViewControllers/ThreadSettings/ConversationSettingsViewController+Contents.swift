@@ -51,6 +51,7 @@ extension ConversationSettingsViewController {
         // Main section.
         addDisappearingMessagesItemIfNecessary(to: mainSection)
         addNicknameItemIfNecessary(to: mainSection)
+        ivyAddChatNoteItem(to: mainSection) // Ivy: the user's private note for the chat
         addColorAndWallpaperSettingsItemIfNecessary(to: mainSection)
         if !isNoteToSelf { addSoundAndNotificationSettingsItem(to: mainSection) }
         addSafetyNumberItemIfNecessary(to: mainSection)

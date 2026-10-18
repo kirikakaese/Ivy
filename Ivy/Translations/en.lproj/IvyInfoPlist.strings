@@ -7,3 +7,6 @@
 /* Asks for access to Apple Reminders. */
 "NSRemindersFullAccessUsageDescription" = "Ivy keeps your tasks in a list named Ivy when you turn on Apple Reminders sync.";
 "NSRemindersUsageDescription" = "Ivy keeps your tasks in a list named Ivy when you turn on Apple Reminders sync.";
+
+/* Asks for speech recognition, to transcribe voice messages on the device. */
+"NSSpeechRecognitionUsageDescription" = "Ivy turns voice messages into text on this device when you ask it to. The audio never leaves the device.";

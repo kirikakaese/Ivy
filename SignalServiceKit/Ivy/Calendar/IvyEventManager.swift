@@ -103,7 +103,8 @@ public final class IvyEventManager {
     }
 }
 
-/// Removes the link and quote from tasks and events whose message goes away.
+/// Removes the link and quote from tasks and events whose message goes away,
+/// and the message's star.
 public enum IvyMessageLinks {
 
     /// Called when a message is deleted, disappears, or is deleted for
@@ -113,8 +114,9 @@ public enum IvyMessageLinks {
         let events = IvyEventManager.shared
         let linkedFromTask = tasks.linksToMessage(timestamp: message.timestamp)
         let linkedFromEvent = events.linksToMessage(timestamp: message.timestamp)
+        let isStarred = IvyStarManager.shared.linksToMessage(timestamp: message.timestamp)
         guard
-            linkedFromTask || linkedFromEvent,
+            linkedFromTask || linkedFromEvent || isStarred,
             let thread = message.thread(tx: tx),
             let reference = IvyMessageReference(message: message, thread: thread)
         else {
@@ -127,6 +129,9 @@ public enum IvyMessageLinks {
                 }
                 if linkedFromEvent {
                     IvyEventManager.shared.removeSources([reference])
+                }
+                if isStarred {
+                    IvyStarManager.shared.removeStars([reference])
                 }
             }
         }

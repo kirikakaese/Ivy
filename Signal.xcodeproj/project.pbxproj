@@ -4257,6 +4257,9 @@
 		BE3A83359DC6FE41F23DC29B /* IvySidebarTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31AF9968B65D08EC44B0AF6 /* IvySidebarTest.swift */; };
 		1D754A30157C7AF5E106C43A /* IvyZoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A6E9773DC07A24DD075BBF /* IvyZoom.swift */; };
 		30436A6008B99465BB9225E1 /* IvyZoomTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D780AFE9BE1218FD97BEA166 /* IvyZoomTest.swift */; };
+		68328B9338838302304EB0D6 /* IvyStars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D18D49058F0BFD2D3D987B3 /* IvyStars.swift */; };
+		EEAF113249E5BE8845F9E06B /* IvyMessageExtrasUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD37DE2EE099D5478582A44 /* IvyMessageExtrasUI.swift */; };
+		BBF49AFBEE565B60CCA6A3ED /* IvyStarsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC83CC545FA297FA5821B9AD /* IvyStarsTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8844,6 +8847,9 @@
 		D31AF9968B65D08EC44B0AF6 /* IvySidebarTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySidebarTest.swift; sourceTree = "<group>"; };
 		C9A6E9773DC07A24DD075BBF /* IvyZoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyZoom.swift; sourceTree = "<group>"; };
 		D780AFE9BE1218FD97BEA166 /* IvyZoomTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyZoomTest.swift; sourceTree = "<group>"; };
+		3D18D49058F0BFD2D3D987B3 /* IvyStars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyStars.swift; sourceTree = "<group>"; };
+		6DD37DE2EE099D5478582A44 /* IvyMessageExtrasUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMessageExtrasUI.swift; sourceTree = "<group>"; };
+		EC83CC545FA297FA5821B9AD /* IvyStarsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyStarsTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16418,6 +16424,7 @@
 				FC05A74927978039EE15E2FB /* Home */,
 				1E6648A14CDD7E90644FAC0A /* AppleSync */,
 				BDEBF4077A120009F24772E3 /* Glance */,
+				1699A1BC84325617EEBE097A /* Messages */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16440,6 +16447,7 @@
 				549F29946486EED5E9D6641C /* IvyHomeTest.swift */,
 				C7B33D510CD6822113C63FB3 /* IvyAppleSyncTest.swift */,
 				F7826A06AC926B2913534F8C /* IvyGlanceTest.swift */,
+				EC83CC545FA297FA5821B9AD /* IvyStarsTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16483,6 +16491,7 @@
 				78B13E8942A91E19F0B0533C /* Shortcuts */,
 				92F97B16B10E55C6B869FD26 /* Sidebar */,
 				2DAE7B476D88350A51DFF9E3 /* Zoom */,
+				6015B9288DAEC0333CA22745 /* Messages */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16717,6 +16726,22 @@
 				C9A6E9773DC07A24DD075BBF /* IvyZoom.swift */,
 			);
 			path = Zoom;
+			sourceTree = "<group>";
+		};
+		1699A1BC84325617EEBE097A /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				3D18D49058F0BFD2D3D987B3 /* IvyStars.swift */,
+			);
+			path = Messages;
+			sourceTree = "<group>";
+		};
+		6015B9288DAEC0333CA22745 /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				6DD37DE2EE099D5478582A44 /* IvyMessageExtrasUI.swift */,
+			);
+			path = Messages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -20061,6 +20086,7 @@
 				71DC3B590CEE43F1C7F4B7E7 /* IvySidebarViewController.swift in Sources */,
 				EE19D2353B95E4933E40298C /* IvyPrimaryViewController.swift in Sources */,
 				1D754A30157C7AF5E106C43A /* IvyZoom.swift in Sources */,
+				EEAF113249E5BE8845F9E06B /* IvyMessageExtrasUI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21440,6 +21466,7 @@
 				2CA0A2EA8591978615DBFA1C /* IvyHome.swift in Sources */,
 				0B568C23D47512B3CE3C91ED /* IvyAppleSync.swift in Sources */,
 				5BF139DDD7A703EFF117C37B /* IvyGlance.swift in Sources */,
+				68328B9338838302304EB0D6 /* IvyStars.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21725,6 +21752,7 @@
 				A6647D983F51264E00A16545 /* IvyHomeTest.swift in Sources */,
 				544969929AC169399FA4ED3F /* IvyAppleSyncTest.swift in Sources */,
 				4796B09E8075635C59EBDC2C /* IvyGlanceTest.swift in Sources */,
+				BBF49AFBEE565B60CCA6A3ED /* IvyStarsTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

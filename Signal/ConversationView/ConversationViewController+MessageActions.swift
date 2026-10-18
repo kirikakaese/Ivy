@@ -133,11 +133,13 @@ extension ConversationViewController: ContextMenuInteractionDelegate {
                     }
                 }
 
-                // Ivy: "Remind Me", "Add Task" and "Add to Calendar" for the message, before Delete
+                // Ivy: "Star", "Transcribe", "Remind Me", "Add Task" and "Add to Calendar" for the message, before Delete
                 if let contextMenuInteraction = self.collectionViewActiveContextMenuInteraction {
                     let interaction = contextMenuInteraction.itemViewModel.interaction
                     let thread = contextMenuInteraction.thread
                     let ivyActions = [
+                        self.ivyStarContextMenuAction(interaction: interaction, thread: thread),
+                        self.ivyTranscribeContextMenuAction(itemViewModel: contextMenuInteraction.itemViewModel),
                         self.ivyRemindMeContextMenuAction(interaction: interaction, thread: thread),
                         self.ivyAddTaskContextMenuAction(interaction: interaction, thread: thread),
                         self.ivyAddEventContextMenuAction(interaction: interaction, thread: thread),
