@@ -4223,6 +4223,11 @@
 		9A6558BACE14EE9D67BA24F4 /* IvyEventEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF6659F3E8BD0E5BCB66301 /* IvyEventEditorViewController.swift */; };
 		C0F880524799A48CEB7C92D1 /* IvyCalendarTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C4FDA009CCB0FAAA5AF56AF /* IvyCalendarTest.swift */; };
 		7DF8A64954C15E8143FC4BFF /* IvyCalendarUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550A06C8D4A681195270A869 /* IvyCalendarUITest.swift */; };
+		2CA0A2EA8591978615DBFA1C /* IvyHome.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF2D53C47A9D1D1192B8EAA /* IvyHome.swift */; };
+		C20D87E47239675F0EB5C918 /* IvyHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F98B14828E824AB53B1E0E /* IvyHomeViewController.swift */; };
+		D9AEDDEC59C7698A00DB2E7B /* IvyHomeSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A291D560F283712D68940 /* IvyHomeSettingsViewController.swift */; };
+		A6647D983F51264E00A16545 /* IvyHomeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549F29946486EED5E9D6641C /* IvyHomeTest.swift */; };
+		4CB310A98F1FDA42AEA96A74 /* IvyHomeUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245559263B6664D85C36B9DB /* IvyHomeUITest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8748,6 +8753,11 @@
 		4BF6659F3E8BD0E5BCB66301 /* IvyEventEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyEventEditorViewController.swift; sourceTree = "<group>"; };
 		6C4FDA009CCB0FAAA5AF56AF /* IvyCalendarTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyCalendarTest.swift; sourceTree = "<group>"; };
 		550A06C8D4A681195270A869 /* IvyCalendarUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyCalendarUITest.swift; sourceTree = "<group>"; };
+		FFF2D53C47A9D1D1192B8EAA /* IvyHome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyHome.swift; sourceTree = "<group>"; };
+		30F98B14828E824AB53B1E0E /* IvyHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyHomeViewController.swift; sourceTree = "<group>"; };
+		9F3A291D560F283712D68940 /* IvyHomeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyHomeSettingsViewController.swift; sourceTree = "<group>"; };
+		549F29946486EED5E9D6641C /* IvyHomeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyHomeTest.swift; sourceTree = "<group>"; };
+		245559263B6664D85C36B9DB /* IvyHomeUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyHomeUITest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16301,6 +16311,7 @@
 				062F195C7A1A072FB64208E4 /* IvyMacBeta.swift */,
 				B28E18CDD19183E91380425D /* Tasks */,
 				FA721854D2031BF688CB3474 /* Calendar */,
+				FC05A74927978039EE15E2FB /* Home */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16320,6 +16331,7 @@
 				7271F0173D173AFC1CE39360 /* IvyMacBetaKeyFileTest.swift */,
 				C288C7C2912F26B0404D749C /* IvyTaskTest.swift */,
 				6C4FDA009CCB0FAAA5AF56AF /* IvyCalendarTest.swift */,
+				549F29946486EED5E9D6641C /* IvyHomeTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16355,6 +16367,7 @@
 				3695CB1082888E57A6BB769B /* HomeTabSwitcher.swift */,
 				6EA61D0899B51233851E6CA9 /* Tasks */,
 				956063339385BA7BD0D049DF /* Calendar */,
+				1FB0014305FE2EC4743B84CC /* Home */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16367,6 +16380,7 @@
 				9DCB0CC5300EFB6EA1D09031 /* IvyMenuIconsTest.swift */,
 				60105161DD0131629F43236A /* IvyTaskUITest.swift */,
 				550A06C8D4A681195270A869 /* IvyCalendarUITest.swift */,
+				245559263B6664D85C36B9DB /* IvyHomeUITest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16485,6 +16499,23 @@
 				4BF6659F3E8BD0E5BCB66301 /* IvyEventEditorViewController.swift */,
 			);
 			path = Calendar;
+			sourceTree = "<group>";
+		};
+		FC05A74927978039EE15E2FB /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				FFF2D53C47A9D1D1192B8EAA /* IvyHome.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		1FB0014305FE2EC4743B84CC /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				30F98B14828E824AB53B1E0E /* IvyHomeViewController.swift */,
+				9F3A291D560F283712D68940 /* IvyHomeSettingsViewController.swift */,
+			);
+			path = Home;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -19761,6 +19792,8 @@
 				56526F58D9236E937369C1D1 /* IvyCalendarUI.swift in Sources */,
 				6C0E192C251762E86996E84C /* IvyCalendarViewController.swift in Sources */,
 				9A6558BACE14EE9D67BA24F4 /* IvyEventEditorViewController.swift in Sources */,
+				C20D87E47239675F0EB5C918 /* IvyHomeViewController.swift in Sources */,
+				D9AEDDEC59C7698A00DB2E7B /* IvyHomeSettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19852,6 +19885,7 @@
 				32ABDCA60FAF85AB11A9A006 /* IvyMenuIconsTest.swift in Sources */,
 				380F4A39796AA0FBA32A8FEE /* IvyTaskUITest.swift in Sources */,
 				7DF8A64954C15E8143FC4BFF /* IvyCalendarUITest.swift in Sources */,
+				4CB310A98F1FDA42AEA96A74 /* IvyHomeUITest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21131,6 +21165,7 @@
 				F980A1BE887B601B37783D3B /* IvyCalendar.swift in Sources */,
 				116FB680E7D4441B6EE796D8 /* IvyICS.swift in Sources */,
 				1825288B10BFB2966079B211 /* IvyEventManager.swift in Sources */,
+				2CA0A2EA8591978615DBFA1C /* IvyHome.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21413,6 +21448,7 @@
 				34B153E52A8A7DF7EAA844DA /* IvyMacBetaKeyFileTest.swift in Sources */,
 				531D5D03D360F21287229C6A /* IvyTaskTest.swift in Sources */,
 				C0F880524799A48CEB7C92D1 /* IvyCalendarTest.swift in Sources */,
+				A6647D983F51264E00A16545 /* IvyHomeTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

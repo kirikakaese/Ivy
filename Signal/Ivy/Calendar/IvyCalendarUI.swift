@@ -230,7 +230,7 @@ final class IvyChatChooserViewController: OWSTableViewController2 {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = IvyLocalizedString("EVENT_SEND_TO_CHAT", comment: "Action that sends an event as a calendar file in a chat.")
+        title = title ?? IvyLocalizedString("EVENT_SEND_TO_CHAT", comment: "Action that sends an event as a calendar file in a chat.")
         navigationItem.leftBarButtonItem = .cancelButton(dismissingFrom: self)
 
         let rows: [(thread: TSThread, name: String)] = SSKEnvironment.shared.databaseStorageRef.read { tx in

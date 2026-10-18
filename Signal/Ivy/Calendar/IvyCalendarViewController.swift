@@ -49,7 +49,8 @@ final class IvyCalendarViewController: UIViewController, UITableViewDataSource, 
         super.viewDidLoad()
         title = IvyCalendarUI.calendarTitle
         view.backgroundColor = .Signal.groupedBackground
-        if navigationController?.viewControllers.first === self {
+        // Done only when shown as a sheet, not as a tab.
+        if navigationController?.viewControllers.first === self, navigationController?.presentingViewController != nil {
             navigationItem.leftBarButtonItem = .doneButton(dismissingFrom: self)
         }
         navigationItem.rightBarButtonItems = [addButton(), moreButton()]

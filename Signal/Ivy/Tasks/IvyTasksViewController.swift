@@ -16,7 +16,8 @@ final class IvyTasksViewController: OWSTableViewController2 {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = IvyTaskUI.tasksTitle
-        if navigationController?.viewControllers.first === self {
+        // Done only when shown as a sheet, not as a tab.
+        if navigationController?.viewControllers.first === self, navigationController?.presentingViewController != nil {
             navigationItem.leftBarButtonItem = .doneButton(dismissingFrom: self)
         }
         NotificationCenter.default.addObserver(

@@ -131,7 +131,7 @@ extension ChatListViewController {
         containerView.setIvySidebar(nil)
     }
 
-    private func ivySelectChatFolder(_ folder: ChatFolder) {
+    func ivySelectChatFolder(_ folder: ChatFolder) {
         let id: Data? = folder.kind == .allChats ? nil : folder.id
         guard id != viewState.ivyChatFolderId else {
             return

@@ -345,6 +345,66 @@
 /* Help item that opens Ivy's issue tracker. */
 "HELP_REPORT_PROBLEM" = "Report a Problem";
 
+/* Item on Home that opens the list of all tasks. */
+"HOME_ALL_TASKS" = "All Tasks";
+
+/* Header on Home of important unread messages. */
+"HOME_IMPORTANT" = "Important";
+
+/* Header of the chats whose unread messages Home shows as important. */
+"HOME_IMPORTANT_CHATS" = "Important Chats";
+
+/* Explains which messages Home shows as important. */
+"HOME_IMPORTANT_CHATS_FOOTER" = "Home shows unread messages that mention you or reply to you, unread messages in pinned and important chats, and messages whose reminder is due.";
+
+/* Button that adds a chat to the important chats. */
+"HOME_IMPORTANT_CHAT_ADD" = "Add Chat";
+
+/* Action that removes a chat from the important chats. */
+"HOME_IMPORTANT_CHAT_REMOVE" = "Remove from Important Chats";
+
+/* Quick action on Home that starts a new message. */
+"HOME_NEW_MESSAGE" = "Message";
+
+/* Quick action on Home that sets a reminder for a chat. */
+"HOME_NEW_REMINDER" = "Reminder";
+
+/* Shown on Home when there are no events or reminders today. */
+"HOME_NOTHING_TODAY" = "Nothing planned today";
+
+/* Item on Home that opens the calendar. */
+"HOME_OPEN_CALENDAR" = "Open Calendar";
+
+/* Why a message is important on Home: it's in a chat the user marked as important. */
+"HOME_REASON_IMPORTANT_CHAT" = "Important chat";
+
+/* Why a message is important on Home: it mentions the user. */
+"HOME_REASON_MENTION" = "Mentioned you";
+
+/* Why a message is important on Home: it's in a pinned chat. */
+"HOME_REASON_PINNED_CHAT" = "Pinned chat";
+
+/* Why a message is important on Home: its reminder is due. */
+"HOME_REASON_REMINDER" = "Reminder";
+
+/* Why a message is important on Home: it replies to the user. */
+"HOME_REASON_REPLY" = "Replied to you";
+
+/* Title of the settings for Home and navigation. */
+"HOME_SETTINGS_TITLE" = "Home and Navigation";
+
+/* Header of the setting that chooses which section the app opens with. */
+"HOME_START_SECTION" = "Open With";
+
+/* Explains when the start section setting applies. */
+"HOME_START_SECTION_FOOTER" = "Ivy opens with this section when it starts.";
+
+/* Title of the Home section with today's agenda, tasks and important messages. */
+"HOME_TITLE" = "Home";
+
+/* Header on Home of the folders with unread chats. */
+"HOME_UNREAD_BY_FOLDER" = "Unread by Folder";
+
 /* Footer explaining Ivy data export and import. */
 "IVY_DATA_BACKUP_FOOTER" = "Saves folder emojis and colors, folder pins and reminders to a file encrypted with a passphrase. Importing merges the file with the data on this device.";
 

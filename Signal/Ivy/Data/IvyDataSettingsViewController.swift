@@ -45,6 +45,12 @@ final class IvyDataSettingsViewController: OWSTableViewController2, UIDocumentPi
                 self?.navigationController?.pushViewController(IvyCalendarViewController(), animated: true)
             },
         ))
+        organizeSection.add(.disclosureItem(
+            withText: IvyLocalizedString("HOME_SETTINGS_TITLE", comment: "Title of the settings for Home and navigation."),
+            actionBlock: { [weak self] in
+                self?.navigationController?.pushViewController(IvyHomeSettingsViewController(), animated: true)
+            },
+        ))
         contents.add(organizeSection)
 
         let syncSection = OWSTableSection()
