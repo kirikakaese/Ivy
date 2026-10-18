@@ -43,8 +43,9 @@ final class IvyAppleSyncEngineTest: XCTestCase {
         event.endDate = date(2026, 10, 22, 23, 59)
         XCTAssertEqual(IvyAppleSyncEngine.fields(of: event, calendar: calendar).endAt, date(2026, 10, 22))
 
+        // An all-day event that ends at midnight still covers that day.
         event.endDate = date(2026, 10, 23)
-        XCTAssertEqual(IvyAppleSyncEngine.fields(of: event, calendar: calendar).endAt, date(2026, 10, 22))
+        XCTAssertEqual(IvyAppleSyncEngine.fields(of: event, calendar: calendar).endAt, date(2026, 10, 23))
     }
 
     func testReminderRoundTrip() {
