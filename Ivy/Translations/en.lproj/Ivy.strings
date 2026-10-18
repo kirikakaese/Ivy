@@ -866,3 +866,12 @@
 
 /* Name of the widget that shows the number of unread messages. */
 "WIDGET_UNREAD_TITLE" = "Unread Messages";
+
+/* Menu command that makes the app's text bigger. */
+"ZOOM_IN" = "Make Text Bigger";
+
+/* Menu command that makes the app's text smaller. */
+"ZOOM_OUT" = "Make Text Smaller";
+
+/* Menu command that sets the app's text back to its normal size. */
+"ZOOM_RESET" = "Actual Size";

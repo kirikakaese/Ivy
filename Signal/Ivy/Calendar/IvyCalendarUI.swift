@@ -262,3 +262,80 @@ final class IvyChatChooserViewController: OWSTableViewController2 {
         self.contents = contents
     }
 }
+
+// MARK: - Actions on agenda items
+
+extension IvyCalendarUI {
+
+    /// "Mark as Done" and "Delete" for an event, task or reminder, for
+    /// right-click menus.
+    @MainActor
+    static func menuActions(for item: IvyCalendarItem) -> [UIMenuElement] {
+        var actions = [UIMenuElement]()
+        if let done = markDone(item) {
+            actions.append(UIAction(title: markDoneTitle, image: UIImage(systemName: "checkmark.circle")) { _ in done() })
+        }
+        actions.append(UIAction(title: deleteTitle(for: item), image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+            delete(item)
+        })
+        return actions
+    }
+
+    /// The same actions when swiping a row.
+    @MainActor
+    static func swipeActions(for item: IvyCalendarItem) -> UISwipeActionsConfiguration {
+        var actions = [UIContextualAction]()
+        actions.append(UIContextualAction(style: .destructive, title: deleteTitle(for: item)) { _, _, completion in
+            delete(item)
+            completion(true)
+        })
+        if let done = markDone(item) {
+            let action = UIContextualAction(style: .normal, title: markDoneTitle) { _, _, completion in
+                done()
+                completion(true)
+            }
+            action.backgroundColor = .Signal.accent
+            actions.append(action)
+        }
+        return UISwipeActionsConfiguration(actions: actions)
+    }
+
+    private static var markDoneTitle: String {
+        IvyLocalizedString("TASK_MARK_DONE", comment: "Action that marks a task as done.")
+    }
+
+    private static func deleteTitle(for item: IvyCalendarItem) -> String {
+        switch item.kind {
+        case .event:
+            return IvyLocalizedString("EVENT_DELETE", comment: "Action that deletes a calendar event.")
+        case .task:
+            return IvyLocalizedString("TASK_DELETE", comment: "Action that deletes a task.")
+        case .reminder:
+            return IvyLocalizedString("REMINDER_DELETE", comment: "Action that deletes a reminder.")
+        }
+    }
+
+    @MainActor
+    private static func markDone(_ item: IvyCalendarItem) -> (() -> Void)? {
+        switch item.kind {
+        case .event:
+            return nil
+        case .task(let task):
+            return { IvyTaskManager.shared.setDone(id: task.id, true) }
+        case .reminder(let reminder):
+            return { IvyReminderManager.shared.markDone(id: reminder.id) }
+        }
+    }
+
+    @MainActor
+    private static func delete(_ item: IvyCalendarItem) {
+        switch item.kind {
+        case .event(let event):
+            IvyEventManager.shared.delete(id: event.id)
+        case .task(let task):
+            IvyTaskManager.shared.delete(id: task.id)
+        case .reminder(let reminder):
+            IvyReminderManager.shared.delete(id: reminder.id)
+        }
+    }
+}

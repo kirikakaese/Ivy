@@ -389,6 +389,12 @@ public final class ConversationViewController: OWSViewController {
         // as we enter the conversation.
         SSKEnvironment.shared.notificationPresenterRef.cancelNotifications(threadId: thread.uniqueId)
 
+        // Ivy: opening the chat handles its reminders that are due, which
+        // removes their bell.
+        if let chat = IvyChatReference(thread: thread) {
+            IvyReminderManager.shared.markDueRemindersDone(chat: chat)
+        }
+
         // recover status bar when returning from PhotoPicker, which is dark (uses light status bar)
         self.setNeedsStatusBarAppearanceUpdate()
 

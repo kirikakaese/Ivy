@@ -37,7 +37,7 @@ final class IvyShortcutsTest: XCTestCase {
 
     func testKeyCommandsDontRepeat() {
         let commands = IvyKeyCommands.commands()
-        XCTAssertEqual(commands.count, 6)
+        XCTAssertEqual(commands.count, 9)
         let keys = commands.map { "\($0.modifierFlags.rawValue)-\($0.input ?? "")" }
         XCTAssertEqual(Set(keys).count, keys.count)
         XCTAssertEqual(IvyKeyCommands.sectionCommands().map(\.input), ["1", "2", "3", "4"])
