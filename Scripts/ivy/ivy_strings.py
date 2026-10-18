@@ -26,7 +26,8 @@ TABLE = "Ivy.strings"
 SOURCE_DIRS = ("Signal", "SignalUI", "SignalServiceKit", "SignalNSE", "SignalShareExtension", "IvyWidgets")
 SKIPPED_DIRS = {"tests", "test", "translations"}
 
-_USE = re.compile(r'IvyLocalizedString\(\s*"((?:[^"\\]|\\.)*)"')
+# IvyLocalizedString("KEY", ...) and, for shortcuts, LocalizedStringResource("KEY", ..., table: "Ivy").
+_USE = re.compile(r'(?:IvyLocalizedString|LocalizedStringResource)\(\s*"((?:[^"\\]|\\.)*)"')
 _PLACEHOLDER = re.compile(r"%(?:(\d+)\$)?[-+ #0]*\d*(?:\.\d+)?(?:hh|h|ll|l|q|z|t|j)?([@dDiuUxXoOfeEgGcCsSpaA%])")
 
 

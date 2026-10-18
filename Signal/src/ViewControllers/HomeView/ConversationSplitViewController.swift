@@ -540,6 +540,10 @@ class ConversationSplitViewController: UISplitViewController, ConversationSplit 
         if homeVC.selectedHomeTab == .chatList {
             keyCommands += chatListKeyCommands
         }
+        #if !targetEnvironment(macCatalyst)
+        // Ivy: sections, new task and new event (menu commands on the Mac)
+        keyCommands += IvyKeyCommands.commands()
+        #endif
         return keyCommands
     }
 

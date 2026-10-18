@@ -76,8 +76,8 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Apple Calendar and Reminders (two-way) | 5a | done | done | done | Changes, new and deleted items in Ivy's calendar and list come back to Ivy; Ivy wins when both sides changed. Alerts, subtasks, lists and linked messages stay in Ivy |
 | Widgets | 5b | done | done | in progress | Today, Tasks and Unread on the Home Screen, Lock Screen and Mac desktop. The Mac needs the signed app (Phase 7): the ad hoc beta has no app group |
 | Menu bar extra / Control Center control | 5b | done | done | done | Agreed equivalents. iPhone and iPad (iOS 18): a New Task control. Mac: unread count, today's agenda, open tasks, new task or event |
-| Shortcuts and Siri | 5c | planned | planned | planned | |
-| Keyboard shortcuts | 5c | – | planned | planned | iPhone has no hardware keyboard support |
+| Shortcuts and Siri | 5c | done | done | done | Add Task (with due date and reminder), What's on Today, Open in Ivy (Home, Chats, Calendar, Calls, Tasks); Siri phrases in English and German; iOS 17 and later |
+| Keyboard shortcuts | 5c | – | done | done | iPhone has no hardware keyboard support. ⌘1–⌘4 for Home, Chats, Calendar and Calls, ⌥⌘T new task, ⌥⌘E new event; on the Mac in the View and File menus |
 | Share extension | 5b | done | done | in progress | Upstream's share extension. The Mac needs the signed app (Phase 7) |
 
 ## Extras

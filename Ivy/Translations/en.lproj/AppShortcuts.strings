@@ -1,0 +1,7 @@
+/* Siri phrases for Ivy's shortcuts (Signal/Ivy/Shortcuts/IvyAppIntents.swift). The keys are the English phrases. */
+
+"Add a task in ${applicationName}" = "Add a task in ${applicationName}";
+"New ${applicationName} task" = "New ${applicationName} task";
+"What's on today in ${applicationName}" = "What's on today in ${applicationName}";
+"Show today in ${applicationName}" = "Show today in ${applicationName}";
+"Open ${section} in ${applicationName}" = "Open ${section} in ${applicationName}";
