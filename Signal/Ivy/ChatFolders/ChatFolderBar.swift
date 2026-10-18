@@ -86,7 +86,7 @@ final class ChatFolderBar: UIView {
     /// folder is filled with its color, the others are tinted with it.
     private func chip(for item: Item) -> UIButton {
         let isSelected = item.folder.id == selectedFolderId
-        let color = item.extras.color.map(Self.uiColor(for:)) ?? .Signal.accent
+        let color = item.extras.color.map { Self.uiColor(for: $0) } ?? .Signal.accent
 
         var configuration = UIButton.Configuration.filled()
         configuration.cornerStyle = .capsule
