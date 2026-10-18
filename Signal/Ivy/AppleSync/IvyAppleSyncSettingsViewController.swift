@@ -18,17 +18,11 @@ final class IvyAppleSyncSettingsViewController: OWSTableViewController2 {
         super.viewDidLoad()
         title = Self.title
         updateTableContents()
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(appDidBecomeActive),
-            name: UIApplication.didBecomeActiveNotification,
-            object: nil,
-        )
     }
 
     /// Access may have changed in the system settings.
-    @objc
-    private func appDidBecomeActive() {
+    override func appDidBecomeActive() {
+        super.appDidBecomeActive()
         updateTableContents()
     }
 
