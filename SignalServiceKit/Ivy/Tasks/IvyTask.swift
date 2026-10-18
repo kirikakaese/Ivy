@@ -256,7 +256,9 @@ public enum IvyTaskStore {
         var fields = [String: String?]()
         func set<T: Encodable>(_ field: String, _ value: T?, changed: Bool) {
             if old == nil || changed {
-                fields[field] = value.map { IvyDataStore.encode($0) }
+                // `updateValue` keeps a nil value, which clears the field;
+                // assigning nil through the subscript would drop the key.
+                fields.updateValue(value.map { IvyDataStore.encode($0) }, forKey: field)
             }
         }
         set(Field.title, task.title, changed: old?.title != task.title)
