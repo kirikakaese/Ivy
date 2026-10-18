@@ -211,7 +211,8 @@ public enum IvyEventStore {
         var fields = [String: String?]()
         func set<T: Encodable>(_ field: String, _ value: T?, changed: Bool) {
             if old == nil || changed {
-                fields[field] = value.map { IvyDataStore.encode($0) }
+                // `updateValue` keeps a nil value, which clears the field.
+                fields.updateValue(value.map { IvyDataStore.encode($0) }, forKey: field)
             }
         }
         set(Field.title, event.title, changed: old?.title != event.title)
