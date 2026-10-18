@@ -107,6 +107,29 @@ class ApplyTests(unittest.TestCase):
         self.assertEqual(strings, {"APP": "Ivy braucht Zugriff.", "KEEP": "Signal schreibt dir nie."})
         self.assertEqual(info, {"NSCameraUsageDescription": "Ivy verwendet die Kamera."})
 
+    def test_apply_merges_ivy_info_plist_texts(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            for locale, existing in (("de", {"NSCameraUsageDescription": "Kamera"}), ("en", None)):
+                lproj = os.path.join(tmp, f"{locale}.lproj")
+                os.mkdir(lproj)
+                if existing is not None:
+                    with open(os.path.join(lproj, "InfoPlist.strings"), "wb") as f:
+                        plistlib.dump(existing, f, fmt=plistlib.FMT_BINARY)
+                with open(os.path.join(lproj, app_name.IVY_INFO_PLIST), "w", encoding="utf-8") as f:
+                    f.write(f'"NSCalendarsUsageDescription" = "{locale} calendars";\n')
+            rules_path = os.path.join(tmp, "rules.json")
+            with open(rules_path, "w", encoding="utf-8") as f:
+                f.write("{}")
+            app_name.cmd_apply(rules_path, tmp)
+            tables = {}
+            for locale in ("de", "en"):
+                lproj = os.path.join(tmp, f"{locale}.lproj")
+                self.assertFalse(os.path.exists(os.path.join(lproj, app_name.IVY_INFO_PLIST)))
+                with open(os.path.join(lproj, "InfoPlist.strings"), "rb") as f:
+                    tables[locale] = plistlib.load(f)
+        self.assertEqual(tables["de"], {"NSCameraUsageDescription": "Kamera", "NSCalendarsUsageDescription": "de calendars"})
+        self.assertEqual(tables["en"], {"NSCalendarsUsageDescription": "en calendars"})
+
     def test_apply_reads_utf16_stringsdict_from_mac_builds(self):
         # macOS builds write XML property lists as UTF-16 but keep the UTF-8
         # declaration.

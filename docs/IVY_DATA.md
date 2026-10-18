@@ -57,3 +57,13 @@ An event's fields are `title`, `notes`, `location`, `startAt` and `endAt` (milli
 - `.ics` export writes times in UTC and all-day events as dates. Import reads `VEVENT` entries with `DTSTART`/`DTEND` or `DURATION` (UTC, `TZID` or floating), `SUMMARY`, `DESCRIPTION`, `LOCATION`, `RRULE` (`FREQ`, `INTERVAL`, `UNTIL`, `COUNT`), `UID` and the earliest `VALARM` trigger. Importing an entry with a known `UID` updates the event instead of adding a copy.
 - "Send to Chat" sends an event as an `.ics` file through the normal attachment screen. People on other Signal apps receive a normal file.
 - Deleting or losing the source message removes the event's `source`, like a task's.
+
+## Apple Calendar and Reminders
+
+Settings > Folders, Tasks, Calendar and Sync > Apple Calendar and Reminders turns sync on for this device: "Copy from Ivy" or "Sync Both Ways", separately for events and tasks. Before the first sync, Ivy says that items in Apple's apps leave Signal's end-to-end encryption and asks the system for full access.
+
+- Events go to a calendar named Ivy and tasks to a reminders list named Ivy, in the account of the default calendar or list. If the calendar or list is deleted in Apple, the next sync creates it again and copies everything.
+- Synced: an event's title, notes, location, start, end, all-day and repeat rule (daily, weekly, monthly or yearly with an interval and an end date); a task's title, notes, due date, all-day, priority and done. Alerts, subtasks, lists and linked messages stay in Ivy, so nothing rings twice.
+- Each device stores, per item, the Apple identifier and what both sides looked like at the last sync. That tells which side changed: "Copy from Ivy" puts back what changed in Apple; "Sync Both Ways" takes changes, new and deleted items from Apple, and Ivy's version wins when both sides changed.
+- Changes Ivy takes from Apple are written to the Ivy data store and sync to the other devices like any edit.
+- Turning sync off forgets the links and leaves the calendar and list in Apple.

@@ -14,7 +14,8 @@ fingerprint of the English text it was reviewed against.
 
 Commands:
   apply <rules> <resources-dir>   Rewrite the compiled .lproj files of a
-                                  built app bundle (Xcode build phase).
+                                  built app bundle (Xcode build phase), and
+                                  add Ivy's own system texts (see below).
   check <rules> <translations-dir>
                                   Fail if upstream English strings changed or
                                   new strings mention "Signal" without a rule.
@@ -34,6 +35,11 @@ import sys
 
 APP_NAME = "Ivy"
 TABLES = ("Localizable.strings", "InfoPlist.strings", "PluralAware.stringsdict")
+
+# Translations of Ivy's own Info.plist texts (permission prompts). The app
+# bundle can only use one InfoPlist.strings per language, which upstream
+# provides, so `apply` merges these into it and removes the extra file.
+IVY_INFO_PLIST = "IvyInfoPlist.strings"
 
 
 # MARK: - .strings parsing
@@ -205,7 +211,20 @@ def cmd_apply(rules_path, resources_dir):
                 # Xcode shows lines in this form as build errors.
                 print(f"{path}: error: cannot apply the app name rules: {type(e).__name__}: {e}", file=sys.stderr)
                 raise
+        merge_ivy_info_plist(os.path.join(resources_dir, entry))
     return 0
+
+
+def merge_ivy_info_plist(lproj_dir):
+    extra_path = os.path.join(lproj_dir, IVY_INFO_PLIST)
+    if not os.path.exists(extra_path):
+        return
+    path = os.path.join(lproj_dir, "InfoPlist.strings")
+    table = load_table(path) if os.path.exists(path) else {}
+    table.update(load_table(extra_path))
+    with open(path, "wb") as f:
+        plistlib.dump(table, f, fmt=plistlib.FMT_BINARY)
+    os.remove(extra_path)
 
 
 def _english_tables(translations_dir):

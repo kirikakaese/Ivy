@@ -229,7 +229,9 @@ Each phase is one branch and one pull request. The next phase starts after the p
 | 4a – Tasks | Tasks from messages or from scratch, with notes, due date and reminder, lists, priority and subtasks; synced with the Ivy data store |
 | 4b – Calendar | Events, calendar views, date detection in messages, ICS export, import and sending |
 | 4c – Home and navigation | Home tab and the new navigation: Home, Chats, Calendar, Calls; start tab setting |
-| 5 – Integrations | Apple Calendar and Reminders sync (one-way and two-way), widgets, menu bar extra, Shortcuts and Siri, keyboard shortcuts, share extension |
+| 5a – Apple Calendar and Reminders | One-way and two-way sync of events and tasks with Apple Calendar and Reminders |
+| 5b – Widgets and quick access | Widgets, menu bar extra and Control Center control, share extension |
+| 5c – Shortcuts and keyboard | Shortcuts and Siri, keyboard shortcuts |
 | 6 – Extras | Scheduled messages, starred messages, chat notes, voice note features, hidden chats, decoy mode and duress passcode, app lock, metadata trimming |
 | 7 – Polish and release | Accessibility, performance, upstream merge rehearsal, signing, notarization, Sparkle, user documentation and maintenance guide |
 
