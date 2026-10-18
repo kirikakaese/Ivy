@@ -55,16 +55,16 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Pinned chat reordering | 3a | done | done | done | Drag and drop, plus Move Up and Move Down |
 | Ivy data store and device sync | 3b | done | done | done | Own SQLCipher database; end-to-end encrypted sync messages to the user's own devices, per-field last edit wins |
 | Ivy data export and import | 3b | done | done | done | Passphrase-encrypted file (PBKDF2, AES-GCM) |
-| Remind me in… (messages and chats) | 3b | done | done | done | Presets, custom date with repeat, notification actions, list, markers; calendar view in Phase 4 |
+| Remind me in… (messages and chats) | 3b | done | done | done | Presets, custom date with repeat, notification actions, list, markers; shown in the calendar |
 
 ## Productivity
 
 | Feature | Phase | iPhone | iPad | macOS | Notes |
 |---|---|---|---|---|---|
 | Tasks | 4a | done | done | done | From a message or from scratch; notes, due date with reminder, lists, priority, subtasks; the link and quote go when the message is deleted or disappears |
-| Calendar views | 4b | planned | planned | planned | |
-| Events from messages and date detection | 4b | planned | planned | planned | |
-| ICS export, import and sending | 4b | planned | planned | planned | |
+| Calendar views | 4b | done | done | done | Agenda (90 days, overdue tasks first), day, week and month; events, tasks with a due date and open reminders together. The compact "today" overview comes with the Home tab (4c) |
+| Events from messages and date detection | 4b | done | done | done | "Add to Calendar" in the message menu, prefilled with the first date found on the device (`NSDataDetector`); repeat and alert |
+| ICS export, import and sending | 4b | done | done | done | Export one or all events, import with update by UID, send an event to a chat as an `.ics` file |
 | Home tab | 4c | planned | planned | planned | |
 | Navigation and start tab setting | 4c | planned | planned | planned | |
 

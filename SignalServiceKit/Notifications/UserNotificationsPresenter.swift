@@ -12,9 +12,10 @@ public class UserNotificationConfig {
 
     class var allNotificationCategories: Set<UNNotificationCategory> {
         let categories = AppNotificationCategory.allCases.map { notificationCategory($0) }
-        return Set(categories) // Ivy: reminders and tasks
+        return Set(categories) // Ivy: reminders, tasks and events
             .union(IvyReminderNotifications.categories)
             .union(IvyTaskNotifications.categories)
+            .union(IvyEventNotifications.categories)
     }
 
     class func notificationActions(for category: AppNotificationCategory) -> [UNNotificationAction] {
@@ -336,8 +337,10 @@ public class UserNotificationPresenter {
 
         Task {
             let shouldRemoveNotificationRequestPredicate: (UNNotificationRequest) -> Bool = { request in
-                // Ivy: reminders and tasks stay scheduled
-                if IvyReminderNotifications.isReminder(request) || IvyTaskNotifications.isTask(request) {
+                // Ivy: reminders, tasks and events stay scheduled
+                if IvyReminderNotifications.isReminder(request) || IvyTaskNotifications.isTask(request)
+                    || IvyEventNotifications.isEvent(request)
+                {
                     return false
                 }
                 guard

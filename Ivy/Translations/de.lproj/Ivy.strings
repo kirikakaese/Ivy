@@ -36,6 +36,54 @@
 /* Item that lists the licenses of the libraries Ivy uses. */
 "ABOUT_THIRD_PARTY_LICENSES" = "Lizenzen von Drittanbietern";
 
+/* Shown in the calendar when nothing is planned for the shown dates. */
+"CALENDAR_EMPTY" = "Nichts geplant.";
+
+/* Action that saves all events as a calendar file. */
+"CALENDAR_EXPORT" = "Kalenderdatei exportieren";
+
+/* Shown when a calendar file couldn't be written. */
+"CALENDAR_EXPORT_FAILED" = "Die Kalenderdatei konnte nicht gespeichert werden.";
+
+/* Shown when there are no events to export. */
+"CALENDAR_EXPORT_NOTHING" = "Es gibt keine Termine zum Exportieren.";
+
+/* Action that imports events from a calendar file. */
+"CALENDAR_IMPORT" = "Kalenderdatei importieren";
+
+/* Shown after importing a calendar file. Embeds {{ number of new events }} and {{ number of updated events }}. */
+"CALENDAR_IMPORTED_FORMAT" = "%1$d neu, %2$d aktualisiert";
+
+/* Shown when a file isn't a calendar file Ivy can read. */
+"CALENDAR_IMPORT_FAILED" = "Diese Kalenderdatei kann Ivy nicht lesen.";
+
+/* Calendar view: list of upcoming days. */
+"CALENDAR_MODE_AGENDA" = "Agenda";
+
+/* Calendar view: one day. */
+"CALENDAR_MODE_DAY" = "Tag";
+
+/* Calendar view: one month. */
+"CALENDAR_MODE_MONTH" = "Monat";
+
+/* Calendar view: one week. */
+"CALENDAR_MODE_WEEK" = "Woche";
+
+/* Button that shows more calendar actions. */
+"CALENDAR_MORE" = "Mehr";
+
+/* Button that shows the next day, week or month. */
+"CALENDAR_NEXT" = "Weiter";
+
+/* Button that shows the previous day, week or month. */
+"CALENDAR_PREVIOUS" = "Zurück";
+
+/* Title of the calendar. */
+"CALENDAR_TITLE" = "Kalender";
+
+/* Button that goes back to today. */
+"CALENDAR_TODAY" = "Heute";
+
 /* Button that opens the chat folder settings. */
 "CHAT_FOLDERS_EDIT" = "Ordner bearbeiten";
 
@@ -204,6 +252,90 @@
 /* Message of an error notification for testers. Embeds {{ error description }}. */
 "ERROR_NOTIFICATION_MESSAGE_FORMAT" = "Bitte hilf, Ivy zu verbessern, und melde diesen Fehler mit einem Diagnoseprotokoll unter github.com/kirikakaese/Ivy/issues: %@";
 
+/* Shown after an event was made from a message. */
+"EVENT_ADDED" = "Termin hinzugefügt";
+
+/* Action that makes a calendar event, for example from a message. */
+"EVENT_ADD_TO_CALENDAR" = "Zum Kalender hinzufügen";
+
+/* Row that chooses when a calendar event notifies. */
+"EVENT_ALERT" = "Hinweis";
+
+/* Event alert option: when the event starts. */
+"EVENT_ALERT_AT_START" = "Zu Beginn";
+
+/* Event alert option. Embeds {{ an amount of time, e.g. 15 minutes }}. */
+"EVENT_ALERT_BEFORE_FORMAT" = "%@ vorher";
+
+/* Event alert option: no alert. */
+"EVENT_ALERT_NONE" = "Keiner";
+
+/* Shown instead of a time for an all-day event. */
+"EVENT_ALL_DAY" = "Ganztägig";
+
+/* Action that deletes a calendar event. */
+"EVENT_DELETE" = "Termin löschen";
+
+/* Asks whether to delete a calendar event. */
+"EVENT_DELETE_CONFIRM" = "Diesen Termin löschen?";
+
+/* Explains that deleting a repeating event deletes all of its occurrences. */
+"EVENT_DELETE_REPEATING" = "Damit werden alle Wiederholungen gelöscht.";
+
+/* Title of the screen that edits a calendar event. */
+"EVENT_EDIT_TITLE" = "Termin";
+
+/* Row that shows and changes when a calendar event ends. */
+"EVENT_ENDS" = "Ende";
+
+/* Action that saves one event as a calendar file. */
+"EVENT_EXPORT" = "Kalenderdatei exportieren";
+
+/* Placeholder of a calendar event's location. */
+"EVENT_LOCATION_PLACEHOLDER" = "Ort";
+
+/* Action that makes a new calendar event. */
+"EVENT_NEW" = "Neuer Termin";
+
+/* Row that chooses whether a calendar event repeats. */
+"EVENT_REPEAT" = "Wiederholen";
+
+/* Event repeat option: every day. */
+"EVENT_REPEAT_DAILY" = "Täglich";
+
+/* Switch that makes a repeating event end on a date. */
+"EVENT_REPEAT_ENDS" = "Wiederholung beenden";
+
+/* Event repeat option: every month. */
+"EVENT_REPEAT_MONTHLY" = "Monatlich";
+
+/* Event repeat option: does not repeat. */
+"EVENT_REPEAT_NEVER" = "Nie";
+
+/* Row that shows the last day a repeating event happens. */
+"EVENT_REPEAT_UNTIL" = "Letzter Tag";
+
+/* Event repeat option: every week. */
+"EVENT_REPEAT_WEEKLY" = "Wöchentlich";
+
+/* Event repeat option: every year. */
+"EVENT_REPEAT_YEARLY" = "Jährlich";
+
+/* Action that sends an event as a calendar file in a chat. */
+"EVENT_SEND_TO_CHAT" = "An Chat senden";
+
+/* Explains that a shared event is a calendar file that other apps can open. */
+"EVENT_SHARE_FOOTER" = "Der Termin wird als Kalenderdatei (.ics) gesendet. Andere Signal-Apps zeigen sie als Datei, die Kalender-Apps öffnen können.";
+
+/* Row that shows and changes when a calendar event starts. */
+"EVENT_STARTS" = "Beginn";
+
+/* Placeholder of a calendar event's title. */
+"EVENT_TITLE_PLACEHOLDER" = "Titel";
+
+/* Title of an imported event that has none. */
+"EVENT_UNTITLED" = "Termin";
+
 /* Footer of the debug log section in Help, explaining that logs stay on the device. */
 "HELP_DEBUG_LOG_FOOTER" = "Debug-Protokolle bleiben auf diesem Gerät. Exportiere sie, um einem Problem nachzugehen oder sie mit jemandem zu teilen, dem du vertraust.";
 
@@ -259,7 +391,7 @@
 "IVY_DATA_SYNC_REQUESTED" = "Deine anderen Geräte wurden gefragt";
 
 /* Title of the settings for Ivy's own data: folders, reminders, sync and backup. */
-"IVY_DATA_TITLE" = "Ordner, Erinnerungen, Aufgaben und Sync";
+"IVY_DATA_TITLE" = "Ordner, Aufgaben, Kalender und Sync";
 
 /* Shown when the passphrase of an Ivy data file is wrong. */
 "IVY_DATA_WRONG_PASSPHRASE" = "Die Passphrase ist falsch.";
