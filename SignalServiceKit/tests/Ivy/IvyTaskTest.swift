@@ -66,7 +66,7 @@ final class IvyTaskTest: XCTestCase {
     func testTitleAndQuoteFromMessage() {
         XCTAssertEqual(IvyTask.title(fromMessageText: "\n  Buy milk  \nand bread"), "Buy milk")
         XCTAssertEqual(IvyTask.title(fromMessageText: ""), "")
-        let long = String(repeating: "a", count: 300)
+        let long = String(repeating: "a", count: 600)
         XCTAssertEqual(IvyTask.title(fromMessageText: long).count, IvyTask.maxTitleLength)
         XCTAssertTrue(IvyTask.title(fromMessageText: long).hasSuffix("…"))
         XCTAssertEqual(IvyTask.quote(fromMessageText: long).count, IvyTask.maxQuoteLength)
