@@ -4234,6 +4234,20 @@
 		544969929AC169399FA4ED3F /* IvyAppleSyncTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B33D510CD6822113C63FB3 /* IvyAppleSyncTest.swift */; };
 		DE6AC8D3BAD42D841358CAE3 /* IvyAppleSyncEngineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124728B769D61D3CF24B95D5 /* IvyAppleSyncEngineTest.swift */; };
 		78931767560915DCD604C9A3 /* IvyInfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4D95F36B65B445ABF1D8E797 /* IvyInfoPlist.strings */; };
+		8544B6A187DA99C19F9BA495 /* IvyWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB29BEAB5879A1C83300E40 /* IvyWidgets.swift */; };
+		4E273549F1EE6D6E9D592913 /* IvyWidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F22EE6D49AE43D827BFD2C6 /* IvyWidgetViews.swift */; };
+		181178FCE1055A6CD8C510FA /* IvyMenuBarPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC3AE29585C853D6205E095 /* IvyMenuBarPlugin.swift */; };
+		02BDB9CD6590B2906C9BAB08 /* Ivy.strings in Resources */ = {isa = PBXBuildFile; fileRef = FDEC879B3B87B62B9659A460 /* Ivy.strings */; };
+		5BF139DDD7A703EFF117C37B /* IvyGlance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40498F94A1DE0AFDD662402D /* IvyGlance.swift */; };
+		0565958935BC35B194447FA4 /* IvyGlance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40498F94A1DE0AFDD662402D /* IvyGlance.swift */; };
+		D8E4F3A1D21A21EFE898A86B /* IvyGlance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40498F94A1DE0AFDD662402D /* IvyGlance.swift */; };
+		F0146A2F2C6B8DD9A2AA279D /* IvyGlanceWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4B9541196C4972069642E1 /* IvyGlanceWriter.swift */; };
+		B99FA18AA903BB904D318321 /* IvyLinkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B92030F003299A754F26452 /* IvyLinkHandler.swift */; };
+		EC59B2BB9A1BDC7F296CEBF7 /* IvyMenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B214D9A73CD7F035A01287F3 /* IvyMenuBar.swift */; };
+		21A0EB7066AD69DE27B97F97 /* IvyWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 811E12E8EC82CCA97E9CD840 /* IvyWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		364477E67A1AC06A93539DB3 /* IvyMenuBar.bundle in Embed Ivy Menu Bar */ = {isa = PBXBuildFile; fileRef = 8277C2092A97C3736F0E6072 /* IvyMenuBar.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4796B09E8075635C59EBDC2C /* IvyGlanceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7826A06AC926B2913534F8C /* IvyGlanceTest.swift */; };
+		C5B7E921B29412A498B9A871 /* IvyGlanceWriterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3D2F7C1B539037C6F295C2 /* IvyGlanceWriterTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -4335,6 +4349,20 @@
 			remoteGlobalIDString = F9C5C896289451B900548EEE;
 			remoteInfo = SignalServiceKit;
 		};
+		48B53037399BB224C7D71F0F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D221A080169C9E5E00537ABF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 68BAF13DB4C8F93E22058FD1;
+			remoteInfo = IvyWidgets;
+		};
+		1E8420AA0C7A5D2C7AC76AC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D221A080169C9E5E00537ABF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BDDFDC7A2F188A93843B46BC;
+			remoteInfo = IvyMenuBar;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -4346,6 +4374,7 @@
 			files = (
 				342FFE8F27245851000AC89F /* SignalNSE.appex in Embed Foundation Extensions */,
 				453518721FC635DD00210559 /* SignalShareExtension.appex in Embed Foundation Extensions */,
+				21A0EB7066AD69DE27B97F97 /* IvyWidgets.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4360,6 +4389,17 @@
 				34A954BE271A471300B05242 /* SignalUI.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5AF8D4EC1CBADA35CBCEA7F8 /* Embed Ivy Menu Bar */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				364477E67A1AC06A93539DB3 /* IvyMenuBar.bundle in Embed Ivy Menu Bar */,
+			);
+			name = "Embed Ivy Menu Bar";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -8771,6 +8811,20 @@
 		124728B769D61D3CF24B95D5 /* IvyAppleSyncEngineTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAppleSyncEngineTest.swift; sourceTree = "<group>"; };
 		813B1424B8C4435235086F9A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/IvyInfoPlist.strings; sourceTree = "<group>"; };
 		0596501E7EB41D13607F29EF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/IvyInfoPlist.strings; sourceTree = "<group>"; };
+		811E12E8EC82CCA97E9CD840 /* IvyWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = IvyWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		8277C2092A97C3736F0E6072 /* IvyMenuBar.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IvyMenuBar.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CB29BEAB5879A1C83300E40 /* IvyWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWidgets.swift; sourceTree = "<group>"; };
+		6F22EE6D49AE43D827BFD2C6 /* IvyWidgetViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWidgetViews.swift; sourceTree = "<group>"; };
+		4F0EE8E1EB2B3E8481705A92 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B1D10201609E8FE5F8A9A742 /* IvyWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IvyWidgets.entitlements; sourceTree = "<group>"; };
+		0CC3AE29585C853D6205E095 /* IvyMenuBarPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMenuBarPlugin.swift; sourceTree = "<group>"; };
+		C070B4361825E317AF11F3C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		40498F94A1DE0AFDD662402D /* IvyGlance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyGlance.swift; sourceTree = "<group>"; };
+		5B4B9541196C4972069642E1 /* IvyGlanceWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyGlanceWriter.swift; sourceTree = "<group>"; };
+		4B92030F003299A754F26452 /* IvyLinkHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyLinkHandler.swift; sourceTree = "<group>"; };
+		B214D9A73CD7F035A01287F3 /* IvyMenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMenuBar.swift; sourceTree = "<group>"; };
+		F7826A06AC926B2913534F8C /* IvyGlanceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyGlanceTest.swift; sourceTree = "<group>"; };
+		1A3D2F7C1B539037C6F295C2 /* IvyGlanceWriterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyGlanceWriterTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -8877,6 +8931,20 @@
 			files = (
 				259D4DF2486F14DB112B3999 /* Pods_SignalServiceKitTests.framework in Frameworks */,
 				F9C5C89F289451B900548EEE /* SignalServiceKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5F7CEC8921A76DC9EE5DE25A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6D8BF2D6FB57A6C0EE6917E3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12515,6 +12583,8 @@
 				D221A08A169C9E5E00537ABF /* Products */,
 				07B6BFA4D17E1353B0696C14 /* Pods */,
 				5F9769ECCA8949129CF7748F /* Ivy */,
+				4B1577DFD8680FAA0B98B910 /* IvyWidgets */,
+				339C2D23EB8DA8AAA2A0CAFD /* IvyMenuBar */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
@@ -12531,6 +12601,8 @@
 				D221A0AA169C9E5F00537ABF /* SignalTests.xctest */,
 				34A954A8271A471200B05242 /* SignalUI.framework */,
 				34A954B1271A471300B05242 /* SignalUITests.xctest */,
+				811E12E8EC82CCA97E9CD840 /* IvyWidgets.appex */,
+				8277C2092A97C3736F0E6072 /* IvyMenuBar.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -16326,6 +16398,7 @@
 				FA721854D2031BF688CB3474 /* Calendar */,
 				FC05A74927978039EE15E2FB /* Home */,
 				1E6648A14CDD7E90644FAC0A /* AppleSync */,
+				BDEBF4077A120009F24772E3 /* Glance */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16347,6 +16420,7 @@
 				6C4FDA009CCB0FAAA5AF56AF /* IvyCalendarTest.swift */,
 				549F29946486EED5E9D6641C /* IvyHomeTest.swift */,
 				C7B33D510CD6822113C63FB3 /* IvyAppleSyncTest.swift */,
+				F7826A06AC926B2913534F8C /* IvyGlanceTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16385,6 +16459,7 @@
 				956063339385BA7BD0D049DF /* Calendar */,
 				1FB0014305FE2EC4743B84CC /* Home */,
 				A3A62497F60307DB20CEEE85 /* AppleSync */,
+				3718E9E3A59C461F45C9F438 /* Glance */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16399,6 +16474,7 @@
 				550A06C8D4A681195270A869 /* IvyCalendarUITest.swift */,
 				245559263B6664D85C36B9DB /* IvyHomeUITest.swift */,
 				124728B769D61D3CF24B95D5 /* IvyAppleSyncEngineTest.swift */,
+				1A3D2F7C1B539037C6F295C2 /* IvyGlanceWriterTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16551,6 +16627,44 @@
 				EF080A875B25D4FB895B849F /* IvyAppleSyncSettingsViewController.swift */,
 			);
 			path = AppleSync;
+			sourceTree = "<group>";
+		};
+		4B1577DFD8680FAA0B98B910 /* IvyWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				9CB29BEAB5879A1C83300E40 /* IvyWidgets.swift */,
+				6F22EE6D49AE43D827BFD2C6 /* IvyWidgetViews.swift */,
+				4F0EE8E1EB2B3E8481705A92 /* Info.plist */,
+				B1D10201609E8FE5F8A9A742 /* IvyWidgets.entitlements */,
+			);
+			path = IvyWidgets;
+			sourceTree = "<group>";
+		};
+		339C2D23EB8DA8AAA2A0CAFD /* IvyMenuBar */ = {
+			isa = PBXGroup;
+			children = (
+				0CC3AE29585C853D6205E095 /* IvyMenuBarPlugin.swift */,
+				C070B4361825E317AF11F3C9 /* Info.plist */,
+			);
+			path = IvyMenuBar;
+			sourceTree = "<group>";
+		};
+		BDEBF4077A120009F24772E3 /* Glance */ = {
+			isa = PBXGroup;
+			children = (
+				40498F94A1DE0AFDD662402D /* IvyGlance.swift */,
+			);
+			path = Glance;
+			sourceTree = "<group>";
+		};
+		3718E9E3A59C461F45C9F438 /* Glance */ = {
+			isa = PBXGroup;
+			children = (
+				5B4B9541196C4972069642E1 /* IvyGlanceWriter.swift */,
+				4B92030F003299A754F26452 /* IvyLinkHandler.swift */,
+				B214D9A73CD7F035A01287F3 /* IvyMenuBar.swift */,
+			);
+			path = Glance;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -16707,6 +16821,7 @@
 				453518771FC635DD00210559 /* Embed Foundation Extensions */,
 				4535189F1FC63DBF00210559 /* Embed Frameworks */,
 				73B038A9B680719715E2A2B1 /* [CP] Embed Pods Frameworks */,
+				5AF8D4EC1CBADA35CBCEA7F8 /* Embed Ivy Menu Bar */,
 			);
 			buildRules = (
 			);
@@ -16715,6 +16830,8 @@
 				34A954BC271A471300B05242 /* PBXTargetDependency */,
 				342FFE8E27245851000AC89F /* PBXTargetDependency */,
 				F9C5C8A9289451B900548EEE /* PBXTargetDependency */,
+				BA34E8ACB4797903CFC12767 /* PBXTargetDependency */,
+				88604EEF877218B5DF056B91 /* PBXTargetDependency */,
 			);
 			name = Signal;
 			productName = RedPhone;
@@ -16780,6 +16897,40 @@
 			productName = SignalServiceKitTests;
 			productReference = F9C5C89E289451B900548EEE /* SignalServiceKitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		68BAF13DB4C8F93E22058FD1 /* IvyWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 10C78F191F3B76DC8392ACED /* Build configuration list for PBXNativeTarget "IvyWidgets" */;
+			buildPhases = (
+				276835383631C4CF75E4E393 /* Sources */,
+				5F7CEC8921A76DC9EE5DE25A /* Frameworks */,
+				165E0C3248042983B24A381B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = IvyWidgets;
+			productName = IvyWidgets;
+			productReference = 811E12E8EC82CCA97E9CD840 /* IvyWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		BDDFDC7A2F188A93843B46BC /* IvyMenuBar */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B8DF25D670E0445633F3A3CD /* Build configuration list for PBXNativeTarget "IvyMenuBar" */;
+			buildPhases = (
+				D9D0E739514B6390D7938BB0 /* Sources */,
+				6D8BF2D6FB57A6C0EE6917E3 /* Frameworks */,
+				570BB89F6B0DFFCDC148D59B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = IvyMenuBar;
+			productName = IvyMenuBar;
+			productReference = 8277C2092A97C3736F0E6072 /* IvyMenuBar.bundle */;
+			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
 
@@ -16941,6 +17092,8 @@
 				34A954B0271A471300B05242 /* SignalUITests */,
 				F9C5C896289451B900548EEE /* SignalServiceKit */,
 				F9C5C89D289451B900548EEE /* SignalServiceKitTests */,
+				68BAF13DB4C8F93E22058FD1 /* IvyWidgets */,
+				BDDFDC7A2F188A93843B46BC /* IvyMenuBar */,
 			);
 		};
 /* End PBXProject section */
@@ -18353,6 +18506,21 @@
 				D90AA39E2CC9616B00021CB0 /* sticker_pack_02.txtproto in Resources */,
 				F908AA7D28CE629700472E68 /* test-apng.png in Resources */,
 				F927478828CFE9B10056EAFE /* test-png.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		165E0C3248042983B24A381B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				02BDB9CD6590B2906C9BAB08 /* Ivy.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		570BB89F6B0DFFCDC148D59B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19832,6 +20000,9 @@
 				D9AEDDEC59C7698A00DB2E7B /* IvyHomeSettingsViewController.swift in Sources */,
 				6AA5FBA386F8C7ED7F6A7D93 /* IvyAppleSyncEngine.swift in Sources */,
 				9AF31A63E5D623EECE6986CF /* IvyAppleSyncSettingsViewController.swift in Sources */,
+				F0146A2F2C6B8DD9A2AA279D /* IvyGlanceWriter.swift in Sources */,
+				B99FA18AA903BB904D318321 /* IvyLinkHandler.swift in Sources */,
+				EC59B2BB9A1BDC7F296CEBF7 /* IvyMenuBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19925,6 +20096,7 @@
 				7DF8A64954C15E8143FC4BFF /* IvyCalendarUITest.swift in Sources */,
 				4CB310A98F1FDA42AEA96A74 /* IvyHomeUITest.swift in Sources */,
 				DE6AC8D3BAD42D841358CAE3 /* IvyAppleSyncEngineTest.swift in Sources */,
+				C5B7E921B29412A498B9A871 /* IvyGlanceWriterTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21206,6 +21378,7 @@
 				1825288B10BFB2966079B211 /* IvyEventManager.swift in Sources */,
 				2CA0A2EA8591978615DBFA1C /* IvyHome.swift in Sources */,
 				0B568C23D47512B3CE3C91ED /* IvyAppleSync.swift in Sources */,
+				5BF139DDD7A703EFF117C37B /* IvyGlance.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21490,6 +21663,26 @@
 				C0F880524799A48CEB7C92D1 /* IvyCalendarTest.swift in Sources */,
 				A6647D983F51264E00A16545 /* IvyHomeTest.swift in Sources */,
 				544969929AC169399FA4ED3F /* IvyAppleSyncTest.swift in Sources */,
+				4796B09E8075635C59EBDC2C /* IvyGlanceTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		276835383631C4CF75E4E393 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8544B6A187DA99C19F9BA495 /* IvyWidgets.swift in Sources */,
+				4E273549F1EE6D6E9D592913 /* IvyWidgetViews.swift in Sources */,
+				0565958935BC35B194447FA4 /* IvyGlance.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D9D0E739514B6390D7938BB0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				181178FCE1055A6CD8C510FA /* IvyMenuBarPlugin.swift in Sources */,
+				D8E4F3A1D21A21EFE898A86B /* IvyGlance.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21565,6 +21758,17 @@
 			isa = PBXTargetDependency;
 			target = F9C5C896289451B900548EEE /* SignalServiceKit */;
 			targetProxy = F9C5C8A8289451B900548EEE /* PBXContainerItemProxy */;
+		};
+		BA34E8ACB4797903CFC12767 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 68BAF13DB4C8F93E22058FD1 /* IvyWidgets */;
+			targetProxy = 48B53037399BB224C7D71F0F /* PBXContainerItemProxy */;
+		};
+		88604EEF877218B5DF056B91 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilter = maccatalyst;
+			target = BDDFDC7A2F188A93843B46BC /* IvyMenuBar */;
+			targetProxy = 1E8420AA0C7A5D2C7AC76AC3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -23833,6 +24037,184 @@
 			};
 			name = "Testable Release";
 		};
+		22ADFC36B4216A0A3573242D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = IvyWidgets/IvyWidgets.entitlements;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = IvyWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SIGNAL_BUNDLEID_PREFIX).ivy.widgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		24BD5CA685159812C16630EB /* App Store Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = IvyWidgets/IvyWidgets.entitlements;
+				INFOPLIST_FILE = IvyWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SIGNAL_BUNDLEID_PREFIX).ivy.widgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "App Store Release";
+		};
+		077957B327DD7D87ED21F0AE /* Profiling */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = IvyWidgets/IvyWidgets.entitlements;
+				INFOPLIST_FILE = IvyWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SIGNAL_BUNDLEID_PREFIX).ivy.widgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Profiling;
+		};
+		D55675878F799D5C26FC6FF8 /* Testable Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = IvyWidgets/IvyWidgets.entitlements;
+				INFOPLIST_FILE = IvyWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SIGNAL_BUNDLEID_PREFIX).ivy.widgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "Testable Release";
+		};
+		63004E114ADE0B132C6CD1BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = IvyMenuBar/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SIGNAL_BUNDLEID_PREFIX).ivy.menubar";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		224D65C570812D9FEB99E8B5 /* App Store Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = IvyMenuBar/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SIGNAL_BUNDLEID_PREFIX).ivy.menubar";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = "App Store Release";
+		};
+		6F7B7691A2E4B0A67F1DFDB1 /* Profiling */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = IvyMenuBar/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SIGNAL_BUNDLEID_PREFIX).ivy.menubar";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Profiling;
+		};
+		6C863B0551093131DB88FD8E /* Testable Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = IvyMenuBar/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SIGNAL_BUNDLEID_PREFIX).ivy.menubar";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = "Testable Release";
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -23931,6 +24313,28 @@
 				F9C5C8B1289451B900548EEE /* App Store Release */,
 				F9C5C8B2289451B900548EEE /* Profiling */,
 				F9C5C8B3289451B900548EEE /* Testable Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "App Store Release";
+		};
+		10C78F191F3B76DC8392ACED /* Build configuration list for PBXNativeTarget "IvyWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				22ADFC36B4216A0A3573242D /* Debug */,
+				24BD5CA685159812C16630EB /* App Store Release */,
+				077957B327DD7D87ED21F0AE /* Profiling */,
+				D55675878F799D5C26FC6FF8 /* Testable Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "App Store Release";
+		};
+		B8DF25D670E0445633F3A3CD /* Build configuration list for PBXNativeTarget "IvyMenuBar" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				63004E114ADE0B132C6CD1BC /* Debug */,
+				224D65C570812D9FEB99E8B5 /* App Store Release */,
+				6F7B7691A2E4B0A67F1DFDB1 /* Profiling */,
+				6C863B0551093131DB88FD8E /* Testable Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "App Store Release";
