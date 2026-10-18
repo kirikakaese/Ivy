@@ -6,7 +6,8 @@
 import Foundation
 
 /// Keeps tasks working on this device: schedules their notifications and
-/// removes the link to a message when the message goes away.
+/// removes the link to a message when the message goes away (see
+/// `IvyMessageLinks`).
 public final class IvyTaskManager {
 
     public static let shared = IvyTaskManager()
@@ -139,7 +140,7 @@ public final class IvyTaskManager {
         sourceLock.unlock()
     }
 
-    private func linksToMessage(timestamp: UInt64) -> Bool {
+    func linksToMessage(timestamp: UInt64) -> Bool {
         sourceLock.lock()
         defer { sourceLock.unlock() }
         // Nil until `start()`, which the main app calls at launch; tests and
@@ -147,24 +148,10 @@ public final class IvyTaskManager {
         return sourceTimestamps?.contains(timestamp) == true
     }
 
-    /// Called when a message is deleted, disappears, or is deleted for
-    /// everyone. Tasks made from it keep their title and notes but lose the
-    /// quote and the link.
-    public func messageWillGoAway(_ message: TSMessage, tx: DBWriteTransaction) {
-        guard
-            linksToMessage(timestamp: message.timestamp),
-            let thread = message.thread(tx: tx),
-            let reference = IvyMessageReference(message: message, thread: thread)
-        else {
-            return
-        }
-        tx.addSyncCompletion {
-            DispatchQueue.main.async { [self] in
-                let changed = IvyTaskStore.removeSources([reference], store: store)
-                if !changed.isEmpty {
-                    refresh()
-                }
-            }
+    func removeSources(_ messages: Set<IvyMessageReference>) {
+        let changed = IvyTaskStore.removeSources(messages, store: store)
+        if !changed.isEmpty {
+            refresh()
         }
     }
 }

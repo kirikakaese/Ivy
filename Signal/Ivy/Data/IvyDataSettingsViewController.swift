@@ -39,6 +39,12 @@ final class IvyDataSettingsViewController: OWSTableViewController2, UIDocumentPi
                 self?.navigationController?.pushViewController(IvyTasksViewController(), animated: true)
             },
         ))
+        organizeSection.add(.disclosureItem(
+            withText: IvyCalendarUI.calendarTitle,
+            actionBlock: { [weak self] in
+                self?.navigationController?.pushViewController(IvyCalendarViewController(), animated: true)
+            },
+        ))
         contents.add(organizeSection)
 
         let syncSection = OWSTableSection()
