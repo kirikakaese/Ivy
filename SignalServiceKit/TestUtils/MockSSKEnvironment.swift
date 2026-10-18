@@ -136,17 +136,30 @@ public class MockSSKEnvironment {
     private static func flushAndWait() {
         AssertIsOnMainThread()
 
-        waitForMainQueue()
+        // Ivy: work that finishes during one round (a task's database write,
+        // for example) can schedule more main queue work. If that ran after
+        // the environment is gone, it crashed whichever test came next, so
+        // flush a few rounds, giving other threads a moment in between.
+        for round in 0..<flushRounds {
+            if round > 0 {
+                CFRunLoopRunInMode(.defaultMode, 0.005, false)
+            }
 
-        // Wait for all pending readers/writers to finish.
-        SSKEnvironment.shared.databaseStorageRef.grdbStorage.pool.barrierWriteWithoutTransaction { _ in }
+            waitForMainQueue()
 
-        // Wait for the MessageProcessor to finish.
-        SSKEnvironment.shared.messageProcessorRef.serialQueueForTests.sync {}
+            // Wait for all pending readers/writers to finish.
+            SSKEnvironment.shared.databaseStorageRef.grdbStorage.pool.barrierWriteWithoutTransaction { _ in }
 
-        // Wait for the main queue *again* in case more work was scheduled.
-        waitForMainQueue()
+            // Wait for the MessageProcessor to finish.
+            SSKEnvironment.shared.messageProcessorRef.serialQueueForTests.sync {}
+
+            // Wait for the main queue *again* in case more work was scheduled.
+            waitForMainQueue()
+        }
     }
+
+    /// Ivy: how often `flushAndWait` flushes before the environment goes away.
+    private static let flushRounds = 3
 
     public static func deactivateAsync(oldContext: any AppContext) async {
         await withCheckedContinuation { continuation in

@@ -2,7 +2,8 @@ name: Mac beta
 
 # Builds the Mac beta (signed ad hoc, see docs/MAC_BETA.md). Every push to
 # main publishes it as a pre-release; pull requests that change the beta
-# build only build it and keep the zip as a workflow artifact.
+# build, and manual runs on other branches, only build it and keep the zip
+# as a workflow artifact.
 on:
   push:
     branches:
@@ -82,8 +83,9 @@ jobs:
           name: mac-beta-logs
           path: ~/Library/Logs/Ivy-CI
 
+      # Only main is released; manual runs on other branches are test builds.
       - name: Publish the pre-release
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
