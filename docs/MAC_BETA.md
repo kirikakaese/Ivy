@@ -6,7 +6,7 @@ The beta is signed ad hoc. It runs in the App Sandbox, so everything it stores i
 
 - Its data is in `Library/Application Support/Ivy Beta` inside the container instead of the app group container.
 - Its database keys are in `Library/Application Support/Ivy Beta/Keys` inside the container, readable only by your user account, instead of the keychain. FileVault encrypts them with the rest of your disk.
-- It has no share extension.
+- It has no share extension and no widgets. The menu bar extra works.
 - It is a separate install: the signed app will not take over the beta's data, so you link it again then.
 
 Everything else is the normal Ivy for the Mac. It needs a Mac with Apple Silicon.

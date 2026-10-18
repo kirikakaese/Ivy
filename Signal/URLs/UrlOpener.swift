@@ -17,6 +17,7 @@ private enum OpenableUrl {
     case completeIDEALDonation(Stripe.IDEALCallbackType)
     case callLink(CallLink)
     case quickRestore(URL)
+    case ivy(IvyLink) // Ivy: widgets, the menu bar and shortcuts
 }
 
 class UrlOpener {
@@ -60,6 +61,10 @@ class UrlOpener {
     }
 
     private static func parseOpenableUrl(_ url: URL) -> OpenableUrl? {
+        // Ivy: links from widgets, the menu bar and shortcuts
+        if let ivyLink = IvyLink(url: url) {
+            return .ivy(ivyLink)
+        }
         if SignalDotMePhoneNumberLink.isPossibleUrl(url) {
             return .phoneNumberLink(url)
         }
@@ -146,6 +151,7 @@ class UrlOpener {
         switch url {
         case .completeIDEALDonation: return false
         case .groupInvite, .linkDevice, .phoneNumberLink, .signalProxy, .stickerPack, .usernameLink, .callLink, .quickRestore: return true
+        case .ivy: return true // Ivy
         }
     }
 
@@ -292,6 +298,10 @@ class UrlOpener {
         case .callLink(let callLink):
             _ = try tsAccountManager.registeredStateWithMaybeSneakyTransaction()
             GroupCallViewController.presentLobby(for: callLink)
+
+        case .ivy(let link): // Ivy
+            _ = try tsAccountManager.registeredStateWithMaybeSneakyTransaction()
+            IvyLinkHandler.open(link)
         }
     }
 }

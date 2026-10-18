@@ -67,3 +67,8 @@ Settings > Folders, Tasks, Calendar and Sync > Apple Calendar and Reminders turn
 - Each device stores, per item, the Apple identifier and what both sides looked like at the last sync. That tells which side changed: "Copy from Ivy" puts back what changed in Apple; "Sync Both Ways" takes changes, new and deleted items from Apple, and Ivy's version wins when both sides changed.
 - Changes Ivy takes from Apple are written to the Ivy data store and sync to the other devices like any edit.
 - Turning sync off forgets the links and leaves the calendar and list in Apple.
+
+## Widgets and the menu bar
+
+Widgets and the Mac menu bar extra don't open the database. The app writes a small summary, `IvyGlance.json`, to its app group container whenever tasks, events, reminders or the unread count change: today's events, due tasks and reminders, up to 8 open tasks, the number of open tasks and the unread count. It contains titles (of events, tasks and, for reminders, chats) and times, no message text. The file is readable after the device was unlocked once since starting, so Lock Screen widgets work. Widgets and menu items open Ivy with `sgnl://ivy/...` links (`home`, `chats`, `calendar`, `calls`, `tasks`, `tasks/new`, `calendar/new`, `task?id=`, `event?id=`).
+

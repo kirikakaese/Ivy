@@ -56,8 +56,9 @@ STAGE=$(mktemp -d)
 cp -R "$APP" "$STAGE/Ivy Beta.app"
 APP="$STAGE/Ivy Beta.app"
 
-# The extensions need the app group, which an ad hoc signature can't have.
-rm -rf "$APP/Contents/PlugIns" "$APP/Contents/Extensions"
+# The extensions (share, notifications, widgets) need the app group, which
+# an ad hoc signature can't have. The menu bar plugin stays.
+rm -rf "$APP/Contents/PlugIns/"*.appex "$APP/Contents/Extensions"
 
 # Sign everything again ad hoc. The app itself gets the App Sandbox (and
 # what Ivy needs inside it), so it has its own container like any Mac app;

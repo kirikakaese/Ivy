@@ -23,7 +23,7 @@ import app_name  # noqa: E402
 
 TRANSLATIONS = os.path.join("Ivy", "Translations")
 TABLE = "Ivy.strings"
-SOURCE_DIRS = ("Signal", "SignalUI", "SignalServiceKit", "SignalNSE", "SignalShareExtension")
+SOURCE_DIRS = ("Signal", "SignalUI", "SignalServiceKit", "SignalNSE", "SignalShareExtension", "IvyWidgets")
 SKIPPED_DIRS = {"tests", "test", "translations"}
 
 _USE = re.compile(r'IvyLocalizedString\(\s*"((?:[^"\\]|\\.)*)"')

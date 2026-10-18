@@ -513,6 +513,12 @@
 /* Message when the data transferred from the old device could not be restored. */
 "LAUNCH_FAILURE_RESTORE_FAILED_MESSAGE" = "Die von deinem alten Gerät übertragenen Daten konnten nicht wiederhergestellt werden. Bitte speichere ein Diagnoseprotokoll und melde das Problem unter github.com/kirikakaese/Ivy/issues. Wenn du Ivy neu installierst, kann dein Nachrichtenverlauf verloren gehen.";
 
+/* Menu bar item that brings Ivy's window to the front. */
+"MENU_BAR_OPEN" = "Ivy öffnen";
+
+/* Menu bar item with the number of unread messages. Embeds {{ number of unread messages }}. */
+"MENU_BAR_UNREAD_FORMAT" = "%d ungelesen";
+
 /* Item showing whether Background App Refresh is on; opens the system settings. */
 "NOTIFICATIONS_BACKGROUND_REFRESH" = "Hintergrundaktualisierung";
 
@@ -788,3 +794,24 @@
 
 /* Placeholder of a task's title. */
 "TASK_TITLE_PLACEHOLDER" = "Titel";
+
+/* Shown in a widget before Ivy has been opened. */
+"WIDGET_NO_DATA" = "Öffne Ivy einmal, um deinen Tag hier zu sehen.";
+
+/* Description of the Tasks widget in the widget gallery. */
+"WIDGET_TASKS_DESCRIPTION" = "Deine offenen Aufgaben, die nächsten zuerst.";
+
+/* Description of the Today widget in the widget gallery. */
+"WIDGET_TODAY_DESCRIPTION" = "Die Termine, fälligen Aufgaben und Erinnerungen von heute.";
+
+/* Name of the widget with today's events, due tasks and reminders. */
+"WIDGET_TODAY_TITLE" = "Heute";
+
+/* Description of the Unread widget in the widget gallery. */
+"WIDGET_UNREAD_DESCRIPTION" = "Wie viele Nachrichten du noch nicht gelesen hast.";
+
+/* Label under the number of unread messages in a widget. */
+"WIDGET_UNREAD_LABEL" = "Ungelesen";
+
+/* Name of the widget that shows the number of unread messages. */
+"WIDGET_UNREAD_TITLE" = "Ungelesene Nachrichten";
