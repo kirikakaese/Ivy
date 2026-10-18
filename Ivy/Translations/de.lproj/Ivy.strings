@@ -450,6 +450,45 @@
 /* Header on Home of the folders with unread chats. */
 "HOME_UNREAD_BY_FOLDER" = "Ungelesen nach Ordner";
 
+/* Description of the shortcut that adds a task. */
+"INTENT_ADD_TASK_DESCRIPTION" = "Fügt Ivy eine Aufgabe hinzu, mit Erinnerung, wenn sie ein Fälligkeitsdatum hat.";
+
+/* Name of the shortcut that adds a task. */
+"INTENT_ADD_TASK_TITLE" = "Aufgabe hinzufügen";
+
+/* Name of the due date in the Add Task shortcut. */
+"INTENT_DUE_PARAMETER" = "Fällig";
+
+/* Shown when a shortcut runs before Ivy is set up. */
+"INTENT_NOT_READY" = "Öffne Ivy und richte es zuerst fertig ein.";
+
+/* Name of the shortcut that opens a section of Ivy. */
+"INTENT_OPEN_TITLE" = "In Ivy öffnen";
+
+/* The Calls section in the Open in Ivy shortcut. */
+"INTENT_SECTION_CALLS" = "Anrufe";
+
+/* The Chats section in the Open in Ivy shortcut. */
+"INTENT_SECTION_CHATS" = "Chats";
+
+/* Name of the section parameter in the Open in Ivy shortcut. */
+"INTENT_SECTION_TYPE" = "Bereich";
+
+/* Siri's answer after adding a task. Embeds {{ the task's title }}. */
+"INTENT_TASK_ADDED_FORMAT" = "„%@“ wurde zu deinen Aufgaben hinzugefügt.";
+
+/* Name of the task's title in the Add Task shortcut. */
+"INTENT_TASK_PARAMETER" = "Aufgabe";
+
+/* Description of the shortcut that lists today's items. */
+"INTENT_TODAY_DESCRIPTION" = "Nennt die restlichen Termine, fälligen Aufgaben und Erinnerungen von heute.";
+
+/* One item in Siri's list of today's items. Embeds {{ the item's title }} and {{ its time }}. */
+"INTENT_TODAY_ITEM_FORMAT" = "%1$@ um %2$@";
+
+/* Name of the shortcut that lists today's items. */
+"INTENT_TODAY_TITLE" = "Was steht heute an";
+
 /* Footer explaining Ivy data export and import. */
 "IVY_DATA_BACKUP_FOOTER" = "Sichert Ordner-Emojis und -Farben, Ordner-Anheftungen und Erinnerungen in einer mit einer Passphrase verschlüsselten Datei. Beim Importieren wird die Datei mit den Daten auf diesem Gerät zusammengeführt.";
 

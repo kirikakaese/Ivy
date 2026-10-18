@@ -137,7 +137,8 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
 
     // MARK: - App Launch
 
-    private nonisolated let appReadiness = AppReadinessImpl()
+    // Ivy: internal, so shortcuts can wait until the app is ready
+    nonisolated let appReadiness = AppReadinessImpl()
 
     private var mainAppContext: MainAppContext!
     private var launchContext: LaunchContext!

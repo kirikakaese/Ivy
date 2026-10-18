@@ -450,6 +450,45 @@
 /* Header on Home of the folders with unread chats. */
 "HOME_UNREAD_BY_FOLDER" = "Unread by Folder";
 
+/* Description of the shortcut that adds a task. */
+"INTENT_ADD_TASK_DESCRIPTION" = "Adds a task to Ivy, with a reminder when it has a due date.";
+
+/* Name of the shortcut that adds a task. */
+"INTENT_ADD_TASK_TITLE" = "Add Task";
+
+/* Name of the due date in the Add Task shortcut. */
+"INTENT_DUE_PARAMETER" = "Due";
+
+/* Shown when a shortcut runs before Ivy is set up. */
+"INTENT_NOT_READY" = "Open Ivy and finish setting it up first.";
+
+/* Name of the shortcut that opens a section of Ivy. */
+"INTENT_OPEN_TITLE" = "Open in Ivy";
+
+/* The Calls section in the Open in Ivy shortcut. */
+"INTENT_SECTION_CALLS" = "Calls";
+
+/* The Chats section in the Open in Ivy shortcut. */
+"INTENT_SECTION_CHATS" = "Chats";
+
+/* Name of the section parameter in the Open in Ivy shortcut. */
+"INTENT_SECTION_TYPE" = "Section";
+
+/* Siri's answer after adding a task. Embeds {{ the task's title }}. */
+"INTENT_TASK_ADDED_FORMAT" = "Added “%@” to your tasks.";
+
+/* Name of the task's title in the Add Task shortcut. */
+"INTENT_TASK_PARAMETER" = "Task";
+
+/* Description of the shortcut that lists today's items. */
+"INTENT_TODAY_DESCRIPTION" = "Lists today's remaining events, due tasks and reminders.";
+
+/* One item in Siri's list of today's items. Embeds {{ the item's title }} and {{ its time }}. */
+"INTENT_TODAY_ITEM_FORMAT" = "%1$@ at %2$@";
+
+/* Name of the shortcut that lists today's items. */
+"INTENT_TODAY_TITLE" = "What's on Today";
+
 /* Footer explaining Ivy data export and import. */
 "IVY_DATA_BACKUP_FOOTER" = "Saves folder emojis and colors, folder pins and reminders to a file encrypted with a passphrase. Importing merges the file with the data on this device.";
 

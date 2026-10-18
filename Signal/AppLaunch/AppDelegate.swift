@@ -61,4 +61,14 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     ) {
         lifecycleManager.didReceiveRemoteNotification(userInfo, completionHandler: completionHandler)
     }
+
+    // MARK: - Menus
+
+    // Ivy: Ivy's commands in the Mac's menus
+    override func buildMenu(with builder: UIMenuBuilder) {
+        super.buildMenu(with: builder)
+        #if targetEnvironment(macCatalyst)
+        IvyKeyCommands.build(builder)
+        #endif
+    }
 }
