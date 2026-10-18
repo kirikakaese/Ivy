@@ -376,10 +376,13 @@ final class IvyAppleSyncEngine {
             dateComponents.year = components.year
             dateComponents.month = components.month
             dateComponents.day = components.day
-            dateComponents.hour = components.hour
-            dateComponents.minute = components.minute
-            dateComponents.timeZone = components.timeZone
-            dueAt = (components.calendar ?? calendar).date(from: dateComponents)
+            if !isAllDay {
+                dateComponents.hour = components.hour
+                dateComponents.minute = components.minute
+                dateComponents.timeZone = components.timeZone
+            }
+            // An all-day reminder is due on its day wherever the device is.
+            dueAt = calendar.date(from: dateComponents)
         }
         return IvyAppleReminderFields(
             title: reminder.title ?? "",
