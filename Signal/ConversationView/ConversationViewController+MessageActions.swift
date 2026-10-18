@@ -133,15 +133,16 @@ extension ConversationViewController: ContextMenuInteractionDelegate {
                     }
                 }
 
-                // Ivy: "Remind Me" for the message, before Delete
-                if let contextMenuInteraction = self.collectionViewActiveContextMenuInteraction,
-                   let remindAction = self.ivyRemindMeContextMenuAction(
-                       interaction: contextMenuInteraction.itemViewModel.interaction,
-                       thread: contextMenuInteraction.thread,
-                   )
-                {
+                // Ivy: "Remind Me" and "Add Task" for the message, before Delete
+                if let contextMenuInteraction = self.collectionViewActiveContextMenuInteraction {
+                    let interaction = contextMenuInteraction.itemViewModel.interaction
+                    let thread = contextMenuInteraction.thread
+                    let ivyActions = [
+                        self.ivyRemindMeContextMenuAction(interaction: interaction, thread: thread),
+                        self.ivyAddTaskContextMenuAction(interaction: interaction, thread: thread),
+                    ].compactMap { $0 }
                     let deleteIndex = contextMenuActions.count - (actions.contains { $0.actionType == .delete } ? 1 : 0)
-                    contextMenuActions.insert(remindAction, at: max(deleteIndex, 0))
+                    contextMenuActions.insert(contentsOf: ivyActions, at: max(deleteIndex, 0))
                 }
             }
 

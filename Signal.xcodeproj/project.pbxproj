@@ -4206,6 +4206,14 @@
 		E2B36C8DE7202550CCF9D7EF /* IvyMenuIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = B519478E5010D9D590D14AAD /* IvyMenuIcons.swift */; };
 		32ABDCA60FAF85AB11A9A006 /* IvyMenuIconsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DCB0CC5300EFB6EA1D09031 /* IvyMenuIconsTest.swift */; };
 		729D6ABD1BC97E4B127DCF95 /* HomeTabSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3695CB1082888E57A6BB769B /* HomeTabSwitcher.swift */; };
+		01470BB4BB4A9134AB68415A /* IvyTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = E350632959B3D3B7E76B4EEA /* IvyTask.swift */; };
+		B395D56D16039E28A24DA38E /* IvyTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D2DD9011F112DE78F45089 /* IvyTaskManager.swift */; };
+		83AE70AE97DB12A0B93F5A96 /* IvyTaskNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = F782DF3CA269987AD0E8D911 /* IvyTaskNotifications.swift */; };
+		8A10951C141A62A507A26BDC /* IvyTaskUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901B616B805C10B7177D213D /* IvyTaskUI.swift */; };
+		7515C6874BA7283299C7AF76 /* IvyTasksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E5208949E35AF41886F415 /* IvyTasksViewController.swift */; };
+		E127573409BA427BEB6038FE /* IvyTaskEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A23A7163DD6226BA6DC763 /* IvyTaskEditorViewController.swift */; };
+		531D5D03D360F21287229C6A /* IvyTaskTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C288C7C2912F26B0404D749C /* IvyTaskTest.swift */; };
+		380F4A39796AA0FBA32A8FEE /* IvyTaskUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60105161DD0131629F43236A /* IvyTaskUITest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8714,6 +8722,14 @@
 		B519478E5010D9D590D14AAD /* IvyMenuIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMenuIcons.swift; sourceTree = "<group>"; };
 		9DCB0CC5300EFB6EA1D09031 /* IvyMenuIconsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMenuIconsTest.swift; sourceTree = "<group>"; };
 		3695CB1082888E57A6BB769B /* HomeTabSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabSwitcher.swift; sourceTree = "<group>"; };
+		E350632959B3D3B7E76B4EEA /* IvyTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyTask.swift; sourceTree = "<group>"; };
+		B2D2DD9011F112DE78F45089 /* IvyTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyTaskManager.swift; sourceTree = "<group>"; };
+		F782DF3CA269987AD0E8D911 /* IvyTaskNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyTaskNotifications.swift; sourceTree = "<group>"; };
+		901B616B805C10B7177D213D /* IvyTaskUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyTaskUI.swift; sourceTree = "<group>"; };
+		C9E5208949E35AF41886F415 /* IvyTasksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyTasksViewController.swift; sourceTree = "<group>"; };
+		43A23A7163DD6226BA6DC763 /* IvyTaskEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyTaskEditorViewController.swift; sourceTree = "<group>"; };
+		C288C7C2912F26B0404D749C /* IvyTaskTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyTaskTest.swift; sourceTree = "<group>"; };
+		60105161DD0131629F43236A /* IvyTaskUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyTaskUITest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16265,6 +16281,7 @@
 				DC62E9921A27504DADA00218 /* Data */,
 				6DA1F09E6584ACCFCF8C33CA /* Reminders */,
 				062F195C7A1A072FB64208E4 /* IvyMacBeta.swift */,
+				B28E18CDD19183E91380425D /* Tasks */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16282,6 +16299,7 @@
 				F8B8BA707EB07375977AD268 /* IvyDataStoreTest.swift */,
 				98AF4AD049190C49031C4151 /* IvyReminderTest.swift */,
 				7271F0173D173AFC1CE39360 /* IvyMacBetaKeyFileTest.swift */,
+				C288C7C2912F26B0404D749C /* IvyTaskTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16315,6 +16333,7 @@
 				3B2DA13B15D0EF6B85F85B5A /* Data */,
 				B519478E5010D9D590D14AAD /* IvyMenuIcons.swift */,
 				3695CB1082888E57A6BB769B /* HomeTabSwitcher.swift */,
+				6EA61D0899B51233851E6CA9 /* Tasks */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16325,6 +16344,7 @@
 				8BFF5944C2B1D0088D02A5C1 /* IvyAboutTest.swift */,
 				F3BE1D5E6A5F06FA74F493DD /* ChatFolderBarTest.swift */,
 				9DCB0CC5300EFB6EA1D09031 /* IvyMenuIconsTest.swift */,
+				60105161DD0131629F43236A /* IvyTaskUITest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16402,6 +16422,26 @@
 				E01AF7E0740A2AB47FE00B3B /* IvyDataSettingsViewController.swift */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		B28E18CDD19183E91380425D /* Tasks */ = {
+			isa = PBXGroup;
+			children = (
+				E350632959B3D3B7E76B4EEA /* IvyTask.swift */,
+				B2D2DD9011F112DE78F45089 /* IvyTaskManager.swift */,
+				F782DF3CA269987AD0E8D911 /* IvyTaskNotifications.swift */,
+			);
+			path = Tasks;
+			sourceTree = "<group>";
+		};
+		6EA61D0899B51233851E6CA9 /* Tasks */ = {
+			isa = PBXGroup;
+			children = (
+				901B616B805C10B7177D213D /* IvyTaskUI.swift */,
+				C9E5208949E35AF41886F415 /* IvyTasksViewController.swift */,
+				43A23A7163DD6226BA6DC763 /* IvyTaskEditorViewController.swift */,
+			);
+			path = Tasks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -19672,6 +19712,9 @@
 				8316A9C1E6F641C270C3732D /* IvyDataSettingsViewController.swift in Sources */,
 				E2B36C8DE7202550CCF9D7EF /* IvyMenuIcons.swift in Sources */,
 				729D6ABD1BC97E4B127DCF95 /* HomeTabSwitcher.swift in Sources */,
+				8A10951C141A62A507A26BDC /* IvyTaskUI.swift in Sources */,
+				7515C6874BA7283299C7AF76 /* IvyTasksViewController.swift in Sources */,
+				E127573409BA427BEB6038FE /* IvyTaskEditorViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19761,6 +19804,7 @@
 				7F973C414706DC2CA5814E98 /* IvyAboutTest.swift in Sources */,
 				F2943E1696CC59D5B9F86325 /* ChatFolderBarTest.swift in Sources */,
 				32ABDCA60FAF85AB11A9A006 /* IvyMenuIconsTest.swift in Sources */,
+				380F4A39796AA0FBA32A8FEE /* IvyTaskUITest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21033,6 +21077,9 @@
 				EF5A4D4F8DD2544567638A8F /* IvyReminderNotifications.swift in Sources */,
 				A947F0DCFA574F4FFFBC19B2 /* IvyReminderManager.swift in Sources */,
 				1A335A3E65DA4F1222E44016 /* IvyMacBeta.swift in Sources */,
+				01470BB4BB4A9134AB68415A /* IvyTask.swift in Sources */,
+				B395D56D16039E28A24DA38E /* IvyTaskManager.swift in Sources */,
+				83AE70AE97DB12A0B93F5A96 /* IvyTaskNotifications.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21313,6 +21360,7 @@
 				8CE0D6C46581E2B50FBBD757 /* IvyDataStoreTest.swift in Sources */,
 				D6524696F6F40422BC7F8F81 /* IvyReminderTest.swift in Sources */,
 				34B153E52A8A7DF7EAA844DA /* IvyMacBetaKeyFileTest.swift in Sources */,
+				531D5D03D360F21287229C6A /* IvyTaskTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

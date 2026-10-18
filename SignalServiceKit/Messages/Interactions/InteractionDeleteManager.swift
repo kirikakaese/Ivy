@@ -317,6 +317,7 @@ final class InteractionDeleteManagerImpl: InteractionDeleteManager {
         interactionReadCache.didRemove(interaction: interaction, transaction: tx)
 
         if let message = interaction as? TSMessage {
+            IvyTaskManager.shared.messageWillGoAway(message, tx: tx) // Ivy: tasks made from the message
             FullTextSearchIndexer.delete(message, tx: tx)
 
             message.removeAllAttachments(tx: tx)

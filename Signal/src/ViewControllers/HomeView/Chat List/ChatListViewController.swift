@@ -652,7 +652,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
                     )
                 }
 
-                // Ivy: chat folders
+                // Ivy: chat folders, reminders and tasks
                 contextMenuActions.append(UIAction(
                     title: IvyLocalizedString("CHAT_FOLDERS_TITLE", comment: "Title of the chat folder settings."),
                     image: UIImage(systemName: "folder"),
@@ -665,6 +665,13 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
                     image: UIImage(systemName: "bell.badge"),
                     handler: { [weak self] _ in
                         self?.presentFormSheet(OWSNavigationController(rootViewController: IvyRemindersViewController()), animated: true)
+                    },
+                ))
+                contextMenuActions.append(UIAction(
+                    title: IvyTaskUI.tasksTitle,
+                    image: UIImage(systemName: "checklist"),
+                    handler: { [weak self] _ in
+                        self?.ivyPresentTasks()
                     },
                 ))
 

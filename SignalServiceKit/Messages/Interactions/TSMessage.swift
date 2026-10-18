@@ -470,6 +470,7 @@ public extension TSMessage {
     }
 
     private func markMessageAsRemotelyDeleted(transaction: DBWriteTransaction) {
+        IvyTaskManager.shared.messageWillGoAway(self, tx: transaction) // Ivy: tasks made from the message
         // Delete any past edit revisions.
         processRelatedMessageEdits(
             deleteEditRecords: false,

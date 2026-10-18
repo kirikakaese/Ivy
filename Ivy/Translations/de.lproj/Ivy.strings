@@ -259,7 +259,7 @@
 "IVY_DATA_SYNC_REQUESTED" = "Deine anderen Geräte wurden gefragt";
 
 /* Title of the settings for Ivy's own data: folders, reminders, sync and backup. */
-"IVY_DATA_TITLE" = "Ordner, Erinnerungen und Sync";
+"IVY_DATA_TITLE" = "Ordner, Erinnerungen, Aufgaben und Sync";
 
 /* Shown when the passphrase of an Ivy data file is wrong. */
 "IVY_DATA_WRONG_PASSPHRASE" = "Die Passphrase ist falsch.";
@@ -398,3 +398,156 @@
 
 /* Default title of a problem report on Ivy's issue page. */
 "SUPPORT_REQUEST_TITLE" = "Problembericht";
+
+/* Shows the tasks of every list. */
+"TASKS_ALL" = "Alle Aufgaben";
+
+/* Shown in the list of tasks when there are none, on the Mac. Embeds {{ the name of the Add Task action }}. */
+"TASKS_EMPTY_CLICK_FORMAT" = "Klicke mit der rechten Maustaste auf eine Nachricht und wähle „%@“ oder füge mit + eine Aufgabe hinzu.";
+
+/* Title shown in the list of tasks when there are no open tasks. */
+"TASKS_EMPTY_TITLE" = "Keine offenen Aufgaben";
+
+/* Shown in the list of tasks when there are none, on iPhone and iPad. Embeds {{ the name of the Add Task action }}. */
+"TASKS_EMPTY_TOUCH_FORMAT" = "Halte eine Nachricht gedrückt und wähle „%@“ oder füge mit + eine Aufgabe hinzu.";
+
+/* Header of the tasks that are done. */
+"TASKS_GROUP_DONE" = "Erledigt";
+
+/* Header of the tasks without a due date. */
+"TASKS_GROUP_NO_DATE" = "Ohne Datum";
+
+/* Header of the tasks whose due date has passed. */
+"TASKS_GROUP_OVERDUE" = "Überfällig";
+
+/* Header of the tasks that are due today. */
+"TASKS_GROUP_TODAY" = "Heute";
+
+/* Header of the tasks that are due after today. */
+"TASKS_GROUP_UPCOMING" = "Demnächst";
+
+/* Button that hides the tasks that are done. */
+"TASKS_HIDE_DONE" = "Erledigte ausblenden";
+
+/* Button that shows the tasks that are done. Embeds {{ how many }}. */
+"TASKS_SHOW_DONE_FORMAT" = "Erledigte anzeigen (%d)";
+
+/* Title of the list of tasks. */
+"TASKS_TITLE" = "Aufgaben";
+
+/* Action that makes a task, for example from a message. */
+"TASK_ADD" = "Aufgabe hinzufügen";
+
+/* Shown after a task was made from a message. */
+"TASK_ADDED" = "Aufgabe hinzugefügt";
+
+/* Button that adds a new task. */
+"TASK_ADD_BUTTON" = "Hinzufügen";
+
+/* Button that adds a subtask to a task. */
+"TASK_ADD_SUBTASK" = "Unteraufgabe hinzufügen";
+
+/* Switch that makes a task due on a day without a time. */
+"TASK_ALL_DAY" = "Ganztägig";
+
+/* Action that deletes a task. */
+"TASK_DELETE" = "Aufgabe löschen";
+
+/* Asks whether to delete a task. */
+"TASK_DELETE_CONFIRM" = "Diese Aufgabe löschen?";
+
+/* Button that removes a subtask. */
+"TASK_DELETE_SUBTASK" = "Unteraufgabe entfernen";
+
+/* Switch that gives a task a due date. */
+"TASK_DUE_DATE" = "Fälligkeitsdatum";
+
+/* Row that shows and changes a task's due date. */
+"TASK_DUE_DATE_ROW" = "Fällig";
+
+/* Action that moves a task's due date to tomorrow. */
+"TASK_DUE_TOMORROW" = "Morgen";
+
+/* Title of the screen that edits a task. */
+"TASK_EDIT_TITLE" = "Aufgabe";
+
+/* Header of the message a task was made from. */
+"TASK_FROM_MESSAGE" = "Aus Nachricht";
+
+/* Row that chooses a task's list. */
+"TASK_LIST" = "Liste";
+
+/* Title of the menu that chooses and manages task lists. */
+"TASK_LISTS" = "Listen";
+
+/* Action that deletes a task list. Its tasks stay. */
+"TASK_LIST_DELETE" = "Liste löschen";
+
+/* Explains that deleting a task list keeps its tasks. */
+"TASK_LIST_DELETE_MESSAGE" = "Die Aufgaben dieser Liste bleiben erhalten, ohne Liste.";
+
+/* Title when deleting a task list. Embeds {{ the list's name }}. */
+"TASK_LIST_DELETE_TITLE_FORMAT" = "„%@“ löschen?";
+
+/* Placeholder of the name of a task list. */
+"TASK_LIST_NAME_PLACEHOLDER" = "Name";
+
+/* Action that makes a new task list. */
+"TASK_LIST_NEW" = "Neue Liste";
+
+/* Action that renames a task list. */
+"TASK_LIST_RENAME" = "Liste umbenennen";
+
+/* Action that marks a task as done. */
+"TASK_MARK_DONE" = "Als erledigt markieren";
+
+/* Action that marks a done task as not done. */
+"TASK_MARK_OPEN" = "Als nicht erledigt markieren";
+
+/* Shown when the message a task was made from is no longer on this device. */
+"TASK_MESSAGE_GONE" = "Diese Nachricht ist nicht mehr auf diesem Gerät.";
+
+/* Button that makes a new task. */
+"TASK_NEW" = "Neue Aufgabe";
+
+/* Placeholder of a task's notes. */
+"TASK_NOTES_PLACEHOLDER" = "Notizen";
+
+/* Body of the notification when a task is due and has no notes or list. */
+"TASK_NOTIFICATION_BODY" = "Aufgabe fällig";
+
+/* Option for a task that is in no list. */
+"TASK_NO_LIST" = "Keine";
+
+/* Row that chooses a task's priority. */
+"TASK_PRIORITY" = "Priorität";
+
+/* Task priority: high. */
+"TASK_PRIORITY_HIGH" = "Hoch";
+
+/* Task priority: low. */
+"TASK_PRIORITY_LOW" = "Niedrig";
+
+/* Task priority: medium. */
+"TASK_PRIORITY_MEDIUM" = "Mittel";
+
+/* Task priority: none. */
+"TASK_PRIORITY_NONE" = "Keine";
+
+/* Switch that makes a task notify when it's due. */
+"TASK_REMIND" = "Erinnern";
+
+/* Explains when an all-day task notifies. Embeds {{ a time, e.g. 9:00 }}. */
+"TASK_REMIND_ALL_DAY_FORMAT" = "Ganztägige Aufgaben erinnern am jeweiligen Tag um %@.";
+
+/* Action that opens the message a task was made from. */
+"TASK_SHOW_MESSAGE" = "Im Chat anzeigen";
+
+/* Header of a task's subtasks. */
+"TASK_SUBTASKS" = "Unteraufgaben";
+
+/* Placeholder of a subtask's title. */
+"TASK_SUBTASK_PLACEHOLDER" = "Unteraufgabe";
+
+/* Placeholder of a task's title. */
+"TASK_TITLE_PLACEHOLDER" = "Titel";
