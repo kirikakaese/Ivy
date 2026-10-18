@@ -262,7 +262,8 @@ final class IvyEventEditorViewController: OWSTableViewController2 {
         let repeatActions = frequencies.map { frequency in
             UIAction(title: IvyCalendarUI.title(for: frequency), state: event.recurrence?.frequency == frequency ? .on : .off) { [weak self] _ in
                 guard let self else { return }
-                event.recurrence = frequency.map { IvyRecurrence(frequency: $0, until: event.recurrence?.until) }
+                let until = event.recurrence?.until
+                event.recurrence = frequency.map { IvyRecurrence(frequency: $0, until: until) }
                 updateTableContents()
             }
         }

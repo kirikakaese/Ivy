@@ -86,6 +86,13 @@ public struct IvyCalendarItem: Equatable, Identifiable, Sendable {
     public let end: Date
     public let isAllDay: Bool
 
+    public init(kind: Kind, start: Date, end: Date, isAllDay: Bool) {
+        self.kind = kind
+        self.start = start
+        self.end = end
+        self.isAllDay = isAllDay
+    }
+
     public var id: String {
         switch kind {
         case .event(let event): return "event-\(event.id)-\(Int64(start.timeIntervalSince1970))"
