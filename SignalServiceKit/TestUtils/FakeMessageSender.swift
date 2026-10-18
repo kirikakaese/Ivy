@@ -24,7 +24,9 @@ public class FakeMessageSender: MessageSender {
         } catch {
             return .overallFailure(error)
         }
-        if let stubbedFailingError = stubbedFailingErrors.removeFirst() {
+        // Ivy: a send without a stubbed result (for example a resend request
+        // still running from another test) succeeds instead of crashing.
+        if !stubbedFailingErrors.isEmpty, let stubbedFailingError = stubbedFailingErrors.removeFirst() {
             return .overallFailure(stubbedFailingError)
         }
         return .success
