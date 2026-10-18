@@ -62,7 +62,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Feature | Phase | iPhone | iPad | macOS | Notes |
 |---|---|---|---|---|---|
 | Tasks | 4a | done | done | done | From a message or from scratch; notes, due date with reminder, lists, priority, subtasks; the link and quote go when the message is deleted or disappears |
-| Calendar views | 4b | done | done | done | Agenda (90 days, overdue tasks first), day, week and month; events, tasks with a due date and open reminders together. The compact "today" overview comes with the Home tab (4c) |
+| Calendar views | 4b | done | done | done | Agenda (90 days, overdue tasks first), day, week and month; events, tasks with a due date and open reminders together. The compact "today" overview is the Today section on Home |
 | Events from messages and date detection | 4b | done | done | done | "Add to Calendar" in the message menu, prefilled with the first date found on the device (`NSDataDetector`); repeat and alert |
 | ICS export, import and sending | 4b | done | done | done | Export one or all events, import with update by UID, send an event to a chat as an `.ics` file |
 | Home tab | 4c | done | done | done | Quick actions (message, task, event, reminder), today's agenda, open tasks with check-off, important unread messages (mentions, replies, pinned and chosen chats, due reminders), unread chats by folder |
