@@ -38,7 +38,8 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         let rows: [Row]
     }
 
-    private let tableView = UITableView(frame: .zero, style: .insetGrouped)
+    /// Scrolled to the top when Home's tab is chosen again.
+    let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private let quickActions = UIStackView()
     private var sections: [Section] = []
     private var needsReload = false
