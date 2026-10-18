@@ -25,7 +25,7 @@
 "ABOUT_NOT_AFFILIATED" = "Ivy ist eine unabhängige App, die mit dem Signal-Netzwerk kompatibel ist. Ivy steht in keiner Verbindung zu Signal Messenger LLC oder der Signal Technology Foundation und wird von ihnen weder empfohlen noch unterstützt.";
 
 /* Ivy's privacy statement on the About Ivy screen. */
-"ABOUT_PRIVACY_STATEMENT" = "Ivy verbindet sich nur mit den Servern von Signal, genauso wie die offizielle Signal-App, und deine Nachrichten sind Ende-zu-Ende-verschlüsselt. Ivy enthält keine Analyse- und keine Absturzberichte. Debug-Protokolle bleiben auf diesem Gerät, solange du sie nicht exportierst. Ivys eigene Daten wie Erinnerungen und Ordnerfarben werden verschlüsselt auf deinen Geräten gespeichert und nur Ende-zu-Ende-verschlüsselt mit deinen eigenen Geräten synchronisiert.";
+"ABOUT_PRIVACY_STATEMENT" = "Ivy verbindet sich nur mit den Servern von Signal, genauso wie die offizielle Signal-App, und deine Nachrichten sind Ende-zu-Ende-verschlüsselt. Ivy enthält keine Analyse- und keine Absturzberichte. Debug-Protokolle bleiben auf diesem Gerät, solange du sie nicht exportierst. Ivys eigene Daten wie Erinnerungen und Ordnerfarben werden verschlüsselt auf deinen Geräten gespeichert und nur Ende-zu-Ende-verschlüsselt mit deinen eigenen Geräten synchronisiert. Wenn du auf einem Gerät den Abgleich mit Apple Kalender oder Erinnerungen einschaltest, speichert auch Apple die abgeglichenen Termine und Aufgaben.";
 
 /* Title of the privacy statement on the About Ivy screen. */
 "ABOUT_PRIVACY_TITLE" = "Datenschutz";
@@ -35,6 +35,51 @@
 
 /* Item that lists the licenses of the libraries Ivy uses. */
 "ABOUT_THIRD_PARTY_LICENSES" = "Lizenzen von Drittanbietern";
+
+/* Item that opens the system settings to allow access to Apple Calendar or Reminders. */
+"APPLE_SYNC_ALLOW_ACCESS" = "Zugriff in den Einstellungen erlauben";
+
+/* Explains how events sync with Apple Calendar. */
+"APPLE_SYNC_CALENDAR_FOOTER" = "Deine Termine erscheinen in einem Kalender namens Ivy. Beim Abgleich in beide Richtungen kommen Änderungen und neue Termine aus diesem Kalender zurück zu Ivy. Hinweise bleiben in Ivy, damit sie nicht doppelt klingeln.";
+
+/* Header of the Apple Calendar sync setting. */
+"APPLE_SYNC_CALENDAR_HEADER" = "Apple Kalender";
+
+/* Button that turns on syncing with Apple Calendar or Reminders. */
+"APPLE_SYNC_CONFIRM_ACTION" = "Einschalten";
+
+/* Explains that items synced with Apple Calendar or Reminders are no longer end-to-end encrypted. */
+"APPLE_SYNC_CONFIRM_MESSAGE" = "Einträge in Apple Kalender und Erinnerungen speichert Apple und gleicht sie über deinen Apple-Account ab, zum Beispiel mit iCloud. Sie sind dann nicht mehr Ende-zu-Ende-verschlüsselt.";
+
+/* Title of the confirmation before syncing with Apple Calendar or Reminders. */
+"APPLE_SYNC_CONFIRM_TITLE" = "Ende-zu-Ende-Verschlüsselung verlassen?";
+
+/* Explains that Apple sync is set per device and what turning it off leaves behind. */
+"APPLE_SYNC_DEVICE_FOOTER" = "Diese Einstellungen gelten nur für dieses Gerät. Wenn du den Abgleich ausschaltest, bleiben der Kalender und die Liste Ivy bei Apple; lösche sie dort, wenn du sie nicht brauchst.";
+
+/* Apple sync setting: copy Ivy's items to Apple; changes made in Apple are replaced. */
+"APPLE_SYNC_MODE_COPY" = "Von Ivy kopieren";
+
+/* Apple sync setting: don't sync. */
+"APPLE_SYNC_MODE_OFF" = "Aus";
+
+/* Apple sync setting: changes go both ways. */
+"APPLE_SYNC_MODE_TWO_WAY" = "In beide Richtungen abgleichen";
+
+/* Shown when Ivy has no full access to Apple Calendar. */
+"APPLE_SYNC_NO_ACCESS_CALENDAR" = "Ivy braucht vollen Zugriff auf deine Kalender. Du kannst ihn in den Einstellungen erlauben.";
+
+/* Shown when Ivy has no full access to Apple Reminders. */
+"APPLE_SYNC_NO_ACCESS_REMINDERS" = "Ivy braucht vollen Zugriff auf deine Erinnerungen. Du kannst ihn in den Einstellungen erlauben.";
+
+/* Explains how tasks sync with Apple Reminders. */
+"APPLE_SYNC_REMINDERS_FOOTER" = "Deine Aufgaben erscheinen in einer Liste namens Ivy. Beim Abgleich in beide Richtungen kommen Änderungen und neue Erinnerungen aus dieser Liste zurück zu Ivy. Teilaufgaben, Listen, verknüpfte Nachrichten und Hinweise bleiben in Ivy.";
+
+/* Header of the Apple Reminders sync setting. */
+"APPLE_SYNC_REMINDERS_HEADER" = "Apple Erinnerungen";
+
+/* Title of the settings for syncing with Apple Calendar and Apple Reminders. */
+"APPLE_SYNC_TITLE" = "Apple Kalender und Erinnerungen";
 
 /* Shown in the calendar when nothing is planned for the shown dates. */
 "CALENDAR_EMPTY" = "Nichts geplant.";

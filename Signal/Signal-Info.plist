@@ -80,6 +80,11 @@
 	<array>
 		<string>_sgnl-new-device._tcp</string>
 	</array>
+	<!-- Ivy: access for Apple Calendar and Reminders sync -->
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Ivy keeps your events in a calendar named Ivy when you turn on Apple Calendar sync.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Ivy keeps your events in a calendar named Ivy when you turn on Apple Calendar sync.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Signal uses your camera to take photos, start or join a video call and to scan QR codes.</string>
 	<key>NSContactsUsageDescription</key>
@@ -96,6 +101,11 @@
 	<string>Signal will save photos to your library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Signal will let you choose which photos from your library to send.</string>
+	<!-- Ivy: access for Apple Reminders sync -->
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>Ivy keeps your tasks in a list named Ivy when you turn on Apple Reminders sync.</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>Ivy keeps your tasks in a list named Ivy when you turn on Apple Reminders sync.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>INSendMessageIntent</string>

@@ -72,13 +72,13 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 
 | Feature | Phase | iPhone | iPad | macOS | Notes |
 |---|---|---|---|---|---|
-| Apple Calendar and Reminders (one-way) | 5 | planned | planned | planned | |
-| Apple Calendar and Reminders (two-way) | 5 | planned | planned | planned | |
-| Widgets | 5 | planned | planned | planned | |
-| Menu bar extra / Control Center control | 5 | planned | planned | planned | Agreed equivalents |
-| Shortcuts and Siri | 5 | planned | planned | planned | |
-| Keyboard shortcuts | 5 | – | planned | planned | iPhone has no hardware keyboard support |
-| Share extension | 5 | planned | planned | planned | |
+| Apple Calendar and Reminders (one-way) | 5a | done | done | done | Events in a calendar named Ivy, tasks in a list named Ivy; set per device; changes made in Apple are replaced |
+| Apple Calendar and Reminders (two-way) | 5a | done | done | done | Changes, new and deleted items in Ivy's calendar and list come back to Ivy; Ivy wins when both sides changed. Alerts, subtasks, lists and linked messages stay in Ivy |
+| Widgets | 5b | planned | planned | planned | |
+| Menu bar extra / Control Center control | 5b | planned | planned | planned | Agreed equivalents |
+| Shortcuts and Siri | 5c | planned | planned | planned | |
+| Keyboard shortcuts | 5c | – | planned | planned | iPhone has no hardware keyboard support |
+| Share extension | 5b | planned | planned | planned | |
 
 ## Extras
 

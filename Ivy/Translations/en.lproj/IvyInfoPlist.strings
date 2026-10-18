@@ -1,0 +1,9 @@
+/* Ivy's permission texts. The build merges them into InfoPlist.strings (see Scripts/ivy/app_name.py). */
+
+/* Asks for access to Apple Calendar. */
+"NSCalendarsFullAccessUsageDescription" = "Ivy keeps your events in a calendar named Ivy when you turn on Apple Calendar sync.";
+"NSCalendarsUsageDescription" = "Ivy keeps your events in a calendar named Ivy when you turn on Apple Calendar sync.";
+
+/* Asks for access to Apple Reminders. */
+"NSRemindersFullAccessUsageDescription" = "Ivy keeps your tasks in a list named Ivy when you turn on Apple Reminders sync.";
+"NSRemindersUsageDescription" = "Ivy keeps your tasks in a list named Ivy when you turn on Apple Reminders sync.";

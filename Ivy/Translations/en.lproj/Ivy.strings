@@ -25,7 +25,7 @@
 "ABOUT_NOT_AFFILIATED" = "Ivy is an independent app that is compatible with the Signal network. It is not affiliated with, endorsed by or supported by Signal Messenger LLC or the Signal Technology Foundation.";
 
 /* Ivy's privacy statement on the About Ivy screen. */
-"ABOUT_PRIVACY_STATEMENT" = "Ivy connects only to Signal's servers, in the same way as the official Signal app, and your messages are end-to-end encrypted. Ivy contains no analytics and no crash reporting. Debug logs stay on this device unless you export them. Ivy's own data, such as reminders and folder colors, is stored encrypted on your devices and synced only to your own devices, end-to-end encrypted.";
+"ABOUT_PRIVACY_STATEMENT" = "Ivy connects only to Signal's servers, in the same way as the official Signal app, and your messages are end-to-end encrypted. Ivy contains no analytics and no crash reporting. Debug logs stay on this device unless you export them. Ivy's own data, such as reminders and folder colors, is stored encrypted on your devices and synced only to your own devices, end-to-end encrypted. If you turn on sync with Apple Calendar or Reminders on a device, the synced events and tasks are also stored by Apple.";
 
 /* Title of the privacy statement on the About Ivy screen. */
 "ABOUT_PRIVACY_TITLE" = "Privacy";
@@ -35,6 +35,51 @@
 
 /* Item that lists the licenses of the libraries Ivy uses. */
 "ABOUT_THIRD_PARTY_LICENSES" = "Third-Party Licenses";
+
+/* Item that opens the system settings to allow access to Apple Calendar or Reminders. */
+"APPLE_SYNC_ALLOW_ACCESS" = "Allow Access in Settings";
+
+/* Explains how events sync with Apple Calendar. */
+"APPLE_SYNC_CALENDAR_FOOTER" = "Your events appear in a calendar named Ivy. When syncing both ways, changes and new events in that calendar come back to Ivy. Alerts stay in Ivy, so they don't ring twice.";
+
+/* Header of the Apple Calendar sync setting. */
+"APPLE_SYNC_CALENDAR_HEADER" = "Apple Calendar";
+
+/* Button that turns on syncing with Apple Calendar or Reminders. */
+"APPLE_SYNC_CONFIRM_ACTION" = "Turn On";
+
+/* Explains that items synced with Apple Calendar or Reminders are no longer end-to-end encrypted. */
+"APPLE_SYNC_CONFIRM_MESSAGE" = "Items in Apple Calendar and Reminders are stored by Apple and synced through your Apple account, for example with iCloud. They're no longer protected by end-to-end encryption.";
+
+/* Title of the confirmation before syncing with Apple Calendar or Reminders. */
+"APPLE_SYNC_CONFIRM_TITLE" = "Leave End-to-End Encryption?";
+
+/* Explains that Apple sync is set per device and what turning it off leaves behind. */
+"APPLE_SYNC_DEVICE_FOOTER" = "These settings apply to this device only. Turning sync off keeps the Ivy calendar and list in Apple; delete them there if you don't need them.";
+
+/* Apple sync setting: copy Ivy's items to Apple; changes made in Apple are replaced. */
+"APPLE_SYNC_MODE_COPY" = "Copy from Ivy";
+
+/* Apple sync setting: don't sync. */
+"APPLE_SYNC_MODE_OFF" = "Off";
+
+/* Apple sync setting: changes go both ways. */
+"APPLE_SYNC_MODE_TWO_WAY" = "Sync Both Ways";
+
+/* Shown when Ivy has no full access to Apple Calendar. */
+"APPLE_SYNC_NO_ACCESS_CALENDAR" = "Ivy needs full access to your calendars. You can allow it in Settings.";
+
+/* Shown when Ivy has no full access to Apple Reminders. */
+"APPLE_SYNC_NO_ACCESS_REMINDERS" = "Ivy needs full access to your reminders. You can allow it in Settings.";
+
+/* Explains how tasks sync with Apple Reminders. */
+"APPLE_SYNC_REMINDERS_FOOTER" = "Your tasks appear in a list named Ivy. When syncing both ways, changes and new reminders in that list come back to Ivy. Subtasks, lists, linked messages and alerts stay in Ivy.";
+
+/* Header of the Apple Reminders sync setting. */
+"APPLE_SYNC_REMINDERS_HEADER" = "Apple Reminders";
+
+/* Title of the settings for syncing with Apple Calendar and Apple Reminders. */
+"APPLE_SYNC_TITLE" = "Apple Calendar and Reminders";
 
 /* Shown in the calendar when nothing is planned for the shown dates. */
 "CALENDAR_EMPTY" = "Nothing planned.";

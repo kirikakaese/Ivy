@@ -4228,6 +4228,12 @@
 		D9AEDDEC59C7698A00DB2E7B /* IvyHomeSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F3A291D560F283712D68940 /* IvyHomeSettingsViewController.swift */; };
 		A6647D983F51264E00A16545 /* IvyHomeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549F29946486EED5E9D6641C /* IvyHomeTest.swift */; };
 		4CB310A98F1FDA42AEA96A74 /* IvyHomeUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245559263B6664D85C36B9DB /* IvyHomeUITest.swift */; };
+		0B568C23D47512B3CE3C91ED /* IvyAppleSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99338521553B4F762D11346A /* IvyAppleSync.swift */; };
+		6AA5FBA386F8C7ED7F6A7D93 /* IvyAppleSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61C9FE52A9F5A19A30D44F19 /* IvyAppleSyncEngine.swift */; };
+		9AF31A63E5D623EECE6986CF /* IvyAppleSyncSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF080A875B25D4FB895B849F /* IvyAppleSyncSettingsViewController.swift */; };
+		544969929AC169399FA4ED3F /* IvyAppleSyncTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B33D510CD6822113C63FB3 /* IvyAppleSyncTest.swift */; };
+		DE6AC8D3BAD42D841358CAE3 /* IvyAppleSyncEngineTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124728B769D61D3CF24B95D5 /* IvyAppleSyncEngineTest.swift */; };
+		78931767560915DCD604C9A3 /* IvyInfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4D95F36B65B445ABF1D8E797 /* IvyInfoPlist.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8758,6 +8764,13 @@
 		9F3A291D560F283712D68940 /* IvyHomeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyHomeSettingsViewController.swift; sourceTree = "<group>"; };
 		549F29946486EED5E9D6641C /* IvyHomeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyHomeTest.swift; sourceTree = "<group>"; };
 		245559263B6664D85C36B9DB /* IvyHomeUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyHomeUITest.swift; sourceTree = "<group>"; };
+		99338521553B4F762D11346A /* IvyAppleSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAppleSync.swift; sourceTree = "<group>"; };
+		61C9FE52A9F5A19A30D44F19 /* IvyAppleSyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAppleSyncEngine.swift; sourceTree = "<group>"; };
+		EF080A875B25D4FB895B849F /* IvyAppleSyncSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAppleSyncSettingsViewController.swift; sourceTree = "<group>"; };
+		C7B33D510CD6822113C63FB3 /* IvyAppleSyncTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAppleSyncTest.swift; sourceTree = "<group>"; };
+		124728B769D61D3CF24B95D5 /* IvyAppleSyncEngineTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAppleSyncEngineTest.swift; sourceTree = "<group>"; };
+		813B1424B8C4435235086F9A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/IvyInfoPlist.strings; sourceTree = "<group>"; };
+		0596501E7EB41D13607F29EF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/IvyInfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16312,6 +16325,7 @@
 				B28E18CDD19183E91380425D /* Tasks */,
 				FA721854D2031BF688CB3474 /* Calendar */,
 				FC05A74927978039EE15E2FB /* Home */,
+				1E6648A14CDD7E90644FAC0A /* AppleSync */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16332,6 +16346,7 @@
 				C288C7C2912F26B0404D749C /* IvyTaskTest.swift */,
 				6C4FDA009CCB0FAAA5AF56AF /* IvyCalendarTest.swift */,
 				549F29946486EED5E9D6641C /* IvyHomeTest.swift */,
+				C7B33D510CD6822113C63FB3 /* IvyAppleSyncTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16348,6 +16363,7 @@
 			isa = PBXGroup;
 			children = (
 				FDEC879B3B87B62B9659A460 /* Ivy.strings */,
+				4D95F36B65B445ABF1D8E797 /* IvyInfoPlist.strings */,
 			);
 			path = Translations;
 			sourceTree = "<group>";
@@ -16368,6 +16384,7 @@
 				6EA61D0899B51233851E6CA9 /* Tasks */,
 				956063339385BA7BD0D049DF /* Calendar */,
 				1FB0014305FE2EC4743B84CC /* Home */,
+				A3A62497F60307DB20CEEE85 /* AppleSync */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16381,6 +16398,7 @@
 				60105161DD0131629F43236A /* IvyTaskUITest.swift */,
 				550A06C8D4A681195270A869 /* IvyCalendarUITest.swift */,
 				245559263B6664D85C36B9DB /* IvyHomeUITest.swift */,
+				124728B769D61D3CF24B95D5 /* IvyAppleSyncEngineTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16516,6 +16534,23 @@
 				9F3A291D560F283712D68940 /* IvyHomeSettingsViewController.swift */,
 			);
 			path = Home;
+			sourceTree = "<group>";
+		};
+		1E6648A14CDD7E90644FAC0A /* AppleSync */ = {
+			isa = PBXGroup;
+			children = (
+				99338521553B4F762D11346A /* IvyAppleSync.swift */,
+			);
+			path = AppleSync;
+			sourceTree = "<group>";
+		};
+		A3A62497F60307DB20CEEE85 /* AppleSync */ = {
+			isa = PBXGroup;
+			children = (
+				61C9FE52A9F5A19A30D44F19 /* IvyAppleSyncEngine.swift */,
+				EF080A875B25D4FB895B849F /* IvyAppleSyncSettingsViewController.swift */,
+			);
+			path = AppleSync;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -17075,6 +17110,7 @@
 				346EFC3E25FFDC6A00F493C7 /* update-pin.json in Resources */,
 				88BFD4732335C2B3001797D7 /* waveformLoading.json in Resources */,
 				0A52FD63DD9411D8A7E0F69E /* Ivy.strings in Resources */,
+				78931767560915DCD604C9A3 /* IvyInfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19794,6 +19830,8 @@
 				9A6558BACE14EE9D67BA24F4 /* IvyEventEditorViewController.swift in Sources */,
 				C20D87E47239675F0EB5C918 /* IvyHomeViewController.swift in Sources */,
 				D9AEDDEC59C7698A00DB2E7B /* IvyHomeSettingsViewController.swift in Sources */,
+				6AA5FBA386F8C7ED7F6A7D93 /* IvyAppleSyncEngine.swift in Sources */,
+				9AF31A63E5D623EECE6986CF /* IvyAppleSyncSettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19886,6 +19924,7 @@
 				380F4A39796AA0FBA32A8FEE /* IvyTaskUITest.swift in Sources */,
 				7DF8A64954C15E8143FC4BFF /* IvyCalendarUITest.swift in Sources */,
 				4CB310A98F1FDA42AEA96A74 /* IvyHomeUITest.swift in Sources */,
+				DE6AC8D3BAD42D841358CAE3 /* IvyAppleSyncEngineTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21166,6 +21205,7 @@
 				116FB680E7D4441B6EE796D8 /* IvyICS.swift in Sources */,
 				1825288B10BFB2966079B211 /* IvyEventManager.swift in Sources */,
 				2CA0A2EA8591978615DBFA1C /* IvyHome.swift in Sources */,
+				0B568C23D47512B3CE3C91ED /* IvyAppleSync.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21449,6 +21489,7 @@
 				531D5D03D360F21287229C6A /* IvyTaskTest.swift in Sources */,
 				C0F880524799A48CEB7C92D1 /* IvyCalendarTest.swift in Sources */,
 				A6647D983F51264E00A16545 /* IvyHomeTest.swift in Sources */,
+				544969929AC169399FA4ED3F /* IvyAppleSyncTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21697,6 +21738,15 @@
 				7DD0E5410AC231ED29AC78B5 /* de */,
 			);
 			name = Ivy.strings;
+			sourceTree = "<group>";
+		};
+		4D95F36B65B445ABF1D8E797 /* IvyInfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				813B1424B8C4435235086F9A /* en */,
+				0596501E7EB41D13607F29EF /* de */,
+			);
+			name = IvyInfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
