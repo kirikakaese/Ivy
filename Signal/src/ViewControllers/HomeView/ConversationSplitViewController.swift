@@ -70,7 +70,9 @@ class ConversationSplitViewController: UISplitViewController, ConversationSplit 
         self.homeVC = HomeTabBarController()
         super.init(nibName: nil, bundle: nil)
 
-        viewControllers = [homeVC, detailPlaceholderVC]
+        // Ivy: the sidebar sits next to the lists in the primary column.
+        viewControllers = [IvyPrimaryViewController(homeVC: homeVC), detailPlaceholderVC]
+        primaryBackgroundStyle = .sidebar // Ivy
 
         chatListNavController.delegate = self
         delegate = self
@@ -351,8 +353,8 @@ class ConversationSplitViewController: UISplitViewController, ConversationSplit 
             // is set in init this method is getting called OR this `viewControllers` is
             // returning stale information. The latter seems most plausible, but is near
             // impossible to reproduce.
-            owsAssertDebug(viewControllers.first == homeVC)
-            viewControllers = [homeVC, viewController]
+            owsAssertDebug(viewControllers.first is IvyPrimaryViewController) // Ivy
+            viewControllers = [ivyPrimaryViewController ?? IvyPrimaryViewController(homeVC: homeVC), viewController] // Ivy
         }
 
         // If the detail VC is a nav controller, we want to keep track of
@@ -671,7 +673,7 @@ extension ConversationSplitViewController: UISplitViewControllerDelegate {
     }
 
     func splitViewController(_ splitViewController: UISplitViewController, separateSecondaryFrom primaryViewController: UIViewController) -> UIViewController? {
-        assert(primaryViewController == homeVC)
+        assert(primaryViewController is IvyPrimaryViewController) // Ivy
 
         // See if the current conversation is currently in the view hierarchy. If not,
         // show the placeholder view as no conversation is selected. The conversation

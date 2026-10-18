@@ -28,7 +28,7 @@ final class ChatFolderBarTest: XCTestCase {
     }
 
     func testShowsAButtonPerFolderAndAnEditButton() {
-        let bar = ChatFolderBar(layout: .tabs)
+        let bar = ChatFolderBar()
         bar.update(
             items: [.init(folder: allChats, unreadCount: 0), .init(folder: work, unreadCount: 2)],
             selectedFolderId: work.id,
@@ -43,7 +43,7 @@ final class ChatFolderBarTest: XCTestCase {
     }
 
     func testSelectingAFolder() {
-        let bar = ChatFolderBar(layout: .sidebar)
+        let bar = ChatFolderBar()
         var selected: ChatFolder?
         bar.onSelect = { selected = $0 }
         bar.update(items: [.init(folder: allChats, unreadCount: 0), .init(folder: work, unreadCount: 0)], selectedFolderId: allChats.id)
@@ -51,9 +51,8 @@ final class ChatFolderBarTest: XCTestCase {
         XCTAssertEqual(selected?.id, work.id)
     }
 
-    func testLayoutSizes() {
-        XCTAssertEqual(ChatFolderBar(layout: .sidebar).intrinsicContentSize.width, ChatFolderBar.sidebarWidth)
-        XCTAssertGreaterThan(ChatFolderBar(layout: .tabs).intrinsicContentSize.height, 0)
+    func testHeight() {
+        XCTAssertGreaterThan(ChatFolderBar().intrinsicContentSize.height, 0)
     }
 
     func testFolderSummary() {

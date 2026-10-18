@@ -46,7 +46,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 
 | Feature | Phase | iPhone | iPad | macOS | Notes |
 |---|---|---|---|---|---|
-| Chat folders (official format) | 3a | done | done | done | Synced as storage service `ChatFolderRecord`; tabs above the chats, a sidebar when the chat list is next to a chat |
+| Chat folders (official format) | 3a | done | done | done | Synced as storage service `ChatFolderRecord`; chips above the chats on iPhone and a narrow iPad, in the sidebar on the Mac and a wide iPad |
 | Folder unread badge | 3a | done | done | done | Number of chats with unread messages |
 | Folder emoji and color | 3b | done | done | done | Stored in the Ivy data store |
 | Folder reordering and bulk actions | 3a | done | done | done | Mark all as read, mute, unmute |
@@ -66,7 +66,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Events from messages and date detection | 4b | done | done | done | "Add to Calendar" in the message menu, prefilled with the first date found on the device (`NSDataDetector`); repeat and alert |
 | ICS export, import and sending | 4b | done | done | done | Export one or all events, import with update by UID, send an event to a chat as an `.ics` file |
 | Home tab | 4c | done | done | done | Quick actions (message, task, event, reminder), today's agenda, open tasks with check-off, important unread messages (mentions, replies, pinned and chosen chats, due reminders), unread chats by folder |
-| Navigation and start tab setting | 4c | done | done | done | Home · Chats · Calendar · Calls: tab bar on iPhone and iPad, a switcher at the bottom of the sidebar on the Mac; opens with Chats unless set in Settings > Home and Navigation |
+| Navigation and start tab setting | 4c | done | done | done | Home · Chats · Calendar · Calls. iPhone and a narrow iPad: tab bar, folders as chips above the chats. Mac and a wide iPad: the system sidebar with the sections and the folders (with unread counts and right-click menus), next to the list and the chat; View > Hide Sidebar (⌃⌘S). Opens with Chats unless set in Settings > Home and Navigation |
 
 ## Integrations
 

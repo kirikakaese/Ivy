@@ -6,14 +6,10 @@
 import SignalServiceKit
 import SignalUI
 
-/// The folder list of the chat list: scrollable tabs above the chats on
-/// iPhone, a sidebar next to them on iPad and Mac.
+/// The chat folders as a row of chips above the chats, on the iPhone and a
+/// narrow iPad. Where the window has a sidebar, the folders are in it
+/// instead (see IvySidebarViewController).
 final class ChatFolderBar: UIView {
-
-    enum Layout {
-        case tabs
-        case sidebar
-    }
 
     struct Item: Equatable {
         let folder: ChatFolder
@@ -21,27 +17,28 @@ final class ChatFolderBar: UIView {
         var extras = ChatFolderExtras()
     }
 
-    static let sidebarWidth: CGFloat = 80
-
     var onSelect: ((ChatFolder) -> Void)?
     var menuProvider: ((ChatFolder) -> UIMenu?)?
     var onEditFolders: (() -> Void)?
 
-    private(set) var layout: Layout
     private(set) var items: [Item] = []
     private(set) var selectedFolderId: Data?
 
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
 
-    init(layout: Layout) {
-        self.layout = layout
+    init() {
         super.init(frame: .zero)
 
         scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
+        scrollView.alwaysBounceHorizontal = true
         addSubview(scrollView)
         scrollView.addSubview(stackView)
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        stackView.alignment = .center
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 6, leading: 16, bottom: 10, trailing: 16)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -53,22 +50,13 @@ final class ChatFolderBar: UIView {
             stackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
             stackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            stackView.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor),
         ])
-        applyLayout()
     }
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    func setLayout(_ layout: Layout) {
-        guard layout != self.layout else {
-            return
-        }
-        self.layout = layout
-        applyLayout()
-        reloadButtons()
     }
 
     func update(items: [Item], selectedFolderId: Data?) {
@@ -81,130 +69,47 @@ final class ChatFolderBar: UIView {
     }
 
     override var intrinsicContentSize: CGSize {
-        switch layout {
-        case .tabs:
-            return CGSize(width: UIView.noIntrinsicMetric, height: 52)
-        case .sidebar:
-            return CGSize(width: Self.sidebarWidth, height: UIView.noIntrinsicMetric)
-        }
+        CGSize(width: UIView.noIntrinsicMetric, height: 50)
     }
 
     // MARK: - Private
 
-    private var stackConstraints: [NSLayoutConstraint] = []
-
-    private func applyLayout() {
-        NSLayoutConstraint.deactivate(stackConstraints)
-        switch layout {
-        case .tabs:
-            stackView.axis = .horizontal
-            stackView.spacing = 8
-            stackView.alignment = .center
-            stackView.isLayoutMarginsRelativeArrangement = true
-            stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
-            scrollView.alwaysBounceHorizontal = true
-            scrollView.alwaysBounceVertical = false
-            stackConstraints = [stackView.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor)]
-        case .sidebar:
-            stackView.axis = .vertical
-            stackView.spacing = 6
-            stackView.alignment = .fill
-            stackView.isLayoutMarginsRelativeArrangement = true
-            // The trailing margin keeps the folders apart from the chats.
-            stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 4, leading: 4, bottom: 8, trailing: 8)
-            scrollView.alwaysBounceHorizontal = false
-            scrollView.alwaysBounceVertical = true
-            stackConstraints = [stackView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)]
-        }
-        NSLayoutConstraint.activate(stackConstraints)
-        invalidateIntrinsicContentSize()
-    }
-
-    /// Keeps the right-click menus alive; interactions hold their delegates weakly.
-    private var rightClickMenus: [RightClickMenu] = []
-
-    private final class RightClickMenu: NSObject, UIContextMenuInteractionDelegate {
-        let menu: UIMenu
-
-        init(menu: UIMenu) {
-            self.menu = menu
-        }
-
-        func contextMenuInteraction(
-            _ interaction: UIContextMenuInteraction,
-            configurationForMenuAtLocation location: CGPoint,
-        ) -> UIContextMenuConfiguration? {
-            UIContextMenuConfiguration(actionProvider: { [menu] _ in menu })
-        }
-    }
-
     private func reloadButtons() {
-        rightClickMenus = []
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         for item in items {
-            stackView.addArrangedSubview(button(for: item))
+            stackView.addArrangedSubview(chip(for: item))
         }
         stackView.addArrangedSubview(editButton())
     }
 
-    private func button(for item: Item) -> UIButton {
+    /// A capsule with the folder's emoji, name and unread count. The open
+    /// folder is filled with its color, the others are tinted with it.
+    private func chip(for item: Item) -> UIButton {
         let isSelected = item.folder.id == selectedFolderId
-        var configuration: UIButton.Configuration = isSelected ? .filled() : .plain()
-        configuration.baseBackgroundColor = .Signal.secondaryFill
-        configuration.baseForegroundColor = isSelected ? .Signal.label : .Signal.secondaryLabel
+        let color = item.extras.color.map(Self.uiColor(for:)) ?? .Signal.accent
+
+        var configuration = UIButton.Configuration.filled()
         configuration.cornerStyle = .capsule
-        if let color = item.extras.color {
-            configuration.baseBackgroundColor = Self.uiColor(for: color).withAlphaComponent(0.22)
-            configuration.baseForegroundColor = isSelected ? .Signal.label : Self.uiColor(for: color)
-        }
+        configuration.baseBackgroundColor = isSelected ? color : color.withAlphaComponent(0.12)
+        configuration.baseForegroundColor = isSelected ? .white : .Signal.label
+        configuration.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 14, bottom: 7, trailing: 14)
 
         let title = Self.title(for: item.folder)
-        let emojiPrefix = (layout == .tabs ? item.extras.emoji.map { $0 + " " } : nil) ?? ""
-        var attributedTitle = AttributedString(emojiPrefix + title)
-        attributedTitle.font = layout == .tabs
-            ? UIFont.dynamicTypeSubheadlineClamped.semibold()
-            : UIFont.dynamicTypeCaption1Clamped.medium()
+        var text = AttributedString((item.extras.emoji.map { $0 + "  " } ?? "") + title)
+        text.font = UIFont.dynamicTypeSubheadlineClamped.semibold()
         if item.unreadCount > 0 {
-            var count = AttributedString(layout == .tabs ? "  \(item.unreadCount)" : "\n\(item.unreadCount)")
-            count.font = (layout == .tabs ? UIFont.dynamicTypeCaption1Clamped : UIFont.dynamicTypeCaption2Clamped).semibold()
-            count.foregroundColor = UIColor.Signal.accent
-            attributedTitle += count
+            var count = AttributedString("  \(item.unreadCount.formatted())")
+            count.font = UIFont.dynamicTypeCaption1Clamped.semibold()
+            count.foregroundColor = isSelected ? UIColor.white.withAlphaComponent(0.85) : color
+            text += count
         }
-        configuration.attributedTitle = attributedTitle
-
-        switch layout {
-        case .tabs:
-            configuration.contentInsets = NSDirectionalEdgeInsets(top: 6, leading: 14, bottom: 6, trailing: 14)
-        case .sidebar:
-            if let emoji = item.extras.emoji {
-                configuration.image = Self.image(emoji: emoji)
-            } else {
-                configuration.image = UIImage(systemName: item.folder.kind == .allChats ? "bubble.left.and.bubble.right" : "folder")
-            }
-            configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 17, weight: .regular)
-            configuration.imagePlacement = .top
-            configuration.imagePadding = 3
-            configuration.titleAlignment = .center
-            configuration.titleLineBreakMode = .byTruncatingTail
-            configuration.cornerStyle = .medium
-            configuration.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 2, bottom: 7, trailing: 2)
-        }
+        configuration.attributedTitle = text
 
         let folder = item.folder
         let button = UIButton(configuration: configuration, primaryAction: UIAction { [weak self] _ in
             self?.onSelect?(folder)
         })
-#if targetEnvironment(macCatalyst)
-        // On the Mac, the folder menu opens with a right-click, not by
-        // holding the button.
-        if let menu = menuProvider?(folder) {
-            let menuDelegate = RightClickMenu(menu: menu)
-            rightClickMenus.append(menuDelegate)
-            button.addInteraction(UIContextMenuInteraction(delegate: menuDelegate))
-        }
-#else
         button.menu = menuProvider?(folder)
-#endif
         button.isSelected = isSelected
         button.accessibilityLabel = title
         if item.unreadCount > 0 {
@@ -221,7 +126,7 @@ final class ChatFolderBar: UIView {
 
     private func editButton() -> UIButton {
         var configuration = UIButton.Configuration.plain()
-        configuration.image = UIImage(systemName: "ellipsis.circle")
+        configuration.image = UIImage(systemName: "slider.horizontal.3")
         configuration.baseForegroundColor = .Signal.secondaryLabel
         let button = UIButton(configuration: configuration, primaryAction: UIAction { [weak self] _ in
             self?.onEditFolders?()

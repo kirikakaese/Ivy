@@ -23,36 +23,7 @@ final class ChatListContainerView: UIView {
         didSet {
             guard oldValue != tableViewHorizontalInset else { return }
             tableViewHorizontalEdgeConstraints.forEach { $0.constant = tableViewHorizontalInset }
-            tableViewHorizontalEdgeConstraints.first?.constant += ivySidebarWidth // Ivy: chat folder sidebar
-            ivySidebarLeadingConstraint?.constant = tableViewHorizontalInset // Ivy: chat folder sidebar
         }
-    }
-
-    // MARK: Ivy: chat folder sidebar on iPad and Mac
-
-    private(set) var ivySidebar: UIView?
-    private var ivySidebarWidth: CGFloat { ivySidebar?.intrinsicContentSize.width ?? 0 }
-    private var ivySidebarLeadingConstraint: NSLayoutConstraint?
-
-    /// Shows `sidebar` next to the chats, or removes the sidebar.
-    func setIvySidebar(_ sidebar: UIView?) {
-        guard sidebar !== ivySidebar else { return }
-        ivySidebar?.removeFromSuperview()
-        ivySidebar = sidebar
-        ivySidebarLeadingConstraint = nil
-        if let sidebar {
-            addSubview(sidebar)
-            sidebar.translatesAutoresizingMaskIntoConstraints = false
-            // Same inset as the chats, so the sidebar lines up with the search field.
-            let leading = sidebar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: tableViewHorizontalInset)
-            ivySidebarLeadingConstraint = leading
-            NSLayoutConstraint.activate([
-                leading,
-                sidebar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-                sidebar.bottomAnchor.constraint(equalTo: bottomAnchor),
-            ])
-        }
-        tableViewHorizontalEdgeConstraints.first?.constant = tableViewHorizontalInset + ivySidebarWidth
     }
 
     private var tableViewHorizontalEdgeConstraints: [NSLayoutConstraint] = []
