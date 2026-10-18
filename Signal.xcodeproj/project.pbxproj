@@ -4252,6 +4252,9 @@
 		B4418F88E3817F6CC76EF5C2 /* IvyKeyCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9029AE3DDB265DC4BD185F96 /* IvyKeyCommands.swift */; };
 		7CD7D977A63E4BFC4EE01F9E /* IvyShortcutsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFD5B5A9212369C80B61116 /* IvyShortcutsTest.swift */; };
 		6CE18DBBC5F438379600860D /* AppShortcuts.strings in Resources */ = {isa = PBXBuildFile; fileRef = DCF2F150DDD4A939A85783EA /* AppShortcuts.strings */; };
+		71DC3B590CEE43F1C7F4B7E7 /* IvySidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE247619001C57723ACE23D /* IvySidebarViewController.swift */; };
+		EE19D2353B95E4933E40298C /* IvyPrimaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC216AB444FBF7C7CCA561D /* IvyPrimaryViewController.swift */; };
+		BE3A83359DC6FE41F23DC29B /* IvySidebarTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31AF9968B65D08EC44B0AF6 /* IvySidebarTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8834,6 +8837,9 @@
 		EAFD5B5A9212369C80B61116 /* IvyShortcutsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyShortcutsTest.swift; sourceTree = "<group>"; };
 		96C5A4BE6AD6C565552D809D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
 		0EFF75AB9921F7CD1DEF77FE /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		BEE247619001C57723ACE23D /* IvySidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySidebarViewController.swift; sourceTree = "<group>"; };
+		2EC216AB444FBF7C7CCA561D /* IvyPrimaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPrimaryViewController.swift; sourceTree = "<group>"; };
+		D31AF9968B65D08EC44B0AF6 /* IvySidebarTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySidebarTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16471,6 +16477,7 @@
 				A3A62497F60307DB20CEEE85 /* AppleSync */,
 				3718E9E3A59C461F45C9F438 /* Glance */,
 				78B13E8942A91E19F0B0533C /* Shortcuts */,
+				92F97B16B10E55C6B869FD26 /* Sidebar */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16487,6 +16494,7 @@
 				124728B769D61D3CF24B95D5 /* IvyAppleSyncEngineTest.swift */,
 				1A3D2F7C1B539037C6F295C2 /* IvyGlanceWriterTest.swift */,
 				EAFD5B5A9212369C80B61116 /* IvyShortcutsTest.swift */,
+				D31AF9968B65D08EC44B0AF6 /* IvySidebarTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16686,6 +16694,15 @@
 				9029AE3DDB265DC4BD185F96 /* IvyKeyCommands.swift */,
 			);
 			path = Shortcuts;
+			sourceTree = "<group>";
+		};
+		92F97B16B10E55C6B869FD26 /* Sidebar */ = {
+			isa = PBXGroup;
+			children = (
+				BEE247619001C57723ACE23D /* IvySidebarViewController.swift */,
+				2EC216AB444FBF7C7CCA561D /* IvyPrimaryViewController.swift */,
+			);
+			path = Sidebar;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -20027,6 +20044,8 @@
 				EC59B2BB9A1BDC7F296CEBF7 /* IvyMenuBar.swift in Sources */,
 				39177E74D83159A11711C2D2 /* IvyAppIntents.swift in Sources */,
 				B4418F88E3817F6CC76EF5C2 /* IvyKeyCommands.swift in Sources */,
+				71DC3B590CEE43F1C7F4B7E7 /* IvySidebarViewController.swift in Sources */,
+				EE19D2353B95E4933E40298C /* IvyPrimaryViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20122,6 +20141,7 @@
 				DE6AC8D3BAD42D841358CAE3 /* IvyAppleSyncEngineTest.swift in Sources */,
 				C5B7E921B29412A498B9A871 /* IvyGlanceWriterTest.swift in Sources */,
 				7CD7D977A63E4BFC4EE01F9E /* IvyShortcutsTest.swift in Sources */,
+				BE3A83359DC6FE41F23DC29B /* IvySidebarTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

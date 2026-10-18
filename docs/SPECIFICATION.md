@@ -114,7 +114,7 @@ All standard Signal features stay as upstream unless listed below.
 - Folders can be reordered.
 - Bulk actions: mark folder read, mute folder.
 - Suggested folders on first use (for example Unread, 1:1, Groups).
-- UI: scrollable folder tabs above the chat list on iPhone; a sidebar on iPad and Mac.
+- UI: scrollable folder chips above the chat list on iPhone and a narrow iPad; on the Mac and a wide iPad the folders are part of the sidebar, below the sections.
 
 ### 9.4 Pinned chats
 

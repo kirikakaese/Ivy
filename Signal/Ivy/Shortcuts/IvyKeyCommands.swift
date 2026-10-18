@@ -7,8 +7,8 @@ import SignalServiceKit
 import SignalUI
 
 /// Keyboard shortcuts for Ivy's sections and for new tasks and events. On
-/// the Mac they are menu commands (View and File menus); on the iPad, key
-/// commands of the main screen.
+/// the Mac they are menu commands (View and File menus), next to Show or
+/// Hide Sidebar; on the iPad, key commands of the main screen.
 @MainActor
 enum IvyKeyCommands {
 
@@ -63,8 +63,14 @@ enum IvyKeyCommands {
         guard builder.system == .main else {
             return
         }
+        let toggleSidebar = UIKeyCommand(
+            title: IvyLocalizedString("SIDEBAR_HIDE", comment: "Menu command that hides the sidebar."),
+            action: #selector(ConversationSplitViewController.ivyToggleSidebar),
+            input: "s",
+            modifierFlags: [.control, .command],
+        )
         builder.insertChild(
-            UIMenu(identifier: UIMenu.Identifier("ivy.sections"), options: .displayInline, children: sectionCommands()),
+            UIMenu(identifier: UIMenu.Identifier("ivy.sections"), options: .displayInline, children: [toggleSidebar] + sectionCommands()),
             atStartOfMenu: .view,
         )
         builder.insertChild(

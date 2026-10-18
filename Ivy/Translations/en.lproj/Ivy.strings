@@ -675,6 +675,18 @@
 /* Notification action that reminds the user again tomorrow morning. */
 "REMINDER_TOMORROW" = "Tomorrow";
 
+/* Header of the chat folders in the sidebar. */
+"SIDEBAR_FOLDERS" = "Folders";
+
+/* Menu command that hides the sidebar. */
+"SIDEBAR_HIDE" = "Hide Sidebar";
+
+/* Button in the sidebar that makes a new chat folder. */
+"SIDEBAR_NEW_FOLDER" = "New Folder";
+
+/* Menu command that shows the sidebar. */
+"SIDEBAR_SHOW" = "Show Sidebar";
+
 /* Shown when the problem report page can't be opened. Tells the user where to report problems. */
 "SUPPORT_REPORT_FALLBACK_MESSAGE" = "Please report the problem at github.com/kirikakaese/Ivy/issues.";
 

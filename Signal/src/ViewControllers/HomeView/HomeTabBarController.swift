@@ -148,12 +148,12 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
         get { ivyShownTabs.indices.contains(selectedIndex) ? ivyShownTabs[selectedIndex] : .chatList }
         set {
             selectedIndex = ivyShownTabs.firstIndex(of: newValue) ?? 0
-            ivyUpdateTabSwitcherSelection() // Ivy: tab switcher on the Mac
+            IvySidebarState.shared.sectionDidChange() // Ivy: sidebar on the Mac and iPad
         }
     }
 
-    /// Ivy: the Chats and Calls switcher on the Mac, see HomeTabSwitcher.swift.
-    lazy var ivyTabSwitcher = UISegmentedControl()
+    /// Ivy: whether the sidebar replaces the tab bar, see HomeTabSwitcher.swift.
+    var ivyIsSidebarShown = false
 
     private lazy var storyBadgeCountManager = StoryBadgeCountManager()
 
@@ -178,7 +178,6 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
         storyBadgeCountManager.beginObserving(observer: self)
 
         setTabBarHidden(false, animated: false)
-        ivyInstallTabSwitcher() // Ivy: tab switcher on the Mac
         ivySelectStartTab() // Ivy: start tab setting
     }
 
@@ -267,10 +266,8 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
             _isTabBarHidden = hidden
         }
 
-        // Ivy: on the Mac, the switcher at the bottom of the chat list
-        // replaces the tab bar.
-        if Self.ivyUsesTabSwitcher {
-            ivySetTabSwitcherHidden(hidden, animated: animated)
+        // Ivy: the sidebar replaces the tab bar on the Mac and a wide iPad.
+        if ivyIsSidebarShown {
             completion?(true)
             return
         }
@@ -325,7 +322,7 @@ class HomeTabBarController: UITabBarController, UITabBarControllerDelegate, Badg
             return badgeValue > 0 ? badgeValue.formatted() : nil
         }
 
-        ivyUpdateTabSwitcherBadges( // Ivy: tab switcher on the Mac
+        IvySidebarState.shared.updateBadges( // Ivy: sidebar on the Mac and iPad
             unreadChatCount: badgeCount.unreadChatCount,
             unreadCallsCount: badgeCount.unreadCallsCount,
         )

@@ -6,8 +6,8 @@
 import SignalServiceKit
 import SignalUI
 
-/// Chat folders in the chat list: the folder tabs or sidebar, switching
-/// folders and the actions for a whole folder.
+/// Chat folders in the chat list: the folder chips or the sidebar's
+/// folders, switching folders and the actions for a whole folder.
 extension ChatListViewController {
 
     private var chatFolderManager: ChatFolderManager { .shared }
@@ -41,8 +41,8 @@ extension ChatListViewController {
         loadCoordinator.loadIfNecessary()
     }
 
-    /// Shows, hides or refreshes the folder list. Tabs above the chats when
-    /// the chat list fills the screen, a sidebar when it is next to a chat.
+    /// Shows, hides or refreshes the folders: in the sidebar when there is
+    /// one, otherwise as chips above the chats.
     func ivyUpdateChatFolderBar() {
         AssertIsOnMainThread()
         guard viewState.chatListMode == .inbox, isViewLoaded else {
@@ -50,68 +50,56 @@ extension ChatListViewController {
         }
 
         let (folders, chats) = SSKEnvironment.shared.databaseStorageRef.read { tx in
-            (chatFolderManager.folders(tx: tx), ChatFolderChats.inboxChats(tx: tx))
+            let folders = chatFolderManager.folders(tx: tx)
+            // Counting unread chats is only needed with custom folders.
+            let chats = folders.contains { $0.kind == .custom } ? ChatFolderChats.inboxChats(tx: tx) : []
+            return (folders, chats)
         }
-        guard folders.contains(where: { $0.kind == .custom }) else {
-            ivyRemoveChatFolderBar()
-            if viewState.ivyChatFolderId != nil {
-                viewState.ivyChatFolderId = nil
-                loadCoordinator.loadIfNecessary()
-            }
-            return
-        }
-
-        if let selectedId = viewState.ivyChatFolderId, !folders.contains(where: { $0.id == selectedId }) {
+        if let selectedId = viewState.ivyChatFolderId, !folders.contains(where: { $0.id == selectedId && $0.kind == .custom }) {
             viewState.ivyChatFolderId = nil
             loadCoordinator.loadIfNecessary()
         }
 
-        let layout: ChatFolderBar.Layout = (splitViewController?.isCollapsed == false) ? .sidebar : .tabs
-        let bar = ivyChatFolderBar(layout: layout)
         let counts = ChatFolderChats.unreadCounts(folders: folders, chats: chats)
         let extras = ChatFolderExtras.fetchAll(store: IvyData.shared?.store)
-        let selectedId = viewState.ivyChatFolderId ?? folders.first { $0.kind == .allChats }?.id
-        bar.update(
-            items: folders.map { folder in
-                ChatFolderBar.Item(folder: folder, unreadCount: counts[folder.id] ?? 0, extras: extras[folder.id] ?? ChatFolderExtras())
-            },
-            selectedFolderId: selectedId,
+        let items = folders.map { folder in
+            ChatFolderBar.Item(folder: folder, unreadCount: counts[folder.id] ?? 0, extras: extras[folder.id] ?? ChatFolderExtras())
+        }
+        IvySidebarState.shared.update(
+            folders: items.filter { $0.folder.kind == .custom },
+            allChatsFolder: folders.first { $0.kind == .allChats },
+            selectedFolderId: viewState.ivyChatFolderId,
         )
 
-        switch layout {
-        case .tabs:
-            containerView.setIvySidebar(nil)
-            if tableView.tableHeaderView !== bar {
-                bar.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: bar.intrinsicContentSize.height)
-                bar.autoresizingMask = [.flexibleWidth]
-                tableView.tableHeaderView = bar
-            }
-        case .sidebar:
-            if tableView.tableHeaderView === bar {
-                tableView.tableHeaderView = nil
-            }
-            containerView.setIvySidebar(bar)
+        let showsSidebar = (tabBarController as? HomeTabBarController)?.ivyIsSidebarShown == true
+        guard !showsSidebar, folders.contains(where: { $0.kind == .custom }) else {
+            ivyRemoveChatFolderBar()
+            return
+        }
+
+        let bar = ivyChatFolderBar()
+        bar.update(items: items, selectedFolderId: viewState.ivyChatFolderId ?? folders.first { $0.kind == .allChats }?.id)
+        if tableView.tableHeaderView !== bar {
+            bar.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: bar.intrinsicContentSize.height)
+            bar.autoresizingMask = [.flexibleWidth]
+            tableView.tableHeaderView = bar
         }
     }
 
     /// Refreshes the unread counts after chats changed.
     func ivyChatsDidChange() {
-        guard ivyExistingChatFolderBar != nil else {
-            return
-        }
         ivyUpdateChatFolderBar()
     }
 
     private var ivyExistingChatFolderBar: ChatFolderBar? {
-        return (tableView.tableHeaderView as? ChatFolderBar) ?? (containerView.ivySidebar as? ChatFolderBar)
+        return tableView.tableHeaderView as? ChatFolderBar
     }
 
-    private func ivyChatFolderBar(layout: ChatFolderBar.Layout) -> ChatFolderBar {
+    private func ivyChatFolderBar() -> ChatFolderBar {
         if let bar = ivyExistingChatFolderBar {
-            bar.setLayout(layout)
             return bar
         }
-        let bar = ChatFolderBar(layout: layout)
+        let bar = ChatFolderBar()
         bar.onSelect = { [weak self] folder in
             self?.ivySelectChatFolder(folder)
         }
@@ -128,7 +116,6 @@ extension ChatListViewController {
         if tableView.tableHeaderView is ChatFolderBar {
             tableView.tableHeaderView = nil
         }
-        containerView.setIvySidebar(nil)
     }
 
     func ivySelectChatFolder(_ folder: ChatFolder) {
@@ -148,7 +135,7 @@ extension ChatListViewController {
 
     // MARK: - Folder actions
 
-    private func ivyMenu(for folder: ChatFolder) -> UIMenu {
+    func ivyMenu(for folder: ChatFolder) -> UIMenu {
         var actions = [UIMenuElement]()
         actions.append(UIAction(
             title: IvyLocalizedString("CHAT_FOLDER_MARK_READ", comment: "Action that marks every chat in a folder as read."),
