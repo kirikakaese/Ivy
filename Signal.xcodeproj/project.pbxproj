@@ -4285,6 +4285,7 @@
 		E1779B37BB6EC627933039C3 /* IvySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1A73C48FBD2B63CD94BF62 /* IvySearch.swift */; };
 		7AA609086073C8F79EEEF770 /* IvySearchUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF0E0FC6AEEE207772B2063 /* IvySearchUI.swift */; };
 		C18BBACE4FEB637AFE4E8712 /* IvySearchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB72AFC19B7075861810E14C /* IvySearchTest.swift */; };
+		FE4515AF77936DF1656C6197 /* IvyRightClick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C360CDEA1E47CCF9BCA576 /* IvyRightClick.swift */; };
 		7F37FCCDDC923A483B363013 /* IvyDrafts.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B20586646F83F4602A52DA /* IvyDrafts.swift */; };
 		6D38D44605613C966728186A /* IvySnippets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73BB65C1A1CB81A3B6A6A2D8 /* IvySnippets.swift */; };
 		73BEC2AA518BF93B8ECB9B75 /* IvyWritingUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6088472749C0F0D5AE77AB6F /* IvyWritingUI.swift */; };
@@ -8907,6 +8908,7 @@
 		BC1A73C48FBD2B63CD94BF62 /* IvySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySearch.swift; sourceTree = "<group>"; };
 		7FF0E0FC6AEEE207772B2063 /* IvySearchUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySearchUI.swift; sourceTree = "<group>"; };
 		BB72AFC19B7075861810E14C /* IvySearchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySearchTest.swift; sourceTree = "<group>"; };
+		22C360CDEA1E47CCF9BCA576 /* IvyRightClick.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyRightClick.swift; sourceTree = "<group>"; };
 		B0B20586646F83F4602A52DA /* IvyDrafts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDrafts.swift; sourceTree = "<group>"; };
 		73BB65C1A1CB81A3B6A6A2D8 /* IvySnippets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySnippets.swift; sourceTree = "<group>"; };
 		6088472749C0F0D5AE77AB6F /* IvyWritingUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWritingUI.swift; sourceTree = "<group>"; };
@@ -16790,6 +16792,7 @@
 			children = (
 				14D7C522D318DB14DA7AEABE /* IvyAppIntents.swift */,
 				9029AE3DDB265DC4BD185F96 /* IvyKeyCommands.swift */,
+				22C360CDEA1E47CCF9BCA576 /* IvyRightClick.swift */,
 			);
 			path = Shortcuts;
 			sourceTree = "<group>";
@@ -20257,6 +20260,7 @@
 				D8E38C61E6127995AEF4BB94 /* IvyFocusUI.swift in Sources */,
 				0A064CA956AD40540E511189 /* IvyFocusFilter.swift in Sources */,
 				7AA609086073C8F79EEEF770 /* IvySearchUI.swift in Sources */,
+				FE4515AF77936DF1656C6197 /* IvyRightClick.swift in Sources */,
 				73BEC2AA518BF93B8ECB9B75 /* IvyWritingUI.swift in Sources */,
 				82F9D78AD57BBB71269998E4 /* IvyWeeklyReviewUI.swift in Sources */,
 			);

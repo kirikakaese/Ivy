@@ -38,6 +38,10 @@ extension ConversationViewController: UIGestureRecognizerDelegate {
         // the mouse button.
         collectionViewLongPressGestureRecognizer.isEnabled = false
         collectionViewContextMenuGestureRecognizer.isEnabled = false
+        // Ivy: the system's own right-click detection also catches trackpad
+        // clicks, which the click recognizer misses.
+        collectionViewContextMenuSecondaryClickRecognizer.isEnabled = false
+        IvyRightClickMenu.install(on: self, in: collectionView)
 #endif
 
         collectionViewPanGestureRecognizer.addTarget(self, action: #selector(handlePanGesture))
