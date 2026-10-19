@@ -450,6 +450,51 @@
 /* Title of an imported event that has none. */
 "EVENT_UNTITLED" = "Termin";
 
+/* Search filter: messages from any chat. */
+"FILTER_CHAT_ANY" = "Alle Chats";
+
+/* Search filter action that chooses a chat or person. */
+"FILTER_CHOOSE" = "Auswählen …";
+
+/* Title of the list that chooses the chat to search in. */
+"FILTER_CHOOSE_CHAT" = "In Chat suchen";
+
+/* Title of the list that chooses the person whose messages to search. */
+"FILTER_CHOOSE_PERSON" = "Nachrichten von";
+
+/* Search filter: messages from any date. */
+"FILTER_DATE_ANY" = "Jederzeit";
+
+/* Search filter: messages from the last 30 days. */
+"FILTER_DATE_MONTH" = "Letzte 30 Tage";
+
+/* Search filter: messages from today. */
+"FILTER_DATE_TODAY" = "Heute";
+
+/* Search filter: messages from the last 7 days. */
+"FILTER_DATE_WEEK" = "Letzte 7 Tage";
+
+/* Search filter: messages from the last year. */
+"FILTER_DATE_YEAR" = "Letztes Jahr";
+
+/* Search filter: messages from anyone. */
+"FILTER_PERSON_ANY" = "Alle Personen";
+
+/* Shown when a group is chosen as the person to search for. */
+"FILTER_PERSON_NEEDS_CONTACT" = "Wähle eine Person, keine Gruppe.";
+
+/* Search filter: any kind of message. */
+"FILTER_TYPE_ANY" = "Alles";
+
+/* Search filter: messages with a file. */
+"FILTER_TYPE_FILE" = "Mit Datei";
+
+/* Search filter: messages with a link. */
+"FILTER_TYPE_LINK" = "Mit Link";
+
+/* Search filter: messages with a photo or video. */
+"FILTER_TYPE_PHOTO" = "Mit Foto";
+
 /* A chat folder's chats may notify at any time. */
 "FOCUS_HOURS_ANY_TIME" = "Jederzeit";
 
@@ -686,6 +731,30 @@
 
 /* Message when the data transferred from the old device could not be restored. */
 "LAUNCH_FAILURE_RESTORE_FAILED_MESSAGE" = "Die von deinem alten Gerät übertragenen Daten konnten nicht wiederhergestellt werden. Bitte speichere ein Diagnoseprotokoll und melde das Problem unter github.com/kirikakaese/Ivy/issues. Wenn du Ivy neu installierst, kann dein Nachrichtenverlauf verloren gehen.";
+
+/* Action that copies a link from the library. */
+"LIBRARY_COPY_LINK" = "Link kopieren";
+
+/* Shown in the library when nothing matches. */
+"LIBRARY_EMPTY" = "Noch nichts hier";
+
+/* Library section with every file from all chats. */
+"LIBRARY_FILES" = "Dateien";
+
+/* Library section with every link from all chats. */
+"LIBRARY_LINKS" = "Links";
+
+/* Action that opens a link from the library. */
+"LIBRARY_OPEN_LINK" = "Link öffnen";
+
+/* Library section with every photo and video from all chats. */
+"LIBRARY_PHOTOS" = "Fotos";
+
+/* Action that shows a link, photo or file in its chat. */
+"LIBRARY_SHOW_IN_CHAT" = "Im Chat zeigen";
+
+/* Title of the list of every link, photo and file from all chats. */
+"LIBRARY_TITLE" = "Mediathek";
 
 /* Menu command that locks Ivy right away. */
 "LOCK_NOW" = "Ivy sperren";
@@ -941,6 +1010,18 @@
 
 /* Title of the list of messages scheduled to be sent later. */
 "SCHEDULED_TITLE" = "Geplante Nachrichten";
+
+/* Title of the search across chats, tasks, events and chat notes. */
+"SEARCH_EVERYTHING" = "Alles durchsuchen";
+
+/* Placeholder of the search across chats, tasks, events and chat notes. */
+"SEARCH_EVERYTHING_PLACEHOLDER" = "Nachrichten, Aufgaben, Termine, Notizen";
+
+/* Header of the calendar events found by a search. */
+"SEARCH_SECTION_EVENTS" = "Termine";
+
+/* Header of the messages found by a search. */
+"SEARCH_SECTION_MESSAGES" = "Nachrichten";
 
 /* Header of the chat folders in the sidebar. */
 "SIDEBAR_FOLDERS" = "Ordner";

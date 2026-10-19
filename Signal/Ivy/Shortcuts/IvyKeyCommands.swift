@@ -13,7 +13,7 @@ import SignalUI
 enum IvyKeyCommands {
 
     static func commands() -> [UIKeyCommand] {
-        sectionCommands() + newItemCommands() + zoomCommands() + [lockCommand()]
+        sectionCommands() + newItemCommands() + zoomCommands() + [lockCommand()] + findCommands()
     }
 
     /// ⌘1 to ⌘4, in the order of the sections.
@@ -54,6 +54,26 @@ enum IvyKeyCommands {
                 input: "e",
                 modifierFlags: [.command, .alternate],
                 discoverabilityTitle: newEvent,
+            ),
+        ]
+    }
+
+    /// ⇧⌘F searches everything, ⇧⌘L opens the library.
+    static func findCommands() -> [UIKeyCommand] {
+        [
+            UIKeyCommand(
+                title: IvyFind.searchTitle,
+                action: #selector(ConversationSplitViewController.ivySearchEverything),
+                input: "f",
+                modifierFlags: [.command, .shift],
+                discoverabilityTitle: IvyFind.searchTitle,
+            ),
+            UIKeyCommand(
+                title: IvyFind.libraryTitle,
+                action: #selector(ConversationSplitViewController.ivyShowLibrary),
+                input: "l",
+                modifierFlags: [.command, .shift],
+                discoverabilityTitle: IvyFind.libraryTitle,
             ),
         ]
     }
@@ -118,6 +138,10 @@ enum IvyKeyCommands {
         builder.insertSibling(
             UIMenu(identifier: UIMenu.Identifier("ivy.zoom"), options: .displayInline, children: zoomCommands()),
             afterMenu: UIMenu.Identifier("ivy.sections"),
+        )
+        builder.insertSibling(
+            UIMenu(identifier: UIMenu.Identifier("ivy.find"), options: .displayInline, children: findCommands()),
+            afterMenu: UIMenu.Identifier("ivy.zoom"),
         )
     }
 }
