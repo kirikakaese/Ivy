@@ -342,7 +342,7 @@ public class NotificationPresenterImpl: NotificationPresenter {
     }
 
     private func fetchCallPreview(thread: NotifiableThread, tx: DBReadTransaction) -> CallPreview? {
-        let previewType = self.previewType(tx: tx)
+        let previewType = self.previewType(tx: tx).ivyForChat(thread.rawValue) // Ivy: hidden chats
         return self.notificationTitle(
             for: thread,
             senderAddress: nil,
@@ -678,7 +678,7 @@ public class NotificationPresenterImpl: NotificationPresenter {
         guard !thread.isMuted else { return }
 
         // Poll terminate notifications only get displayed if we can include the poll details.
-        let previewType = self.previewType(tx: transaction)
+        let previewType = self.previewType(tx: transaction).ivyForChat(thread) // Ivy: hidden chats
         guard previewType == .namePreview else {
             return
         }
@@ -741,7 +741,7 @@ public class NotificationPresenterImpl: NotificationPresenter {
         guard !thread.isMuted else { return }
 
         // Poll vote notifications only get displayed if we can include the poll details.
-        let previewType = self.previewType(tx: transaction)
+        let previewType = self.previewType(tx: transaction).ivyForChat(thread) // Ivy: hidden chats
         guard previewType == .namePreview else {
             return
         }
@@ -909,7 +909,7 @@ public class NotificationPresenterImpl: NotificationPresenter {
 
         let messageText = rawMessageText.filterStringForDisplay()
 
-        let previewType = self.previewType(tx: transaction)
+        let previewType = self.previewType(tx: transaction).ivyForChat(thread) // Ivy: hidden chats
 
         let threadIdentifier: String?
         switch previewType {
@@ -1008,7 +1008,7 @@ public class NotificationPresenterImpl: NotificationPresenter {
         let rawMessageText = releaseNotesMessage.notificationPreviewText(transaction)
         let messageText = rawMessageText.filterStringForDisplay()
 
-        let previewType = self.previewType(tx: transaction)
+        let previewType = self.previewType(tx: transaction).ivyForChat(thread) // Ivy: hidden chats
 
         let threadIdentifier: String?
         switch previewType {
@@ -1071,7 +1071,7 @@ public class NotificationPresenterImpl: NotificationPresenter {
 
         // Reaction notifications only get displayed if we can include the reaction
         // details, otherwise we don't disturb the user for a non-message
-        let previewType = self.previewType(tx: transaction)
+        let previewType = self.previewType(tx: transaction).ivyForChat(thread) // Ivy: hidden chats
         guard previewType == .namePreview else {
             return
         }
@@ -1480,7 +1480,7 @@ public class NotificationPresenterImpl: NotificationPresenter {
 
         guard !thread.isMuted else { return }
 
-        let previewType = self.previewType(tx: transaction)
+        let previewType = self.previewType(tx: transaction).ivyForChat(thread) // Ivy: hidden chats
 
         let threadIdentifier: String?
         switch previewType {

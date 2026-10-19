@@ -232,7 +232,7 @@ class ConversationSearchViewController: OWSViewController {
             } catch {
                 return
             }
-            self.searchResultSet = searchResultSet
+            self.searchResultSet = searchResultSet.ivyWithoutHiddenChats() // Ivy: hidden chats
             self.reloadTableData()
         }
     }

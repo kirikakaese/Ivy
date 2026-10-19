@@ -59,6 +59,12 @@ final class IvyMenuBar: NSObject {
         ]
     }
 
+    /// Called by the plugin when the Mac's screen locks or goes to sleep.
+    @objc
+    func ivyScreenDidLock() {
+        IvyPrivacy.lockIfEnabled()
+    }
+
     /// Called by the plugin when the user chooses an item.
     @objc
     func openIvyLink(_ link: NSString) {

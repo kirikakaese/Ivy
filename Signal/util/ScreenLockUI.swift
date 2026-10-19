@@ -417,6 +417,23 @@ class ScreenLockUI {
         didLastUnlockAttemptFail = false
     }
 
+    // MARK: - Ivy: lock now
+
+    /// Locks right away, when Screen Lock is on. Returns whether it locked.
+    @discardableResult
+    func ivyLockNow() -> Bool {
+        AssertIsOnMainThread()
+        guard appReadiness.isAppReady, ScreenLock.shared.isScreenLockEnabled() else {
+            return false
+        }
+        isScreenLockLocked = true
+        // Show the lock screen with its Unlock button instead of asking
+        // for Face ID or Touch ID right away.
+        didLastUnlockAttemptFail = true
+        ensureUI()
+        return true
+    }
+
     // MARK: - Notification Observers
 
     @objc

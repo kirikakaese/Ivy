@@ -89,11 +89,11 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Starred messages | 6a | done | done | done | Star or Remove Star in a message's menu; a star next to the time; list on Home; synced; removed when the message is deleted |
 | Chat notes | 6a | done | done | done | Chat settings > Note; synced, only on the user's devices |
 | Voice note speed and transcription | 6a | done | done | done | Speed is remembered per chat (as upstream); Transcribe in the message menu, on the device only |
-| Hidden chats | 6a | planned | planned | planned | |
-| Ivy passcode and app lock | 6a | planned | planned | planned | |
-| Instant lock | 6a | planned | planned | planned | |
+| Hidden chats | 6a | done | done | done | Hide Chat in a chat's menu; hidden chats leave the chat list and search until shown with Face ID, Touch ID or the device passcode (profile menu > Show Hidden Chats), and hide again when Ivy leaves the screen. Their notifications show neither name nor content. Synced |
+| Ivy passcode and app lock | 6a | in progress | in progress | in progress | Done: the Mac locks Ivy when the screen locks or the Mac sleeps (with Screen Lock on). Planned (6a-3b): an Ivy passcode of its own |
+| Instant lock | 6a | done | done | done | Lock Ivy in the profile menu, File menu and ⌃⌘L; needs Screen Lock |
 | Duress passcode and decoy mode | 6a | planned | planned | planned | |
-| Metadata trimming | 6a | planned | planned | planned | |
+| Metadata trimming | 6a | done | done | done | As upstream: Signal removes image metadata before sending; link previews can be turned off in Settings > Chats |
 | Search with filters | 6b | planned | planned | planned | On-device |
 | Library of links, files and photos | 6b | planned | planned | planned | |
 | Waiting on you | 6b | planned | planned | planned | On-device detection |
