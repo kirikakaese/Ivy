@@ -80,3 +80,13 @@ A chat note (kind `chatNote`) holds one text per chat, up to 10,000 characters; 
 
 Voice message transcripts are never stored or synced. Ivy transcribes on the device with Apple's speech recognition (`requiresOnDeviceRecognition`) and keeps the text only while the app runs.
 
+## Scheduled messages
+
+A scheduled message (kind `scheduled`) holds the chat, the message body with its mentions and styles (`MessageBody`, archived, base64), its text for lists, the send time, the device that wrote it, `createdAt`, `state` (`pending` or `sent`), `sentAt`, and `claimedBy`/`claimedAt` when another device took over.
+
+- The device that wrote the message, or last changed its time, sends it at the send time.
+- If that device hasn't sent it 10 minutes after the send time, another Ivy device takes over: it records itself in `claimedBy`, waits 30 seconds for a takeover by another device to arrive, and sends if it still holds the claim. A claim that hasn't led to a sent message after 5 minutes can be taken over again.
+- The sending device marks the message `sent` before handing it to Signal's send queue, which retries until it goes out. Sent entries are removed after 7 days.
+- An iPhone only sends while Ivy runs; a message may go out late when no Ivy device is running at the time.
+- Only text is scheduled; attachments are not.
+

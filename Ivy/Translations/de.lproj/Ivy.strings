@@ -396,6 +396,9 @@
 /* Help item that opens Ivy's issue tracker. */
 "HELP_REPORT_PROBLEM" = "Problem melden";
 
+/* Item on Home that opens the list of all scheduled messages. */
+"HOME_ALL_SCHEDULED" = "Alle geplanten Nachrichten";
+
 /* Item on Home that opens the list of all starred messages. */
 "HOME_ALL_STARRED" = "Alle markierten Nachrichten";
 
@@ -683,6 +686,24 @@
 
 /* Notification action that reminds the user again tomorrow morning. */
 "REMINDER_TOMORROW" = "Morgen";
+
+/* Action that changes when a scheduled message is sent. */
+"SCHEDULED_CHANGE_TIME" = "Zeit ändern";
+
+/* Shown in the list of scheduled messages when there are none. */
+"SCHEDULED_EMPTY" = "Keine geplanten Nachrichten. Halte den Senden-Knopf gedrückt oder klicke mit rechts darauf, um eine Nachricht später zu senden.";
+
+/* Menu of the send button that sends the message at a later time. */
+"SCHEDULED_SEND_LATER" = "Später senden";
+
+/* Action that sends a scheduled message right away. */
+"SCHEDULED_SEND_NOW" = "Jetzt senden";
+
+/* Shown after scheduling a message. Embeds {{ the date and time }}. */
+"SCHEDULED_SET_FORMAT" = "Geplant für %@";
+
+/* Title of the list of messages scheduled to be sent later. */
+"SCHEDULED_TITLE" = "Geplante Nachrichten";
 
 /* Header of the chat folders in the sidebar. */
 "SIDEBAR_FOLDERS" = "Ordner";

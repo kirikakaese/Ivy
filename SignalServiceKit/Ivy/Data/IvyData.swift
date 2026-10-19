@@ -47,7 +47,8 @@ public final class IvyData {
         IvyDatabase.delete(keychainStorage: KeychainStorageImpl(isUsingProductionService: TSConstants.isUsingProductionService))
     }
 
-    private static func localDeviceId() -> UInt32 {
+    /// This device's Signal device id, 0 before it is known.
+    public static func localDeviceId() -> UInt32 {
         return DependenciesBridge.shared.tsAccountManager.storedDeviceIdWithMaybeTransaction.ifValid?.uint32Value ?? 0
     }
 }

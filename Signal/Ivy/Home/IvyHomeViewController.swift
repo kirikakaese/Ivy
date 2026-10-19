@@ -32,6 +32,7 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         case important(ImportantRow)
         case folder(ChatFolder, unreadCount: Int)
         case star(IvyStar, chatName: String)
+        case scheduled(IvyScheduledMessage, chatName: String)
         case note(String)
         case link(String, action: () -> Void)
     }
@@ -85,6 +86,7 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             IvyEventManager.eventsDidChange,
             IvyReminderManager.remindersDidChange,
             IvyStarManager.starsDidChange,
+            IvyScheduledSender.scheduledDidChange,
             ChatFolderManager.foldersDidChange,
             UIApplication.significantTimeChangeNotification,
         ] {
@@ -183,6 +185,9 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
 
     private func reload() {
         var sections = [todaySection(), tasksSection()]
+        if let scheduled = scheduledSection() {
+            sections.append(scheduled)
+        }
         if let starred = starredSection() {
             sections.append(starred)
         }
@@ -263,6 +268,26 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             self?.ivyPresentTasks()
         })
         return Section(title: IvyTaskUI.tasksTitle, rows: rows)
+    }
+
+    /// The next messages scheduled to be sent, when there are any.
+    private func scheduledSection() -> Section? {
+        let pending = IvyScheduledUI.pending()
+        guard !pending.isEmpty else {
+            return nil
+        }
+        var rows: [Row] = SSKEnvironment.shared.databaseStorageRef.read { tx in
+            pending.prefix(Self.maxStars).map { message in
+                let name = message.chat.thread(tx: tx).map {
+                    SSKEnvironment.shared.contactManagerRef.displayName(for: $0, transaction: tx)
+                }
+                return .scheduled(message, chatName: name ?? "")
+            }
+        }
+        rows.append(.link(IvyLocalizedString("HOME_ALL_SCHEDULED", comment: "Item on Home that opens the list of all scheduled messages.")) { [weak self] in
+            self?.presentFormSheet(OWSNavigationController(rootViewController: IvyScheduledMessagesViewController()), animated: true)
+        })
+        return Section(title: IvyScheduledUI.title, rows: rows)
     }
 
     /// The newest starred messages, when there are any.
@@ -400,6 +425,11 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             content.secondaryText = star.quote
             content.secondaryTextProperties.numberOfLines = 2
             content.image = UIImage(systemName: "star.fill")
+        case .scheduled(let message, let chatName):
+            content.text = chatName
+            content.secondaryText = IvyScheduledUI.sendTimeText(message.sendAt) + " · " + message.previewText
+            content.secondaryTextProperties.numberOfLines = 2
+            content.image = UIImage(systemName: "clock")
         case .note(let text):
             content = UIListContentConfiguration.cell()
             content.text = text
@@ -438,6 +468,8 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             tabs.chatListViewController.ivySelectChatFolder(folder)
         case .star(let star, _):
             IvyStarredViewController.open(star.message, from: self)
+        case .scheduled:
+            presentFormSheet(OWSNavigationController(rootViewController: IvyScheduledMessagesViewController()), animated: true)
         case .note:
             break
         case .link(_, let action):
@@ -453,7 +485,7 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         case .task(let task, _):
             let date = task.dueAt ?? Date()
             return IvyCalendarItem(kind: .task(task), start: date, end: date, isAllDay: task.isAllDay)
-        case .important, .folder, .star, .note, .link:
+        case .important, .folder, .star, .scheduled, .note, .link:
             return nil
         }
     }

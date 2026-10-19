@@ -96,14 +96,24 @@ extension UIViewController {
     }
 }
 
-/// Chooses a date and time, and whether the reminder repeats.
+/// Chooses a date and time, and whether the reminder repeats. Also used
+/// without the repeat option, for sending a message later.
 final class IvyReminderDatePickerViewController: UIViewController {
 
     private let datePicker = UIDatePicker()
     private let repeatControl = UISegmentedControl()
+    private let pickerTitle: String?
+    private let showsRepeat: Bool
     private let onDone: (Date, IvyReminder.Repeat) -> Void
 
-    init(initialDate: Date? = nil, onDone: @escaping (Date, IvyReminder.Repeat) -> Void) {
+    init(
+        initialDate: Date? = nil,
+        title: String? = nil,
+        showsRepeat: Bool = true,
+        onDone: @escaping (Date, IvyReminder.Repeat) -> Void,
+    ) {
+        self.pickerTitle = title
+        self.showsRepeat = showsRepeat
         self.onDone = onDone
         super.init(nibName: nil, bundle: nil)
         datePicker.date = initialDate ?? IvyReminder.Preset.tomorrowMorning.dueDate(from: Date()) ?? Date().addingTimeInterval(3600)
@@ -116,7 +126,7 @@ final class IvyReminderDatePickerViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = IvyReminderUI.remindMeTitle
+        title = pickerTitle ?? IvyReminderUI.remindMeTitle
         view.backgroundColor = .Signal.groupedBackground
         navigationItem.leftBarButtonItem = .cancelButton(dismissingFrom: self)
         navigationItem.rightBarButtonItem = .doneButton { [weak self] in self?.done() }
@@ -135,6 +145,8 @@ final class IvyReminderDatePickerViewController: UIViewController {
         }
         repeatControl.selectedSegmentIndex = 0
 
+        repeatLabel.isHidden = !showsRepeat
+        repeatControl.isHidden = !showsRepeat
         let stack = UIStackView(arrangedSubviews: [datePicker, repeatLabel, repeatControl])
         stack.axis = .vertical
         stack.spacing = 12
