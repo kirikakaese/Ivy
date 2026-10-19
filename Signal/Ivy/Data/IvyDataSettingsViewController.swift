@@ -46,6 +46,12 @@ final class IvyDataSettingsViewController: OWSTableViewController2, UIDocumentPi
             },
         ))
         organizeSection.add(.disclosureItem(
+            withText: IvySnippetsViewController.title,
+            actionBlock: { [weak self] in
+                self?.navigationController?.pushViewController(IvySnippetsViewController(), animated: true)
+            },
+        ))
+        organizeSection.add(.disclosureItem(
             withText: IvyLocalizedString("HOME_SETTINGS_TITLE", comment: "Title of the settings for Home and navigation."),
             actionBlock: { [weak self] in
                 self?.navigationController?.pushViewController(IvyHomeSettingsViewController(), animated: true)

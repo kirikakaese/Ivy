@@ -555,6 +555,12 @@
 /* Item on Home that opens the list of all tasks. */
 "HOME_ALL_TASKS" = "All Tasks";
 
+/* Title of the section on Home with unsent messages. */
+"HOME_DRAFTS" = "Drafts";
+
+/* Action that throws away an unsent message on Home. */
+"HOME_DRAFT_DISCARD" = "Discard";
+
 /* Header on Home of important unread messages. */
 "HOME_IMPORTANT" = "Important";
 
@@ -1034,6 +1040,39 @@
 
 /* Menu command that shows the sidebar. */
 "SIDEBAR_SHOW" = "Show Sidebar";
+
+/* Shown in the list of snippets when there are none. */
+"SNIPPETS_EMPTY" = "No snippets yet. Add one with +.";
+
+/* Explains how snippets are inserted. */
+"SNIPPETS_FOOTER" = "Type a semicolon and the trigger, then a space, in any message, for example ;addr. Snippets sync to your Ivy devices.";
+
+/* Title of the list of snippets: texts inserted by typing a short trigger. */
+"SNIPPETS_TITLE" = "Snippets";
+
+/* Button that deletes a snippet. */
+"SNIPPET_DELETE" = "Delete Snippet";
+
+/* Title of the screen that edits a snippet. */
+"SNIPPET_EDIT" = "Edit Snippet";
+
+/* Shown when a snippet has no trigger or no text. */
+"SNIPPET_INCOMPLETE" = "A snippet needs a trigger and a text.";
+
+/* Title of the screen that makes a new snippet. */
+"SNIPPET_NEW" = "New Snippet";
+
+/* Label of a snippet's text. */
+"SNIPPET_TEXT" = "Text";
+
+/* Label of a snippet's trigger. */
+"SNIPPET_TRIGGER" = "Trigger";
+
+/* Placeholder of a snippet's trigger, for example addr. */
+"SNIPPET_TRIGGER_PLACEHOLDER" = "addr";
+
+/* Shown when another snippet already uses the trigger. */
+"SNIPPET_TRIGGER_TAKEN" = "Another snippet already uses this trigger.";
 
 /* Shown in the list of snoozed chats when there are none. */
 "SNOOZED_CHATS_EMPTY" = "No snoozed chats";
