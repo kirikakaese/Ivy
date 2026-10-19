@@ -153,6 +153,9 @@ final class IvyPasscodeEntryViewController: UIViewController, UITextFieldDelegat
         switch result {
         case .correct:
             finish(.success)
+        case .duress:
+            messageLabel.text = nil
+            IvyDecoy.present(over: self)
         case .wrong:
             messageLabel.text = IvyLocalizedString("PASSCODE_WRONG", comment: "Shown after entering a wrong Ivy passcode.")
         case .blocked:
@@ -244,8 +247,8 @@ final class IvyPasscodeSettingsViewController: OWSTableViewController2 {
 
     private func updateTableContents() {
         let databaseStorage = SSKEnvironment.shared.databaseStorageRef
-        let (isSet, allowsBiometrics) = databaseStorage.read { tx in
-            (IvyPasscode.isSet(tx: tx), IvyPasscode.allowsBiometrics(tx: tx))
+        let (isSet, allowsBiometrics, isDuressSet) = databaseStorage.read { tx in
+            (IvyPasscode.isSet(tx: tx), IvyPasscode.allowsBiometrics(tx: tx), IvyPasscode.isDuressSet(tx: tx))
         }
         let contents = OWSTableContents(title: title)
         let section = OWSTableSection()
@@ -286,7 +289,41 @@ final class IvyPasscodeSettingsViewController: OWSTableViewController2 {
             })
         }
         contents.add(section)
+        if isSet {
+            contents.add(duressSection(isDuressSet: isDuressSet))
+        }
         self.contents = contents
+    }
+
+    /// The duress passcode opens the decoy mode instead of Ivy.
+    private func duressSection(isDuressSet: Bool) -> OWSTableSection {
+        let section = OWSTableSection()
+        section.headerTitle = IvyLocalizedString("PASSCODE_DURESS_TITLE", comment: "Title of the duress passcode setting.")
+        section.footerTitle = IvyLocalizedString("PASSCODE_DURESS_FOOTER", comment: "Explains the duress passcode and the decoy mode.")
+        if isDuressSet {
+            section.add(.actionItem(
+                withText: IvyLocalizedString("PASSCODE_DURESS_CHANGE", comment: "Button that changes the duress passcode."),
+            ) { [weak self] in
+                self?.confirmCurrentPasscode { self?.askForNewPasscode(isDuress: true) }
+            })
+            section.add(.actionItem(
+                withText: IvyLocalizedString("PASSCODE_DURESS_TURN_OFF", comment: "Button that removes the duress passcode."),
+                textColor: .Signal.red,
+            ) { [weak self] in
+                self?.confirmCurrentPasscode {
+                    SSKEnvironment.shared.databaseStorageRef.write { tx in IvyPasscode.removeDuress(tx: tx) }
+                    self?.updateTableContents()
+                }
+            })
+        } else {
+            section.add(.actionItem(
+                withText: IvyLocalizedString("PASSCODE_DURESS_SET", comment: "Button that sets the duress passcode."),
+                textColor: .Signal.accent,
+            ) { [weak self] in
+                self?.confirmCurrentPasscode { self?.askForNewPasscode(isDuress: true) }
+            })
+        }
+        return section
     }
 
     private func confirmCurrentPasscode(then action: @escaping () -> Void) {
@@ -302,17 +339,21 @@ final class IvyPasscodeSettingsViewController: OWSTableViewController2 {
             switch result {
             case .correct:
                 action()
-            case .wrong, .blocked:
+            case .wrong, .blocked, .duress:
                 self?.presentToast(text: IvyLocalizedString("PASSCODE_WRONG", comment: "Shown after entering a wrong Ivy passcode."))
             }
         })
         present(alert, animated: true)
     }
 
-    private func askForNewPasscode() {
+    private func askForNewPasscode(isDuress: Bool = false) {
         let alert = UIAlertController(
-            title: IvyLocalizedString("PASSCODE_NEW", comment: "Title of the dialog that sets a new Ivy passcode."),
-            message: String(format: IvyLocalizedString("PASSCODE_NEW_MESSAGE_FORMAT", comment: "Explains the new passcode. Embeds {{ the minimum number of characters }}."), String(IvyPasscode.minimumLength)),
+            title: isDuress
+                ? IvyLocalizedString("PASSCODE_DURESS_NEW", comment: "Title of the dialog that sets a duress passcode.")
+                : IvyLocalizedString("PASSCODE_NEW", comment: "Title of the dialog that sets a new Ivy passcode."),
+            message: isDuress
+                ? IvyLocalizedString("PASSCODE_DURESS_NEW_MESSAGE", comment: "Explains the duress passcode when setting it.")
+                : String(format: IvyLocalizedString("PASSCODE_NEW_MESSAGE_FORMAT", comment: "Explains the new passcode. Embeds {{ the minimum number of characters }}."), String(IvyPasscode.minimumLength)),
             preferredStyle: .alert,
         )
         for placeholder in [
@@ -333,7 +374,13 @@ final class IvyPasscodeSettingsViewController: OWSTableViewController2 {
                 self?.presentToast(text: IvyLocalizedString("PASSCODE_MISMATCH", comment: "Shown when the new Ivy passcodes don't match or are too short."))
                 return
             }
-            SSKEnvironment.shared.databaseStorageRef.write { tx in IvyPasscode.set(first, tx: tx) }
+            let didSet = SSKEnvironment.shared.databaseStorageRef.write { tx in
+                isDuress ? IvyPasscode.setDuress(first, tx: tx) : IvyPasscode.set(first, tx: tx)
+            }
+            guard didSet else {
+                self?.presentToast(text: IvyLocalizedString("PASSCODE_SAME_AS_OTHER", comment: "Shown when the passcode and the duress passcode would be the same."))
+                return
+            }
             if !ScreenLock.shared.isScreenLockEnabled() {
                 // The passcode only counts with Screen Lock on.
                 ScreenLock.shared.setIsScreenLockEnabled(true)

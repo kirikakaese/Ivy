@@ -10,6 +10,9 @@ import Foundation
 /// for it instead of the device's passcode; Face ID or Touch ID can stay as
 /// a shortcut. Only a salted PBKDF2 hash is stored, on this device only.
 /// Wrong attempts make the next try wait longer.
+///
+/// A second, duress passcode can be set too: entering it opens a decoy mode
+/// instead of Ivy (see `IvyDecoy`).
 public enum IvyPasscode {
 
     private static let store = KeyValueStore(collection: "IvyPasscode")
@@ -21,6 +24,8 @@ public enum IvyPasscode {
         static let allowsBiometrics = "allowsBiometrics"
         static let failedAttempts = "failedAttempts"
         static let blockedUntil = "blockedUntil"
+        static let duressSalt = "duressSalt"
+        static let duressHash = "duressHash"
     }
 
     /// The shortest passcode accepted.
@@ -32,6 +37,8 @@ public enum IvyPasscode {
     public enum Result: Equatable {
         case correct
         case wrong
+        /// The duress passcode: show the decoy mode.
+        case duress
         /// Too many wrong attempts: try again after this date.
         case blocked(until: Date)
     }
@@ -40,6 +47,10 @@ public enum IvyPasscode {
 
     public static func isSet(tx: DBReadTransaction) -> Bool {
         store.getData(Key.hash, transaction: tx) != nil
+    }
+
+    public static func isDuressSet(tx: DBReadTransaction) -> Bool {
+        store.getData(Key.duressHash, transaction: tx) != nil
     }
 
     /// Whether Face ID or Touch ID may unlock instead of the passcode.
@@ -56,17 +67,41 @@ public enum IvyPasscode {
 
     // MARK: - Changing
 
-    public static func set(_ passcode: String, tx: DBWriteTransaction) {
-        var salt = Data(count: 16)
-        _ = salt.withUnsafeMutableBytes { SecRandomCopyBytes(kSecRandomDefault, 16, $0.baseAddress!) }
+    /// Sets the passcode. False when it is the duress passcode.
+    @discardableResult
+    public static func set(_ passcode: String, tx: DBWriteTransaction) -> Bool {
+        guard !matches(passcode, salt: Key.duressSalt, hash: Key.duressHash, tx: tx) else {
+            return false
+        }
+        let salt = newSalt()
         store.setData(salt, key: Key.salt, transaction: tx)
         store.setUInt32(defaultIterations, key: Key.iterations, transaction: tx)
         store.setData(hash(passcode, salt: salt, iterations: defaultIterations), key: Key.hash, transaction: tx)
         resetAttempts(tx: tx)
+        return true
     }
 
+    /// Removes the passcode, and the duress passcode with it.
     public static func remove(tx: DBWriteTransaction) {
         store.removeValues(forKeys: [Key.salt, Key.hash, Key.iterations, Key.failedAttempts, Key.blockedUntil], transaction: tx)
+        removeDuress(tx: tx)
+    }
+
+    /// Sets the duress passcode. False when there is no passcode yet, or
+    /// when it is the passcode itself.
+    @discardableResult
+    public static func setDuress(_ passcode: String, tx: DBWriteTransaction) -> Bool {
+        guard isSet(tx: tx), !matches(passcode, salt: Key.salt, hash: Key.hash, tx: tx) else {
+            return false
+        }
+        let salt = newSalt()
+        store.setData(salt, key: Key.duressSalt, transaction: tx)
+        store.setData(hash(passcode, salt: salt, iterations: iterations(tx: tx)), key: Key.duressHash, transaction: tx)
+        return true
+    }
+
+    public static func removeDuress(tx: DBWriteTransaction) {
+        store.removeValues(forKeys: [Key.duressSalt, Key.duressHash], transaction: tx)
     }
 
     public static func setAllowsBiometrics(_ value: Bool, tx: DBWriteTransaction) {
@@ -80,16 +115,16 @@ public enum IvyPasscode {
         if let blockedUntil = blockedUntil(now: now, tx: tx) {
             return .blocked(until: blockedUntil)
         }
-        guard
-            let salt = store.getData(Key.salt, transaction: tx),
-            let expected = store.getData(Key.hash, transaction: tx)
-        else {
+        guard isSet(tx: tx) else {
             return .wrong
         }
-        let iterations = store.getUInt32(Key.iterations, defaultValue: defaultIterations, transaction: tx)
-        if constantTimeEquals(hash(passcode, salt: salt, iterations: iterations), expected) {
+        if matches(passcode, salt: Key.salt, hash: Key.hash, tx: tx) {
             resetAttempts(tx: tx)
             return .correct
+        }
+        if matches(passcode, salt: Key.duressSalt, hash: Key.duressHash, tx: tx) {
+            resetAttempts(tx: tx)
+            return .duress
         }
         let failed = store.getInt(Key.failedAttempts, defaultValue: 0, transaction: tx) + 1
         store.setInt(failed, key: Key.failedAttempts, transaction: tx)
@@ -116,6 +151,26 @@ public enum IvyPasscode {
     }
 
     // MARK: - Hashing
+
+    private static func newSalt() -> Data {
+        var salt = Data(count: 16)
+        _ = salt.withUnsafeMutableBytes { SecRandomCopyBytes(kSecRandomDefault, 16, $0.baseAddress!) }
+        return salt
+    }
+
+    private static func iterations(tx: DBReadTransaction) -> UInt32 {
+        store.getUInt32(Key.iterations, defaultValue: defaultIterations, transaction: tx)
+    }
+
+    private static func matches(_ passcode: String, salt saltKey: String, hash hashKey: String, tx: DBReadTransaction) -> Bool {
+        guard
+            let salt = store.getData(saltKey, transaction: tx),
+            let expected = store.getData(hashKey, transaction: tx)
+        else {
+            return false
+        }
+        return constantTimeEquals(hash(passcode, salt: salt, iterations: iterations(tx: tx)), expected)
+    }
 
     static func hash(_ passcode: String, salt: Data, iterations: UInt32) -> Data {
         let password = Array(passcode.utf8)

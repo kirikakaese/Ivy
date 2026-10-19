@@ -300,6 +300,60 @@
 /* Button below the debug log preview that exports the log. */
 "DEBUG_LOG_EXPORT_BUTTON" = "Export";
 
+/* Title of the chat list in the decoy mode. */
+"DECOY_CHATS_TITLE" = "Chats";
+
+/* Name of a made-up chat in the decoy mode. */
+"DECOY_CHAT_FRIEND" = "Alex";
+
+/* Name of a made-up group chat in the decoy mode. */
+"DECOY_CHAT_GROUP" = "Book Club";
+
+/* Name of a made-up chat in the decoy mode. */
+"DECOY_CHAT_MOM" = "Mom";
+
+/* Name of the made-up notes chat in the decoy mode, which holds the button that deletes all data. */
+"DECOY_CHAT_NOTES" = "Notes";
+
+/* A made-up message in the decoy mode, from a friend. */
+"DECOY_FRIEND_1" = "Running 10 minutes late, sorry";
+
+/* A made-up reply to a friend in the decoy mode. */
+"DECOY_FRIEND_2" = "No worries, I'll grab us a table";
+
+/* A made-up message in a group chat in the decoy mode. */
+"DECOY_GROUP_1" = "Next meeting is on Thursday at 7.";
+
+/* A made-up message in a group chat in the decoy mode. */
+"DECOY_GROUP_2" = "Has everyone finished the book?";
+
+/* A made-up reply in a group chat in the decoy mode. */
+"DECOY_GROUP_3" = "Almost, two chapters left";
+
+/* Placeholder of the message field in the decoy mode. */
+"DECOY_MESSAGE_PLACEHOLDER" = "Message";
+
+/* A made-up message in the decoy mode, from a mother. */
+"DECOY_MOM_1" = "Are you coming for dinner on Sunday?";
+
+/* A made-up reply to a mother in the decoy mode. */
+"DECOY_MOM_2" = "Yes! I'll bring dessert.";
+
+/* A made-up message in the decoy mode, from a mother. */
+"DECOY_MOM_3" = "Lovely, see you then ❤️";
+
+/* A made-up note to self in the decoy mode. */
+"DECOY_NOTES_1" = "Buy milk, eggs, bread";
+
+/* Button in the decoy mode that deletes all data on this device. */
+"DECOY_WIPE" = "Delete All Data";
+
+/* Explains that deleting all data can't be undone. */
+"DECOY_WIPE_CONFIRM_MESSAGE" = "All chats and data on this device will be deleted. This can't be undone.";
+
+/* Title of the confirmation before deleting all data from the decoy mode. */
+"DECOY_WIPE_CONFIRM_TITLE" = "Delete All Data?";
+
 /* Message of an error notification for testers. Embeds {{ error description }}. */
 "ERROR_NOTIFICATION_MESSAGE_FORMAT" = "Please help improve Ivy by reporting this error with a debug log at github.com/kirikakaese/Ivy/issues: %@";
 
@@ -630,6 +684,27 @@
 /* Button that changes Ivy's passcode. */
 "PASSCODE_CHANGE" = "Change Passcode";
 
+/* Button that changes the duress passcode. */
+"PASSCODE_DURESS_CHANGE" = "Change Duress Passcode";
+
+/* Explains the duress passcode and the decoy mode. */
+"PASSCODE_DURESS_FOOTER" = "Entering the duress passcode instead of your passcode opens a decoy chat list with made-up chats that never send anything. The Notes chat in it has a button that deletes all Ivy data on this device.";
+
+/* Title of the dialog that sets a duress passcode. */
+"PASSCODE_DURESS_NEW" = "Duress Passcode";
+
+/* Explains the duress passcode when setting it. */
+"PASSCODE_DURESS_NEW_MESSAGE" = "Use a passcode different from your Ivy passcode.";
+
+/* Button that sets the duress passcode. */
+"PASSCODE_DURESS_SET" = "Set Duress Passcode";
+
+/* Title of the duress passcode setting. */
+"PASSCODE_DURESS_TITLE" = "Duress Passcode";
+
+/* Button that removes the duress passcode. */
+"PASSCODE_DURESS_TURN_OFF" = "Turn Off Duress Passcode";
+
 /* Title of the screen that asks for Ivy's passcode. */
 "PASSCODE_ENTER" = "Enter Ivy Passcode";
 
@@ -662,6 +737,9 @@
 
 /* Placeholder of the field that repeats a new Ivy passcode. */
 "PASSCODE_REPEAT_PLACEHOLDER" = "Repeat Passcode";
+
+/* Shown when the passcode and the duress passcode would be the same. */
+"PASSCODE_SAME_AS_OTHER" = "The passcode and the duress passcode must be different.";
 
 /* Button that sets Ivy's passcode. */
 "PASSCODE_SET" = "Set Passcode";
