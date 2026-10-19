@@ -1281,6 +1281,51 @@
 /* Title of a voice message's transcript. */
 "TRANSCRIPT_TITLE" = "Transcript";
 
+/* Action that turns a voice note into a task, transcribed on the device. */
+"VOICE_NOTE_MAKE_TASK" = "Make Task";
+
+/* Label of the day the weekly review is offered. */
+"WEEKLY_REVIEW_DAY" = "Day";
+
+/* Weekly review section with tasks due in the next seven days. */
+"WEEKLY_REVIEW_DUE" = "Due This Week";
+
+/* Weekly review section with the next seven days' events. */
+"WEEKLY_REVIEW_EVENTS" = "Next 7 Days";
+
+/* Explains the weekly review setting. */
+"WEEKLY_REVIEW_FOOTER" = "Once a week, a notification offers a look at overdue and upcoming tasks, the next 7 days and chats waiting for an answer.";
+
+/* Text of the weekly notification that offers the review. */
+"WEEKLY_REVIEW_NOTIFICATION" = "Look over your tasks, the week ahead and chats waiting for you.";
+
+/* Shown in the weekly review when no events are coming up. */
+"WEEKLY_REVIEW_NO_EVENTS" = "No events coming up";
+
+/* Shown in the weekly review when no tasks are due. */
+"WEEKLY_REVIEW_NO_TASKS" = "No tasks due in the next 7 days";
+
+/* Shown in the weekly review when no chat waits for an answer. */
+"WEEKLY_REVIEW_NO_WAITING" = "No chat is waiting for an answer";
+
+/* Button that opens the weekly review now. */
+"WEEKLY_REVIEW_OPEN" = "Open Weekly Review";
+
+/* Weekly review section with overdue tasks. */
+"WEEKLY_REVIEW_OVERDUE" = "Overdue";
+
+/* Switch that turns on the weekly notification offering the review. */
+"WEEKLY_REVIEW_REMIND" = "Remind Me Weekly";
+
+/* Weekly review section with tasks that have no due date. */
+"WEEKLY_REVIEW_SOMEDAY" = "Someday";
+
+/* Label of the time the weekly review is offered. */
+"WEEKLY_REVIEW_TIME" = "Time";
+
+/* Title of the weekly review of tasks, events and chats. */
+"WEEKLY_REVIEW_TITLE" = "Weekly Review";
+
 /* Shown in a widget before Ivy has been opened. */
 "WIDGET_NO_DATA" = "Open Ivy once to see your day here.";
 

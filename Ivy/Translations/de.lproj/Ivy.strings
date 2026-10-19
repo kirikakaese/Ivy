@@ -1281,6 +1281,51 @@
 /* Title of a voice message's transcript. */
 "TRANSCRIPT_TITLE" = "Transkript";
 
+/* Action that turns a voice note into a task, transcribed on the device. */
+"VOICE_NOTE_MAKE_TASK" = "Aufgabe erstellen";
+
+/* Label of the day the weekly review is offered. */
+"WEEKLY_REVIEW_DAY" = "Tag";
+
+/* Weekly review section with tasks due in the next seven days. */
+"WEEKLY_REVIEW_DUE" = "Diese Woche fällig";
+
+/* Weekly review section with the next seven days' events. */
+"WEEKLY_REVIEW_EVENTS" = "Nächste 7 Tage";
+
+/* Explains the weekly review setting. */
+"WEEKLY_REVIEW_FOOTER" = "Einmal pro Woche bietet eine Mitteilung einen Blick auf überfällige und anstehende Aufgaben, die nächsten 7 Tage und Chats, die auf eine Antwort warten.";
+
+/* Text of the weekly notification that offers the review. */
+"WEEKLY_REVIEW_NOTIFICATION" = "Sieh dir deine Aufgaben, die kommende Woche und wartende Chats an.";
+
+/* Shown in the weekly review when no events are coming up. */
+"WEEKLY_REVIEW_NO_EVENTS" = "Keine anstehenden Termine";
+
+/* Shown in the weekly review when no tasks are due. */
+"WEEKLY_REVIEW_NO_TASKS" = "Keine Aufgaben in den nächsten 7 Tagen fällig";
+
+/* Shown in the weekly review when no chat waits for an answer. */
+"WEEKLY_REVIEW_NO_WAITING" = "Kein Chat wartet auf eine Antwort";
+
+/* Button that opens the weekly review now. */
+"WEEKLY_REVIEW_OPEN" = "Wochenrückblick öffnen";
+
+/* Weekly review section with overdue tasks. */
+"WEEKLY_REVIEW_OVERDUE" = "Überfällig";
+
+/* Switch that turns on the weekly notification offering the review. */
+"WEEKLY_REVIEW_REMIND" = "Wöchentlich erinnern";
+
+/* Weekly review section with tasks that have no due date. */
+"WEEKLY_REVIEW_SOMEDAY" = "Irgendwann";
+
+/* Label of the time the weekly review is offered. */
+"WEEKLY_REVIEW_TIME" = "Uhrzeit";
+
+/* Title of the weekly review of tasks, events and chats. */
+"WEEKLY_REVIEW_TITLE" = "Wochenrückblick";
+
 /* Shown in a widget before Ivy has been opened. */
 "WIDGET_NO_DATA" = "Öffne Ivy einmal, um deinen Tag hier zu sehen.";
 

@@ -104,8 +104,8 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Snippets | 6c | done | done | done | Settings > Ivy Data > Snippets. Typing ;trigger and a space in any message inserts the text. Synced |
 | Plan from the calendar | 6c | planned | planned | planned | Needs scheduled messages (6a) |
 | Shared plans | 6c | planned | planned | planned | Other Signal apps get an `.ics` file |
-| Task from a voice note | 6c | planned | planned | planned | On-device transcription |
-| Weekly review | 6c | planned | planned | planned | |
+| Task from a voice note | 6c | done | done | done | Make Task on a voice note in Note to Self, and on any transcript. Transcribed on the device; the first sentence becomes the title |
+| Weekly review | 6c | done | done | done | Home > Weekly Review, and a weekly notification at a chosen day and time (Settings > Ivy Data > Weekly Review): overdue and due tasks, the next 7 days, chats waiting for an answer |
 | Multiple windows | 6d | – | planned | planned | |
 | Quick reply from the menu bar | 6d | – | – | planned | Mac only |
 | Global hotkey | 6d | – | – | planned | Mac only |

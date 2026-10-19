@@ -163,6 +163,23 @@ public struct IvyTask: Equatable, Identifiable, Sendable {
     }
 
     /// The part of a message's text that the task keeps.
+    /// A task from a voice note's transcript: the first sentence is the
+    /// title; the whole transcript goes into the notes when it says more.
+    public static func fromTranscript(_ transcript: String, message: IvyMessageReference?) -> IvyTask {
+        let text = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
+        let firstSentence = text
+            .split(maxSplits: 1, omittingEmptySubsequences: true) { ".!?\n".contains($0) }
+            .first
+            .map { $0.trimmingCharacters(in: .whitespaces) } ?? ""
+        let title = truncated(firstSentence, to: maxTitleLength)
+        let notes = text.count > firstSentence.count + 1 ? text : ""
+        return IvyTask(
+            title: title,
+            notes: notes,
+            source: message.map { Source(message: $0, quote: quote(fromMessageText: text)) },
+        )
+    }
+
     public static func quote(fromMessageText text: String) -> String {
         return truncated(text.trimmingCharacters(in: .whitespacesAndNewlines), to: maxQuoteLength)
     }

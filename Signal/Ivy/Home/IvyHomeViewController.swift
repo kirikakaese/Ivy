@@ -279,6 +279,9 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         rows.append(.link(IvyLocalizedString("HOME_ALL_TASKS", comment: "Item on Home that opens the list of all tasks.")) { [weak self] in
             self?.ivyPresentTasks()
         })
+        rows.append(.link(IvyWeeklyReviewViewController.title) { [weak self] in
+            self?.ivyPresentWeeklyReview()
+        })
         return Section(title: IvyTaskUI.tasksTitle, rows: rows)
     }
 
