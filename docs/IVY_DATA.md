@@ -107,3 +107,9 @@ Questions put aside on Home's Waiting on You are not Ivy data: they stay on the 
 A folder entity (kind `folder`) can have `hours`: the weekdays (1 is Sunday) and the start and end in minutes after midnight when the folder's chats may notify. It syncs with the folder's emoji and color. A chat notifies when it is in no folder with hours, or when one of its folders allows it now.
 
 Which folders the current Apple Focus lets notify, and the time of the muted chats summary, are not Ivy data: they stay on the device.
+
+## Snippets
+
+A snippet (kind `snippet`) has a `trigger` (lowercase letters and digits, typed after a semicolon) and a `text` of up to 2000 characters. Snippets sync to all Ivy devices.
+
+Drafts are not Ivy data: Home lists the drafts the chats keep themselves.

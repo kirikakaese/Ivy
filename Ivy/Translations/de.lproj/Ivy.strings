@@ -555,6 +555,12 @@
 /* Item on Home that opens the list of all tasks. */
 "HOME_ALL_TASKS" = "Alle Aufgaben";
 
+/* Title of the section on Home with unsent messages. */
+"HOME_DRAFTS" = "Entwürfe";
+
+/* Action that throws away an unsent message on Home. */
+"HOME_DRAFT_DISCARD" = "Verwerfen";
+
 /* Header on Home of important unread messages. */
 "HOME_IMPORTANT" = "Wichtig";
 
@@ -1035,6 +1041,39 @@
 /* Menu command that shows the sidebar. */
 "SIDEBAR_SHOW" = "Seitenleiste einblenden";
 
+/* Shown in the list of snippets when there are none. */
+"SNIPPETS_EMPTY" = "Noch keine Textbausteine. Füge einen mit + hinzu.";
+
+/* Explains how snippets are inserted. */
+"SNIPPETS_FOOTER" = "Tippe in einer Nachricht ein Semikolon und das Kürzel, dann ein Leerzeichen, zum Beispiel ;adr. Textbausteine werden mit deinen Ivy-Geräten synchronisiert.";
+
+/* Title of the list of snippets: texts inserted by typing a short trigger. */
+"SNIPPETS_TITLE" = "Textbausteine";
+
+/* Button that deletes a snippet. */
+"SNIPPET_DELETE" = "Textbaustein löschen";
+
+/* Title of the screen that edits a snippet. */
+"SNIPPET_EDIT" = "Textbaustein bearbeiten";
+
+/* Shown when a snippet has no trigger or no text. */
+"SNIPPET_INCOMPLETE" = "Ein Textbaustein braucht ein Kürzel und einen Text.";
+
+/* Title of the screen that makes a new snippet. */
+"SNIPPET_NEW" = "Neuer Textbaustein";
+
+/* Label of a snippet's text. */
+"SNIPPET_TEXT" = "Text";
+
+/* Label of a snippet's trigger. */
+"SNIPPET_TRIGGER" = "Kürzel";
+
+/* Placeholder of a snippet's trigger, for example addr. */
+"SNIPPET_TRIGGER_PLACEHOLDER" = "adr";
+
+/* Shown when another snippet already uses the trigger. */
+"SNIPPET_TRIGGER_TAKEN" = "Ein anderer Textbaustein nutzt dieses Kürzel schon.";
+
 /* Shown in the list of snoozed chats when there are none. */
 "SNOOZED_CHATS_EMPTY" = "Keine schlummernden Chats";
 
@@ -1241,6 +1280,51 @@
 
 /* Title of a voice message's transcript. */
 "TRANSCRIPT_TITLE" = "Transkript";
+
+/* Action that turns a voice note into a task, transcribed on the device. */
+"VOICE_NOTE_MAKE_TASK" = "Aufgabe erstellen";
+
+/* Label of the day the weekly review is offered. */
+"WEEKLY_REVIEW_DAY" = "Tag";
+
+/* Weekly review section with tasks due in the next seven days. */
+"WEEKLY_REVIEW_DUE" = "Diese Woche fällig";
+
+/* Weekly review section with the next seven days' events. */
+"WEEKLY_REVIEW_EVENTS" = "Nächste 7 Tage";
+
+/* Explains the weekly review setting. */
+"WEEKLY_REVIEW_FOOTER" = "Einmal pro Woche bietet eine Mitteilung einen Blick auf überfällige und anstehende Aufgaben, die nächsten 7 Tage und Chats, die auf eine Antwort warten.";
+
+/* Text of the weekly notification that offers the review. */
+"WEEKLY_REVIEW_NOTIFICATION" = "Sieh dir deine Aufgaben, die kommende Woche und wartende Chats an.";
+
+/* Shown in the weekly review when no events are coming up. */
+"WEEKLY_REVIEW_NO_EVENTS" = "Keine anstehenden Termine";
+
+/* Shown in the weekly review when no tasks are due. */
+"WEEKLY_REVIEW_NO_TASKS" = "Keine Aufgaben in den nächsten 7 Tagen fällig";
+
+/* Shown in the weekly review when no chat waits for an answer. */
+"WEEKLY_REVIEW_NO_WAITING" = "Kein Chat wartet auf eine Antwort";
+
+/* Button that opens the weekly review now. */
+"WEEKLY_REVIEW_OPEN" = "Wochenrückblick öffnen";
+
+/* Weekly review section with overdue tasks. */
+"WEEKLY_REVIEW_OVERDUE" = "Überfällig";
+
+/* Switch that turns on the weekly notification offering the review. */
+"WEEKLY_REVIEW_REMIND" = "Wöchentlich erinnern";
+
+/* Weekly review section with tasks that have no due date. */
+"WEEKLY_REVIEW_SOMEDAY" = "Irgendwann";
+
+/* Label of the time the weekly review is offered. */
+"WEEKLY_REVIEW_TIME" = "Uhrzeit";
+
+/* Title of the weekly review of tasks, events and chats. */
+"WEEKLY_REVIEW_TITLE" = "Wochenrückblick";
 
 /* Shown in a widget before Ivy has been opened. */
 "WIDGET_NO_DATA" = "Öffne Ivy einmal, um deinen Tag hier zu sehen.";

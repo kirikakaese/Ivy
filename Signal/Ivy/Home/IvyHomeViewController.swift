@@ -18,6 +18,7 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
     /// Important messages shown at most.
     static let maxImportantMessages = 8
     static let maxWaitingQuestions = 5
+    static let maxDrafts = 5
     /// Upcoming tasks reach this many days ahead.
     static let upcomingTaskDays = 7
 
@@ -35,6 +36,7 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         case star(IvyStar, chatName: String)
         case scheduled(IvyScheduledMessage, chatName: String)
         case waiting(IvyWaitingQuestion, chatName: String)
+        case draft(IvyDraft, chatName: String)
         case note(String)
         case link(String, action: () -> Void)
     }
@@ -198,6 +200,9 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         if let waiting = waitingSection() {
             sections.append(waiting)
         }
+        if let drafts = draftsSection() {
+            sections.append(drafts)
+        }
         if let important = importantSection() {
             sections.append(important)
         }
@@ -274,6 +279,9 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         rows.append(.link(IvyLocalizedString("HOME_ALL_TASKS", comment: "Item on Home that opens the list of all tasks.")) { [weak self] in
             self?.ivyPresentTasks()
         })
+        rows.append(.link(IvyWeeklyReviewViewController.title) { [weak self] in
+            self?.ivyPresentWeeklyReview()
+        })
         return Section(title: IvyTaskUI.tasksTitle, rows: rows)
     }
 
@@ -335,6 +343,25 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             return nil
         }
         return Section(title: Self.waitingTitle, rows: rows)
+    }
+
+    /// Messages started in chats and not sent yet.
+    private func draftsSection() -> Section? {
+        let rows: [Row] = SSKEnvironment.shared.databaseStorageRef.read { tx in
+            IvyDrafts.all(limit: Self.maxDrafts, tx: tx).compactMap { draft in
+                guard let thread = DependenciesBridge.shared.threadStore.fetchThread(uniqueId: draft.threadUniqueId, tx: tx) else {
+                    return nil
+                }
+                if IvyHiddenChats.shared.isHidden(thread: thread), !IvyHiddenChats.shared.isRevealed {
+                    return nil
+                }
+                return .draft(draft, chatName: SSKEnvironment.shared.contactManagerRef.displayName(for: thread, transaction: tx))
+            }
+        }
+        guard !rows.isEmpty else {
+            return nil
+        }
+        return Section(title: IvyLocalizedString("HOME_DRAFTS", comment: "Title of the section on Home with unsent messages."), rows: rows)
     }
 
     static var waitingTitle: String {
@@ -456,6 +483,11 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             content.secondaryText = star.quote
             content.secondaryTextProperties.numberOfLines = 2
             content.image = UIImage(systemName: "star.fill")
+        case .draft(let draft, let chatName):
+            content.text = chatName
+            content.secondaryText = draft.text
+            content.secondaryTextProperties.numberOfLines = 2
+            content.image = UIImage(systemName: "square.and.pencil")
         case .waiting(let question, let chatName):
             content.text = chatName
             content.secondaryText = question.text
@@ -504,6 +536,8 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             tabs.chatListViewController.ivySelectChatFolder(folder)
         case .star(let star, _):
             IvyStarredViewController.open(star.message, from: self)
+        case .draft(let draft, _):
+            SignalApp.shared.presentConversationForThread(threadUniqueId: draft.threadUniqueId, animated: true)
         case .waiting(let question, _):
             SignalApp.shared.presentConversationForThread(
                 threadUniqueId: question.threadUniqueId,
@@ -527,7 +561,7 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         case .task(let task, _):
             let date = task.dueAt ?? Date()
             return IvyCalendarItem(kind: .task(task), start: date, end: date, isAllDay: task.isAllDay)
-        case .important, .folder, .star, .scheduled, .waiting, .note, .link:
+        case .important, .folder, .star, .scheduled, .waiting, .draft, .note, .link:
             return nil
         }
     }
@@ -549,6 +583,17 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
     }
 
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        if case .draft(let draft, _) = sections[indexPath.section].rows[indexPath.row] {
+            let action = UIContextualAction(
+                style: .destructive,
+                title: IvyLocalizedString("HOME_DRAFT_DISCARD", comment: "Action that throws away an unsent message on Home."),
+            ) { [weak self] _, _, completion in
+                SSKEnvironment.shared.databaseStorageRef.write { tx in IvyDrafts.discard(threadUniqueId: draft.threadUniqueId, tx: tx) }
+                self?.reload()
+                completion(true)
+            }
+            return UISwipeActionsConfiguration(actions: [action])
+        }
         if let question = waitingQuestion(at: indexPath) {
             let action = UIContextualAction(style: .normal, title: Self.dismissWaitingTitle) { [weak self] _, _, completion in
                 self?.dismissWaiting(question)

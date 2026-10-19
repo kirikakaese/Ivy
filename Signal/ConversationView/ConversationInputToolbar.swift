@@ -3366,6 +3366,7 @@ extension ConversationInputToolbar: ConversationTextViewToolbarDelegate {
         // Ignore change events during configuration.
         guard isConfigurationComplete else { return }
 
+        ivyExpandSnippet(in: textView) // Ivy: snippets
         updateHeightWithTextView(textView)
         ensureButtonVisibility(withAnimation: true, doLayout: true)
         updateInputLinkPreview()

@@ -41,9 +41,38 @@ extension ConversationViewController {
             title: IvyLocalizedString("TRANSCRIBE", comment: "Action that turns a voice message into text, on the device."),
             image: UIImage(systemName: "text.quote"),
         ) { [weak self] _ in
-            let viewController = IvyTranscriptViewController(attachment: attachment)
+            let viewController = IvyTranscriptViewController(
+                attachment: attachment,
+                message: Self.ivyMessageReference(itemViewModel: itemViewModel),
+            )
             self?.presentFormSheet(OWSNavigationController(rootViewController: viewController), animated: true)
         }
+    }
+
+    /// "Make Task" for a voice note in Note to Self: transcribes it on the
+    /// device, then opens the new task.
+    func ivyVoiceNoteTaskContextMenuAction(itemViewModel: CVItemViewModelImpl, thread: TSThread) -> ContextMenuAction? {
+        guard thread.isNoteToSelf, let attachment = itemViewModel.audioAttachmentStream else {
+            return nil
+        }
+        return ContextMenuAction(
+            title: IvyLocalizedString("VOICE_NOTE_MAKE_TASK", comment: "Action that turns a voice note into a task, transcribed on the device."),
+            image: UIImage(systemName: "checklist"),
+        ) { [weak self] _ in
+            let viewController = IvyTranscriptViewController(
+                attachment: attachment,
+                message: Self.ivyMessageReference(itemViewModel: itemViewModel),
+                makesTaskWhenDone: true,
+            )
+            self?.presentFormSheet(OWSNavigationController(rootViewController: viewController), animated: true)
+        }
+    }
+
+    private static func ivyMessageReference(itemViewModel: CVItemViewModelImpl) -> IvyMessageReference? {
+        guard let message = itemViewModel.interaction as? TSMessage else {
+            return nil
+        }
+        return IvyMessageReference(message: message, thread: itemViewModel.thread)
     }
 }
 
@@ -369,12 +398,17 @@ enum IvyTranscription {
 final class IvyTranscriptViewController: UIViewController {
 
     private let attachment: AttachmentStream
+    /// The voice note, for tasks made from the transcript.
+    private let message: IvyMessageReference?
+    private let makesTaskWhenDone: Bool
     private let textView = UITextView()
     private let spinner = UIActivityIndicatorView(style: .medium)
     private let statusLabel = UILabel()
 
-    init(attachment: AttachmentStream) {
+    init(attachment: AttachmentStream, message: IvyMessageReference? = nil, makesTaskWhenDone: Bool = false) {
         self.attachment = attachment
+        self.message = message
+        self.makesTaskWhenDone = makesTaskWhenDone
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -435,10 +469,18 @@ final class IvyTranscriptViewController: UIViewController {
             statusLabel.isHidden = true
             textView.text = text
             textView.isHidden = false
-            navigationItem.rightBarButtonItem = UIBarButtonItem(
+            let makeTaskButton = UIBarButtonItem(
+                title: IvyLocalizedString("VOICE_NOTE_MAKE_TASK", comment: "Action that turns a voice note into a task, transcribed on the device."),
+                primaryAction: UIAction { [weak self] _ in self?.makeTask(from: text) },
+            )
+            let copy = UIBarButtonItem(
                 title: CommonStrings.copyButton,
                 primaryAction: UIAction { _ in UIPasteboard.general.string = text },
             )
+            navigationItem.rightBarButtonItems = [copy, makeTaskButton]
+            if makesTaskWhenDone {
+                makeTask(from: text)
+            }
         } catch {
             spinner.stopAnimating()
             switch error {
@@ -449,6 +491,15 @@ final class IvyTranscriptViewController: UIViewController {
             case .failed:
                 statusLabel.text = IvyLocalizedString("TRANSCRIPT_FAILED", comment: "Shown when a voice message couldn't be turned into text.")
             }
+        }
+    }
+
+    /// Opens a new task with the transcript in place of this screen.
+    private func makeTask(from transcript: String) {
+        let task = IvyTask.fromTranscript(transcript, message: message)
+        let presenter = presentingViewController
+        dismiss(animated: true) {
+            presenter?.ivyPresentTaskEditor(task, isNew: true)
         }
     }
 }
