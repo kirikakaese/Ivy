@@ -4260,6 +4260,10 @@
 		68328B9338838302304EB0D6 /* IvyStars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D18D49058F0BFD2D3D987B3 /* IvyStars.swift */; };
 		EEAF113249E5BE8845F9E06B /* IvyMessageExtrasUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD37DE2EE099D5478582A44 /* IvyMessageExtrasUI.swift */; };
 		BBF49AFBEE565B60CCA6A3ED /* IvyStarsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC83CC545FA297FA5821B9AD /* IvyStarsTest.swift */; };
+		A12D1AAF6BEC8428E192D96D /* IvyScheduledMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF2B23C8666EF1EED0C6D4F /* IvyScheduledMessages.swift */; };
+		44A6B8F8FA7C1D9E12192D07 /* IvyScheduledSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BD4935A406D128BEC8FA3 /* IvyScheduledSender.swift */; };
+		A2DD8A624D8A9C5C279B1656 /* IvyScheduledUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD23CFAE263FDC23371A87E /* IvyScheduledUI.swift */; };
+		3996D9CAE7B2EB2E804345BF /* IvyScheduledMessagesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6D4BEB41F7954C54254A50 /* IvyScheduledMessagesTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8850,6 +8854,10 @@
 		3D18D49058F0BFD2D3D987B3 /* IvyStars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyStars.swift; sourceTree = "<group>"; };
 		6DD37DE2EE099D5478582A44 /* IvyMessageExtrasUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMessageExtrasUI.swift; sourceTree = "<group>"; };
 		EC83CC545FA297FA5821B9AD /* IvyStarsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyStarsTest.swift; sourceTree = "<group>"; };
+		DEF2B23C8666EF1EED0C6D4F /* IvyScheduledMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyScheduledMessages.swift; sourceTree = "<group>"; };
+		EA1BD4935A406D128BEC8FA3 /* IvyScheduledSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyScheduledSender.swift; sourceTree = "<group>"; };
+		5CD23CFAE263FDC23371A87E /* IvyScheduledUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyScheduledUI.swift; sourceTree = "<group>"; };
+		9F6D4BEB41F7954C54254A50 /* IvyScheduledMessagesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyScheduledMessagesTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16448,6 +16456,7 @@
 				C7B33D510CD6822113C63FB3 /* IvyAppleSyncTest.swift */,
 				F7826A06AC926B2913534F8C /* IvyGlanceTest.swift */,
 				EC83CC545FA297FA5821B9AD /* IvyStarsTest.swift */,
+				9F6D4BEB41F7954C54254A50 /* IvyScheduledMessagesTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16732,6 +16741,7 @@
 			isa = PBXGroup;
 			children = (
 				3D18D49058F0BFD2D3D987B3 /* IvyStars.swift */,
+				DEF2B23C8666EF1EED0C6D4F /* IvyScheduledMessages.swift */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -16740,6 +16750,8 @@
 			isa = PBXGroup;
 			children = (
 				6DD37DE2EE099D5478582A44 /* IvyMessageExtrasUI.swift */,
+				EA1BD4935A406D128BEC8FA3 /* IvyScheduledSender.swift */,
+				5CD23CFAE263FDC23371A87E /* IvyScheduledUI.swift */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -20087,6 +20099,8 @@
 				EE19D2353B95E4933E40298C /* IvyPrimaryViewController.swift in Sources */,
 				1D754A30157C7AF5E106C43A /* IvyZoom.swift in Sources */,
 				EEAF113249E5BE8845F9E06B /* IvyMessageExtrasUI.swift in Sources */,
+				44A6B8F8FA7C1D9E12192D07 /* IvyScheduledSender.swift in Sources */,
+				A2DD8A624D8A9C5C279B1656 /* IvyScheduledUI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21467,6 +21481,7 @@
 				0B568C23D47512B3CE3C91ED /* IvyAppleSync.swift in Sources */,
 				5BF139DDD7A703EFF117C37B /* IvyGlance.swift in Sources */,
 				68328B9338838302304EB0D6 /* IvyStars.swift in Sources */,
+				A12D1AAF6BEC8428E192D96D /* IvyScheduledMessages.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21753,6 +21768,7 @@
 				544969929AC169399FA4ED3F /* IvyAppleSyncTest.swift in Sources */,
 				4796B09E8075635C59EBDC2C /* IvyGlanceTest.swift in Sources */,
 				BBF49AFBEE565B60CCA6A3ED /* IvyStarsTest.swift in Sources */,
+				3996D9CAE7B2EB2E804345BF /* IvyScheduledMessagesTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
