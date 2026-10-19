@@ -68,20 +68,20 @@ public struct ChatFolderExtras: Equatable, Sendable {
     }
 
     /// Saves the fields that differ from `old`, so that edits on another
-    /// device to other fields are kept.
+    /// device to other fields are kept. A cleared field is saved as nil.
     public func save(folderId: Data, comparedTo old: ChatFolderExtras, store: IvyDataStore?) {
         var fields = [String: String?]()
         if emoji != old.emoji {
-            fields[Field.emoji] = emoji.map { IvyDataStore.encode($0) }
+            fields.updateValue(emoji.map { IvyDataStore.encode($0) }, forKey: Field.emoji)
         }
         if color != old.color {
-            fields[Field.color] = color.map { IvyDataStore.encode($0.rawValue) }
+            fields.updateValue(color.map { IvyDataStore.encode($0.rawValue) }, forKey: Field.color)
         }
         if pinnedChats != old.pinnedChats {
             fields[Field.pinnedChats] = IvyDataStore.encode(pinnedChats)
         }
         if notificationHours != old.notificationHours {
-            fields[Field.notificationHours] = notificationHours.map { IvyDataStore.encode($0) }
+            fields.updateValue(notificationHours.map { IvyDataStore.encode($0) }, forKey: Field.notificationHours)
         }
         guard !fields.isEmpty else {
             return
