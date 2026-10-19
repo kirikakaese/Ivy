@@ -396,6 +396,24 @@
 /* Help item that opens Ivy's issue tracker. */
 "HELP_REPORT_PROBLEM" = "Report a Problem";
 
+/* Menu action that hides the hidden chats again. */
+"HIDDEN_CHATS_HIDE" = "Hide Hidden Chats";
+
+/* Menu action that shows the hidden chats after Face ID, Touch ID or the device passcode. */
+"HIDDEN_CHATS_SHOW" = "Show Hidden Chats";
+
+/* Shown by Face ID, Touch ID or the passcode prompt when showing hidden chats. */
+"HIDDEN_CHATS_UNLOCK_REASON" = "Show your hidden chats";
+
+/* Shown after hiding a chat. Explains how to show hidden chats. */
+"HIDDEN_CHAT_HIDDEN_TOAST" = "Chat hidden. Show it again from the menu of your profile picture.";
+
+/* Context menu action that hides a chat from the chat list. */
+"HIDDEN_CHAT_HIDE" = "Hide Chat";
+
+/* Context menu action that stops hiding a chat. */
+"HIDDEN_CHAT_UNHIDE" = "Show in Chat List";
+
 /* Item on Home that opens the list of all scheduled messages. */
 "HOME_ALL_SCHEDULED" = "All Scheduled Messages";
 
@@ -563,6 +581,12 @@
 
 /* Message when the data transferred from the old device could not be restored. */
 "LAUNCH_FAILURE_RESTORE_FAILED_MESSAGE" = "The data transferred from your old device could not be restored. Please save a debug log and report the problem at github.com/kirikakaese/Ivy/issues. If you reinstall Ivy, your message history may be lost.";
+
+/* Menu command that locks Ivy right away. */
+"LOCK_NOW" = "Lock Ivy";
+
+/* Shown when the user locks Ivy but Screen Lock is off. */
+"LOCK_NOW_NEEDS_SCREEN_LOCK" = "Turn on Screen Lock in Settings > Privacy to lock Ivy.";
 
 /* Menu bar item that brings Ivy's window to the front. */
 "MENU_BAR_OPEN" = "Open Ivy";

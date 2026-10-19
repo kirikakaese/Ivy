@@ -13,7 +13,7 @@ import SignalUI
 enum IvyKeyCommands {
 
     static func commands() -> [UIKeyCommand] {
-        sectionCommands() + newItemCommands() + zoomCommands()
+        sectionCommands() + newItemCommands() + zoomCommands() + [lockCommand()]
     }
 
     /// ⌘1 to ⌘4, in the order of the sections.
@@ -56,6 +56,17 @@ enum IvyKeyCommands {
                 discoverabilityTitle: newEvent,
             ),
         ]
+    }
+
+    /// ⌃⌘L locks Ivy right away (see IvyPrivacy).
+    static func lockCommand() -> UIKeyCommand {
+        UIKeyCommand(
+            title: IvyPrivacy.lockTitle,
+            action: #selector(ConversationSplitViewController.ivyLockNow),
+            input: "l",
+            modifierFlags: [.control, .command],
+            discoverabilityTitle: IvyPrivacy.lockTitle,
+        )
     }
 
     /// ⌘+, ⌘− and ⌘0 for the text size (see IvyZoom).
@@ -101,7 +112,7 @@ enum IvyKeyCommands {
             atStartOfMenu: .view,
         )
         builder.insertChild(
-            UIMenu(identifier: UIMenu.Identifier("ivy.new"), options: .displayInline, children: newItemCommands()),
+            UIMenu(identifier: UIMenu.Identifier("ivy.new"), options: .displayInline, children: newItemCommands() + [lockCommand()]),
             atEndOfMenu: .file,
         )
         builder.insertSibling(

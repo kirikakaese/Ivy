@@ -24,6 +24,8 @@ struct CLVViewInfo: Equatable {
     // Ivy: chats pinned in the selected folder, and chats with a due reminder
     var ivyFolderPinnedThreadIds: [String] = []
     var ivyDueReminderThreadIds: [String] = []
+    // Ivy: hidden chats, while they aren't revealed
+    var ivyHiddenThreadIds: Set<String> = []
 
     var hasArchivedThreadsRow: Bool {
         chatListMode == .inbox
@@ -94,6 +96,7 @@ struct CLVViewInfo: Equatable {
             ivyChatFolder: ivyChatFolder, // Ivy: chat folders
             ivyFolderPinnedThreadIds: ChatFolderManager.shared.pinnedThreadIds(in: ivyChatFolder, tx: transaction),
             ivyDueReminderThreadIds: IvyReminderManager.shared.dueThreadIds(tx: transaction),
+            ivyHiddenThreadIds: IvyHiddenChats.shared.isRevealed ? [] : IvyHiddenChats.shared.threadIds(tx: transaction).subtracting(requiredThreadIds),
         )
     }
 }

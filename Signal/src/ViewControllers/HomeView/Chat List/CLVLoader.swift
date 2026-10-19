@@ -95,6 +95,11 @@ public class CLVLoader {
         )
         pinnedThreadUniqueIds = pinnedIds
         visibleThreadUniqueIds = visibleIds
+        // Ivy: hidden chats stay out of the list until revealed
+        if !viewInfo.ivyHiddenThreadIds.isEmpty {
+            pinnedThreadUniqueIds.removeAll { viewInfo.ivyHiddenThreadIds.contains($0) }
+            visibleThreadUniqueIds.removeAll { viewInfo.ivyHiddenThreadIds.contains($0) }
+        }
 
         let pinnedThreadUniqueIdsToRender = Set(pinnedThreadUniqueIds).intersection(visibleThreadUniqueIds)
 

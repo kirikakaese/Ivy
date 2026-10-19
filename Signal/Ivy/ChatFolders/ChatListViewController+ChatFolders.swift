@@ -32,6 +32,13 @@ extension ChatListViewController {
             name: IvyDataStore.dataDidChange,
             object: nil,
         )
+        // Hidden chats hidden, shown or revealed.
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ivyChatFoldersDidChange),
+            name: IvyHiddenChats.hiddenChatsDidChange,
+            object: nil,
+        )
         ivyUpdateChatFolderBar()
     }
 

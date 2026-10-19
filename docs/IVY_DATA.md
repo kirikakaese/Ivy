@@ -90,3 +90,7 @@ A scheduled message (kind `scheduled`) holds the chat, the message body with its
 - An iPhone only sends while Ivy runs; a message may go out late when no Ivy device is running at the time.
 - Only text is scheduled; attachments are not.
 
+## Hidden chats
+
+A hidden chat (kind `hiddenChat`) is the chat's reference and when it was hidden; its id is the chat. Hidden chats sync to all Ivy devices. Whether they are shown right now is not stored or synced: each device shows them only after Face ID, Touch ID or the device passcode, until Ivy leaves the screen or locks.
+

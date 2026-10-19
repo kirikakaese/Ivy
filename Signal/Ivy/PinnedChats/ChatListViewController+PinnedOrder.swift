@@ -23,6 +23,9 @@ extension ChatListViewController {
         if let folderPinAction = ivyFolderPinAction(threadViewModel: threadViewModel) {
             elements.append(folderPinAction)
         }
+        if let hideAction = ivyHideChatAction(threadViewModel: threadViewModel) {
+            elements.append(hideAction)
+        }
         if threadViewModel.isPinned {
             let threadId = threadViewModel.threadUniqueId
             let pinnedIds = renderState.pinnedThreadUniqueIds

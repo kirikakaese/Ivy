@@ -12,7 +12,8 @@ import AppKit
 /// loads this bundle and talks to it through Objective-C messages:
 /// `installWithHandler:strings:` once, then `updateWithGlance:` with the
 /// encoded `IvyGlance` whenever it changes. Choosing an item sends
-/// `openIvyLink:` with the item's link to the handler.
+/// `openIvyLink:` with the item's link to the handler; the Mac's screen
+/// locking or sleeping sends `ivyScreenDidLock`.
 @objc(IvyMenuBarPlugin)
 final class IvyMenuBarPlugin: NSObject, NSMenuDelegate {
 
@@ -35,6 +36,14 @@ final class IvyMenuBarPlugin: NSObject, NSMenuDelegate {
         item.menu = menu
         statusItem = item
         updateButton()
+
+        // Ivy locks with the Mac (when Screen Lock is on).
+        let lock: (Notification) -> Void = { [weak self] _ in
+            _ = self?.handler?.perform(NSSelectorFromString("ivyScreenDidLock"))
+        }
+        DistributedNotificationCenter.default().addObserver(forName: NSNotification.Name("com.apple.screenIsLocked"), object: nil, queue: .main, using: lock)
+        NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.screensDidSleepNotification, object: nil, queue: .main, using: lock)
+        NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.willSleepNotification, object: nil, queue: .main, using: lock)
     }
 
     @objc(updateWithGlance:)
