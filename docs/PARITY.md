@@ -90,7 +90,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Chat notes | 6a | done | done | done | Chat settings > Note; synced, only on the user's devices |
 | Voice note speed and transcription | 6a | done | done | done | Speed is remembered per chat (as upstream); Transcribe in the message menu, on the device only |
 | Hidden chats | 6a | done | done | done | Hide Chat in a chat's menu; hidden chats leave the chat list and search until shown with Face ID, Touch ID or the device passcode (profile menu > Show Hidden Chats), and hide again when Ivy leaves the screen. Their notifications show neither name nor content. Synced |
-| Ivy passcode and app lock | 6a | in progress | in progress | in progress | Done: the Mac locks Ivy when the screen locks or the Mac sleeps (with Screen Lock on). Planned (6a-3b): an Ivy passcode of its own |
+| Ivy passcode and app lock | 6a | done | done | done | Settings > Privacy > Ivy Passcode (with Screen Lock on): unlocking asks for the Ivy passcode instead of the device's; Face ID or Touch ID can stay as a shortcut. Wrong attempts make the next try wait, from 30 seconds up to an hour. Stored as a salted hash on the device only, never synced. The Mac locks Ivy when the screen locks or the Mac sleeps |
 | Instant lock | 6a | done | done | done | Lock Ivy in the profile menu, File menu and ⌃⌘L; needs Screen Lock |
 | Duress passcode and decoy mode | 6a | planned | planned | planned | |
 | Metadata trimming | 6a | done | done | done | As upstream: Signal removes image metadata before sending; link previews can be turned off in Settings > Chats |

@@ -618,6 +618,72 @@
 /* Footer of the 'Open at Login' switch on the Mac. */
 "NOTIFICATIONS_OPEN_AT_LOGIN_FOOTER" = "Ivy receives messages only while it is running. Open it at login so that messages arrive as soon as you log in to your Mac.";
 
+/* Switch that lets Face ID or Touch ID unlock instead of the passcode. Embeds {{ Face ID or Touch ID }}. */
+"PASSCODE_ALLOW_BIOMETRY_FORMAT" = "Unlock with %@";
+
+/* Shown by Face ID or Touch ID when unlocking Ivy. */
+"PASSCODE_BIOMETRY_REASON" = "Unlock Ivy";
+
+/* Shown after too many wrong Ivy passcodes. Embeds {{ how long to wait }}. */
+"PASSCODE_BLOCKED_FORMAT" = "Too many wrong attempts. Try again in %@.";
+
+/* Button that changes Ivy's passcode. */
+"PASSCODE_CHANGE" = "Change Passcode";
+
+/* Title of the screen that asks for Ivy's passcode. */
+"PASSCODE_ENTER" = "Enter Ivy Passcode";
+
+/* Name of Face ID. */
+"PASSCODE_FACE_ID" = "Face ID";
+
+/* Explains Ivy's own passcode. */
+"PASSCODE_FOOTER" = "With an Ivy passcode, unlocking Ivy asks for this passcode instead of your device passcode. It is stored only on this device. Turning it on also turns on Screen Lock.";
+
+/* Shown when the new Ivy passcodes don't match or are too short. */
+"PASSCODE_MISMATCH" = "The passcodes don't match or are too short.";
+
+/* Title of the dialog that sets a new Ivy passcode. */
+"PASSCODE_NEW" = "New Ivy Passcode";
+
+/* Explains the new passcode. Embeds {{ the minimum number of characters }}. */
+"PASSCODE_NEW_MESSAGE_FORMAT" = "Use at least %@ characters. If you forget it, you'll need to reinstall Ivy.";
+
+/* Placeholder of the field for a new Ivy passcode. */
+"PASSCODE_NEW_PLACEHOLDER" = "Passcode";
+
+/* Shown next to the Ivy passcode setting when no passcode is set. */
+"PASSCODE_OFF" = "Off";
+
+/* Shown next to the Ivy passcode setting when a passcode is set. */
+"PASSCODE_ON" = "On";
+
+/* Name of Optic ID. */
+"PASSCODE_OPTIC_ID" = "Optic ID";
+
+/* Placeholder of the field that repeats a new Ivy passcode. */
+"PASSCODE_REPEAT_PLACEHOLDER" = "Repeat Passcode";
+
+/* Button that sets Ivy's passcode. */
+"PASSCODE_SET" = "Set Passcode";
+
+/* Title of the setting for Ivy's own passcode. */
+"PASSCODE_TITLE" = "Ivy Passcode";
+
+/* Name of Touch ID. */
+"PASSCODE_TOUCH_ID" = "Touch ID";
+
+/* Button that removes Ivy's passcode. */
+"PASSCODE_TURN_OFF" = "Turn Off Passcode";
+
+/* Button that unlocks Ivy with the entered passcode. */
+"PASSCODE_UNLOCK" = "Unlock";
+
+/* Button that unlocks with Face ID or Touch ID. Embeds {{ Face ID or Touch ID }}. */
+"PASSCODE_USE_BIOMETRY_FORMAT" = "Use %@";
+
+/* Shown after entering a wrong Ivy passcode. */
+"PASSCODE_WRONG" = "Wrong passcode.";
+
 /* Context menu action that moves a pinned chat down. */
 "PINNED_CHAT_MOVE_DOWN" = "Move Down";
 

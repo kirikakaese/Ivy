@@ -94,3 +94,5 @@ A scheduled message (kind `scheduled`) holds the chat, the message body with its
 
 A hidden chat (kind `hiddenChat`) is the chat's reference and when it was hidden; its id is the chat. Hidden chats sync to all Ivy devices. Whether they are shown right now is not stored or synced: each device shows them only after Face ID, Touch ID or the device passcode, until Ivy leaves the screen or locks.
 
+The Ivy passcode is not Ivy data: it stays on each device as a salted PBKDF2 hash in the local key-value store (collection `IvyPasscode`) and never syncs.
+

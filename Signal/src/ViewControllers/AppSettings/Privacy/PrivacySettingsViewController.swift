@@ -198,6 +198,7 @@ class PrivacySettingsViewController: OWSTableViewController2 {
                     self?.showScreenLockTimeoutPicker()
                 },
             ))
+            ivyAddPasscodeItem(to: appSecuritySection) // Ivy: Ivy passcode
         }
         contents.add(appSecuritySection)
 
