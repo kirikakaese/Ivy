@@ -17,6 +17,7 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
     static let maxStars = 3
     /// Important messages shown at most.
     static let maxImportantMessages = 8
+    static let maxWaitingQuestions = 5
     /// Upcoming tasks reach this many days ahead.
     static let upcomingTaskDays = 7
 
@@ -33,6 +34,7 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         case folder(ChatFolder, unreadCount: Int)
         case star(IvyStar, chatName: String)
         case scheduled(IvyScheduledMessage, chatName: String)
+        case waiting(IvyWaitingQuestion, chatName: String)
         case note(String)
         case link(String, action: () -> Void)
     }
@@ -88,6 +90,8 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             IvyStarManager.starsDidChange,
             IvyScheduledSender.scheduledDidChange,
             ChatFolderManager.foldersDidChange,
+            IvyHiddenChats.hiddenChatsDidChange,
+            IvyDataStore.dataDidChange,
             UIApplication.significantTimeChangeNotification,
         ] {
             NotificationCenter.default.addObserver(self, selector: #selector(setNeedsReload), name: name, object: nil)
@@ -190,6 +194,9 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         }
         if let starred = starredSection() {
             sections.append(starred)
+        }
+        if let waiting = waitingSection() {
+            sections.append(waiting)
         }
         if let important = importantSection() {
             sections.append(important)
@@ -310,6 +317,30 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         return Section(title: IvyStarredViewController.title, rows: rows)
     }
 
+    /// Questions the user hasn't answered yet.
+    private func waitingSection() -> Section? {
+        let rows: [Row] = SSKEnvironment.shared.databaseStorageRef.read { tx in
+            var excluded = IvySnoozedChats.shared.threadIds(tx: tx)
+            if !IvyHiddenChats.shared.isRevealed {
+                excluded.formUnion(IvyHiddenChats.shared.threadIds(tx: tx))
+            }
+            return IvyWaitingOnYou.find(excludedThreadIds: excluded, limit: Self.maxWaitingQuestions, tx: tx).compactMap { question in
+                guard let thread = DependenciesBridge.shared.threadStore.fetchThread(uniqueId: question.threadUniqueId, tx: tx) else {
+                    return nil
+                }
+                return .waiting(question, chatName: SSKEnvironment.shared.contactManagerRef.displayName(for: thread, transaction: tx))
+            }
+        }
+        guard !rows.isEmpty else {
+            return nil
+        }
+        return Section(title: Self.waitingTitle, rows: rows)
+    }
+
+    static var waitingTitle: String {
+        IvyLocalizedString("HOME_WAITING_ON_YOU", comment: "Title of the section on Home with questions the user hasn't answered.")
+    }
+
     private func importantSection() -> Section? {
         let now = Date()
         let dueReminderMessages = IvyReminderManager.shared.openReminders().filter { $0.isDue(at: now) }.compactMap(\.message)
@@ -425,6 +456,11 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             content.secondaryText = star.quote
             content.secondaryTextProperties.numberOfLines = 2
             content.image = UIImage(systemName: "star.fill")
+        case .waiting(let question, let chatName):
+            content.text = chatName
+            content.secondaryText = question.text
+            content.secondaryTextProperties.numberOfLines = 2
+            content.image = UIImage(systemName: "questionmark.bubble")
         case .scheduled(let message, let chatName):
             content.text = chatName
             content.secondaryText = IvyScheduledUI.sendTimeText(message.sendAt) + " · " + message.previewText
@@ -468,6 +504,12 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             tabs.chatListViewController.ivySelectChatFolder(folder)
         case .star(let star, _):
             IvyStarredViewController.open(star.message, from: self)
+        case .waiting(let question, _):
+            SignalApp.shared.presentConversationForThread(
+                threadUniqueId: question.threadUniqueId,
+                focusMessageId: question.messageUniqueId,
+                animated: true,
+            )
         case .scheduled:
             presentFormSheet(OWSNavigationController(rootViewController: IvyScheduledMessagesViewController()), animated: true)
         case .note:
@@ -485,12 +527,19 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         case .task(let task, _):
             let date = task.dueAt ?? Date()
             return IvyCalendarItem(kind: .task(task), start: date, end: date, isAllDay: task.isAllDay)
-        case .important, .folder, .star, .scheduled, .note, .link:
+        case .important, .folder, .star, .scheduled, .waiting, .note, .link:
             return nil
         }
     }
 
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        if let question = waitingQuestion(at: indexPath) {
+            return UIContextMenuConfiguration(actionProvider: { [weak self] _ in
+                UIMenu(children: [UIAction(title: Self.dismissWaitingTitle, image: UIImage(systemName: "checkmark")) { _ in
+                    self?.dismissWaiting(question)
+                }])
+            })
+        }
         guard let item = calendarItem(at: indexPath) else {
             return nil
         }
@@ -500,7 +549,31 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
     }
 
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        calendarItem(at: indexPath).map { IvyCalendarUI.swipeActions(for: $0) }
+        if let question = waitingQuestion(at: indexPath) {
+            let action = UIContextualAction(style: .normal, title: Self.dismissWaitingTitle) { [weak self] _, _, completion in
+                self?.dismissWaiting(question)
+                completion(true)
+            }
+            action.backgroundColor = .Signal.accent
+            return UISwipeActionsConfiguration(actions: [action])
+        }
+        return calendarItem(at: indexPath).map { IvyCalendarUI.swipeActions(for: $0) }
+    }
+
+    private func waitingQuestion(at indexPath: IndexPath) -> IvyWaitingQuestion? {
+        if case .waiting(let question, _) = sections[indexPath.section].rows[indexPath.row] {
+            return question
+        }
+        return nil
+    }
+
+    private static var dismissWaitingTitle: String {
+        IvyLocalizedString("HOME_WAITING_DISMISS", comment: "Action that removes an unanswered question from Home without answering it.")
+    }
+
+    private func dismissWaiting(_ question: IvyWaitingQuestion) {
+        SSKEnvironment.shared.databaseStorageRef.write { tx in IvyWaitingOnYou.dismiss(question, tx: tx) }
+        reload()
     }
 
     // MARK: -

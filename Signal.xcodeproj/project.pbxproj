@@ -4272,6 +4272,11 @@
 		198F9C8580B6EAC939896221 /* IvyPasscodeUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A76DC7CD28A9C32FFAB3E1 /* IvyPasscodeUI.swift */; };
 		DCF6F9A5002E7915C8493CE5 /* IvyPasscodeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B3085AF802A6FAF275A7D7 /* IvyPasscodeTest.swift */; };
 		5360B7FA1CF791D5FC6D4E08 /* IvyDecoyUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800B129020E4DD84587BBEED /* IvyDecoyUI.swift */; };
+		D674467FFF7975BF092F6BB1 /* IvySnoozedChats.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A12EC506472B1F6B49C393 /* IvySnoozedChats.swift */; };
+		56D61E4318D47FC88993B6C0 /* IvyWaitingOnYou.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D517940BB2859722AFE616 /* IvyWaitingOnYou.swift */; };
+		1B0D51846D8E5E13572BAD0B /* IvySnoozeUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A49E27CFD6B4A3C30538B5 /* IvySnoozeUI.swift */; };
+		E3B178C85D8FF1919FADF4C1 /* IvySnoozedChatsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027E2B438EA593ED8EC188CC /* IvySnoozedChatsTest.swift */; };
+		E8653B5E844E92FD37E6B9DD /* IvyWaitingOnYouTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB43F7CCBBFEEC2A415E3298 /* IvyWaitingOnYouTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8874,6 +8879,11 @@
 		E7A76DC7CD28A9C32FFAB3E1 /* IvyPasscodeUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPasscodeUI.swift; sourceTree = "<group>"; };
 		68B3085AF802A6FAF275A7D7 /* IvyPasscodeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPasscodeTest.swift; sourceTree = "<group>"; };
 		800B129020E4DD84587BBEED /* IvyDecoyUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDecoyUI.swift; sourceTree = "<group>"; };
+		C6A12EC506472B1F6B49C393 /* IvySnoozedChats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySnoozedChats.swift; sourceTree = "<group>"; };
+		68D517940BB2859722AFE616 /* IvyWaitingOnYou.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWaitingOnYou.swift; sourceTree = "<group>"; };
+		13A49E27CFD6B4A3C30538B5 /* IvySnoozeUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySnoozeUI.swift; sourceTree = "<group>"; };
+		027E2B438EA593ED8EC188CC /* IvySnoozedChatsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySnoozedChatsTest.swift; sourceTree = "<group>"; };
+		CB43F7CCBBFEEC2A415E3298 /* IvyWaitingOnYouTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWaitingOnYouTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16451,6 +16461,7 @@
 				BDEBF4077A120009F24772E3 /* Glance */,
 				1699A1BC84325617EEBE097A /* Messages */,
 				113E4FD75D151536802CED36 /* Privacy */,
+				21C4272997A805C0F17847BA /* Focus */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16477,6 +16488,8 @@
 				9F6D4BEB41F7954C54254A50 /* IvyScheduledMessagesTest.swift */,
 				08D30FA912AD4495110F701F /* IvyHiddenChatsTest.swift */,
 				68B3085AF802A6FAF275A7D7 /* IvyPasscodeTest.swift */,
+				027E2B438EA593ED8EC188CC /* IvySnoozedChatsTest.swift */,
+				CB43F7CCBBFEEC2A415E3298 /* IvyWaitingOnYouTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16522,6 +16535,7 @@
 				2DAE7B476D88350A51DFF9E3 /* Zoom */,
 				6015B9288DAEC0333CA22745 /* Messages */,
 				EF36FBE4A613DC1666F4D997 /* Privacy */,
+				86C3C67A73E7494A636E97A8 /* Focus */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16664,6 +16678,7 @@
 			isa = PBXGroup;
 			children = (
 				FFF2D53C47A9D1D1192B8EAA /* IvyHome.swift */,
+				68D517940BB2859722AFE616 /* IvyWaitingOnYou.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -16794,6 +16809,22 @@
 				800B129020E4DD84587BBEED /* IvyDecoyUI.swift */,
 			);
 			path = Privacy;
+			sourceTree = "<group>";
+		};
+		21C4272997A805C0F17847BA /* Focus */ = {
+			isa = PBXGroup;
+			children = (
+				C6A12EC506472B1F6B49C393 /* IvySnoozedChats.swift */,
+			);
+			path = Focus;
+			sourceTree = "<group>";
+		};
+		86C3C67A73E7494A636E97A8 /* Focus */ = {
+			isa = PBXGroup;
+			children = (
+				13A49E27CFD6B4A3C30538B5 /* IvySnoozeUI.swift */,
+			);
+			path = Focus;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -20145,6 +20176,7 @@
 				8424D1089179537D730DEF06 /* IvyPrivacyUI.swift in Sources */,
 				198F9C8580B6EAC939896221 /* IvyPasscodeUI.swift in Sources */,
 				5360B7FA1CF791D5FC6D4E08 /* IvyDecoyUI.swift in Sources */,
+				1B0D51846D8E5E13572BAD0B /* IvySnoozeUI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21528,6 +21560,8 @@
 				A12D1AAF6BEC8428E192D96D /* IvyScheduledMessages.swift in Sources */,
 				2D440A65BF0F3F73F9E26506 /* IvyHiddenChats.swift in Sources */,
 				83F54261A88FF6C8A8256134 /* IvyPasscode.swift in Sources */,
+				D674467FFF7975BF092F6BB1 /* IvySnoozedChats.swift in Sources */,
+				56D61E4318D47FC88993B6C0 /* IvyWaitingOnYou.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21817,6 +21851,8 @@
 				3996D9CAE7B2EB2E804345BF /* IvyScheduledMessagesTest.swift in Sources */,
 				6D8B41686BE75DE13850B0EB /* IvyHiddenChatsTest.swift in Sources */,
 				DCF6F9A5002E7915C8493CE5 /* IvyPasscodeTest.swift in Sources */,
+				E3B178C85D8FF1919FADF4C1 /* IvySnoozedChatsTest.swift in Sources */,
+				E8653B5E844E92FD37E6B9DD /* IvyWaitingOnYouTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

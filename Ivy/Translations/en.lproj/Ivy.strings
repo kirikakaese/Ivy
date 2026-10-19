@@ -534,6 +534,12 @@
 /* Header on Home of the folders with unread chats. */
 "HOME_UNREAD_BY_FOLDER" = "Unread by Folder";
 
+/* Action that removes an unanswered question from Home without answering it. */
+"HOME_WAITING_DISMISS" = "Done";
+
+/* Title of the section on Home with questions the user hasn't answered. */
+"HOME_WAITING_ON_YOU" = "Waiting on You";
+
 /* Description of the shortcut that adds a task. */
 "INTENT_ADD_TASK_DESCRIPTION" = "Adds a task to Ivy, with a reminder when it has a due date.";
 
@@ -884,6 +890,24 @@
 
 /* Menu command that shows the sidebar. */
 "SIDEBAR_SHOW" = "Show Sidebar";
+
+/* Shown in the list of snoozed chats when there are none. */
+"SNOOZED_CHATS_EMPTY" = "No snoozed chats";
+
+/* Title of the list of snoozed chats. */
+"SNOOZED_CHATS_TITLE" = "Snoozed Chats";
+
+/* When a snoozed chat comes back. Embeds {{ date and time }}. */
+"SNOOZED_UNTIL_FORMAT" = "Snoozed until %@";
+
+/* Context menu action that hides a chat until a chosen time. */
+"SNOOZE_CHAT" = "Snooze";
+
+/* Action that opens a snoozed chat without waking it. */
+"SNOOZE_OPEN_CHAT" = "Open Chat";
+
+/* Action that ends a chat's snooze so it shows in the chat list again. */
+"SNOOZE_WAKE" = "Show in Chat List Now";
 
 /* Shown in the list of starred messages when there are none. */
 "STARRED_EMPTY" = "Star messages to find them here again. Starred messages sync to your other Ivy devices.";

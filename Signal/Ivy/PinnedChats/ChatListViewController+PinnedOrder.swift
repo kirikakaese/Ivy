@@ -10,12 +10,13 @@ import SignalUI
 
 extension ChatListViewController {
 
-    /// Ivy's entries for a chat's context menu: "Add to Folder" and, for
-    /// pinned chats, "Move Up" and "Move Down".
+    /// Ivy's entries for a chat's context menu: "Remind Me", "Snooze", "Add
+    /// to Folder" and, for pinned chats, "Move Up" and "Move Down".
     func ivyContextMenuElements(threadViewModel: ThreadViewModel) -> [UIMenuElement] {
         var elements = [UIMenuElement]()
         if let chat = IvyChatReference(thread: threadViewModel.threadRecord) {
             elements.append(IvyReminderUI.menu(chat: chat, from: self))
+            elements.append(IvySnoozeUI.menu(chat: chat, from: self))
         }
         if let folderMenu = ivyAddToFolderMenu(threadViewModel: threadViewModel) {
             elements.append(folderMenu)
