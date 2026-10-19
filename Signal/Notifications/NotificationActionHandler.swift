@@ -19,9 +19,9 @@ public class NotificationActionHandler {
     ) async throws {
         owsAssertDebug(appReadiness.isAppReady)
 
-        // Ivy: reminders, tasks and events
+        // Ivy: reminders, tasks, events and the quiet summary
         if IvyReminderActionHandler.handle(response) || IvyTaskActionHandler.handle(response)
-            || IvyEventActionHandler.handle(response)
+            || IvyEventActionHandler.handle(response) || IvyFocusUI.handle(response)
         {
             return
         }

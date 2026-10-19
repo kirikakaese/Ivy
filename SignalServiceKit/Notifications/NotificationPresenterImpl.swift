@@ -563,6 +563,10 @@ public class NotificationPresenterImpl: NotificationPresenter {
         thread: TSThread,
         transaction: DBReadTransaction,
     ) -> Bool {
+        // Ivy: folder notification hours and Apple Focus
+        guard IvyNotificationFocus.allowsNotification(for: thread, tx: transaction) else {
+            return false
+        }
         if thread.isMuted {
             guard thread.isGroupThread else { return false }
 
@@ -901,6 +905,10 @@ public class NotificationPresenterImpl: NotificationPresenter {
         }
 
         guard canNotify(for: incomingMessage, thread: thread, transaction: transaction) else {
+            // Ivy: muted chats add to the quiet summary
+            if thread.isMuted {
+                IvyQuietSummary.rescheduleSoon()
+            }
             return
         }
 

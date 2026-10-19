@@ -122,6 +122,7 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
 
         if IvyData.shared != nil {
             contents.add(appearanceSection())
+            contents.add(notificationsSection())
         }
 
         let optionsSection = OWSTableSection()
@@ -151,6 +152,26 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
         }
 
         self.contents = contents
+    }
+
+    // MARK: - Notifications
+
+    private func notificationsSection() -> OWSTableSection {
+        let section = OWSTableSection()
+        section.headerTitle = IvyLocalizedString("CHAT_FOLDER_NOTIFICATIONS", comment: "Header of the notification hours of a chat folder.")
+        section.footerTitle = IvyLocalizedString("CHAT_FOLDER_NOTIFICATIONS_FOOTER", comment: "Explains a chat folder's notification hours.")
+        section.add(.disclosureItem(
+            withText: IvyLocalizedString("CHAT_FOLDER_NOTIFY", comment: "Item that sets when a chat folder's chats may notify."),
+            accessoryText: IvyFocusUI.hoursText(extras.notificationHours),
+        ) { [weak self] in
+            guard let self else { return }
+            let picker = IvyNotificationHoursViewController(hours: extras.notificationHours) { [weak self] hours in
+                self?.extras.notificationHours = hours
+                self?.updateTableContents()
+            }
+            navigationController?.pushViewController(picker, animated: true)
+        })
+        return section
     }
 
     // MARK: - Emoji and color

@@ -4277,6 +4277,11 @@
 		1B0D51846D8E5E13572BAD0B /* IvySnoozeUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A49E27CFD6B4A3C30538B5 /* IvySnoozeUI.swift */; };
 		E3B178C85D8FF1919FADF4C1 /* IvySnoozedChatsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027E2B438EA593ED8EC188CC /* IvySnoozedChatsTest.swift */; };
 		E8653B5E844E92FD37E6B9DD /* IvyWaitingOnYouTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB43F7CCBBFEEC2A415E3298 /* IvyWaitingOnYouTest.swift */; };
+		B43EA400679B8F6CB00A54F0 /* IvyNotificationFocus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4001B19DB0E2EBFA5A9901F3 /* IvyNotificationFocus.swift */; };
+		9E83837BC6FA083AAF25184D /* IvyQuietSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFE3C1B3827058CBB79B1BA /* IvyQuietSummary.swift */; };
+		D8E38C61E6127995AEF4BB94 /* IvyFocusUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31602DD908D1F4C0EC7733E1 /* IvyFocusUI.swift */; };
+		0A064CA956AD40540E511189 /* IvyFocusFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BCB4AF9C0C0B27A047371F1 /* IvyFocusFilter.swift */; };
+		6BD7C0741F1AD67C82F02475 /* IvyNotificationFocusTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B860E8B28F1C5D67F88587F3 /* IvyNotificationFocusTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8884,6 +8889,11 @@
 		13A49E27CFD6B4A3C30538B5 /* IvySnoozeUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySnoozeUI.swift; sourceTree = "<group>"; };
 		027E2B438EA593ED8EC188CC /* IvySnoozedChatsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySnoozedChatsTest.swift; sourceTree = "<group>"; };
 		CB43F7CCBBFEEC2A415E3298 /* IvyWaitingOnYouTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWaitingOnYouTest.swift; sourceTree = "<group>"; };
+		4001B19DB0E2EBFA5A9901F3 /* IvyNotificationFocus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyNotificationFocus.swift; sourceTree = "<group>"; };
+		3DFE3C1B3827058CBB79B1BA /* IvyQuietSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyQuietSummary.swift; sourceTree = "<group>"; };
+		31602DD908D1F4C0EC7733E1 /* IvyFocusUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyFocusUI.swift; sourceTree = "<group>"; };
+		0BCB4AF9C0C0B27A047371F1 /* IvyFocusFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyFocusFilter.swift; sourceTree = "<group>"; };
+		B860E8B28F1C5D67F88587F3 /* IvyNotificationFocusTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyNotificationFocusTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16490,6 +16500,7 @@
 				68B3085AF802A6FAF275A7D7 /* IvyPasscodeTest.swift */,
 				027E2B438EA593ED8EC188CC /* IvySnoozedChatsTest.swift */,
 				CB43F7CCBBFEEC2A415E3298 /* IvyWaitingOnYouTest.swift */,
+				B860E8B28F1C5D67F88587F3 /* IvyNotificationFocusTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16815,6 +16826,8 @@
 			isa = PBXGroup;
 			children = (
 				C6A12EC506472B1F6B49C393 /* IvySnoozedChats.swift */,
+				4001B19DB0E2EBFA5A9901F3 /* IvyNotificationFocus.swift */,
+				3DFE3C1B3827058CBB79B1BA /* IvyQuietSummary.swift */,
 			);
 			path = Focus;
 			sourceTree = "<group>";
@@ -16823,6 +16836,8 @@
 			isa = PBXGroup;
 			children = (
 				13A49E27CFD6B4A3C30538B5 /* IvySnoozeUI.swift */,
+				31602DD908D1F4C0EC7733E1 /* IvyFocusUI.swift */,
+				0BCB4AF9C0C0B27A047371F1 /* IvyFocusFilter.swift */,
 			);
 			path = Focus;
 			sourceTree = "<group>";
@@ -20177,6 +20192,8 @@
 				198F9C8580B6EAC939896221 /* IvyPasscodeUI.swift in Sources */,
 				5360B7FA1CF791D5FC6D4E08 /* IvyDecoyUI.swift in Sources */,
 				1B0D51846D8E5E13572BAD0B /* IvySnoozeUI.swift in Sources */,
+				D8E38C61E6127995AEF4BB94 /* IvyFocusUI.swift in Sources */,
+				0A064CA956AD40540E511189 /* IvyFocusFilter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21562,6 +21579,8 @@
 				83F54261A88FF6C8A8256134 /* IvyPasscode.swift in Sources */,
 				D674467FFF7975BF092F6BB1 /* IvySnoozedChats.swift in Sources */,
 				56D61E4318D47FC88993B6C0 /* IvyWaitingOnYou.swift in Sources */,
+				B43EA400679B8F6CB00A54F0 /* IvyNotificationFocus.swift in Sources */,
+				9E83837BC6FA083AAF25184D /* IvyQuietSummary.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21853,6 +21872,7 @@
 				DCF6F9A5002E7915C8493CE5 /* IvyPasscodeTest.swift in Sources */,
 				E3B178C85D8FF1919FADF4C1 /* IvySnoozedChatsTest.swift in Sources */,
 				E8653B5E844E92FD37E6B9DD /* IvyWaitingOnYouTest.swift in Sources */,
+				6BD7C0741F1AD67C82F02475 /* IvyNotificationFocusTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

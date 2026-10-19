@@ -101,3 +101,9 @@ The Ivy passcode is not Ivy data: it stays on each device as a salted PBKDF2 has
 A snoozed chat (kind `snooze`) is the chat's reference with the time it comes back (`until`, milliseconds since 1970); its id is the chat. Snoozes sync to all Ivy devices. When the time comes, whichever device is running marks the chat unread and deletes the snooze.
 
 Questions put aside on Home's Waiting on You are not Ivy data: they stay on the device in the local key-value store (collection `IvyWaitingDismissed`).
+
+## Folder notification hours
+
+A folder entity (kind `folder`) can have `hours`: the weekdays (1 is Sunday) and the start and end in minutes after midnight when the folder's chats may notify. It syncs with the folder's emoji and color. A chat notifies when it is in no folder with hours, or when one of its folders allows it now.
+
+Which folders the current Apple Focus lets notify, and the time of the muted chats summary, are not Ivy data: they stay on the device.
