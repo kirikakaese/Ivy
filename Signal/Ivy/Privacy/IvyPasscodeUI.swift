@@ -72,6 +72,8 @@ final class IvyPasscodeEntryViewController: UIViewController, UITextFieldDelegat
         let icon = UIImageView(image: UIImage(systemName: "lock.fill"))
         icon.tintColor = .Signal.accent
         icon.preferredSymbolConfiguration = UIImage.SymbolConfiguration(pointSize: 40, weight: .regular)
+        // Keep the symbol's own shape; the stack is wider than the icon.
+        icon.contentMode = .center
 
         let titleLabel = UILabel()
         titleLabel.text = IvyLocalizedString("PASSCODE_ENTER", comment: "Title of the screen that asks for Ivy's passcode.")
@@ -79,8 +81,12 @@ final class IvyPasscodeEntryViewController: UIViewController, UITextFieldDelegat
         titleLabel.textAlignment = .center
 
         field.isSecureTextEntry = true
-        field.textContentType = .password
-        field.borderStyle = .roundedRect
+        // Not a password: no AutoFill suggestions or saved passwords.
+        field.textContentType = .oneTimeCode
+        field.borderStyle = .none
+        field.backgroundColor = .Signal.secondaryBackground
+        field.layer.cornerRadius = 10
+        field.heightAnchor.constraint(equalToConstant: 48).isActive = true
         field.font = .dynamicTypeTitle3
         field.textAlignment = .center
         field.returnKeyType = .done
@@ -330,7 +336,7 @@ final class IvyPasscodeSettingsViewController: OWSTableViewController2 {
         let alert = UIAlertController(title: IvyLocalizedString("PASSCODE_ENTER", comment: "Title of the screen that asks for Ivy's passcode."), message: nil, preferredStyle: .alert)
         alert.addTextField { field in
             field.isSecureTextEntry = true
-            field.textContentType = .password
+            field.textContentType = .oneTimeCode
         }
         alert.addAction(UIAlertAction(title: CommonStrings.cancelButton, style: .cancel))
         alert.addAction(UIAlertAction(title: CommonStrings.continueButton, style: .default) { [weak self, weak alert] _ in
@@ -362,7 +368,7 @@ final class IvyPasscodeSettingsViewController: OWSTableViewController2 {
         ] {
             alert.addTextField { field in
                 field.isSecureTextEntry = true
-                field.textContentType = .newPassword
+                field.textContentType = .oneTimeCode
                 field.placeholder = placeholder
             }
         }
