@@ -303,7 +303,14 @@ class ScreenLockUI {
         isShowingScreenLockUI = true
 
         Task { @MainActor in
-            switch await ScreenLock.shared.tryToUnlockScreenLock() {
+            // Ivy: Ivy's own passcode, when set, comes before the device's.
+            let outcome: ScreenLock.Outcome
+            if let ivyOutcome = await IvyPasscodeLock.unlockIfSet(over: self.screenBlockingWindow.rootViewController) {
+                outcome = ivyOutcome
+            } else {
+                outcome = await ScreenLock.shared.tryToUnlockScreenLock()
+            }
+            switch outcome {
             case .success:
                 Logger.info("unlock screen lock succeeded.")
 
