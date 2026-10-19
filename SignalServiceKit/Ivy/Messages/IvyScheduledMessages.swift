@@ -109,7 +109,7 @@ public struct IvyScheduledMessage: Equatable, Identifiable, Sendable {
 /// Scheduled messages in the Ivy data store (kind "scheduled").
 public enum IvyScheduledStore {
 
-    static let kind = "scheduled"
+    public static let kind = "scheduled"
 
     private enum Field {
         static let chat = "chat"
