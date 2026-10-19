@@ -6,18 +6,27 @@
 import Foundation
 
 /// What Ivy adds to a chat folder beyond the official format: an emoji, a
-/// color and chats pinned in this folder only. Stored in the Ivy data store,
+/// color, chats pinned in this folder only and the hours its chats may
+/// notify. Stored in the Ivy data store,
 /// so it syncs between Ivy devices only.
 public struct ChatFolderExtras: Equatable, Sendable {
     public var emoji: String?
     public var color: ChatFolderColor?
     /// Chats pinned at the top of this folder, in order.
     public var pinnedChats: [IvyChatReference]
+    /// When the folder's chats may notify. Nil: any time.
+    public var notificationHours: IvyNotificationHours?
 
-    public init(emoji: String? = nil, color: ChatFolderColor? = nil, pinnedChats: [IvyChatReference] = []) {
+    public init(
+        emoji: String? = nil,
+        color: ChatFolderColor? = nil,
+        pinnedChats: [IvyChatReference] = [],
+        notificationHours: IvyNotificationHours? = nil,
+    ) {
         self.emoji = emoji
         self.color = color
         self.pinnedChats = pinnedChats
+        self.notificationHours = notificationHours
     }
 
     public static let maxPinnedChats = 4
@@ -30,6 +39,7 @@ public struct ChatFolderExtras: Equatable, Sendable {
         static let emoji = "emoji"
         static let color = "color"
         static let pinnedChats = "pins"
+        static let notificationHours = "hours"
     }
 
     public static func fetch(folderId: Data, store: IvyDataStore?) -> ChatFolderExtras {
@@ -40,6 +50,7 @@ public struct ChatFolderExtras: Equatable, Sendable {
             emoji: IvyDataStore.decode(String.self, from: fields[Field.emoji]),
             color: IvyDataStore.decode(String.self, from: fields[Field.color]).flatMap(ChatFolderColor.init(rawValue:)),
             pinnedChats: IvyDataStore.decode([IvyChatReference].self, from: fields[Field.pinnedChats]) ?? [],
+            notificationHours: IvyDataStore.decode(IvyNotificationHours.self, from: fields[Field.notificationHours]),
         )
     }
 
@@ -57,17 +68,20 @@ public struct ChatFolderExtras: Equatable, Sendable {
     }
 
     /// Saves the fields that differ from `old`, so that edits on another
-    /// device to other fields are kept.
+    /// device to other fields are kept. A cleared field is saved as nil.
     public func save(folderId: Data, comparedTo old: ChatFolderExtras, store: IvyDataStore?) {
         var fields = [String: String?]()
         if emoji != old.emoji {
-            fields[Field.emoji] = emoji.map { IvyDataStore.encode($0) }
+            fields.updateValue(emoji.map { IvyDataStore.encode($0) }, forKey: Field.emoji)
         }
         if color != old.color {
-            fields[Field.color] = color.map { IvyDataStore.encode($0.rawValue) }
+            fields.updateValue(color.map { IvyDataStore.encode($0.rawValue) }, forKey: Field.color)
         }
         if pinnedChats != old.pinnedChats {
             fields[Field.pinnedChats] = IvyDataStore.encode(pinnedChats)
+        }
+        if notificationHours != old.notificationHours {
+            fields.updateValue(notificationHours.map { IvyDataStore.encode($0) }, forKey: Field.notificationHours)
         }
         guard !fields.isEmpty else {
             return

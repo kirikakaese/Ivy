@@ -30,6 +30,7 @@ class NotificationSettingsViewController: OWSTableViewController2 {
         }
         contents.add(buildSoundsSection())
         contents.add(buildNotificationsSection())
+        ivyAddQuietSummaryItem(to: contents) // Ivy: muted chats summary
         if BuildFlags.improvedNotifications {
             contents.add(buildReactionsSection())
         }

@@ -1560,7 +1560,7 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
             // Avoid blocking app launch by putting all further possible DB access in async block
             DispatchQueue.main.async {
                 SSKEnvironment.shared.contactManagerImplRef.fetchSystemContactsOnceIfAlreadyAuthorized()
-                // Ivy: reminders, tasks, events, stars, scheduled messages, Apple sync, widgets, text size, privacy, snoozed chats, and Ivy data from the user's other devices
+                // Ivy: reminders, tasks, events, stars, scheduled messages, Apple sync, widgets, text size, privacy, snoozed chats, quiet summary, and Ivy data from the user's other devices
                 IvyReminderManager.shared.start()
                 IvyTaskManager.shared.start()
                 IvyEventManager.shared.start()
@@ -1571,6 +1571,7 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
                 IvyZoom.start()
                 IvyPrivacy.start()
                 IvySnoozedChats.shared.start()
+                IvyFocusUI.start()
                 IvyData.shared?.sync.requestSnapshotIfNeeded()
 
                 if !UIApplication.shared.isRegisteredForRemoteNotifications {

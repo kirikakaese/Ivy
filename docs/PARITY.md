@@ -97,8 +97,8 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Search with filters | 6b | planned | planned | planned | On-device |
 | Library of links, files and photos | 6b | planned | planned | planned | |
 | Waiting on you | 6b | done | done | done | Home > Waiting on You: the last message of recent chats when it asks the user something and the user hasn't replied, from the last 7 days. In groups only questions that mention or reply to the user. Detection runs on the device; Done puts a question aside on this device |
-| Focus per folder | 6b | planned | planned | planned | Notification hours; Apple Focus where available |
-| Quiet summary | 6b | planned | planned | planned | |
+| Focus per folder | 6b | done | done | done | Folder > Notifications: only at certain days and hours, synced. An Apple Focus can have an Ivy filter that names folders; while it is on, only chats in those folders notify. Applies to message notifications |
+| Quiet summary | 6b | done | done | done | Settings > Notifications > Muted Chats Summary: one notification a day at a chosen time with the unread messages in muted chats |
 | Snooze a chat | 6b | done | done | done | Snooze in a chat's menu: later today, tonight, tomorrow, next week or a chosen time. The chat leaves the chat list and comes back marked unread. Profile menu > Snoozed Chats lists them. Synced |
 | Drafts | 6c | planned | planned | planned | |
 | Snippets | 6c | planned | planned | planned | Synced |

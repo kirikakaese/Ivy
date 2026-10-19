@@ -74,18 +74,26 @@ public struct ChatFolder: Codable, Equatable, Identifiable, Sendable {
 
     public var isDeleted: Bool { deletedAtTimestampMs != nil }
 
+    /// Whether a chat is chosen for this folder, before the unread and muted
+    /// filters.
+    public func isMember(threadId: String, isGroup: Bool) -> Bool {
+        if kind == .allChats {
+            return true
+        }
+        if excludedThreadIds.contains(threadId) {
+            return false
+        }
+        return includedThreadIds.contains(threadId)
+            || (includeAllIndividualChats && !isGroup)
+            || (includeAllGroupChats && isGroup)
+    }
+
     /// Whether a chat belongs in this folder.
     public func contains(_ chat: ChatFolderChat) -> Bool {
         if kind == .allChats {
             return true
         }
-        if excludedThreadIds.contains(chat.threadId) {
-            return false
-        }
-        let isMember = includedThreadIds.contains(chat.threadId)
-            || (includeAllIndividualChats && !chat.isGroup)
-            || (includeAllGroupChats && chat.isGroup)
-        guard isMember else {
+        guard isMember(threadId: chat.threadId, isGroup: chat.isGroup) else {
             return false
         }
         if showOnlyUnread, !chat.isUnread {

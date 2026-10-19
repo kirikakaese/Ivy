@@ -225,6 +225,15 @@
 /* Placeholder of the name field of a chat folder. */
 "CHAT_FOLDER_NAME_PLACEHOLDER" = "Ordnername";
 
+/* Header of the notification hours of a chat folder. */
+"CHAT_FOLDER_NOTIFICATIONS" = "Mitteilungen";
+
+/* Explains a chat folder's notification hours. */
+"CHAT_FOLDER_NOTIFICATIONS_FOOTER" = "Chats in diesem Ordner melden sich nur zu diesen Zeiten, außer ein anderer Ordner, in dem sie sind, erlaubt es. Wird mit deinen Ivy-Geräten synchronisiert.";
+
+/* Item that sets when a chat folder's chats may notify. */
+"CHAT_FOLDER_NOTIFY" = "Mitteilungen erlauben";
+
 /* Chat folder option: the folder only shows chats with unread messages. */
 "CHAT_FOLDER_ONLY_UNREAD" = "Nur ungelesene Chats";
 
@@ -441,6 +450,30 @@
 /* Title of an imported event that has none. */
 "EVENT_UNTITLED" = "Termin";
 
+/* A chat folder's chats may notify at any time. */
+"FOCUS_HOURS_ANY_TIME" = "Jederzeit";
+
+/* Header of the days a chat folder may notify. */
+"FOCUS_HOURS_DAYS" = "Tage";
+
+/* Every day, in a chat folder's notification hours. */
+"FOCUS_HOURS_EVERY_DAY" = "Jeden Tag";
+
+/* Explains a chat folder's notification hours. */
+"FOCUS_HOURS_FOOTER" = "Außerhalb dieser Zeiten bleiben Chats in diesem Ordner still. Liegt das Ende vor dem Beginn, gehen die Zeiten über Mitternacht.";
+
+/* When a chat folder's notification hours start. */
+"FOCUS_HOURS_FROM" = "Von";
+
+/* Switch that lets a chat folder's chats notify only on chosen days and hours. */
+"FOCUS_HOURS_LIMIT" = "Nur zu bestimmten Zeiten";
+
+/* When a chat folder's notification hours end. */
+"FOCUS_HOURS_UNTIL" = "Bis";
+
+/* Monday to Friday, in a chat folder's notification hours. */
+"FOCUS_HOURS_WEEKDAYS" = "Werktags";
+
 /* Footer of the debug log section in Help, explaining that logs stay on the device. */
 "HELP_DEBUG_LOG_FOOTER" = "Debug-Protokolle bleiben auf diesem Gerät. Exportiere sie, um einem Problem nachzugehen oder sie mit jemandem zu teilen, dem du vertraust.";
 
@@ -548,6 +581,18 @@
 
 /* Name of the due date in the Add Task shortcut. */
 "INTENT_DUE_PARAMETER" = "Fällig";
+
+/* Explains Ivy's Focus filter. */
+"INTENT_FOCUS_DESCRIPTION" = "Solange dieser Fokus aktiv ist, melden sich nur Chats in diesen Ordnern.";
+
+/* Name of the folders in Ivy's Focus filter. */
+"INTENT_FOCUS_FOLDERS" = "Ordner";
+
+/* Name of Ivy's Focus filter, which chooses the chat folders that notify. */
+"INTENT_FOCUS_TITLE" = "Chatordner festlegen";
+
+/* Name of a chat folder in Shortcuts and Focus settings. */
+"INTENT_FOLDER_TYPE" = "Chatordner";
 
 /* Shown when a shortcut runs before Ivy is set up. */
 "INTENT_NOT_READY" = "Öffne Ivy und richte es zuerst fertig ein.";
@@ -773,6 +818,24 @@
 
 /* Context menu action that moves a pinned chat up. */
 "PINNED_CHAT_MOVE_UP" = "Nach oben";
+
+/* Text of the daily summary of muted chats. Embeds {{ number of messages }} and {{ number of chats }}. */
+"QUIET_SUMMARY_BODY_FORMAT" = "%1$@ ungelesene Nachrichten in %2$@ Chats";
+
+/* Explains the daily summary of muted chats. */
+"QUIET_SUMMARY_FOOTER" = "Einmal am Tag sagt dir eine Mitteilung, wie viele ungelesene Nachrichten in stummen Chats warten.";
+
+/* Shown next to the muted chats summary setting when it is off. */
+"QUIET_SUMMARY_OFF" = "Aus";
+
+/* Setting for the daily summary of muted chats. */
+"QUIET_SUMMARY_SETTING" = "Zusammenfassung stummer Chats";
+
+/* When the daily summary of muted chats arrives. */
+"QUIET_SUMMARY_TIME" = "Uhrzeit";
+
+/* Title of the daily summary of muted chats. */
+"QUIET_SUMMARY_TITLE" = "Stumme Chats";
 
 /* Header of the reminders that are due. */
 "REMINDERS_DUE" = "Fällig";
