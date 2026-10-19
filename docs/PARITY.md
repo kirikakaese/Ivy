@@ -85,15 +85,33 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 
 | Feature | Phase | iPhone | iPad | macOS | Notes |
 |---|---|---|---|---|---|
-| Scheduled messages | 6 | planned | planned | planned | |
-| Starred messages | 6 | planned | planned | planned | |
-| Chat notes | 6 | planned | planned | planned | |
-| Voice note speed and transcription | 6 | planned | planned | planned | On-device only |
-| Hidden chats | 6 | planned | planned | planned | |
-| Ivy passcode and app lock | 6 | planned | planned | planned | |
-| Instant lock | 6 | planned | planned | planned | |
-| Duress passcode and decoy mode | 6 | planned | planned | planned | |
-| Metadata trimming | 6 | planned | planned | planned | |
+| Scheduled messages | 6a | planned | planned | planned | |
+| Starred messages | 6a | planned | planned | planned | |
+| Chat notes | 6a | planned | planned | planned | |
+| Voice note speed and transcription | 6a | planned | planned | planned | On-device only |
+| Hidden chats | 6a | planned | planned | planned | |
+| Ivy passcode and app lock | 6a | planned | planned | planned | |
+| Instant lock | 6a | planned | planned | planned | |
+| Duress passcode and decoy mode | 6a | planned | planned | planned | |
+| Metadata trimming | 6a | planned | planned | planned | |
+| Search with filters | 6b | planned | planned | planned | On-device |
+| Library of links, files and photos | 6b | planned | planned | planned | |
+| Waiting on you | 6b | planned | planned | planned | On-device detection |
+| Focus per folder | 6b | planned | planned | planned | Notification hours; Apple Focus where available |
+| Quiet summary | 6b | planned | planned | planned | |
+| Snooze a chat | 6b | planned | planned | planned | Synced |
+| Drafts | 6c | planned | planned | planned | |
+| Snippets | 6c | planned | planned | planned | Synced |
+| Plan from the calendar | 6c | planned | planned | planned | Needs scheduled messages (6a) |
+| Shared plans | 6c | planned | planned | planned | Other Signal apps get an `.ics` file |
+| Task from a voice note | 6c | planned | planned | planned | On-device transcription |
+| Weekly review | 6c | planned | planned | planned | |
+| Multiple windows | 6d | – | planned | planned | |
+| Quick reply from the menu bar | 6d | – | – | planned | Mac only |
+| Global hotkey | 6d | – | – | planned | Mac only |
+| Lock a chat | 6d | planned | planned | planned | |
+| Disappearing messages per folder | 6d | planned | planned | planned | |
+| Link previews per chat | 6d | planned | planned | planned | |
 
 ## Release
 

@@ -194,7 +194,34 @@ Each integration exists on both platforms or has an agreed equivalent.
 - **Duress passcode and decoy mode.** Entering the duress passcode opens a decoy mode that shows several fake local-only chats plus a designated chat containing a wipe button. Wiping deletes all Ivy data on the device. Decoy chats never send anything to the network.
 - **Metadata trimming.** Options such as always stripping image metadata and turning link previews off by default.
 
-### 9.13 Diagnostics
+### 9.13 Finding and focus
+
+- **Search with filters.** One search across chats, tasks, events and chat notes, with filters for person, chat, date, and "has link", "has photo" or "has file". Runs on the device.
+- **Library.** Every link, file and photo from all chats in one place, sorted by chat or type, with the same filters.
+- **Waiting on you.** Questions the user was asked and hasn't answered appear on Home. Detection runs on the device and only looks at recent messages in one-to-one chats and groups where the user was mentioned or replied to.
+- **Focus per folder.** Each folder can have notification hours (for example Work only on weekdays 9–18). Ivy can follow Apple's Focus: a Focus can be linked to folders that may notify while it is on.
+- **Quiet summary.** Muted chats can collect into one summary notification at a time the user chooses, instead of separate badges.
+- **Snooze a chat.** Hide a chat until a chosen time (later today, tomorrow, Monday). It comes back marked unread. Snoozes sync to all Ivy devices.
+
+### 9.14 Writing and planning
+
+- **Drafts.** All unfinished messages across chats in one list on Home.
+- **Snippets.** Reusable texts (address, "on my way") inserted with a short trigger such as `;addr`. Synced to all Ivy devices.
+- **Plan from the calendar.** Dragging a draft or a new message onto a time in the calendar schedules it (builds on scheduled messages).
+- **Shared plans.** In a group, propose an event with time options; members answer with a tap and the agreed time lands in everyone's Ivy calendar. Other Signal apps receive a normal message with an `.ics` file and the options as text.
+- **Task from a voice note.** A voice note to yourself (Note to Self) can become a task; the text is transcribed on the device.
+- **Weekly review.** A screen, offered once a week at a chosen time: open and overdue tasks, next week's events, chats waiting for an answer.
+
+### 9.15 Mac and privacy additions
+
+- **Multiple windows (Mac and iPad).** Open a chat in its own window; windows remember their chat.
+- **Quick reply from the menu bar (Mac).** The menu bar extra shows the latest messages and lets the user answer without opening the main window.
+- **Global hotkey (Mac).** A system-wide shortcut, chosen in Settings, brings Ivy to the front or opens a new message.
+- **Lock a chat.** Single chats can require Face ID, Touch ID or the Ivy passcode to open, separate from hidden chats.
+- **Disappearing messages per folder.** A folder can set the disappearing messages timer for the chats in it; changing a chat's timer works as in Signal and is visible to the other members.
+- **Link previews per chat.** Link previews can be turned off for single chats.
+
+### 9.16 Diagnostics
 
 - No crash reporter and no analytics.
 - Debug log upload to Signal's servers is disabled; debug logs can only be exported locally by the user.
@@ -232,7 +259,10 @@ Each phase is one branch and one pull request. The next phase starts after the p
 | 5a – Apple Calendar and Reminders | One-way and two-way sync of events and tasks with Apple Calendar and Reminders |
 | 5b – Widgets and quick access | Widgets, menu bar extra and Control Center control, share extension |
 | 5c – Shortcuts and keyboard | Shortcuts and Siri, keyboard shortcuts |
-| 6 – Extras | Scheduled messages, starred messages, chat notes, voice note features, hidden chats, decoy mode and duress passcode, app lock, metadata trimming |
+| 6a – Extras | Scheduled messages, starred messages, chat notes, voice note features, hidden chats, decoy mode and duress passcode, app lock, metadata trimming |
+| 6b – Finding and focus | Search with filters, library, waiting on you, focus per folder, quiet summary, snoozing chats |
+| 6c – Writing and planning | Drafts, snippets, planning from the calendar, shared plans, tasks from voice notes, weekly review |
+| 6d – Mac and privacy additions | Multiple windows, quick reply from the menu bar, global hotkey, locked chats, disappearing messages per folder, link previews per chat |
 | 7 – Polish and release | Accessibility, performance, upstream merge rehearsal, signing, notarization, Sparkle, user documentation and maintenance guide |
 
 If a phase turns out larger than expected, work stops and a split is proposed before continuing.
