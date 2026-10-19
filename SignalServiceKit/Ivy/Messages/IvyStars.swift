@@ -91,6 +91,17 @@ public enum IvyChatNoteStore {
         store?.entity(kind: kind, id: chat.rawValue)?[Field.text] ?? ""
     }
 
+    /// Every chat note, by chat.
+    public static func all(store: IvyDataStore?) -> [IvyChatReference: String] {
+        var notes = [IvyChatReference: String]()
+        for (id, fields) in store?.entities(kind: kind) ?? [:] {
+            if let chat = IvyChatReference(rawValue: id), let text = fields[Field.text], !text.isEmpty {
+                notes[chat] = text
+            }
+        }
+        return notes
+    }
+
     /// Saves the note; an empty note is removed.
     public static func save(_ text: String, for chat: IvyChatReference, store: IvyDataStore?) {
         let text = String(text.prefix(maxLength))

@@ -676,6 +676,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
                 ))
                 contextMenuActions.append(contentsOf: ivyPrivacyMenuActions()) // Ivy: hidden chats and lock
                 contextMenuActions.append(contentsOf: ivySnoozeMenuActions()) // Ivy: snoozed chats
+                contextMenuActions.append(contentsOf: ivyFindMenuActions()) // Ivy: search everything and library
 
                 contextMenuActions.append(settingsAction)
 
