@@ -13,6 +13,8 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
 
     /// Open tasks shown at most.
     static let maxTasks = 6
+    /// Starred messages shown at most.
+    static let maxStars = 3
     /// Important messages shown at most.
     static let maxImportantMessages = 8
     /// Upcoming tasks reach this many days ahead.
@@ -29,6 +31,7 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         case task(IvyTask, listName: String?)
         case important(ImportantRow)
         case folder(ChatFolder, unreadCount: Int)
+        case star(IvyStar, chatName: String)
         case note(String)
         case link(String, action: () -> Void)
     }
@@ -81,6 +84,7 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             IvyTaskManager.tasksDidChange,
             IvyEventManager.eventsDidChange,
             IvyReminderManager.remindersDidChange,
+            IvyStarManager.starsDidChange,
             ChatFolderManager.foldersDidChange,
             UIApplication.significantTimeChangeNotification,
         ] {
@@ -179,6 +183,9 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
 
     private func reload() {
         var sections = [todaySection(), tasksSection()]
+        if let starred = starredSection() {
+            sections.append(starred)
+        }
         if let important = importantSection() {
             sections.append(important)
         }
@@ -256,6 +263,26 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             self?.ivyPresentTasks()
         })
         return Section(title: IvyTaskUI.tasksTitle, rows: rows)
+    }
+
+    /// The newest starred messages, when there are any.
+    private func starredSection() -> Section? {
+        let stars = IvyStarManager.shared.allStars()
+        guard !stars.isEmpty else {
+            return nil
+        }
+        var rows: [Row] = SSKEnvironment.shared.databaseStorageRef.read { tx in
+            stars.prefix(Self.maxStars).map { star in
+                let name = star.message.chat.thread(tx: tx).map {
+                    SSKEnvironment.shared.contactManagerRef.displayName(for: $0, transaction: tx)
+                }
+                return .star(star, chatName: name ?? "")
+            }
+        }
+        rows.append(.link(IvyLocalizedString("HOME_ALL_STARRED", comment: "Item on Home that opens the list of all starred messages.")) { [weak self] in
+            self?.presentFormSheet(OWSNavigationController(rootViewController: IvyStarredViewController()), animated: true)
+        })
+        return Section(title: IvyStarredViewController.title, rows: rows)
     }
 
     private func importantSection() -> Section? {
@@ -368,6 +395,11 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             content.secondaryText = unreadCount.formatted()
             content.image = UIImage(systemName: "folder")
             content.imageProperties.tintColor = .Signal.accent
+        case .star(let star, let chatName):
+            content.text = chatName
+            content.secondaryText = star.quote
+            content.secondaryTextProperties.numberOfLines = 2
+            content.image = UIImage(systemName: "star.fill")
         case .note(let text):
             content = UIListContentConfiguration.cell()
             content.text = text
@@ -404,6 +436,8 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             guard let tabs = homeTabBarController else { return }
             tabs.selectedHomeTab = .chatList
             tabs.chatListViewController.ivySelectChatFolder(folder)
+        case .star(let star, _):
+            IvyStarredViewController.open(star.message, from: self)
         case .note:
             break
         case .link(_, let action):
@@ -419,7 +453,7 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         case .task(let task, _):
             let date = task.dueAt ?? Date()
             return IvyCalendarItem(kind: .task(task), start: date, end: date, isAllDay: task.isAllDay)
-        case .important, .folder, .note, .link:
+        case .important, .folder, .star, .note, .link:
             return nil
         }
     }

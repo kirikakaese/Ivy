@@ -25,7 +25,7 @@
 "ABOUT_NOT_AFFILIATED" = "Ivy is an independent app that is compatible with the Signal network. It is not affiliated with, endorsed by or supported by Signal Messenger LLC or the Signal Technology Foundation.";
 
 /* Ivy's privacy statement on the About Ivy screen. */
-"ABOUT_PRIVACY_STATEMENT" = "Ivy connects only to Signal's servers, in the same way as the official Signal app, and your messages are end-to-end encrypted. Ivy contains no analytics and no crash reporting. Debug logs stay on this device unless you export them. Ivy's own data, such as reminders and folder colors, is stored encrypted on your devices and synced only to your own devices, end-to-end encrypted. If you turn on sync with Apple Calendar or Reminders on a device, the synced events and tasks are also stored by Apple.";
+"ABOUT_PRIVACY_STATEMENT" = "Ivy connects only to Signal's servers, in the same way as the official Signal app, and your messages are end-to-end encrypted. Ivy contains no analytics and no crash reporting. Debug logs stay on this device unless you export them. Ivy's own data, such as reminders and folder colors, is stored encrypted on your devices and synced only to your own devices, end-to-end encrypted. If you turn on sync with Apple Calendar or Reminders on a device, the synced events and tasks are also stored by Apple. Voice messages are transcribed only on the device.";
 
 /* Title of the privacy statement on the About Ivy screen. */
 "ABOUT_PRIVACY_TITLE" = "Privacy";
@@ -258,6 +258,12 @@
 /* Accessibility value of a chat folder tab. Embeds {{ the number of chats with unread messages }}. */
 "CHAT_FOLDER_UNREAD_COUNT_FORMAT" = "Unread chats: %d";
 
+/* Shown in an empty chat note. */
+"CHAT_NOTE_PLACEHOLDER" = "Only you see this note, on your Ivy devices.";
+
+/* Title of a chat's private note. */
+"CHAT_NOTE_TITLE" = "Note";
+
 /* Color name. */
 "COLOR_BLUE" = "Blue";
 
@@ -389,6 +395,9 @@
 
 /* Help item that opens Ivy's issue tracker. */
 "HELP_REPORT_PROBLEM" = "Report a Problem";
+
+/* Item on Home that opens the list of all starred messages. */
+"HOME_ALL_STARRED" = "All Starred Messages";
 
 /* Item on Home that opens the list of all tasks. */
 "HOME_ALL_TASKS" = "All Tasks";
@@ -687,6 +696,18 @@
 /* Menu command that shows the sidebar. */
 "SIDEBAR_SHOW" = "Show Sidebar";
 
+/* Shown in the list of starred messages when there are none. */
+"STARRED_EMPTY" = "Star messages to find them here again. Starred messages sync to your other Ivy devices.";
+
+/* Title of the list of starred messages. */
+"STARRED_TITLE" = "Starred Messages";
+
+/* Action that stars a message, to find it again in the list of starred messages. */
+"STAR_ADD" = "Star";
+
+/* Action that removes the star from a message. */
+"STAR_REMOVE" = "Remove Star";
+
 /* Shown when the problem report page can't be opened. Tells the user where to report problems. */
 "SUPPORT_REPORT_FALLBACK_MESSAGE" = "Please report the problem at github.com/kirikakaese/Ivy/issues.";
 
@@ -845,6 +866,24 @@
 
 /* Placeholder of a task's title. */
 "TASK_TITLE_PLACEHOLDER" = "Title";
+
+/* Action that turns a voice message into text, on the device. */
+"TRANSCRIBE" = "Transcribe";
+
+/* Shown while a voice message is turned into text on the device. */
+"TRANSCRIBING" = "Transcribing on this device…";
+
+/* Shown when a voice message couldn't be turned into text. */
+"TRANSCRIPT_FAILED" = "This voice message couldn't be transcribed.";
+
+/* Shown when the device can't turn speech into text without the internet. */
+"TRANSCRIPT_NOT_ON_DEVICE" = "This device can't transcribe this language offline. Ivy only transcribes on the device.";
+
+/* Shown when Ivy may not use speech recognition. */
+"TRANSCRIPT_NO_ACCESS" = "Allow speech recognition for Ivy in Settings to transcribe voice messages.";
+
+/* Title of a voice message's transcript. */
+"TRANSCRIPT_TITLE" = "Transcript";
 
 /* Shown in a widget before Ivy has been opened. */
 "WIDGET_NO_DATA" = "Open Ivy once to see your day here.";

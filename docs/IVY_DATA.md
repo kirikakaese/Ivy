@@ -72,3 +72,11 @@ Settings > Folders, Tasks, Calendar and Sync > Apple Calendar and Reminders turn
 
 Widgets and the Mac menu bar extra don't open the database. The app writes a small summary, `IvyGlance.json`, to its app group container whenever tasks, events, reminders or the unread count change: today's events, due tasks and reminders, up to 8 open tasks, the number of open tasks and the unread count. It contains titles (of events, tasks and, for reminders, chats) and times, no message text. The file is readable after the device was unlocked once since starting, so Lock Screen widgets work. Widgets and menu items open Ivy with `sgnl://ivy/...` links (`home`, `chats`, `calendar`, `calls`, `tasks`, `tasks/new`, `calendar/new`, `task?id=`, `event?id=`).
 
+## Starred messages and chat notes
+
+A star (kind `star`) holds the message reference, up to 500 characters of the message's text and when it was starred. Its id comes from the message, so starring the same message on two devices keeps one star. When the message is deleted on this device, disappears, or is deleted for everyone, the star is removed.
+
+A chat note (kind `chatNote`) holds one text per chat, up to 10,000 characters; its id is the chat. Clearing the text removes the note.
+
+Voice message transcripts are never stored or synced. Ivy transcribes on the device with Apple's speech recognition (`requiresOnDeviceRecognition`) and keeps the text only while the app runs.
+
