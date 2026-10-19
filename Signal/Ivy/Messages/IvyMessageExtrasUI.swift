@@ -469,7 +469,7 @@ final class IvyTranscriptViewController: UIViewController {
             statusLabel.isHidden = true
             textView.text = text
             textView.isHidden = false
-            let makeTask = UIBarButtonItem(
+            let makeTaskButton = UIBarButtonItem(
                 title: IvyLocalizedString("VOICE_NOTE_MAKE_TASK", comment: "Action that turns a voice note into a task, transcribed on the device."),
                 primaryAction: UIAction { [weak self] _ in self?.makeTask(from: text) },
             )
@@ -477,7 +477,7 @@ final class IvyTranscriptViewController: UIViewController {
                 title: CommonStrings.copyButton,
                 primaryAction: UIAction { _ in UIPasteboard.general.string = text },
             )
-            navigationItem.rightBarButtonItems = [copy, makeTask]
+            navigationItem.rightBarButtonItems = [copy, makeTaskButton]
             if makesTaskWhenDone {
                 makeTask(from: text)
             }
