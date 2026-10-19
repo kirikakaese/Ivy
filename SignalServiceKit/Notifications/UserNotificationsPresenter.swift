@@ -337,9 +337,10 @@ public class UserNotificationPresenter {
 
         Task {
             let shouldRemoveNotificationRequestPredicate: (UNNotificationRequest) -> Bool = { request in
-                // Ivy: reminders, tasks, events and the quiet summary stay scheduled
+                // Ivy: reminders, tasks, events, the quiet summary and the weekly review stay scheduled
                 if IvyReminderNotifications.isReminder(request) || IvyTaskNotifications.isTask(request)
                     || IvyEventNotifications.isEvent(request) || IvyQuietSummary.isSummary(request)
+                    || IvyWeeklyReview.isReview(request)
                 {
                     return false
                 }
