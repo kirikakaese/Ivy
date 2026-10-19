@@ -30,7 +30,7 @@ final class IvyPasscodeTest: XCTestCase {
         let db = InMemoryDB()
         XCTAssertFalse(db.read { tx in IvyPasscode.isSet(tx: tx) })
 
-        db.write { tx in IvyPasscode.set("secret", tx: tx) }
+        db.write { tx in _ = IvyPasscode.set("secret", tx: tx) }
         XCTAssertTrue(db.read { tx in IvyPasscode.isSet(tx: tx) })
         XCTAssertEqual(db.write { tx in IvyPasscode.verify("wrong", tx: tx) }, .wrong)
         XCTAssertEqual(db.write { tx in IvyPasscode.verify("secret", tx: tx) }, .correct)
@@ -42,7 +42,7 @@ final class IvyPasscodeTest: XCTestCase {
     func testWrongAttemptsBlock() {
         let db = InMemoryDB()
         let now = Date(timeIntervalSince1970: 1_000_000)
-        db.write { tx in IvyPasscode.set("secret", tx: tx) }
+        db.write { tx in _ = IvyPasscode.set("secret", tx: tx) }
         for _ in 1..<IvyPasscode.freeAttempts {
             XCTAssertEqual(db.write { tx in IvyPasscode.verify("wrong", now: now, tx: tx) }, .wrong)
         }
@@ -61,7 +61,7 @@ final class IvyPasscodeTest: XCTestCase {
         // Needs a passcode first.
         XCTAssertFalse(db.write { tx in IvyPasscode.setDuress("help", tx: tx) })
 
-        db.write { tx in IvyPasscode.set("secret", tx: tx) }
+        db.write { tx in _ = IvyPasscode.set("secret", tx: tx) }
         XCTAssertFalse(db.write { tx in IvyPasscode.setDuress("secret", tx: tx) })
         XCTAssertTrue(db.write { tx in IvyPasscode.setDuress("help", tx: tx) })
         XCTAssertTrue(db.read { tx in IvyPasscode.isDuressSet(tx: tx) })
