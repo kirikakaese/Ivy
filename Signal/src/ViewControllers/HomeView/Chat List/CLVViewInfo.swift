@@ -96,7 +96,10 @@ struct CLVViewInfo: Equatable {
             ivyChatFolder: ivyChatFolder, // Ivy: chat folders
             ivyFolderPinnedThreadIds: ChatFolderManager.shared.pinnedThreadIds(in: ivyChatFolder, tx: transaction),
             ivyDueReminderThreadIds: IvyReminderManager.shared.dueThreadIds(tx: transaction),
-            ivyHiddenThreadIds: IvyHiddenChats.shared.isRevealed ? [] : IvyHiddenChats.shared.threadIds(tx: transaction).subtracting(requiredThreadIds),
+            // Ivy: hidden chats, and snoozed chats until their time comes
+            ivyHiddenThreadIds: (IvyHiddenChats.shared.isRevealed ? [] : IvyHiddenChats.shared.threadIds(tx: transaction))
+                .union(IvySnoozedChats.shared.threadIds(tx: transaction))
+                .subtracting(requiredThreadIds),
         )
     }
 }

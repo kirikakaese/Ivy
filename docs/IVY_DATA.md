@@ -96,3 +96,8 @@ A hidden chat (kind `hiddenChat`) is the chat's reference and when it was hidden
 
 The Ivy passcode is not Ivy data: it stays on each device as a salted PBKDF2 hash in the local key-value store (collection `IvyPasscode`) and never syncs. The duress passcode is stored the same way, with its own salt. The decoy mode's chats are never stored.
 
+## Snoozed chats
+
+A snoozed chat (kind `snooze`) is the chat's reference with the time it comes back (`until`, milliseconds since 1970); its id is the chat. Snoozes sync to all Ivy devices. When the time comes, whichever device is running marks the chat unread and deletes the snooze.
+
+Questions put aside on Home's Waiting on You are not Ivy data: they stay on the device in the local key-value store (collection `IvyWaitingDismissed`).
