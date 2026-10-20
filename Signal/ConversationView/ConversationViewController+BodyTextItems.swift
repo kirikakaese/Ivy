@@ -58,6 +58,9 @@ extension ConversationViewController {
                 UIApplication.shared.open(dataItem.url, options: [:], completionHandler: nil)
             case .transitInformation:
                 UIApplication.shared.open(dataItem.url, options: [:], completionHandler: nil)
+            case .task:
+                // Ivy: handled with the message in ivyDidTapDetectedItem.
+                break
             case .emailAddress:
                 didTapEmail(dataItem: dataItem)
             }
@@ -97,6 +100,9 @@ extension ConversationViewController {
                 UIApplication.shared.open(dataItem.url, options: [:], completionHandler: nil)
             case .transitInformation:
                 UIApplication.shared.open(dataItem.url, options: [:], completionHandler: nil)
+            case .task:
+                // Ivy: handled with the message in ivyDidTapDetectedItem.
+                break
             case .emailAddress:
                 didLongPressEmail(dataItem: dataItem)
             }

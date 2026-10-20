@@ -13,6 +13,8 @@ public struct TextCheckingDataItem: Equatable {
         case date
         case transitInformation
         case emailAddress
+        // Ivy: a request like "Can you…", offered as a task.
+        case task
 
         // MARK: - CustomStringConvertible
 
@@ -30,6 +32,8 @@ public struct TextCheckingDataItem: Equatable {
                 return ".transitInformation"
             case .emailAddress:
                 return ".emailAddress"
+            case .task:
+                return ".task"
             }
         }
     }
@@ -66,6 +70,26 @@ public struct TextCheckingDataItem: Equatable {
         guard let detector else {
             return []
         }
+        // Ivy: requests like "Can you…" are offered as tasks, next to what
+        // the detector finds.
+        let items = detectorItems(in: text, using: detector)
+        return items + ivyTaskItems(in: text, avoiding: items)
+    }
+
+    // Ivy: tasks found in the text, never overlapping the detector's items.
+    private static func ivyTaskItems(in text: String, avoiding items: [TextCheckingDataItem]) -> [TextCheckingDataItem] {
+        guard IvyMessageDetection.detectsTasks, let url = URL(string: "ivy-task:phrase") else {
+            return []
+        }
+        return IvyTaskPhrases.phrases(in: text, avoiding: items.map(\.range)).map {
+            TextCheckingDataItem(dataType: .task, range: $0.range, snippet: $0.text, url: url)
+        }
+    }
+
+    private static func detectorItems(
+        in text: String,
+        using detector: NSDataDetector,
+    ) -> [TextCheckingDataItem] {
         return detector.matches(in: text, options: [], range: text.entireRange).compactMap { match in
             guard let snippet = (text as NSString).substring(with: match.range).strippedOrNil else {
                 owsFailDebug("Invalid snippet.")

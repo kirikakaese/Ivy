@@ -425,6 +425,11 @@ public struct CVLongPressHandler {
 
         switch gestureLocation {
         case .bodyText(let item):
+            // Ivy: dates and tasks offer the calendar and tasks for their message.
+            let ivyInteraction = renderItem.interaction
+            if let conversation = delegate as? ConversationViewController, MainActor.assumeIsolated({ conversation.ivyDidTapDetectedItem(item, interaction: ivyInteraction) }) {
+                return
+            }
             delegate.didLongPressBodyTextItem(item)
         default:
             // Case will be handled by context menu gesture recognizer

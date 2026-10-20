@@ -47,6 +47,9 @@ class ChatsSettingsViewController: OWSTableViewController2 {
         ))
         contents.add(linkPreviewSection)
 
+        // Ivy: underlined dates and tasks.
+        ivyAddDetectionSection(to: contents)
+
         let sharingSuggestionsSection = OWSTableSection()
         sharingSuggestionsSection.footerTitle = OWSLocalizedString(
             "SETTINGS_SHARING_SUGGESTIONS_NOTIFICATIONS_FOOTER",

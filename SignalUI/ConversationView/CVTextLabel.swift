@@ -291,7 +291,10 @@ public class CVTextLabel {
                 case .linkAttribute:
                     attributedText.addAttribute(.link, value: link, range: range)
                 case .underlined(let bodyTextColor):
-                    attributedText.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: range)
+                    // Ivy: dates and tasks get a dotted line, apart from links.
+                    let isIvyItem = dataItem.dataType == .date || dataItem.dataType == .task
+                    let underline: NSUnderlineStyle = isIvyItem ? [.single, .patternDot] : .single
+                    attributedText.addAttribute(.underlineStyle, value: underline.rawValue, range: range)
                     attributedText.addAttribute(.underlineColor, value: bodyTextColor, range: range)
                 }
             }
