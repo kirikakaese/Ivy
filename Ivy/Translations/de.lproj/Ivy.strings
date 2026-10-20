@@ -894,6 +894,45 @@
 /* Context menu action that moves a pinned chat up. */
 "PINNED_CHAT_MOVE_UP" = "Nach oben";
 
+/* Button that adds another time to a proposed plan. */
+"PLAN_ADD_TIME" = "Zeit hinzufügen";
+
+/* Action that picks a time of a proposed plan. */
+"PLAN_ANSWER" = "Auf Plan antworten";
+
+/* Action that shows who picked which time of a proposed plan. */
+"PLAN_ANSWERS" = "Antworten zum Plan";
+
+/* Explains the list of answers to a proposed plan. */
+"PLAN_ANSWERS_FOOTER" = "Gezählt werden Antworten, die mit der Nummer einer Zeit beginnen. Es zählt die letzte Antwort jeder Person.";
+
+/* Explains how to confirm a time of a proposed plan. */
+"PLAN_ANSWERS_FOOTER_ORGANIZER" = "Tippe auf eine Zeit, um sie festzulegen. Ivy teilt sie im Chat mit und trägt sie in alle Ivy-Kalender ein; Personen mit anderen Apps bekommen eine Kalenderdatei.";
+
+/* Button that agrees on a time of a plan and tells the chat. */
+"PLAN_CONFIRM" = "Diese Zeit festlegen";
+
+/* Message that announces the agreed time of a plan. Embeds {{ title }} and {{ time }}. */
+"PLAN_CONFIRMED_FORMAT" = "✅ %1$@: %2$@";
+
+/* Title of the confirmation before agreeing on a time of a plan. */
+"PLAN_CONFIRM_TITLE" = "Diese Zeit festlegen?";
+
+/* Length of a proposed event: all day. */
+"PLAN_DURATION_ALL_DAY" = "Ganztägig";
+
+/* Length of a proposed event: 30 minutes. */
+"PLAN_DURATION_HALF_HOUR" = "30 Min.";
+
+/* Length of a proposed event: one hour. */
+"PLAN_DURATION_HOUR" = "1 Std.";
+
+/* Length of a proposed event: two hours. */
+"PLAN_DURATION_TWO_HOURS" = "2 Std.";
+
+/* Placeholder of a proposed plan's place. */
+"PLAN_LOCATION_PLACEHOLDER" = "Ort (optional)";
+
 /* Action that writes a message to be sent at a chosen time from the calendar or a draft. */
 "PLAN_MESSAGE" = "Nachricht planen";
 
@@ -908,6 +947,36 @@
 
 /* Label of the time a planned message is sent. */
 "PLAN_MESSAGE_SEND_AT" = "Senden um";
+
+/* Shown when a proposed plan has no title. */
+"PLAN_NEEDS_TITLE" = "Gib dem Plan einen Titel.";
+
+/* Shown under a time of a proposed plan nobody picked yet. */
+"PLAN_NO_ANSWERS" = "Noch keine Antworten";
+
+/* In a proposed plan message: explains how to answer. */
+"PLAN_PROPOSAL_HOW_TO_ANSWER" = "Antworte mit der Nummer der Zeit, die für dich passt.";
+
+/* In a proposed plan message: asks which of the times work. */
+"PLAN_PROPOSAL_QUESTION" = "Welche Zeit passt dir?";
+
+/* Action that proposes an event with several times in a chat. */
+"PLAN_PROPOSE" = "Plan vorschlagen";
+
+/* Button that sends a proposed plan to the chat. */
+"PLAN_SEND" = "Senden";
+
+/* Shown when a plan couldn't be sent. */
+"PLAN_SEND_FAILED" = "Der Plan konnte nicht gesendet werden.";
+
+/* Header of the times to choose from in a proposed plan. */
+"PLAN_TIMES" = "Zeiten zur Auswahl";
+
+/* Placeholder of a proposed plan's title, for example Dinner. */
+"PLAN_TITLE_PLACEHOLDER" = "Was? Zum Beispiel Abendessen";
+
+/* Stands for the user in the list of who picked a time. */
+"PLAN_YOU" = "Du";
 
 /* Text of the daily summary of muted chats. Embeds {{ number of messages }} and {{ number of chats }}. */
 "QUIET_SUMMARY_BODY_FORMAT" = "%1$@ ungelesene Nachrichten in %2$@ Chats";

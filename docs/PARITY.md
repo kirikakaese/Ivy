@@ -103,7 +103,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Drafts | 6c | done | done | done | Home > Drafts: unsent messages across chats, newest first. Tap to continue, swipe to discard |
 | Snippets | 6c | done | done | done | Settings > Ivy Data > Snippets. Typing ;trigger and a space in any message inserts the text. Synced |
 | Plan from the calendar | 6c | done | done | done | Calendar > + > Plan Message, and Plan Message on a draft on Home: choose a chat, a text and a time; Ivy sends it then as a scheduled message. The calendar is a list, so planning uses this action instead of dragging |
-| Shared plans | 6c | planned | planned | planned | Other Signal apps get an `.ics` file |
+| Shared plans | 6c | done | done | done | Chat settings or Calendar > + > Propose a Plan: a title, a place, a length and up to 6 times. Sent as a normal message with the times as text and an `.ics` file. Ivy users pick a time with Answer Plan (a short reply with its number); anyone can reply with the number. Plan Answers counts them; the organizer agrees on a time, Ivy announces it with a calendar file and adds it to every Ivy user's calendar in the chat. Other Signal apps see the text and the files |
 | Task from a voice note | 6c | done | done | done | Make Task on a voice note in Note to Self, and on any transcript. Transcribed on the device; the first sentence becomes the title |
 | Weekly review | 6c | done | done | done | Home > Weekly Review, and a weekly notification at a chosen day and time (Settings > Ivy Data > Weekly Review): overdue and due tasks, the next 7 days, chats waiting for an answer |
 | Multiple windows | 6d | – | planned | planned | |
