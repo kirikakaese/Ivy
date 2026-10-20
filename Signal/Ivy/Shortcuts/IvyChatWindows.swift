@@ -56,7 +56,7 @@ enum IvyChatWindows {
     /// Opens a chat in its own window, or brings its window to the front.
     static func open(threadUniqueId: String) {
         let existing = UIApplication.shared.openSessions.first { session in
-            isChatWindow(session) && threadUniqueId(of: session.stateRestorationActivity) == threadUniqueId
+            isChatWindow(session) && Self.threadUniqueId(of: session.stateRestorationActivity) == threadUniqueId
         }
         UIApplication.shared.requestSceneSessionActivation(
             existing,
@@ -199,7 +199,7 @@ final class IvyChatSceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Ivy unlocks elsewhere; look again now and then.
         coverTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated {
-                guard let self, !isIvyLocked, window?.windowScene?.activationState == .foregroundActive else { return }
+                guard let self, !isIvyLocked, self.window?.windowScene?.activationState == .foregroundActive else { return }
                 updateCover()
             }
         }
