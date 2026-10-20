@@ -999,6 +999,12 @@
 /* Notification action that reminds the user again tomorrow morning. */
 "REMINDER_TOMORROW" = "Tomorrow";
 
+/* Below the scheduled message bubbles in a chat: how many more there are. Embeds {{ number }}. */
+"SCHEDULED_BUBBLES_MORE_FORMAT" = "%@ more scheduled";
+
+/* Under a scheduled message bubble in a chat: when it is sent. Embeds {{ date and time }}. */
+"SCHEDULED_BUBBLE_TIME_FORMAT" = "Scheduled: %@";
+
 /* Action that changes when a scheduled message is sent. */
 "SCHEDULED_CHANGE_TIME" = "Change Time";
 

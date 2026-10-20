@@ -36,6 +36,39 @@ enum IvyScheduledUI {
     }
 
     @MainActor
+    static func changeTime(of message: IvyScheduledMessage, from viewController: UIViewController) {
+        let picker = IvyReminderDatePickerViewController(
+            initialDate: message.sendAt,
+            title: sendLaterTitle,
+            showsRepeat: false,
+        ) { date, _ in
+            IvyScheduledSender.shared.reschedule(id: message.id, to: date)
+        }
+        viewController.presentFormSheet(OWSNavigationController(rootViewController: picker), animated: true)
+    }
+
+    /// Send Now, Change Time and Delete for a scheduled message.
+    @MainActor
+    static func menuActions(for message: IvyScheduledMessage, from viewController: UIViewController) -> [UIMenuElement] {
+        [
+            UIAction(
+                title: IvyLocalizedString("SCHEDULED_SEND_NOW", comment: "Action that sends a scheduled message right away."),
+                image: UIImage(systemName: "paperplane"),
+            ) { _ in IvyScheduledSender.shared.sendNow(id: message.id) },
+            UIAction(
+                title: IvyLocalizedString("SCHEDULED_CHANGE_TIME", comment: "Action that changes when a scheduled message is sent."),
+                image: UIImage(systemName: "clock"),
+            ) { [weak viewController] _ in
+                guard let viewController else { return }
+                changeTime(of: message, from: viewController)
+            },
+            UIAction(title: CommonStrings.deleteButton, image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+                IvyScheduledSender.shared.delete(id: message.id)
+            },
+        ]
+    }
+
+    @MainActor
     static func pending(in chat: IvyChatReference? = nil) -> [IvyScheduledMessage] {
         IvyScheduledStore.pending(store: IvyData.shared?.store).filter { chat == nil || $0.chat == chat }
     }
@@ -227,37 +260,10 @@ final class IvyScheduledMessagesViewController: UIViewController, UITableViewDat
         return cell
     }
 
-    private func actions(for message: IvyScheduledMessage) -> [UIMenuElement] {
-        [
-            UIAction(
-                title: IvyLocalizedString("SCHEDULED_SEND_NOW", comment: "Action that sends a scheduled message right away."),
-                image: UIImage(systemName: "paperplane"),
-            ) { _ in IvyScheduledSender.shared.sendNow(id: message.id) },
-            UIAction(
-                title: IvyLocalizedString("SCHEDULED_CHANGE_TIME", comment: "Action that changes when a scheduled message is sent."),
-                image: UIImage(systemName: "clock"),
-            ) { [weak self] _ in self?.changeTime(of: message) },
-            UIAction(title: CommonStrings.deleteButton, image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
-                IvyScheduledSender.shared.delete(id: message.id)
-            },
-        ]
-    }
-
-    private func changeTime(of message: IvyScheduledMessage) {
-        let picker = IvyReminderDatePickerViewController(
-            initialDate: message.sendAt,
-            title: IvyScheduledUI.sendLaterTitle,
-            showsRepeat: false,
-        ) { date, _ in
-            IvyScheduledSender.shared.reschedule(id: message.id, to: date)
-        }
-        presentFormSheet(OWSNavigationController(rootViewController: picker), animated: true)
-    }
-
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let message = messages[indexPath.row]
         return UIContextMenuConfiguration(actionProvider: { [weak self] _ in
-            UIMenu(children: self?.actions(for: message) ?? [])
+            UIMenu(children: self.map { IvyScheduledUI.menuActions(for: message, from: $0) } ?? [])
         })
     }
 
@@ -269,7 +275,8 @@ final class IvyScheduledMessagesViewController: UIViewController, UITableViewDat
             IvyScheduledSender.shared.sendNow(id: message.id)
         })
         sheet.addAction(ActionSheetAction(title: IvyLocalizedString("SCHEDULED_CHANGE_TIME", comment: "Action that changes when a scheduled message is sent.")) { [weak self] _ in
-            self?.changeTime(of: message)
+            guard let self else { return }
+            IvyScheduledUI.changeTime(of: message, from: self)
         })
         sheet.addAction(ActionSheetAction(title: CommonStrings.deleteButton, style: .destructive) { _ in
             IvyScheduledSender.shared.delete(id: message.id)

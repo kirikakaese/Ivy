@@ -85,7 +85,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 
 | Feature | Phase | iPhone | iPad | macOS | Notes |
 |---|---|---|---|---|---|
-| Scheduled messages | 6a | done | done | done | Hold or right-click the send button: Send Later with the reminder presets or a chosen time. Synced; the writing device sends, another device takes over after 10 minutes. Text only. Listed on Home and in chat settings |
+| Scheduled messages | 6a | done | done | done | Hold or right-click the send button: Send Later with the reminder presets or a chosen time. Synced; the writing device sends, another device takes over after 10 minutes. Text only. Listed on Home and in chat settings. In the chat, scheduled messages show above the message field as dashed bubbles with their time; clicking one offers Send Now, Change Time and Delete |
 | Starred messages | 6a | done | done | done | Star or Remove Star in a message's menu; a star next to the time; list on Home; synced; removed when the message is deleted |
 | Chat notes | 6a | done | done | done | Chat settings > Note; synced, only on the user's devices |
 | Voice note speed and transcription | 6a | done | done | done | Speed is remembered per chat (as upstream); Transcribe in the message menu, on the device only |
