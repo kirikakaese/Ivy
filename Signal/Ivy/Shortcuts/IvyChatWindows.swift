@@ -199,8 +199,8 @@ final class IvyChatSceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Ivy unlocks elsewhere; look again now and then.
         coverTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated {
-                guard let self, !isIvyLocked, self.window?.windowScene?.activationState == .foregroundActive else { return }
-                updateCover()
+                guard let self, !self.isIvyLocked, self.window?.windowScene?.activationState == .foregroundActive else { return }
+                self.updateCover()
             }
         }
     }
