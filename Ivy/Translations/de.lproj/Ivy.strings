@@ -130,7 +130,7 @@
 "CALENDAR_TODAY" = "Heute";
 
 /* Button that opens the chat folder settings. */
-"CHAT_FOLDERS_EDIT" = "Ordner bearbeiten";
+"CHAT_FOLDERS_EDIT" = "Ordner verwalten";
 
 /* Footer of the list of chat folders, explaining that folders sync with the user's other devices. */
 "CHAT_FOLDERS_FOOTER" = "Ordner erscheinen auf all deinen verknüpften Geräten, auch in anderen Apps, die Chat-Ordner unterstützen.";
@@ -465,6 +465,9 @@
 /* Title of the list that chooses the person whose messages to search. */
 "FILTER_CHOOSE_PERSON" = "Nachrichten von";
 
+/* Button that turns off all search filters. */
+"FILTER_CLEAR" = "Zurücksetzen";
+
 /* Search filter: messages from any date. */
 "FILTER_DATE_ANY" = "Jederzeit";
 
@@ -479,6 +482,18 @@
 
 /* Search filter: messages from the last year. */
 "FILTER_DATE_YEAR" = "Letztes Jahr";
+
+/* Name of the search filter that limits results to one chat. */
+"FILTER_LABEL_CHAT" = "Chat";
+
+/* Name of the search filter that limits results to a time span. */
+"FILTER_LABEL_DATE" = "Zeitraum";
+
+/* Name of the search filter that limits results to messages from one person. */
+"FILTER_LABEL_FROM" = "Von";
+
+/* Name of the search filter for links, photos or files. */
+"FILTER_LABEL_TYPE" = "Art";
 
 /* Search filter: messages from anyone. */
 "FILTER_PERSON_ANY" = "Alle Personen";
@@ -1113,6 +1128,12 @@
 /* Notification action that reminds the user again tomorrow morning. */
 "REMINDER_TOMORROW" = "Morgen";
 
+/* Below the scheduled message bubbles in a chat: how many more there are. Embeds {{ number }}. */
+"SCHEDULED_BUBBLES_MORE_FORMAT" = "%@ weitere geplant";
+
+/* Under a scheduled message bubble in a chat: when it is sent. Embeds {{ date and time }}. */
+"SCHEDULED_BUBBLE_TIME_FORMAT" = "Geplant: %@";
+
 /* Action that changes when a scheduled message is sent. */
 "SCHEDULED_CHANGE_TIME" = "Zeit ändern";
 
@@ -1142,6 +1163,9 @@
 
 /* Header of the messages found by a search. */
 "SEARCH_SECTION_MESSAGES" = "Nachrichten";
+
+/* Header of the filter shortcuts shown before anything is searched. */
+"SEARCH_SUGGESTIONS" = "Suchen nach";
 
 /* Header of the chat folders in the sidebar. */
 "SIDEBAR_FOLDERS" = "Ordner";
