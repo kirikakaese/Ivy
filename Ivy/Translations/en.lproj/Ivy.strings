@@ -130,7 +130,7 @@
 "CALENDAR_TODAY" = "Today";
 
 /* Button that opens the chat folder settings. */
-"CHAT_FOLDERS_EDIT" = "Edit Folders";
+"CHAT_FOLDERS_EDIT" = "Manage Folders";
 
 /* Footer of the list of chat folders, explaining that folders sync with the user's other devices. */
 "CHAT_FOLDERS_FOOTER" = "Folders appear on all your linked devices, also in other apps that support chat folders.";
