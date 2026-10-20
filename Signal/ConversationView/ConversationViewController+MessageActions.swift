@@ -133,7 +133,7 @@ extension ConversationViewController: ContextMenuInteractionDelegate {
                     }
                 }
 
-                // Ivy: "Star", "Transcribe", "Make Task" for voice notes, "Remind Me", "Add Task" and "Add to Calendar" for the message, before Delete
+                // Ivy: "Star", "Transcribe", "Make Task" for voice notes, "Remind Me", "Add Task", "Add to Calendar" and shared plan answers for the message, before Delete
                 if let contextMenuInteraction = self.collectionViewActiveContextMenuInteraction {
                     let interaction = contextMenuInteraction.itemViewModel.interaction
                     let thread = contextMenuInteraction.thread
@@ -144,7 +144,7 @@ extension ConversationViewController: ContextMenuInteractionDelegate {
                         self.ivyRemindMeContextMenuAction(interaction: interaction, thread: thread),
                         self.ivyAddTaskContextMenuAction(interaction: interaction, thread: thread),
                         self.ivyAddEventContextMenuAction(interaction: interaction, thread: thread),
-                    ].compactMap { $0 }
+                    ].compactMap { $0 } + self.ivyPlanContextMenuActions(interaction: interaction, thread: thread)
                     let deleteIndex = contextMenuActions.count - (actions.contains { $0.actionType == .delete } ? 1 : 0)
                     contextMenuActions.insert(contentsOf: ivyActions, at: max(deleteIndex, 0))
                 }
