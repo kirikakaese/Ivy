@@ -102,7 +102,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Snooze a chat | 6b | done | done | done | Snooze in a chat's menu: later today, tonight, tomorrow, next week or a chosen time. The chat leaves the chat list and comes back marked unread. Profile menu > Snoozed Chats lists them. Synced |
 | Drafts | 6c | done | done | done | Home > Drafts: unsent messages across chats, newest first. Tap to continue, swipe to discard |
 | Snippets | 6c | done | done | done | Settings > Ivy Data > Snippets. Typing ;trigger and a space in any message inserts the text. Synced |
-| Plan from the calendar | 6c | planned | planned | planned | Needs scheduled messages (6a) |
+| Plan from the calendar | 6c | done | done | done | Calendar > + > Plan Message, and Plan Message on a draft on Home: choose a chat, a text and a time; Ivy sends it then as a scheduled message. The calendar is a list, so planning uses this action instead of dragging |
 | Shared plans | 6c | planned | planned | planned | Other Signal apps get an `.ics` file |
 | Task from a voice note | 6c | done | done | done | Make Task on a voice note in Note to Self, and on any transcript. Transcribed on the device; the first sentence becomes the title |
 | Weekly review | 6c | done | done | done | Home > Weekly Review, and a weekly notification at a chosen day and time (Settings > Ivy Data > Weekly Review): overdue and due tasks, the next 7 days, chats waiting for an answer |

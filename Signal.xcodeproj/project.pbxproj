@@ -4293,6 +4293,7 @@
 		55E7ADCAABA1B44E6F2BA257 /* IvyWeeklyReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C28DD8B41B34AAD88EE307E /* IvyWeeklyReview.swift */; };
 		82F9D78AD57BBB71269998E4 /* IvyWeeklyReviewUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0316F43EF53EB1232A5DE673 /* IvyWeeklyReviewUI.swift */; };
 		EE1976162BB05EDB4A0BDF72 /* IvyWeeklyReviewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163C7ED1B21CE428D494F053 /* IvyWeeklyReviewTest.swift */; };
+		ED564B42F06FDF7FC52B7E75 /* IvyPlanMessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE7060D16B56DA13D50D9A87 /* IvyPlanMessageUI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8916,6 +8917,7 @@
 		7C28DD8B41B34AAD88EE307E /* IvyWeeklyReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWeeklyReview.swift; sourceTree = "<group>"; };
 		0316F43EF53EB1232A5DE673 /* IvyWeeklyReviewUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWeeklyReviewUI.swift; sourceTree = "<group>"; };
 		163C7ED1B21CE428D494F053 /* IvyWeeklyReviewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWeeklyReviewTest.swift; sourceTree = "<group>"; };
+		FE7060D16B56DA13D50D9A87 /* IvyPlanMessageUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPlanMessageUI.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16903,6 +16905,7 @@
 			children = (
 				6088472749C0F0D5AE77AB6F /* IvyWritingUI.swift */,
 				0316F43EF53EB1232A5DE673 /* IvyWeeklyReviewUI.swift */,
+				FE7060D16B56DA13D50D9A87 /* IvyPlanMessageUI.swift */,
 			);
 			path = Writing;
 			sourceTree = "<group>";
@@ -20263,6 +20266,7 @@
 				FE4515AF77936DF1656C6197 /* IvyRightClick.swift in Sources */,
 				73BEC2AA518BF93B8ECB9B75 /* IvyWritingUI.swift in Sources */,
 				82F9D78AD57BBB71269998E4 /* IvyWeeklyReviewUI.swift in Sources */,
+				ED564B42F06FDF7FC52B7E75 /* IvyPlanMessageUI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
