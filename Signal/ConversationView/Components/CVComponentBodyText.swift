@@ -93,8 +93,8 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
 
     private var shouldIgnoreEvents: Bool { Self.shouldIgnoreEvents(interaction: interaction) }
 
-    // TODO:
-    private static let shouldDetectDates = false
+    // Ivy: dates are underlined, so they can go into the calendar or tasks.
+    private static var shouldDetectDates: Bool { IvyMessageDetection.detectsDates }
 
     private static func buildDataDetector(shouldAllowLinkification: Bool) -> NSDataDetector? {
         var checkingTypes = NSTextCheckingResult.CheckingType()
@@ -771,6 +771,11 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
         let bodyTextLabel = componentView.bodyTextLabel
         if let item = bodyTextLabel.itemForGesture(sender: sender) {
             bodyTextLabel.animate(selectedItem: item)
+            // Ivy: dates and tasks offer the calendar and tasks for their message.
+            let ivyInteraction = interaction
+            if let conversation = componentDelegate as? ConversationViewController, MainActor.assumeIsolated({ conversation.ivyDidTapDetectedItem(item, interaction: ivyInteraction) }) {
+                return true
+            }
             componentDelegate.didTapBodyTextItem(item)
             return true
         }

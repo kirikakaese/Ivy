@@ -858,6 +858,15 @@
 /* Before the user's own last message in the Mac's menu bar extra. */
 "MENU_BAR_YOU_PREFIX" = "You:";
 
+/* Switch in the chat settings that underlines dates and times in messages. */
+"MESSAGE_DETECTION_DATES" = "Detect Dates";
+
+/* Explains the switches that underline dates and requests in messages. */
+"MESSAGE_DETECTION_FOOTER" = "Dates and requests like “Can you…” get a dotted underline. Tap one to add it to your calendar or tasks. Messages are only read on this device.";
+
+/* Switch in the chat settings that underlines requests like “Can you…” in messages. */
+"MESSAGE_DETECTION_TASKS" = "Detect Tasks";
+
 /* Item showing whether Background App Refresh is on; opens the system settings. */
 "NOTIFICATIONS_BACKGROUND_REFRESH" = "Background App Refresh";
 
