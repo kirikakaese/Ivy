@@ -567,6 +567,13 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
     }
 
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        if case .draft(let draft, _) = sections[indexPath.section].rows[indexPath.row] {
+            return UIContextMenuConfiguration(actionProvider: { [weak self] _ in
+                UIMenu(children: [UIAction(title: IvyPlanMessageUI.planTitle, image: UIImage(systemName: "clock.badge")) { _ in
+                    self?.planDraft(draft)
+                }])
+            })
+        }
         if let question = waitingQuestion(at: indexPath) {
             return UIContextMenuConfiguration(actionProvider: { [weak self] _ in
                 UIMenu(children: [UIAction(title: Self.dismissWaitingTitle, image: UIImage(systemName: "checkmark")) { _ in
@@ -603,6 +610,17 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
             return UISwipeActionsConfiguration(actions: [action])
         }
         return calendarItem(at: indexPath).map { IvyCalendarUI.swipeActions(for: $0) }
+    }
+
+    /// Sends a draft at a chosen time, and clears it from its chat.
+    private func planDraft(_ draft: IvyDraft) {
+        let chat = SSKEnvironment.shared.databaseStorageRef.read { tx in
+            DependenciesBridge.shared.threadStore.fetchThread(uniqueId: draft.threadUniqueId, tx: tx).flatMap(IvyChatReference.init(thread:))
+        }
+        ivyPresentPlanMessage(chat: chat, text: draft.text, sendAt: IvyPlanMessageUI.suggestedTime(on: Date())) { [weak self] in
+            SSKEnvironment.shared.databaseStorageRef.write { tx in IvyDrafts.discard(threadUniqueId: draft.threadUniqueId, tx: tx) }
+            self?.reload()
+        }
     }
 
     private func waitingQuestion(at indexPath: IndexPath) -> IvyWaitingQuestion? {

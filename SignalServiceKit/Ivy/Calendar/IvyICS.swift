@@ -14,7 +14,8 @@ public enum IvyICS {
 
     // MARK: - Writing
 
-    public static func export(_ events: [IvyEvent], now: Date = Date(), calendar: Calendar = .current) -> String {
+    /// `status` marks every event, for example TENTATIVE for proposed times.
+    public static func export(_ events: [IvyEvent], status: String? = nil, now: Date = Date(), calendar: Calendar = .current) -> String {
         var lines = [
             "BEGIN:VCALENDAR",
             "VERSION:2.0",
@@ -22,13 +23,13 @@ public enum IvyICS {
             "CALSCALE:GREGORIAN",
         ]
         for event in events {
-            lines += eventLines(event, now: now, calendar: calendar)
+            lines += eventLines(event, status: status, now: now, calendar: calendar)
         }
         lines.append("END:VCALENDAR")
         return lines.map(fold).joined(separator: "\r\n") + "\r\n"
     }
 
-    private static func eventLines(_ event: IvyEvent, now: Date, calendar: Calendar) -> [String] {
+    private static func eventLines(_ event: IvyEvent, status: String?, now: Date, calendar: Calendar) -> [String] {
         var lines = ["BEGIN:VEVENT"]
         lines.append("UID:" + escape(event.importedUID ?? "\(event.id)@ivy"))
         lines.append("DTSTAMP:" + utcString(now))
@@ -42,6 +43,9 @@ public enum IvyICS {
             lines.append("DTEND:" + utcString(event.endAt))
         }
         lines.append("SUMMARY:" + escape(event.title))
+        if let status {
+            lines.append("STATUS:" + status)
+        }
         if !event.location.isEmpty {
             lines.append("LOCATION:" + escape(event.location))
         }
