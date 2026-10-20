@@ -95,6 +95,12 @@ final class IvyFilterBar: UIView {
     private let personButton = UIButton(type: .system)
     private let dateButton = UIButton(type: .system)
     private let contentButton = UIButton(type: .system)
+    private let clearButton = UIButton(type: .system)
+
+    /// Whether any filter is on.
+    var isActive: Bool {
+        filter.threadUniqueId != nil || filter.author != nil || filter.since != nil || filter.content != .any
+    }
 
     init(showsContent: Bool, presenter: UIViewController, onChange: @escaping (IvySearchFilter) -> Void) {
         self.showsContent = showsContent
@@ -102,11 +108,18 @@ final class IvyFilterBar: UIView {
         self.onChange = onChange
         super.init(frame: .zero)
 
+        backgroundColor = .Signal.groupedBackground
         var buttons = [chatButton, personButton, dateButton]
         if showsContent {
             buttons.append(contentButton)
         }
-        let stack = UIStackView(arrangedSubviews: buttons)
+        var clear = UIButton.Configuration.plain()
+        clear.title = IvyLocalizedString("FILTER_CLEAR", comment: "Button that turns off all search filters.")
+        clear.baseForegroundColor = .Signal.accent
+        clear.buttonSize = .small
+        clearButton.configuration = clear
+        clearButton.addAction(UIAction { [weak self] _ in self?.clear() }, for: .primaryActionTriggered)
+        let stack = UIStackView(arrangedSubviews: buttons + [clearButton])
         stack.axis = .horizontal
         stack.spacing = 8
         let scrollView = UIScrollView()
@@ -119,6 +132,12 @@ final class IvyFilterBar: UIView {
         for button in buttons {
             button.showsMenuAsPrimaryAction = true
         }
+        let separator = UIView()
+        separator.backgroundColor = .Signal.opaqueSeparator
+        addSubview(separator)
+        separator.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
+        separator.autoSetDimension(.height, toSize: 1 / UIScreen.main.scale)
+        autoSetDimension(.height, toSize: 52)
         update()
     }
 
@@ -127,24 +146,29 @@ final class IvyFilterBar: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func style(_ button: UIButton, title: String, isActive: Bool) {
-        var configuration = isActive ? UIButton.Configuration.filled() : UIButton.Configuration.gray()
-        configuration.title = title
-        configuration.image = UIImage(systemName: "chevron.down", withConfiguration: UIImage.SymbolConfiguration(scale: .small))
-        configuration.imagePlacement = .trailing
-        configuration.imagePadding = 4
+    /// Off: the filter's name and icon, tinted. On: its value, filled.
+    private func style(_ button: UIButton, systemImage: String, label: String, value: String?) {
+        let isActive = value != nil
+        var configuration = isActive ? UIButton.Configuration.filled() : UIButton.Configuration.tinted()
+        configuration.title = value ?? label
+        configuration.image = UIImage(systemName: systemImage, withConfiguration: UIImage.SymbolConfiguration(scale: .small))
+        configuration.imagePlacement = .leading
+        configuration.imagePadding = 5
         configuration.cornerStyle = .capsule
-        configuration.baseBackgroundColor = isActive ? .Signal.accent : nil
-        configuration.baseForegroundColor = isActive ? .white : .Signal.label
-        configuration.buttonSize = .small
+        configuration.baseBackgroundColor = .Signal.accent
+        configuration.baseForegroundColor = isActive ? .white : .Signal.accent
+        configuration.buttonSize = .medium
+        configuration.titleLineBreakMode = .byTruncatingTail
         button.configuration = configuration
+        button.accessibilityLabel = value.map { label + ": " + $0 } ?? label
     }
 
     private func update() {
         style(
             chatButton,
-            title: chatName ?? IvyLocalizedString("FILTER_CHAT_ANY", comment: "Search filter: messages from any chat."),
-            isActive: filter.threadUniqueId != nil,
+            systemImage: "bubble.left.and.bubble.right",
+            label: IvyLocalizedString("FILTER_LABEL_CHAT", comment: "Name of the search filter that limits results to one chat."),
+            value: filter.threadUniqueId == nil ? nil : chatName,
         )
         chatButton.menu = UIMenu(children: [
             UIAction(title: IvyLocalizedString("FILTER_CHAT_ANY", comment: "Search filter: messages from any chat."), state: filter.threadUniqueId == nil ? .on : .off) { [weak self] _ in
@@ -159,8 +183,9 @@ final class IvyFilterBar: UIView {
 
         style(
             personButton,
-            title: personName ?? IvyLocalizedString("FILTER_PERSON_ANY", comment: "Search filter: messages from anyone."),
-            isActive: filter.author != nil,
+            systemImage: "person",
+            label: IvyLocalizedString("FILTER_LABEL_FROM", comment: "Name of the search filter that limits results to messages from one person."),
+            value: filter.author == nil ? nil : personName,
         )
         personButton.menu = UIMenu(children: [
             UIAction(title: IvyLocalizedString("FILTER_PERSON_ANY", comment: "Search filter: messages from anyone."), state: filter.author == nil ? .on : .off) { [weak self] _ in
@@ -173,7 +198,12 @@ final class IvyFilterBar: UIView {
             },
         ])
 
-        style(dateButton, title: dateRange.title, isActive: dateRange != .any)
+        style(
+            dateButton,
+            systemImage: "calendar",
+            label: IvyLocalizedString("FILTER_LABEL_DATE", comment: "Name of the search filter that limits results to a time span."),
+            value: dateRange == .any ? nil : dateRange.title,
+        )
         dateButton.menu = UIMenu(children: DateRange.allCases.map { range in
             UIAction(title: range.title, state: range == dateRange ? .on : .off) { [weak self] _ in
                 self?.dateRange = range
@@ -183,7 +213,12 @@ final class IvyFilterBar: UIView {
         })
 
         if showsContent {
-            style(contentButton, title: Self.title(for: filter.content), isActive: filter.content != .any)
+            style(
+                contentButton,
+                systemImage: "line.3.horizontal.decrease.circle",
+                label: IvyLocalizedString("FILTER_LABEL_TYPE", comment: "Name of the search filter for links, photos or files."),
+                value: filter.content == .any ? nil : Self.title(for: filter.content),
+            )
             contentButton.menu = UIMenu(children: IvySearchFilter.Content.allCases.map { content in
                 UIAction(title: Self.title(for: content), state: content == filter.content ? .on : .off) { [weak self] _ in
                     self?.filter.content = content
@@ -191,6 +226,7 @@ final class IvyFilterBar: UIView {
                 }
             })
         }
+        clearButton.isHidden = !isActive
     }
 
     static func title(for content: IvySearchFilter.Content) -> String {
@@ -207,7 +243,20 @@ final class IvyFilterBar: UIView {
         onChange(filter)
     }
 
-    private func chooseChat() {
+    func setContent(_ content: IvySearchFilter.Content) {
+        filter.content = content
+        changed()
+    }
+
+    func clear() {
+        filter = IvySearchFilter()
+        dateRange = .any
+        chatName = nil
+        personName = nil
+        changed()
+    }
+
+    func chooseChat() {
         let chooser = IvyChatChooserViewController(preferredChat: nil) { [weak self] thread in
             guard let self else { return }
             filter.threadUniqueId = thread.uniqueId
@@ -220,7 +269,7 @@ final class IvyFilterBar: UIView {
         presenter?.presentFormSheet(OWSNavigationController(rootViewController: chooser), animated: true)
     }
 
-    private func choosePerson() {
+    func choosePerson() {
         let chooser = IvyChatChooserViewController(preferredChat: nil) { [weak self] thread in
             guard let self else { return }
             guard let contactThread = thread as? TSContactThread, let aci = contactThread.contactAddress.aci else {
@@ -241,7 +290,7 @@ final class IvyFilterBar: UIView {
 // MARK: - Search
 
 /// One search across chats, tasks, events and chat notes.
-final class IvySearchViewController: UITableViewController, UISearchResultsUpdating {
+final class IvySearchViewController: UIViewController, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate {
 
     private enum Section {
         case messages([IvySearchResult])
@@ -266,14 +315,25 @@ final class IvySearchViewController: UITableViewController, UISearchResultsUpdat
         }
     }
 
+    /// Shown before anything is typed: shortcuts to the filters.
+    private enum Suggestion: CaseIterable {
+        case links
+        case photos
+        case files
+        case inChat
+        case from
+    }
+
+    private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private let searchController = UISearchController(searchResultsController: nil)
+    private var showsSuggestions = true
     private var filterBar: IvyFilterBar?
     private var sections = [Section]()
     private var chatNames = [String: String]()
     private var searchGeneration = 0
 
     init() {
-        super.init(style: .insetGrouped)
+        super.init(nibName: nil, bundle: nil)
     }
 
     @available(*, unavailable)
@@ -294,10 +354,21 @@ final class IvySearchViewController: UITableViewController, UISearchResultsUpdat
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "result")
         tableView.keyboardDismissMode = .onDrag
 
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "suggestion")
+
+        // The filters stay in view above the results.
         let bar = IvyFilterBar(showsContent: true, presenter: self) { [weak self] _ in self?.runSearch() }
-        bar.frame.size.height = 48
-        tableView.tableHeaderView = bar
         filterBar = bar
+        let stack = UIStackView(arrangedSubviews: [bar, tableView])
+        stack.axis = .vertical
+        view.backgroundColor = .Signal.groupedBackground
+        view.addSubview(stack)
+        stack.autoPinEdge(toSuperviewSafeArea: .top)
+        stack.autoPinEdge(toSuperviewEdge: .leading)
+        stack.autoPinEdge(toSuperviewEdge: .trailing)
+        stack.autoPinEdge(toSuperviewEdge: .bottom)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -361,19 +432,60 @@ final class IvySearchViewController: UITableViewController, UISearchResultsUpdat
         }
         sections = [Section.messages(messages), .tasks(tasks), .events(events), .notes(notes)].filter { !$0.results.isEmpty }
         chatNames = names
+        let query = (searchController.searchBar.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        showsSuggestions = query.isEmpty && results.isEmpty && filterBar?.isActive != true
         tableView.reloadData()
     }
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        sections.count
+    func numberOfSections(in tableView: UITableView) -> Int {
+        showsSuggestions ? 1 : sections.count
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        sections[section].results.count
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        showsSuggestions ? Suggestion.allCases.count : sections[section].results.count
     }
 
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        sections[section].title
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        showsSuggestions
+            ? IvyLocalizedString("SEARCH_SUGGESTIONS", comment: "Header of the filter shortcuts shown before anything is searched.")
+            : sections[section].title
+    }
+
+    private func suggestionCell(_ suggestion: Suggestion, at indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "suggestion", for: indexPath)
+        var content = UIListContentConfiguration.cell()
+        content.imageProperties.tintColor = .Signal.accent
+        switch suggestion {
+        case .links:
+            content.text = IvyFilterBar.title(for: .link)
+            content.image = UIImage(systemName: "link")
+        case .photos:
+            content.text = IvyFilterBar.title(for: .photo)
+            content.image = UIImage(systemName: "photo")
+        case .files:
+            content.text = IvyFilterBar.title(for: .file)
+            content.image = UIImage(systemName: "doc")
+        case .inChat:
+            content.text = IvyLocalizedString("FILTER_CHOOSE_CHAT", comment: "Title of the list that chooses the chat to search in.") + "…"
+            content.image = UIImage(systemName: "bubble.left.and.bubble.right")
+        case .from:
+            content.text = IvyLocalizedString("FILTER_CHOOSE_PERSON", comment: "Title of the list that chooses the person whose messages to search.") + "…"
+            content.image = UIImage(systemName: "person")
+        }
+        cell.contentConfiguration = content
+        cell.accessoryType = .disclosureIndicator
+        return cell
+    }
+
+    private func apply(_ suggestion: Suggestion) {
+        guard let filterBar else { return }
+        switch suggestion {
+        case .links: filterBar.setContent(.link)
+        case .photos: filterBar.setContent(.photo)
+        case .files: filterBar.setContent(.file)
+        case .inChat: filterBar.chooseChat()
+        case .from: filterBar.choosePerson()
+        }
     }
 
     /// The index marks matches with tags; the list shows plain text.
@@ -383,7 +495,10 @@ final class IvySearchViewController: UITableViewController, UISearchResultsUpdat
             .replacingOccurrences(of: "</\(FullTextSearchIndexer.matchTag)>", with: "")
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if showsSuggestions {
+            return suggestionCell(Suggestion.allCases[indexPath.row], at: indexPath)
+        }
         let cell = tableView.dequeueReusableCell(withIdentifier: "result", for: indexPath)
         var content = UIListContentConfiguration.subtitleCell()
         content.secondaryTextProperties.color = .Signal.secondaryLabel
@@ -412,8 +527,12 @@ final class IvySearchViewController: UITableViewController, UISearchResultsUpdat
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        if showsSuggestions {
+            apply(Suggestion.allCases[indexPath.row])
+            return
+        }
         switch sections[indexPath.section].results[indexPath.row] {
         case .message(let threadId, let messageId, _, _):
             IvyFind.showMessage(threadUniqueId: threadId, messageUniqueId: messageId, from: self)
@@ -430,10 +549,11 @@ final class IvySearchViewController: UITableViewController, UISearchResultsUpdat
 // MARK: - Library
 
 /// Every link, photo and file from all chats, newest first.
-final class IvyLibraryViewController: UITableViewController {
+final class IvyLibraryViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     private static let limit = 300
 
+    private let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private let kindControl = UISegmentedControl()
     private var filterBar: IvyFilterBar?
     private var items = [IvyLibrary.Item]()
@@ -445,7 +565,7 @@ final class IvyLibraryViewController: UITableViewController {
     }
 
     init() {
-        super.init(style: .insetGrouped)
+        super.init(nibName: nil, bundle: nil)
     }
 
     @available(*, unavailable)
@@ -473,10 +593,20 @@ final class IvyLibraryViewController: UITableViewController {
         navigationItem.titleView = kindControl
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "item")
 
+        tableView.dataSource = self
+        tableView.delegate = self
+
+        // The filters stay in view above the list.
         let bar = IvyFilterBar(showsContent: false, presenter: self) { [weak self] _ in self?.load() }
-        bar.frame.size.height = 48
-        tableView.tableHeaderView = bar
         filterBar = bar
+        let stack = UIStackView(arrangedSubviews: [bar, tableView])
+        stack.axis = .vertical
+        view.backgroundColor = .Signal.groupedBackground
+        view.addSubview(stack)
+        stack.autoPinEdge(toSuperviewSafeArea: .top)
+        stack.autoPinEdge(toSuperviewEdge: .leading)
+        stack.autoPinEdge(toSuperviewEdge: .trailing)
+        stack.autoPinEdge(toSuperviewEdge: .bottom)
         load()
     }
 
@@ -504,11 +634,11 @@ final class IvyLibraryViewController: UITableViewController {
         }
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         max(items.count, 1)
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "item", for: indexPath)
         guard !items.isEmpty else {
             var content = UIListContentConfiguration.cell()
@@ -545,7 +675,7 @@ final class IvyLibraryViewController: UITableViewController {
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         guard indexPath.row < items.count else { return }
         let item = items[indexPath.row]
@@ -556,7 +686,7 @@ final class IvyLibraryViewController: UITableViewController {
         }
     }
 
-    override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         guard indexPath.row < items.count else { return nil }
         let item = items[indexPath.row]
         return UIContextMenuConfiguration(actionProvider: { [weak self] _ in
