@@ -4298,6 +4298,11 @@
 		46EE04C6E4AC1E63AD794013 /* IvyChatPrivacyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05F31EA47CDF864BE1A7E6C /* IvyChatPrivacyTest.swift */; };
 		725B22FAFDDA67A6B4797FF3 /* IvyHotKeySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC12C04961852E266531A /* IvyHotKeySettingsViewController.swift */; };
 		6E41E2FE3A9DB5394549668E /* IvyChatWindows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544F9ACD769C78253F7DC1E8 /* IvyChatWindows.swift */; };
+		ED564B42F06FDF7FC52B7E75 /* IvyPlanMessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE7060D16B56DA13D50D9A87 /* IvyPlanMessageUI.swift */; };
+		B513A0F24467803E9AC0A230 /* IvySharedPlans.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DCD2D85A0AE4C31FBD3CED8 /* IvySharedPlans.swift */; };
+		09DF41C55231DFF3F35EBB03 /* IvyPlanWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C800B3EED9FFD89D238081 /* IvyPlanWatcher.swift */; };
+		5B14AFE477F782EA5A3378D2 /* IvySharedPlansUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49E567C849E214354297EC4 /* IvySharedPlansUI.swift */; };
+		F459BBDBCAC18EB9E6F29FDF /* IvySharedPlansTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D1A1D8272F4D8F54DEA8E4 /* IvySharedPlansTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8926,6 +8931,11 @@
 		F05F31EA47CDF864BE1A7E6C /* IvyChatPrivacyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatPrivacyTest.swift; sourceTree = "<group>"; };
 		43ADC12C04961852E266531A /* IvyHotKeySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyHotKeySettingsViewController.swift; sourceTree = "<group>"; };
 		544F9ACD769C78253F7DC1E8 /* IvyChatWindows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatWindows.swift; sourceTree = "<group>"; };
+		FE7060D16B56DA13D50D9A87 /* IvyPlanMessageUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPlanMessageUI.swift; sourceTree = "<group>"; };
+		8DCD2D85A0AE4C31FBD3CED8 /* IvySharedPlans.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySharedPlans.swift; sourceTree = "<group>"; };
+		71C800B3EED9FFD89D238081 /* IvyPlanWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPlanWatcher.swift; sourceTree = "<group>"; };
+		D49E567C849E214354297EC4 /* IvySharedPlansUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySharedPlansUI.swift; sourceTree = "<group>"; };
+		16D1A1D8272F4D8F54DEA8E4 /* IvySharedPlansTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySharedPlansTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16539,6 +16549,7 @@
 				E5E01CE6083638C6859FD2B8 /* IvySnippetsTest.swift */,
 				163C7ED1B21CE428D494F053 /* IvyWeeklyReviewTest.swift */,
 				F05F31EA47CDF864BE1A7E6C /* IvyChatPrivacyTest.swift */,
+				16D1A1D8272F4D8F54DEA8E4 /* IvySharedPlansTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16711,6 +16722,8 @@
 				E1A8438EF0497B770D0B81FD /* IvyCalendar.swift */,
 				22FB723269FCA5359CE878EE /* IvyICS.swift */,
 				1F504D258B2522B156BF0EC8 /* IvyEventManager.swift */,
+				8DCD2D85A0AE4C31FBD3CED8 /* IvySharedPlans.swift */,
+				71C800B3EED9FFD89D238081 /* IvyPlanWatcher.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -16721,6 +16734,7 @@
 				D4D55B24AAD21AB3AE4EB1AD /* IvyCalendarUI.swift */,
 				7B310D4DCEE11ACF5D16ED69 /* IvyCalendarViewController.swift */,
 				4BF6659F3E8BD0E5BCB66301 /* IvyEventEditorViewController.swift */,
+				D49E567C849E214354297EC4 /* IvySharedPlansUI.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -16918,6 +16932,7 @@
 			children = (
 				6088472749C0F0D5AE77AB6F /* IvyWritingUI.swift */,
 				0316F43EF53EB1232A5DE673 /* IvyWeeklyReviewUI.swift */,
+				FE7060D16B56DA13D50D9A87 /* IvyPlanMessageUI.swift */,
 			);
 			path = Writing;
 			sourceTree = "<group>";
@@ -20281,6 +20296,8 @@
 				E037BF10415664E34AD1ED8D /* IvyChatPrivacyUI.swift in Sources */,
 				725B22FAFDDA67A6B4797FF3 /* IvyHotKeySettingsViewController.swift in Sources */,
 				6E41E2FE3A9DB5394549668E /* IvyChatWindows.swift in Sources */,
+				ED564B42F06FDF7FC52B7E75 /* IvyPlanMessageUI.swift in Sources */,
+				5B14AFE477F782EA5A3378D2 /* IvySharedPlansUI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21673,6 +21690,8 @@
 				6D38D44605613C966728186A /* IvySnippets.swift in Sources */,
 				55E7ADCAABA1B44E6F2BA257 /* IvyWeeklyReview.swift in Sources */,
 				B3ECC5C022C1DF778087CB52 /* IvyChatPrivacy.swift in Sources */,
+				B513A0F24467803E9AC0A230 /* IvySharedPlans.swift in Sources */,
+				09DF41C55231DFF3F35EBB03 /* IvyPlanWatcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21969,6 +21988,7 @@
 				7D9DCA972FDE9826C5503B99 /* IvySnippetsTest.swift in Sources */,
 				EE1976162BB05EDB4A0BDF72 /* IvyWeeklyReviewTest.swift in Sources */,
 				46EE04C6E4AC1E63AD794013 /* IvyChatPrivacyTest.swift in Sources */,
+				F459BBDBCAC18EB9E6F29FDF /* IvySharedPlansTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
