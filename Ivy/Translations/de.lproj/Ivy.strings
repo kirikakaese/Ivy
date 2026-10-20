@@ -894,6 +894,21 @@
 /* Context menu action that moves a pinned chat up. */
 "PINNED_CHAT_MOVE_UP" = "Nach oben";
 
+/* Action that writes a message to be sent at a chosen time from the calendar or a draft. */
+"PLAN_MESSAGE" = "Nachricht planen";
+
+/* Button that chooses the chat of a planned message. */
+"PLAN_MESSAGE_CHOOSE_CHAT" = "Chat auswählen";
+
+/* Shown when a planned message has no chat or no text. */
+"PLAN_MESSAGE_INCOMPLETE" = "Wähle einen Chat und schreibe eine Nachricht.";
+
+/* Button that schedules a planned message. */
+"PLAN_MESSAGE_SCHEDULE" = "Planen";
+
+/* Label of the time a planned message is sent. */
+"PLAN_MESSAGE_SEND_AT" = "Senden um";
+
 /* Text of the daily summary of muted chats. Embeds {{ number of messages }} and {{ number of chats }}. */
 "QUIET_SUMMARY_BODY_FORMAT" = "%1$@ ungelesene Nachrichten in %2$@ Chats";
 
