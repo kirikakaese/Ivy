@@ -377,7 +377,13 @@ final class IvyCalendarViewController: UIViewController, UITableViewDataSource, 
             guard let self else { return }
             ivyPresentPlanMessage(chat: nil, sendAt: IvyPlanMessageUI.suggestedTime(on: selectedDay))
         }
-        let item = UIBarButtonItem(title: nil, image: UIImage(systemName: "plus"), primaryAction: nil, menu: UIMenu(children: [newEvent, newTask, planMessage]))
+        let proposePlan = UIAction(
+            title: IvySharedPlansUI.proposeTitle,
+            image: UIImage(systemName: "person.2"),
+        ) { [weak self] _ in
+            self?.ivyProposePlan(in: nil)
+        }
+        let item = UIBarButtonItem(title: nil, image: UIImage(systemName: "plus"), primaryAction: nil, menu: UIMenu(children: [newEvent, newTask, planMessage, proposePlan]))
         item.accessibilityLabel = IvyLocalizedString("EVENT_NEW", comment: "Action that makes a new calendar event.")
         return item
     }
