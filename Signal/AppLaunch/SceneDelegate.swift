@@ -32,6 +32,13 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
 
+        // Ivy: Ivy has one main window; chats get windows of their own.
+        if Self.ivyHasMainWindow {
+            UIApplication.shared.requestSceneSessionDestruction(session, options: nil)
+            return
+        }
+        Self.ivyHasMainWindow = true
+
         self.window = lifecycleManager.connectUI(in: windowScene)
 
         // These arrive in the connection options rather than via the callbacks
@@ -51,22 +58,33 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
+        guard window != nil else {
+            return // Ivy: a second main window that was turned away
+        }
+        Self.ivyHasMainWindow = false // Ivy
         lifecycleManager.disconnectUI()
     }
 
+    /// Ivy: whether the main window is connected.
+    private static var ivyHasMainWindow = false
+
     func sceneWillEnterForeground(_ scene: UIScene) {
+        guard window != nil else { return } // Ivy: not a turned-away second main window
         lifecycleManager.willEnterForeground()
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
+        guard window != nil else { return } // Ivy: not a turned-away second main window
         lifecycleManager.didBecomeActive()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
+        guard window != nil else { return } // Ivy: not a turned-away second main window
         lifecycleManager.willResignActive()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
+        guard window != nil else { return } // Ivy: not a turned-away second main window
         lifecycleManager.didEnterBackground()
     }
 

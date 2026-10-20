@@ -170,9 +170,7 @@ final class IvyMenuBar: NSObject {
     /// Called by the plugin to open a chat in Ivy's window.
     @objc
     func openChatThread(_ threadId: NSString) {
-        if let session = UIApplication.shared.openSessions.first {
-            UIApplication.shared.requestSceneSessionActivation(session, userActivity: nil, options: nil)
-        }
+        IvyChatWindows.activateMainWindow()
         SignalApp.shared.presentConversationForThread(threadUniqueId: threadId as String, animated: true)
     }
 
@@ -197,9 +195,7 @@ final class IvyMenuBar: NSObject {
     /// front.
     @objc
     func ivyHotKeyPressed() {
-        if let session = UIApplication.shared.openSessions.first {
-            UIApplication.shared.requestSceneSessionActivation(session, userActivity: nil, options: nil)
-        }
+        IvyChatWindows.activateMainWindow()
         switch IvyHotKey.action {
         case .showIvy:
             break
@@ -215,9 +211,7 @@ final class IvyMenuBar: NSObject {
             return
         }
         // Brings the window back if it was closed.
-        if let session = UIApplication.shared.openSessions.first {
-            UIApplication.shared.requestSceneSessionActivation(session, userActivity: nil, options: nil)
-        }
+        IvyChatWindows.activateMainWindow()
         IvyLinkHandler.open(ivyLink)
     }
 }

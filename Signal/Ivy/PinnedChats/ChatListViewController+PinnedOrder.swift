@@ -30,6 +30,9 @@ extension ChatListViewController {
         if let lockAction = ivyLockChatAction(threadViewModel: threadViewModel) {
             elements.append(lockAction)
         }
+        if let windowAction = ivyOpenInNewWindowAction(threadViewModel: threadViewModel) {
+            elements.append(windowAction)
+        }
         if threadViewModel.isPinned {
             let threadId = threadViewModel.threadUniqueId
             let pinnedIds = renderState.pinnedThreadUniqueIds
