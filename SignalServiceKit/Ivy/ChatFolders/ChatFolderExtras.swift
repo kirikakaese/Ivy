@@ -16,17 +16,22 @@ public struct ChatFolderExtras: Equatable, Sendable {
     public var pinnedChats: [IvyChatReference]
     /// When the folder's chats may notify. Nil: any time.
     public var notificationHours: IvyNotificationHours?
+    /// The disappearing messages timer the folder sets on its chats, in
+    /// seconds; 0 is off. Nil: each chat keeps its own.
+    public var disappearingSeconds: UInt32?
 
     public init(
         emoji: String? = nil,
         color: ChatFolderColor? = nil,
         pinnedChats: [IvyChatReference] = [],
         notificationHours: IvyNotificationHours? = nil,
+        disappearingSeconds: UInt32? = nil,
     ) {
         self.emoji = emoji
         self.color = color
         self.pinnedChats = pinnedChats
         self.notificationHours = notificationHours
+        self.disappearingSeconds = disappearingSeconds
     }
 
     public static let maxPinnedChats = 4
@@ -40,6 +45,7 @@ public struct ChatFolderExtras: Equatable, Sendable {
         static let color = "color"
         static let pinnedChats = "pins"
         static let notificationHours = "hours"
+        static let disappearingSeconds = "disappear"
     }
 
     public static func fetch(folderId: Data, store: IvyDataStore?) -> ChatFolderExtras {
@@ -51,6 +57,7 @@ public struct ChatFolderExtras: Equatable, Sendable {
             color: IvyDataStore.decode(String.self, from: fields[Field.color]).flatMap(ChatFolderColor.init(rawValue:)),
             pinnedChats: IvyDataStore.decode([IvyChatReference].self, from: fields[Field.pinnedChats]) ?? [],
             notificationHours: IvyDataStore.decode(IvyNotificationHours.self, from: fields[Field.notificationHours]),
+            disappearingSeconds: IvyDataStore.decode(UInt32.self, from: fields[Field.disappearingSeconds]),
         )
     }
 
@@ -82,6 +89,9 @@ public struct ChatFolderExtras: Equatable, Sendable {
         }
         if notificationHours != old.notificationHours {
             fields.updateValue(notificationHours.map { IvyDataStore.encode($0) }, forKey: Field.notificationHours)
+        }
+        if disappearingSeconds != old.disappearingSeconds {
+            fields.updateValue(disappearingSeconds.map { IvyDataStore.encode($0) }, forKey: Field.disappearingSeconds)
         }
         guard !fields.isEmpty else {
             return

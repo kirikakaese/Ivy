@@ -54,6 +54,7 @@ extension ConversationSettingsViewController {
         ivyAddChatNoteItem(to: mainSection) // Ivy: the user's private note for the chat
         ivyAddScheduledItem(to: mainSection) // Ivy: messages scheduled for this chat
         addColorAndWallpaperSettingsItemIfNecessary(to: mainSection)
+        ivyAddLinkPreviewItem(to: mainSection) // Ivy: link previews per chat
         if !isNoteToSelf { addSoundAndNotificationSettingsItem(to: mainSection) }
         addSafetyNumberItemIfNecessary(to: mainSection)
 

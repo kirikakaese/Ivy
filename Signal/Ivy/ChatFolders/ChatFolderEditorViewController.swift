@@ -171,7 +171,28 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
             }
             navigationController?.pushViewController(picker, animated: true)
         })
+        section.add(.disclosureItem(
+            withText: IvyLocalizedString("FOLDER_TIMER", comment: "Item in a folder's settings that sets the disappearing messages timer of its chats."),
+            accessoryText: IvyFolderTimerUI.title(forSeconds: extras.disappearingSeconds),
+        ) { [weak self] in
+            self?.chooseTimer()
+        })
         return section
+    }
+
+    private func chooseTimer() {
+        let sheet = ActionSheetController(
+            title: IvyLocalizedString("FOLDER_TIMER", comment: "Item in a folder's settings that sets the disappearing messages timer of its chats."),
+            message: IvyLocalizedString("FOLDER_TIMER_EXPLANATION", comment: "Explains that a folder's disappearing messages timer is set on its chats and shown to the other people."),
+        )
+        for seconds in [nil] + IvyFolderTimers.presets.map(Optional.some) {
+            sheet.addAction(ActionSheetAction(title: IvyFolderTimerUI.title(forSeconds: seconds)) { [weak self] _ in
+                self?.extras.disappearingSeconds = seconds
+                self?.updateTableContents()
+            })
+        }
+        sheet.addAction(OWSActionSheets.cancelAction)
+        presentActionSheet(sheet)
     }
 
     // MARK: - Emoji and color
@@ -278,6 +299,9 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
             ChatFolderManager.shared.save(folder, tx: tx)
         }
         extras.save(folderId: folder.id, comparedTo: originalExtras, store: IvyData.shared?.store)
+        if let seconds = extras.disappearingSeconds {
+            IvyFolderTimerUI.apply(seconds: seconds, to: folder)
+        }
         close()
     }
 

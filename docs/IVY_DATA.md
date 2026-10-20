@@ -113,3 +113,9 @@ Which folders the current Apple Focus lets notify, and the time of the muted cha
 A snippet (kind `snippet`) has a `trigger` (lowercase letters and digits, typed after a semicolon) and a `text` of up to 2000 characters. Snippets sync to all Ivy devices.
 
 Drafts are not Ivy data: Home lists the drafts the chats keep themselves.
+
+## Locked chats and link previews
+
+A locked chat (kind `lockedChat`) is the chat's reference with when it was locked; a chat with link previews turned off (kind `noLinkPreviews`) is the chat's reference. Both sync to all Ivy devices. Which locked chats are open right now is not stored.
+
+A folder entity can also have `disappear`: the disappearing messages timer in seconds that the folder sets on its chats (0 is off).

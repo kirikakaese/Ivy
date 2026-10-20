@@ -26,6 +26,7 @@ enum IvyPrivacy {
             queue: .main,
         ) { _ in
             IvyHiddenChats.shared.setRevealed(false)
+            IvyLockedChats.shared.closeAll()
         }
     }
 
@@ -36,6 +37,7 @@ enum IvyPrivacy {
     /// Locks Ivy, or explains how to turn on Screen Lock.
     static func lockNow(from viewController: UIViewController?) {
         IvyHiddenChats.shared.setRevealed(false)
+        IvyLockedChats.shared.closeAll()
         guard !AppEnvironment.shared.screenLockUI.ivyLockNow() else {
             return
         }
@@ -50,6 +52,7 @@ enum IvyPrivacy {
     /// screen lock and sleep.
     static func lockIfEnabled() {
         IvyHiddenChats.shared.setRevealed(false)
+        IvyLockedChats.shared.closeAll()
         AppEnvironment.shared.screenLockUI.ivyLockNow()
     }
 

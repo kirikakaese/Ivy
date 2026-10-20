@@ -349,6 +349,7 @@ public final class ConversationViewController: OWSViewController {
         super.viewWillAppear(animated)
 
         configureGestureRecognizersIfNeeded()
+        ivyGuardLockedChat() // Ivy: locked chats ask to be opened
 
         ensureBannerState()
 

@@ -4293,6 +4293,9 @@
 		55E7ADCAABA1B44E6F2BA257 /* IvyWeeklyReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C28DD8B41B34AAD88EE307E /* IvyWeeklyReview.swift */; };
 		82F9D78AD57BBB71269998E4 /* IvyWeeklyReviewUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0316F43EF53EB1232A5DE673 /* IvyWeeklyReviewUI.swift */; };
 		EE1976162BB05EDB4A0BDF72 /* IvyWeeklyReviewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163C7ED1B21CE428D494F053 /* IvyWeeklyReviewTest.swift */; };
+		B3ECC5C022C1DF778087CB52 /* IvyChatPrivacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89E79D1F9D8173C3B3299C9 /* IvyChatPrivacy.swift */; };
+		E037BF10415664E34AD1ED8D /* IvyChatPrivacyUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD1F8B67A3032202D2780BA /* IvyChatPrivacyUI.swift */; };
+		46EE04C6E4AC1E63AD794013 /* IvyChatPrivacyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05F31EA47CDF864BE1A7E6C /* IvyChatPrivacyTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8916,6 +8919,9 @@
 		7C28DD8B41B34AAD88EE307E /* IvyWeeklyReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWeeklyReview.swift; sourceTree = "<group>"; };
 		0316F43EF53EB1232A5DE673 /* IvyWeeklyReviewUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWeeklyReviewUI.swift; sourceTree = "<group>"; };
 		163C7ED1B21CE428D494F053 /* IvyWeeklyReviewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWeeklyReviewTest.swift; sourceTree = "<group>"; };
+		E89E79D1F9D8173C3B3299C9 /* IvyChatPrivacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatPrivacy.swift; sourceTree = "<group>"; };
+		3FD1F8B67A3032202D2780BA /* IvyChatPrivacyUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatPrivacyUI.swift; sourceTree = "<group>"; };
+		F05F31EA47CDF864BE1A7E6C /* IvyChatPrivacyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatPrivacyTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16528,6 +16534,7 @@
 				BB72AFC19B7075861810E14C /* IvySearchTest.swift */,
 				E5E01CE6083638C6859FD2B8 /* IvySnippetsTest.swift */,
 				163C7ED1B21CE428D494F053 /* IvyWeeklyReviewTest.swift */,
+				F05F31EA47CDF864BE1A7E6C /* IvyChatPrivacyTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16838,6 +16845,7 @@
 			children = (
 				D69B03E6525E175EEDEF18A8 /* IvyHiddenChats.swift */,
 				5253B04AAB29C4078325621E /* IvyPasscode.swift */,
+				E89E79D1F9D8173C3B3299C9 /* IvyChatPrivacy.swift */,
 			);
 			path = Privacy;
 			sourceTree = "<group>";
@@ -16848,6 +16856,7 @@
 				5360EF072A581A338E5A477C /* IvyPrivacyUI.swift */,
 				E7A76DC7CD28A9C32FFAB3E1 /* IvyPasscodeUI.swift */,
 				800B129020E4DD84587BBEED /* IvyDecoyUI.swift */,
+				3FD1F8B67A3032202D2780BA /* IvyChatPrivacyUI.swift */,
 			);
 			path = Privacy;
 			sourceTree = "<group>";
@@ -20263,6 +20272,7 @@
 				FE4515AF77936DF1656C6197 /* IvyRightClick.swift in Sources */,
 				73BEC2AA518BF93B8ECB9B75 /* IvyWritingUI.swift in Sources */,
 				82F9D78AD57BBB71269998E4 /* IvyWeeklyReviewUI.swift in Sources */,
+				E037BF10415664E34AD1ED8D /* IvyChatPrivacyUI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21654,6 +21664,7 @@
 				7F37FCCDDC923A483B363013 /* IvyDrafts.swift in Sources */,
 				6D38D44605613C966728186A /* IvySnippets.swift in Sources */,
 				55E7ADCAABA1B44E6F2BA257 /* IvyWeeklyReview.swift in Sources */,
+				B3ECC5C022C1DF778087CB52 /* IvyChatPrivacy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21949,6 +21960,7 @@
 				C18BBACE4FEB637AFE4E8712 /* IvySearchTest.swift in Sources */,
 				7D9DCA972FDE9826C5503B99 /* IvySnippetsTest.swift in Sources */,
 				EE1976162BB05EDB4A0BDF72 /* IvyWeeklyReviewTest.swift in Sources */,
+				46EE04C6E4AC1E63AD794013 /* IvyChatPrivacyTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
