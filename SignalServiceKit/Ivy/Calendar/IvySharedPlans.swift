@@ -216,7 +216,7 @@ public enum IvySharedPlans {
             return []
         }
         let sql = """
-        SELECT * FROM \(TSInteraction.databaseTableName)
+        SELECT * FROM model_TSInteraction
         WHERE uniqueThreadId = ? AND id > ?
         ORDER BY id
         LIMIT 5000
