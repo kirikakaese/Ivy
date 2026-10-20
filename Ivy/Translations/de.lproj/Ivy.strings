@@ -267,6 +267,9 @@
 /* Accessibility value of a chat folder tab. Embeds {{ the number of chats with unread messages }}. */
 "CHAT_FOLDER_UNREAD_COUNT_FORMAT" = "Ungelesene Chats: %d";
 
+/* Switch in a chat's settings that turns link previews on or off for this chat. */
+"CHAT_LINK_PREVIEWS" = "Linkvorschauen";
+
 /* Shown in an empty chat note. */
 "CHAT_NOTE_PLACEHOLDER" = "Nur du siehst diese Notiz, auf deinen Ivy-Geräten.";
 
@@ -534,6 +537,15 @@
 /* Monday to Friday, in a chat folder's notification hours. */
 "FOCUS_HOURS_WEEKDAYS" = "Werktags";
 
+/* Item in a folder's settings that sets the disappearing messages timer of its chats. */
+"FOLDER_TIMER" = "Verschwindende Nachrichten";
+
+/* A folder leaves the disappearing messages timer to each chat. */
+"FOLDER_TIMER_EACH_CHAT" = "Jeder Chat selbst";
+
+/* Explains that a folder's disappearing messages timer is set on its chats and shown to the other people. */
+"FOLDER_TIMER_EXPLANATION" = "Der Timer wird für jeden Chat in diesem Ordner gesetzt, auch für später hinzugefügte. Die anderen sehen die Änderung wie bei jeder Timer-Änderung.";
+
 /* Footer of the debug log section in Help, explaining that logs stay on the device. */
 "HELP_DEBUG_LOG_FOOTER" = "Debug-Protokolle bleiben auf diesem Gerät. Exportiere sie, um einem Problem nachzugehen oder sie mit jemandem zu teilen, dem du vertraust.";
 
@@ -776,6 +788,24 @@
 
 /* Title of the list of every link, photo and file from all chats. */
 "LIBRARY_TITLE" = "Mediathek";
+
+/* Context menu action that makes a chat ask for Face ID, Touch ID or a passcode to open. */
+"LOCKED_CHAT_LOCK" = "Chat sperren";
+
+/* Shown after locking a chat. */
+"LOCKED_CHAT_LOCKED_TOAST" = "Dieser Chat fragt jetzt nach Face ID, Touch ID oder deinem Code.";
+
+/* Button that opens a locked chat with Face ID, Touch ID or a passcode. */
+"LOCKED_CHAT_OPEN" = "Öffnen";
+
+/* Shown by Face ID, Touch ID or the passcode prompt when opening a locked chat. */
+"LOCKED_CHAT_REASON" = "Gesperrten Chat öffnen";
+
+/* Shown over a locked chat until it is opened. */
+"LOCKED_CHAT_TITLE" = "Dieser Chat ist gesperrt";
+
+/* Context menu action that stops a chat from asking for Face ID, Touch ID or a passcode. */
+"LOCKED_CHAT_UNLOCK" = "Chatsperre entfernen";
 
 /* Menu command that locks Ivy right away. */
 "LOCK_NOW" = "Ivy sperren";

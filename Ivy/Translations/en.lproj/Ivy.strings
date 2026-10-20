@@ -267,6 +267,9 @@
 /* Accessibility value of a chat folder tab. Embeds {{ the number of chats with unread messages }}. */
 "CHAT_FOLDER_UNREAD_COUNT_FORMAT" = "Unread chats: %d";
 
+/* Switch in a chat's settings that turns link previews on or off for this chat. */
+"CHAT_LINK_PREVIEWS" = "Link Previews";
+
 /* Shown in an empty chat note. */
 "CHAT_NOTE_PLACEHOLDER" = "Only you see this note, on your Ivy devices.";
 
@@ -534,6 +537,15 @@
 /* Monday to Friday, in a chat folder's notification hours. */
 "FOCUS_HOURS_WEEKDAYS" = "Weekdays";
 
+/* Item in a folder's settings that sets the disappearing messages timer of its chats. */
+"FOLDER_TIMER" = "Disappearing Messages";
+
+/* A folder leaves the disappearing messages timer to each chat. */
+"FOLDER_TIMER_EACH_CHAT" = "Each Chat Decides";
+
+/* Explains that a folder's disappearing messages timer is set on its chats and shown to the other people. */
+"FOLDER_TIMER_EXPLANATION" = "The timer is set on every chat in this folder and on chats you add later. The other people see the change, as with any timer change.";
+
 /* Footer of the debug log section in Help, explaining that logs stay on the device. */
 "HELP_DEBUG_LOG_FOOTER" = "Debug logs stay on this device. Export them to look into a problem or to share them with someone you trust.";
 
@@ -776,6 +788,24 @@
 
 /* Title of the list of every link, photo and file from all chats. */
 "LIBRARY_TITLE" = "Library";
+
+/* Context menu action that makes a chat ask for Face ID, Touch ID or a passcode to open. */
+"LOCKED_CHAT_LOCK" = "Lock Chat";
+
+/* Shown after locking a chat. */
+"LOCKED_CHAT_LOCKED_TOAST" = "This chat now asks for Face ID, Touch ID or your passcode.";
+
+/* Button that opens a locked chat with Face ID, Touch ID or a passcode. */
+"LOCKED_CHAT_OPEN" = "Open";
+
+/* Shown by Face ID, Touch ID or the passcode prompt when opening a locked chat. */
+"LOCKED_CHAT_REASON" = "Open the locked chat";
+
+/* Shown over a locked chat until it is opened. */
+"LOCKED_CHAT_TITLE" = "This chat is locked";
+
+/* Context menu action that stops a chat from asking for Face ID, Touch ID or a passcode. */
+"LOCKED_CHAT_UNLOCK" = "Remove Chat Lock";
 
 /* Menu command that locks Ivy right away. */
 "LOCK_NOW" = "Lock Ivy";

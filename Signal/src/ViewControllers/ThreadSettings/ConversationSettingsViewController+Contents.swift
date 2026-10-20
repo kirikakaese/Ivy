@@ -55,6 +55,7 @@ extension ConversationSettingsViewController {
         ivyAddScheduledItem(to: mainSection) // Ivy: messages scheduled for this chat
         ivyAddProposePlanItem(to: mainSection) // Ivy: shared plans
         addColorAndWallpaperSettingsItemIfNecessary(to: mainSection)
+        ivyAddLinkPreviewItem(to: mainSection) // Ivy: link previews per chat
         if !isNoteToSelf { addSoundAndNotificationSettingsItem(to: mainSection) }
         addSafetyNumberItemIfNecessary(to: mainSection)
 

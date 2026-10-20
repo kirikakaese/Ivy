@@ -117,3 +117,9 @@ Drafts are not Ivy data: Home lists the drafts the chats keep themselves.
 ## Shared plans
 
 Shared plans are not Ivy data: they travel as normal messages with `.ics` files. Each proposed time has the UID `<plan>.o<number>@ivy-plan` and the status TENTATIVE; the agreed time has the UID `<plan>@ivy-plan` and the status CONFIRMED, so importing it again updates the same event. Each device remembers locally which messages it already looked at (collection `IvyPlanWatcher`).
+
+## Locked chats and link previews
+
+A locked chat (kind `lockedChat`) is the chat's reference with when it was locked; a chat with link previews turned off (kind `noLinkPreviews`) is the chat's reference. Both sync to all Ivy devices. Which locked chats are open right now is not stored.
+
+A folder entity can also have `disappear`: the disappearing messages timer in seconds that the folder sets on its chats (0 is off).

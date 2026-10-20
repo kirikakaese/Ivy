@@ -109,9 +109,9 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Multiple windows | 6d | – | planned | planned | |
 | Quick reply from the menu bar | 6d | – | – | planned | Mac only |
 | Global hotkey | 6d | – | – | planned | Mac only |
-| Lock a chat | 6d | planned | planned | planned | |
-| Disappearing messages per folder | 6d | planned | planned | planned | |
-| Link previews per chat | 6d | planned | planned | planned | |
+| Lock a chat | 6d | done | done | done | Lock Chat in a chat's menu. Opening it asks for the Ivy passcode, or Face ID, Touch ID or the device passcode; it stays open until Ivy leaves the screen or locks. Notifications show the name only. Synced |
+| Disappearing messages per folder | 6d | done | done | done | Folder > Disappearing Messages: sets the timer on every chat in the folder and on chats added later; the change shows in each chat as usual. Groups need permission to change the timer. Synced |
+| Link previews per chat | 6d | done | done | done | Chat settings > Link Previews. Synced |
 
 ## Release
 

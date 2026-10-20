@@ -262,6 +262,11 @@ extension ChatListViewController {
                         ChatFolderManager.shared.add(threadId: chat.threadId, toFolder: folder.id, tx: tx)
                     }
                 }
+                // A folder with a timer sets it on chats added to it.
+                if !isMember, let seconds = ChatFolderExtras.fetch(folderId: folder.id, store: IvyData.shared?.store).disappearingSeconds,
+                   let updated = SSKEnvironment.shared.databaseStorageRef.read(block: { tx in ChatFolderManager.shared.folder(id: folder.id, tx: tx) }) {
+                    IvyFolderTimerUI.apply(seconds: seconds, to: updated, onlyThreadId: chat.threadId)
+                }
             }
         }
         return UIMenu(

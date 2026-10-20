@@ -2102,7 +2102,8 @@ public class ConversationInputToolbar: UIView, QuotedReplyPreviewDelegate {
     private func updateInputLinkPreview() {
         AssertIsOnMainThread()
 
-        let messageBody = messageBodyForSending
+        // Ivy: no link previews in chats that have them turned off
+        let messageBody = (ivyLinkPreviewsOff ? nil : messageBodyForSending)
             ?? .init(text: "", ranges: .empty)
         linkPreviewFetchState.update(messageBody, enableIfEmpty: true)
     }

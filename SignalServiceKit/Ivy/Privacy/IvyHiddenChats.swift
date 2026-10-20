@@ -127,11 +127,3 @@ public final class IvyHiddenChats {
         }
     }
 }
-
-extension NotificationType {
-
-    /// A hidden chat's notifications show neither name nor content.
-    public func ivyForChat(_ thread: TSThread) -> NotificationType {
-        IvyHiddenChats.shared.isHidden(thread: thread) ? .noNameNoPreview : self
-    }
-}
