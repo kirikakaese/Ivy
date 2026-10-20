@@ -25,6 +25,19 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return lifecycleManager.didFinishLaunching(launchOptions: launchOptions)
     }
 
+    // Ivy: chats open in their own windows; everything else is the main window.
+    func application(
+        _ application: UIApplication,
+        configurationForConnecting connectingSceneSession: UISceneSession,
+        options: UIScene.ConnectionOptions,
+    ) -> UISceneConfiguration {
+        let isChatWindow = options.userActivities.contains { $0.activityType == IvyChatWindows.activityType }
+        return UISceneConfiguration(
+            name: isChatWindow ? IvyChatWindows.configurationName : "Default Configuration",
+            sessionRole: connectingSceneSession.role,
+        )
+    }
+
     func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
         lifecycleManager.didReceiveMemoryWarning()
     }

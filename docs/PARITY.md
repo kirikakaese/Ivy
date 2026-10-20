@@ -106,7 +106,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Shared plans | 6c | planned | planned | planned | Other Signal apps get an `.ics` file |
 | Task from a voice note | 6c | done | done | done | Make Task on a voice note in Note to Self, and on any transcript. Transcribed on the device; the first sentence becomes the title |
 | Weekly review | 6c | done | done | done | Home > Weekly Review, and a weekly notification at a chosen day and time (Settings > Ivy Data > Weekly Review): overdue and due tasks, the next 7 days, chats waiting for an answer |
-| Multiple windows | 6d | – | planned | planned | |
+| Multiple windows | 6d | – | done | done | Open in New Window in a chat's menu. Each window shows one chat and comes back with it after relaunch; the main window stays the only one with the chat list. Chat windows cover themselves while Ivy is locked |
 | Quick reply from the menu bar | 6d | – | – | done | The menu bar extra lists the 5 latest chats (not hidden, locked or snoozed ones); choosing one opens a small reply window. Nothing is shown while Ivy is locked, and the chats are never written to disk |
 | Global hotkey | 6d | – | – | done | Settings > Ivy Data > Global Shortcut: ⌥⌘I, ⌃⌥Space or ⌃⌘I, to bring Ivy to the front or open a new message. Kept on this Mac |
 | Lock a chat | 6d | done | done | done | Lock Chat in a chat's menu. Opening it asks for the Ivy passcode, or Face ID, Touch ID or the device passcode; it stays open until Ivy leaves the screen or locks. Notifications show the name only. Synced |

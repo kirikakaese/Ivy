@@ -121,6 +121,8 @@ enum IvyKeyCommands {
         guard builder.system == .main else {
             return
         }
+        // Chats open in their own windows; there is one main window.
+        builder.remove(menu: .newScene)
         let toggleSidebar = UIKeyCommand(
             title: IvyLocalizedString("SIDEBAR_HIDE", comment: "Menu command that hides the sidebar."),
             action: #selector(ConversationSplitViewController.ivyToggleSidebar),

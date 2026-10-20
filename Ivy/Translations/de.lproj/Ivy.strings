@@ -276,6 +276,12 @@
 /* Title of a chat's private note. */
 "CHAT_NOTE_TITLE" = "Notiz";
 
+/* Context menu action that opens a chat in its own window. */
+"CHAT_OPEN_IN_NEW_WINDOW" = "In neuem Fenster öffnen";
+
+/* Button in a locked chat window that goes to Ivy's main window to unlock. */
+"CHAT_WINDOW_UNLOCK" = "In Ivy entsperren";
+
 /* Color name. */
 "COLOR_BLUE" = "Blau";
 

@@ -4297,6 +4297,7 @@
 		E037BF10415664E34AD1ED8D /* IvyChatPrivacyUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD1F8B67A3032202D2780BA /* IvyChatPrivacyUI.swift */; };
 		46EE04C6E4AC1E63AD794013 /* IvyChatPrivacyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05F31EA47CDF864BE1A7E6C /* IvyChatPrivacyTest.swift */; };
 		725B22FAFDDA67A6B4797FF3 /* IvyHotKeySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC12C04961852E266531A /* IvyHotKeySettingsViewController.swift */; };
+		6E41E2FE3A9DB5394549668E /* IvyChatWindows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544F9ACD769C78253F7DC1E8 /* IvyChatWindows.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8924,6 +8925,7 @@
 		3FD1F8B67A3032202D2780BA /* IvyChatPrivacyUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatPrivacyUI.swift; sourceTree = "<group>"; };
 		F05F31EA47CDF864BE1A7E6C /* IvyChatPrivacyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatPrivacyTest.swift; sourceTree = "<group>"; };
 		43ADC12C04961852E266531A /* IvyHotKeySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyHotKeySettingsViewController.swift; sourceTree = "<group>"; };
+		544F9ACD769C78253F7DC1E8 /* IvyChatWindows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatWindows.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16803,6 +16805,7 @@
 				14D7C522D318DB14DA7AEABE /* IvyAppIntents.swift */,
 				9029AE3DDB265DC4BD185F96 /* IvyKeyCommands.swift */,
 				22C360CDEA1E47CCF9BCA576 /* IvyRightClick.swift */,
+				544F9ACD769C78253F7DC1E8 /* IvyChatWindows.swift */,
 			);
 			path = Shortcuts;
 			sourceTree = "<group>";
@@ -20277,6 +20280,7 @@
 				82F9D78AD57BBB71269998E4 /* IvyWeeklyReviewUI.swift in Sources */,
 				E037BF10415664E34AD1ED8D /* IvyChatPrivacyUI.swift in Sources */,
 				725B22FAFDDA67A6B4797FF3 /* IvyHotKeySettingsViewController.swift in Sources */,
+				6E41E2FE3A9DB5394549668E /* IvyChatWindows.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
