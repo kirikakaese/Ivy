@@ -85,7 +85,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 
 | Feature | Phase | iPhone | iPad | macOS | Notes |
 |---|---|---|---|---|---|
-| Scheduled messages | 6a | done | done | done | Hold or right-click the send button: Send Later with the reminder presets or a chosen time. Synced; the writing device sends, another device takes over after 10 minutes. Text only. Listed on Home and in chat settings |
+| Scheduled messages | 6a | done | done | done | Hold or right-click the send button: Send Later with the reminder presets or a chosen time. Synced; the writing device sends, another device takes over after 10 minutes. Text only. Listed on Home and in chat settings. In the chat, scheduled messages show above the message field as dashed bubbles with their time; clicking one offers Send Now, Change Time and Delete |
 | Starred messages | 6a | done | done | done | Star or Remove Star in a message's menu; a star next to the time; list on Home; synced; removed when the message is deleted |
 | Chat notes | 6a | done | done | done | Chat settings > Note; synced, only on the user's devices |
 | Voice note speed and transcription | 6a | done | done | done | Speed is remembered per chat (as upstream); Transcribe in the message menu, on the device only |
@@ -94,7 +94,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Instant lock | 6a | done | done | done | Lock Ivy in the profile menu, File menu and ⌃⌘L; needs Screen Lock |
 | Duress passcode and decoy mode | 6a | done | done | done | Settings > Privacy > Ivy Passcode > Duress Passcode. Entering it opens a decoy chat list with made-up chats that live only in memory and never send anything; the Notes chat has a button that deletes all Ivy data on the device. Leaving the app returns to the passcode screen |
 | Metadata trimming | 6a | done | done | done | As upstream: Signal removes image metadata before sending; link previews can be turned off in Settings > Chats |
-| Search with filters | 6b | done | done | done | Profile menu > Search Everything (⇧⌘F): messages, tasks, events and chat notes, with filters for chat, person, date and has link, photo or file. Uses the device's message index |
+| Search with filters | 6b | done | done | done | Profile menu > Search Everything (⇧⌘F): messages, tasks, events and chat notes. A filter bar stays above the results: Chat, From, Date and Type, highlighted when on, with Clear. Before typing, shortcuts list Links, Photos, Files, a chat or a person. Uses the device's message index |
 | Library of links, files and photos | 6b | done | done | done | Profile menu > Library (⇧⌘L): links, photos and files from all chats, newest first, with the chat, person and date filters. Shown as a list; tapping opens the link or the message |
 | Waiting on you | 6b | done | done | done | Home > Waiting on You: the last message of recent chats when it asks the user something and the user hasn't replied, from the last 7 days. In groups only questions that mention or reply to the user. Detection runs on the device; Done puts a question aside on this device |
 | Focus per folder | 6b | done | done | done | Folder > Notifications: only at certain days and hours, synced. An Apple Focus can have an Ivy filter that names folders; while it is on, only chats in those folders notify. Applies to message notifications |
