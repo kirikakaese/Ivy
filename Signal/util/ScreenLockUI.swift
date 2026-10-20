@@ -426,6 +426,11 @@ class ScreenLockUI {
 
     // MARK: - Ivy: lock now
 
+    /// Whether Ivy is locked right now, for the Mac's menu bar extra.
+    var ivyIsLocked: Bool {
+        isScreenLockLocked
+    }
+
     /// Locks right away, when Screen Lock is on. Returns whether it locked.
     @discardableResult
     func ivyLockNow() -> Bool {

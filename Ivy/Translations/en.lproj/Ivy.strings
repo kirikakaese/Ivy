@@ -636,6 +636,24 @@
 /* Title of the section on Home with questions the user hasn't answered. */
 "HOME_WAITING_ON_YOU" = "Waiting on You";
 
+/* Header of what the Mac's system-wide shortcut does. */
+"HOTKEY_ACTION" = "The Shortcut";
+
+/* The keyboard shortcut Control-Option-Space, written with the Mac's key symbols. */
+"HOTKEY_CONTROL_OPTION_SPACE" = "⌃⌥Space";
+
+/* Explains the Mac's system-wide keyboard shortcut for Ivy. */
+"HOTKEY_FOOTER" = "Works in every app on this Mac.";
+
+/* The system-wide shortcut opens a new message. */
+"HOTKEY_NEW_MESSAGE" = "Opens a New Message";
+
+/* The system-wide shortcut brings Ivy to the front. */
+"HOTKEY_SHOW_IVY" = "Brings Ivy to the Front";
+
+/* Title of the setting for the Mac's system-wide keyboard shortcut for Ivy. */
+"HOTKEY_TITLE" = "Global Shortcut";
+
 /* Description of the shortcut that adds a task. */
 "INTENT_ADD_TASK_DESCRIPTION" = "Adds a task to Ivy, with a reminder when it has a due date.";
 
@@ -798,11 +816,32 @@
 /* Shown when the user locks Ivy but Screen Lock is off. */
 "LOCK_NOW_NEEDS_SCREEN_LOCK" = "Turn on Screen Lock in Settings > Privacy to lock Ivy.";
 
+/* Stands for a message without text in the Mac's menu bar extra. */
+"MENU_BAR_ATTACHMENT" = "Attachment";
+
+/* Shown in the Mac's menu bar extra instead of chats while Ivy is locked. */
+"MENU_BAR_LOCKED" = "Ivy is locked";
+
+/* Header of the latest chats in the Mac's menu bar extra. */
+"MENU_BAR_MESSAGES" = "Messages";
+
 /* Menu bar item that brings Ivy's window to the front. */
 "MENU_BAR_OPEN" = "Open Ivy";
 
+/* Button in the quick reply window that opens the chat in Ivy. */
+"MENU_BAR_OPEN_CHAT" = "Open in Ivy";
+
+/* Placeholder of the quick reply field in the Mac's menu bar extra. */
+"MENU_BAR_REPLY_PLACEHOLDER" = "Reply";
+
+/* Button that sends a quick reply from the Mac's menu bar extra. */
+"MENU_BAR_SEND" = "Send";
+
 /* Menu bar item with the number of unread messages. Embeds {{ number of unread messages }}. */
 "MENU_BAR_UNREAD_FORMAT" = "%d unread";
+
+/* Before the user's own last message in the Mac's menu bar extra. */
+"MENU_BAR_YOU_PREFIX" = "You:";
 
 /* Item showing whether Background App Refresh is on; opens the system settings. */
 "NOTIFICATIONS_BACKGROUND_REFRESH" = "Background App Refresh";
