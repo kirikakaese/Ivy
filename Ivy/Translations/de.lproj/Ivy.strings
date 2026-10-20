@@ -130,7 +130,7 @@
 "CALENDAR_TODAY" = "Heute";
 
 /* Button that opens the chat folder settings. */
-"CHAT_FOLDERS_EDIT" = "Ordner bearbeiten";
+"CHAT_FOLDERS_EDIT" = "Ordner verwalten";
 
 /* Footer of the list of chat folders, explaining that folders sync with the user's other devices. */
 "CHAT_FOLDERS_FOOTER" = "Ordner erscheinen auf all deinen verknüpften Geräten, auch in anderen Apps, die Chat-Ordner unterstützen.";
@@ -1097,6 +1097,12 @@
 
 /* Notification action that reminds the user again tomorrow morning. */
 "REMINDER_TOMORROW" = "Morgen";
+
+/* Below the scheduled message bubbles in a chat: how many more there are. Embeds {{ number }}. */
+"SCHEDULED_BUBBLES_MORE_FORMAT" = "%@ weitere geplant";
+
+/* Under a scheduled message bubble in a chat: when it is sent. Embeds {{ date and time }}. */
+"SCHEDULED_BUBBLE_TIME_FORMAT" = "Geplant: %@";
 
 /* Action that changes when a scheduled message is sent. */
 "SCHEDULED_CHANGE_TIME" = "Zeit ändern";

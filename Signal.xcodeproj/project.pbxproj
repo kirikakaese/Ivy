@@ -4293,6 +4293,7 @@
 		55E7ADCAABA1B44E6F2BA257 /* IvyWeeklyReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C28DD8B41B34AAD88EE307E /* IvyWeeklyReview.swift */; };
 		82F9D78AD57BBB71269998E4 /* IvyWeeklyReviewUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0316F43EF53EB1232A5DE673 /* IvyWeeklyReviewUI.swift */; };
 		EE1976162BB05EDB4A0BDF72 /* IvyWeeklyReviewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 163C7ED1B21CE428D494F053 /* IvyWeeklyReviewTest.swift */; };
+		F3B020EEA10ABB25260F557D /* IvyPlannedBubbles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EFCA1003F4472813D243CD /* IvyPlannedBubbles.swift */; };
 		ED564B42F06FDF7FC52B7E75 /* IvyPlanMessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE7060D16B56DA13D50D9A87 /* IvyPlanMessageUI.swift */; };
 		B513A0F24467803E9AC0A230 /* IvySharedPlans.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DCD2D85A0AE4C31FBD3CED8 /* IvySharedPlans.swift */; };
 		09DF41C55231DFF3F35EBB03 /* IvyPlanWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C800B3EED9FFD89D238081 /* IvyPlanWatcher.swift */; };
@@ -8921,6 +8922,7 @@
 		7C28DD8B41B34AAD88EE307E /* IvyWeeklyReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWeeklyReview.swift; sourceTree = "<group>"; };
 		0316F43EF53EB1232A5DE673 /* IvyWeeklyReviewUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWeeklyReviewUI.swift; sourceTree = "<group>"; };
 		163C7ED1B21CE428D494F053 /* IvyWeeklyReviewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWeeklyReviewTest.swift; sourceTree = "<group>"; };
+		89EFCA1003F4472813D243CD /* IvyPlannedBubbles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPlannedBubbles.swift; sourceTree = "<group>"; };
 		FE7060D16B56DA13D50D9A87 /* IvyPlanMessageUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPlanMessageUI.swift; sourceTree = "<group>"; };
 		8DCD2D85A0AE4C31FBD3CED8 /* IvySharedPlans.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySharedPlans.swift; sourceTree = "<group>"; };
 		71C800B3EED9FFD89D238081 /* IvyPlanWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPlanWatcher.swift; sourceTree = "<group>"; };
@@ -16843,6 +16845,7 @@
 				6DD37DE2EE099D5478582A44 /* IvyMessageExtrasUI.swift */,
 				EA1BD4935A406D128BEC8FA3 /* IvyScheduledSender.swift */,
 				5CD23CFAE263FDC23371A87E /* IvyScheduledUI.swift */,
+				89EFCA1003F4472813D243CD /* IvyPlannedBubbles.swift */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -20278,6 +20281,7 @@
 				FE4515AF77936DF1656C6197 /* IvyRightClick.swift in Sources */,
 				73BEC2AA518BF93B8ECB9B75 /* IvyWritingUI.swift in Sources */,
 				82F9D78AD57BBB71269998E4 /* IvyWeeklyReviewUI.swift in Sources */,
+				F3B020EEA10ABB25260F557D /* IvyPlannedBubbles.swift in Sources */,
 				ED564B42F06FDF7FC52B7E75 /* IvyPlanMessageUI.swift in Sources */,
 				5B14AFE477F782EA5A3378D2 /* IvySharedPlansUI.swift in Sources */,
 			);
