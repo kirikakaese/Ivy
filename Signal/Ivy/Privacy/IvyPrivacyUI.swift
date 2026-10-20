@@ -39,6 +39,7 @@ enum IvyPrivacy {
         IvyHiddenChats.shared.setRevealed(false)
         IvyLockedChats.shared.closeAll()
         guard !AppEnvironment.shared.screenLockUI.ivyLockNow() else {
+            NotificationCenter.default.post(name: IvyChatWindows.ivyDidLock, object: nil)
             return
         }
         OWSActionSheets.showActionSheet(
@@ -53,7 +54,9 @@ enum IvyPrivacy {
     static func lockIfEnabled() {
         IvyHiddenChats.shared.setRevealed(false)
         IvyLockedChats.shared.closeAll()
-        AppEnvironment.shared.screenLockUI.ivyLockNow()
+        if AppEnvironment.shared.screenLockUI.ivyLockNow() {
+            NotificationCenter.default.post(name: IvyChatWindows.ivyDidLock, object: nil)
+        }
     }
 
     // MARK: - Hidden chats
