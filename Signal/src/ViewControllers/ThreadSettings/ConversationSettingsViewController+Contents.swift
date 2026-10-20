@@ -53,6 +53,7 @@ extension ConversationSettingsViewController {
         addNicknameItemIfNecessary(to: mainSection)
         ivyAddChatNoteItem(to: mainSection) // Ivy: the user's private note for the chat
         ivyAddScheduledItem(to: mainSection) // Ivy: messages scheduled for this chat
+        ivyAddProposePlanItem(to: mainSection) // Ivy: shared plans
         addColorAndWallpaperSettingsItemIfNecessary(to: mainSection)
         ivyAddLinkPreviewItem(to: mainSection) // Ivy: link previews per chat
         if !isNoteToSelf { addSoundAndNotificationSettingsItem(to: mainSection) }

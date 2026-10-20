@@ -370,7 +370,20 @@ final class IvyCalendarViewController: UIViewController, UITableViewDataSource, 
             let dueAt = Calendar.current.date(bySettingHour: IvyTask.allDayReminderHour, minute: 0, second: 0, of: selectedDay)
             ivyPresentTaskEditor(IvyTask(title: "", dueAt: dueAt), isNew: true)
         }
-        let item = UIBarButtonItem(title: nil, image: UIImage(systemName: "plus"), primaryAction: nil, menu: UIMenu(children: [newEvent, newTask]))
+        let planMessage = UIAction(
+            title: IvyPlanMessageUI.planTitle,
+            image: UIImage(systemName: "clock.badge"),
+        ) { [weak self] _ in
+            guard let self else { return }
+            ivyPresentPlanMessage(chat: nil, sendAt: IvyPlanMessageUI.suggestedTime(on: selectedDay))
+        }
+        let proposePlan = UIAction(
+            title: IvySharedPlansUI.proposeTitle,
+            image: UIImage(systemName: "person.2"),
+        ) { [weak self] _ in
+            self?.ivyProposePlan(in: nil)
+        }
+        let item = UIBarButtonItem(title: nil, image: UIImage(systemName: "plus"), primaryAction: nil, menu: UIMenu(children: [newEvent, newTask, planMessage, proposePlan]))
         item.accessibilityLabel = IvyLocalizedString("EVENT_NEW", comment: "Action that makes a new calendar event.")
         return item
     }
