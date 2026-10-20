@@ -4298,6 +4298,7 @@
 		46EE04C6E4AC1E63AD794013 /* IvyChatPrivacyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05F31EA47CDF864BE1A7E6C /* IvyChatPrivacyTest.swift */; };
 		725B22FAFDDA67A6B4797FF3 /* IvyHotKeySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43ADC12C04961852E266531A /* IvyHotKeySettingsViewController.swift */; };
 		6E41E2FE3A9DB5394549668E /* IvyChatWindows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544F9ACD769C78253F7DC1E8 /* IvyChatWindows.swift */; };
+		F3B020EEA10ABB25260F557D /* IvyPlannedBubbles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EFCA1003F4472813D243CD /* IvyPlannedBubbles.swift */; };
 		ED564B42F06FDF7FC52B7E75 /* IvyPlanMessageUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE7060D16B56DA13D50D9A87 /* IvyPlanMessageUI.swift */; };
 		B513A0F24467803E9AC0A230 /* IvySharedPlans.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DCD2D85A0AE4C31FBD3CED8 /* IvySharedPlans.swift */; };
 		09DF41C55231DFF3F35EBB03 /* IvyPlanWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C800B3EED9FFD89D238081 /* IvyPlanWatcher.swift */; };
@@ -8931,6 +8932,7 @@
 		F05F31EA47CDF864BE1A7E6C /* IvyChatPrivacyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatPrivacyTest.swift; sourceTree = "<group>"; };
 		43ADC12C04961852E266531A /* IvyHotKeySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyHotKeySettingsViewController.swift; sourceTree = "<group>"; };
 		544F9ACD769C78253F7DC1E8 /* IvyChatWindows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatWindows.swift; sourceTree = "<group>"; };
+		89EFCA1003F4472813D243CD /* IvyPlannedBubbles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPlannedBubbles.swift; sourceTree = "<group>"; };
 		FE7060D16B56DA13D50D9A87 /* IvyPlanMessageUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPlanMessageUI.swift; sourceTree = "<group>"; };
 		8DCD2D85A0AE4C31FBD3CED8 /* IvySharedPlans.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySharedPlans.swift; sourceTree = "<group>"; };
 		71C800B3EED9FFD89D238081 /* IvyPlanWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPlanWatcher.swift; sourceTree = "<group>"; };
@@ -16856,6 +16858,7 @@
 				6DD37DE2EE099D5478582A44 /* IvyMessageExtrasUI.swift */,
 				EA1BD4935A406D128BEC8FA3 /* IvyScheduledSender.swift */,
 				5CD23CFAE263FDC23371A87E /* IvyScheduledUI.swift */,
+				89EFCA1003F4472813D243CD /* IvyPlannedBubbles.swift */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -20296,6 +20299,7 @@
 				E037BF10415664E34AD1ED8D /* IvyChatPrivacyUI.swift in Sources */,
 				725B22FAFDDA67A6B4797FF3 /* IvyHotKeySettingsViewController.swift in Sources */,
 				6E41E2FE3A9DB5394549668E /* IvyChatWindows.swift in Sources */,
+				F3B020EEA10ABB25260F557D /* IvyPlannedBubbles.swift in Sources */,
 				ED564B42F06FDF7FC52B7E75 /* IvyPlanMessageUI.swift in Sources */,
 				5B14AFE477F782EA5A3378D2 /* IvySharedPlansUI.swift in Sources */,
 			);

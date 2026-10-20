@@ -233,11 +233,27 @@ public extension ConversationViewController {
 
         bottomBarContainer.removeAllSubviews()
 
+        // Ivy: scheduled messages as dashed bubbles above the message field
+        var ivyTopAnchor = bottomBarContainer.topAnchor
+        if bottomViewType == .inputToolbar {
+            let plannedView = IvyPlannedMessagesView(thread: thread, presenter: self) { [weak self] in
+                self?.updateContentInsets()
+            }
+            plannedView.translatesAutoresizingMaskIntoConstraints = false
+            bottomBarContainer.addSubview(plannedView)
+            NSLayoutConstraint.activate([
+                plannedView.topAnchor.constraint(equalTo: bottomBarContainer.topAnchor),
+                plannedView.leadingAnchor.constraint(equalTo: bottomBarContainer.leadingAnchor),
+                plannedView.trailingAnchor.constraint(equalTo: bottomBarContainer.trailingAnchor),
+            ])
+            ivyTopAnchor = plannedView.bottomAnchor
+        }
+
         if let bottomView {
             bottomView.translatesAutoresizingMaskIntoConstraints = false
             bottomBarContainer.addSubview(bottomView)
             NSLayoutConstraint.activate([
-                bottomView.topAnchor.constraint(equalTo: bottomBarContainer.topAnchor),
+                bottomView.topAnchor.constraint(equalTo: ivyTopAnchor), // Ivy: below the scheduled messages
                 bottomView.leadingAnchor.constraint(equalTo: bottomBarContainer.leadingAnchor),
                 bottomView.trailingAnchor.constraint(equalTo: bottomBarContainer.trailingAnchor),
             ])
