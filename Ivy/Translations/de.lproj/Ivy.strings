@@ -651,6 +651,24 @@
 /* Title of the section on Home with questions the user hasn't answered. */
 "HOME_WAITING_ON_YOU" = "Wartet auf dich";
 
+/* Header of what the Mac's system-wide shortcut does. */
+"HOTKEY_ACTION" = "Das Kürzel";
+
+/* The keyboard shortcut Control-Option-Space, written with the Mac's key symbols. */
+"HOTKEY_CONTROL_OPTION_SPACE" = "⌃⌥Leertaste";
+
+/* Explains the Mac's system-wide keyboard shortcut for Ivy. */
+"HOTKEY_FOOTER" = "Funktioniert in jeder App auf diesem Mac.";
+
+/* The system-wide shortcut opens a new message. */
+"HOTKEY_NEW_MESSAGE" = "Öffnet eine neue Nachricht";
+
+/* The system-wide shortcut brings Ivy to the front. */
+"HOTKEY_SHOW_IVY" = "Holt Ivy nach vorne";
+
+/* Title of the setting for the Mac's system-wide keyboard shortcut for Ivy. */
+"HOTKEY_TITLE" = "Globales Tastenkürzel";
+
 /* Description of the shortcut that adds a task. */
 "INTENT_ADD_TASK_DESCRIPTION" = "Fügt Ivy eine Aufgabe hinzu, mit Erinnerung, wenn sie ein Fälligkeitsdatum hat.";
 
@@ -813,11 +831,32 @@
 /* Shown when the user locks Ivy but Screen Lock is off. */
 "LOCK_NOW_NEEDS_SCREEN_LOCK" = "Schalte die Bildschirmsperre unter Einstellungen > Datenschutz ein, um Ivy zu sperren.";
 
+/* Stands for a message without text in the Mac's menu bar extra. */
+"MENU_BAR_ATTACHMENT" = "Anhang";
+
+/* Shown in the Mac's menu bar extra instead of chats while Ivy is locked. */
+"MENU_BAR_LOCKED" = "Ivy ist gesperrt";
+
+/* Header of the latest chats in the Mac's menu bar extra. */
+"MENU_BAR_MESSAGES" = "Nachrichten";
+
 /* Menu bar item that brings Ivy's window to the front. */
 "MENU_BAR_OPEN" = "Ivy öffnen";
 
+/* Button in the quick reply window that opens the chat in Ivy. */
+"MENU_BAR_OPEN_CHAT" = "In Ivy öffnen";
+
+/* Placeholder of the quick reply field in the Mac's menu bar extra. */
+"MENU_BAR_REPLY_PLACEHOLDER" = "Antworten";
+
+/* Button that sends a quick reply from the Mac's menu bar extra. */
+"MENU_BAR_SEND" = "Senden";
+
 /* Menu bar item with the number of unread messages. Embeds {{ number of unread messages }}. */
 "MENU_BAR_UNREAD_FORMAT" = "%d ungelesen";
+
+/* Before the user's own last message in the Mac's menu bar extra. */
+"MENU_BAR_YOU_PREFIX" = "Du:";
 
 /* Item showing whether Background App Refresh is on; opens the system settings. */
 "NOTIFICATIONS_BACKGROUND_REFRESH" = "Hintergrundaktualisierung";

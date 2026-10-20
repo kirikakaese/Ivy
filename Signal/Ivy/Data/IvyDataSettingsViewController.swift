@@ -71,6 +71,18 @@ final class IvyDataSettingsViewController: OWSTableViewController2, UIDocumentPi
         ))
         contents.add(organizeSection)
 
+        #if targetEnvironment(macCatalyst)
+        let macSection = OWSTableSection()
+        macSection.add(.disclosureItem(
+            withText: IvyHotKeySettingsViewController.title,
+            accessoryText: IvyHotKey.current.title,
+            actionBlock: { [weak self] in
+                self?.navigationController?.pushViewController(IvyHotKeySettingsViewController(), animated: true)
+            },
+        ))
+        contents.add(macSection)
+        #endif
+
         let syncSection = OWSTableSection()
         syncSection.headerTitle = IvyLocalizedString("IVY_DATA_SYNC_HEADER", comment: "Header of the Ivy data sync section.")
         syncSection.footerTitle = IvyLocalizedString(
