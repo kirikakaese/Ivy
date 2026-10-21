@@ -61,11 +61,11 @@ final class IvyPlannedMessagesView: UIView {
             ? .zero
             : NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 4, trailing: 16)
         for message in messages.prefix(Self.maxBubbles) {
-            let bubble = bubble(for: message)
-            stack.addArrangedSubview(bubble)
-            // Only once the bubble is in the stack: a constraint between
+            let row = entry(for: message)
+            stack.addArrangedSubview(row)
+            // Only once the entry is in the stack: a constraint between
             // views without a common ancestor raises an exception.
-            bubble.widthAnchor.constraint(lessThanOrEqualTo: stack.layoutMarginsGuide.widthAnchor, multiplier: 0.8).isActive = true
+            row.widthAnchor.constraint(lessThanOrEqualTo: stack.layoutMarginsGuide.widthAnchor, multiplier: 0.8).isActive = true
         }
         if messages.count > Self.maxBubbles, let chat {
             var configuration = UIButton.Configuration.plain()
@@ -88,60 +88,75 @@ final class IvyPlannedMessagesView: UIView {
         isLoaded = true
     }
 
-    private func bubble(for message: IvyScheduledMessage) -> UIView {
-        let bubble = IvyDashedBubble()
+    /// A bubble like a sent one, but faded with a dashed outline, and
+    /// below it when it is sent.
+    private func entry(for message: IvyScheduledMessage) -> UIView {
+        let bubble = IvyDashedBubble { [weak self] in self?.bubbleColors ?? (fill: UIColor.Signal.accent, text: UIColor.white) }
         bubble.textLabel.text = message.previewText
-        bubble.timeLabel.text = String(
+        let timeText = String(
             format: IvyLocalizedString("SCHEDULED_BUBBLE_TIME_FORMAT", comment: "Under a scheduled message bubble in a chat: when it is sent. Embeds {{ date and time }}."),
             IvyScheduledUI.sendTimeText(message.sendAt),
         )
-        bubble.accessibilityLabel = (bubble.textLabel.text ?? "") + ", " + (bubble.timeLabel.text ?? "")
+        bubble.accessibilityLabel = message.previewText + ", " + timeText
         if let presenter {
             bubble.menu = UIMenu(children: IvyScheduledUI.menuActions(for: message, from: presenter))
         }
         bubble.showsMenuAsPrimaryAction = true
-        return bubble
-    }
-}
-
-/// An outgoing bubble that isn't sent yet: a dashed outline, the text and
-/// the send time.
-private final class IvyDashedBubble: UIButton {
-
-    let textLabel = UILabel()
-    let timeLabel = UILabel()
-    private let outline = CAShapeLayer()
-
-    init() {
-        super.init(frame: .zero)
-        textLabel.font = .dynamicTypeBody
-        textLabel.adjustsFontForContentSizeCategory = true
-        textLabel.textColor = .Signal.label
-        textLabel.numberOfLines = 4
 
         let clock = UIImageView(image: UIImage(systemName: "clock"))
-        clock.tintColor = .Signal.accent
+        clock.tintColor = .Signal.secondaryLabel
         clock.preferredSymbolConfiguration = UIImage.SymbolConfiguration(textStyle: .caption1)
         clock.setContentHuggingPriority(.required, for: .horizontal)
+        let timeLabel = UILabel()
+        timeLabel.text = timeText
         timeLabel.font = .dynamicTypeCaption1
         timeLabel.adjustsFontForContentSizeCategory = true
-        timeLabel.textColor = .Signal.accent
+        timeLabel.textColor = .Signal.secondaryLabel
         let timeRow = UIStackView(arrangedSubviews: [clock, timeLabel])
         timeRow.spacing = 4
         timeRow.alignment = .center
+        timeRow.isAccessibilityElement = false
+        timeRow.accessibilityElementsHidden = true
 
-        let content = UIStackView(arrangedSubviews: [textLabel, timeRow])
-        content.axis = .vertical
-        content.spacing = 4
-        content.alignment = .trailing
-        content.isUserInteractionEnabled = false
-        addSubview(content)
-        content.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12))
+        let column = UIStackView(arrangedSubviews: [bubble, timeRow])
+        column.axis = .vertical
+        column.alignment = .trailing
+        column.spacing = 4
+        return column
+    }
+
+    /// The colors of this chat's sent bubbles.
+    private var bubbleColors: (fill: UIColor, text: UIColor) {
+        guard let style = (presenter as? ConversationViewController)?.conversationStyle else {
+            return (.Signal.accent, .white)
+        }
+        return (style.bubbleChatColorOutgoing.asChatUIElementTintColor(), style.bubbleTextColorOutgoing)
+    }
+}
+
+/// An outgoing bubble that isn't sent yet: the chat's bubble color,
+/// faded, with a dashed outline.
+private final class IvyDashedBubble: UIButton {
+
+    let textLabel = UILabel()
+    private let outline = CAShapeLayer()
+    private let colors: () -> (fill: UIColor, text: UIColor)
+
+    init(colors: @escaping () -> (fill: UIColor, text: UIColor)) {
+        self.colors = colors
+        super.init(frame: .zero)
+        textLabel.font = .dynamicTypeBody
+        textLabel.adjustsFontForContentSizeCategory = true
+        textLabel.numberOfLines = 4
+        textLabel.isUserInteractionEnabled = false
+        addSubview(textLabel)
+        textLabel.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 7, left: 12, bottom: 7, right: 12))
 
         outline.fillColor = UIColor.clear.cgColor
         outline.lineWidth = 1.5
         outline.lineDashPattern = [6, 4]
         layer.addSublayer(outline)
+        layer.cornerRadius = 18
         updateColors()
     }
 
@@ -166,8 +181,10 @@ private final class IvyDashedBubble: UIButton {
     }
 
     private func updateColors() {
-        outline.strokeColor = UIColor.Signal.accent.resolvedColor(with: traitCollection).cgColor
-        backgroundColor = UIColor.Signal.accent.withAlphaComponent(0.08)
-        layer.cornerRadius = 18
+        let (fill, text) = colors()
+        let resolvedFill = fill.resolvedColor(with: traitCollection)
+        backgroundColor = resolvedFill.withAlphaComponent(0.55)
+        outline.strokeColor = resolvedFill.cgColor
+        textLabel.textColor = text
     }
 }
