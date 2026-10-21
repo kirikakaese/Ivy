@@ -78,27 +78,60 @@ enum IvyScheduledUI {
 
 extension ConversationInputToolbar {
 
-    /// Holding or right-clicking the send button offers to send the message
-    /// later: the reminder presets and a custom time.
-    func ivySendLaterMenu() -> UIMenu {
-        UIMenu(title: IvyScheduledUI.sendLaterTitle, children: [
+    /// Offers Send Later on the send button. On the Mac a held menu closes
+    /// as soon as the mouse button goes up, so holding the button opens a
+    /// sheet there instead, and a secondary click opens the menu.
+    func ivyInstallSendLater(on button: UIButton) {
+        #if targetEnvironment(macCatalyst)
+        let hold = UILongPressGestureRecognizer(target: self, action: #selector(ivySendButtonHeld(_:)))
+        hold.minimumPressDuration = 0.4
+        button.addGestureRecognizer(hold)
+        IvySendLaterContextMenu.install(on: button, toolbar: self)
+        #else
+        button.menu = UIMenu(title: IvyScheduledUI.sendLaterTitle, children: [
             UIDeferredMenuElement.uncached { [weak self] completion in
-                guard let self else {
-                    completion([])
-                    return
-                }
-                var children: [UIMenuElement] = IvyReminderUI.availablePresets().map { preset, date in
-                    UIAction(title: IvyReminderUI.title(for: preset), subtitle: IvyScheduledUI.sendTimeText(date)) { [weak self] _ in
-                        self?.ivySendLater(at: date)
-                    }
-                }
-                children.append(UIAction(title: IvyReminderUI.customTitle, image: UIImage(systemName: "calendar")) { [weak self] _ in
-                    self?.ivyChooseSendTime()
-                })
-                completion(ivyHasTextToSchedule ? children : [])
+                completion(self?.ivySendLaterActions() ?? [])
             },
         ])
+        #endif
     }
+
+    /// The times to send at, or nothing while there's no text.
+    fileprivate func ivySendLaterActions() -> [UIMenuElement] {
+        guard ivyHasTextToSchedule else {
+            return []
+        }
+        var children: [UIMenuElement] = IvyReminderUI.availablePresets().map { preset, date in
+            UIAction(title: IvyReminderUI.title(for: preset), subtitle: IvyScheduledUI.sendTimeText(date)) { [weak self] _ in
+                self?.ivySendLater(at: date)
+            }
+        }
+        children.append(UIAction(title: IvyReminderUI.customTitle, image: UIImage(systemName: "calendar")) { [weak self] _ in
+            self?.ivyChooseSendTime()
+        })
+        return children
+    }
+
+    #if targetEnvironment(macCatalyst)
+    @objc
+    private func ivySendButtonHeld(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began, ivyHasTextToSchedule, let conversation = ivyConversationViewController else {
+            return
+        }
+        let sheet = ActionSheetController(title: IvyScheduledUI.sendLaterTitle)
+        for (preset, date) in IvyReminderUI.availablePresets() {
+            let title = IvyReminderUI.title(for: preset) + " · " + IvyScheduledUI.sendTimeText(date)
+            sheet.addAction(ActionSheetAction(title: title) { [weak self] _ in
+                self?.ivySendLater(at: date)
+            })
+        }
+        sheet.addAction(ActionSheetAction(title: IvyReminderUI.customTitle) { [weak self] _ in
+            self?.ivyChooseSendTime()
+        })
+        sheet.addAction(OWSActionSheets.cancelAction)
+        conversation.presentActionSheet(sheet)
+    }
+    #endif
 
     private var ivyHasTextToSchedule: Bool {
         guard let text = messageBodyForSending?.text else {
@@ -285,3 +318,36 @@ final class IvyScheduledMessagesViewController: UIViewController, UITableViewDat
         presentActionSheet(sheet)
     }
 }
+
+#if targetEnvironment(macCatalyst)
+
+/// Send Later on a secondary click of the send button (Mac).
+@MainActor
+private final class IvySendLaterContextMenu: NSObject, UIContextMenuInteractionDelegate {
+
+    private weak var toolbar: ConversationInputToolbar?
+
+    private init(toolbar: ConversationInputToolbar) {
+        self.toolbar = toolbar
+    }
+
+    private static var key: UInt8 = 0
+
+    static func install(on button: UIButton, toolbar: ConversationInputToolbar) {
+        let menu = IvySendLaterContextMenu(toolbar: toolbar)
+        button.addInteraction(UIContextMenuInteraction(delegate: menu))
+        // The interaction holds its delegate weakly.
+        objc_setAssociatedObject(button, &key, menu, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+    }
+
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        guard let actions = toolbar?.ivySendLaterActions(), !actions.isEmpty else {
+            return nil
+        }
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            UIMenu(title: IvyScheduledUI.sendLaterTitle, children: actions)
+        }
+    }
+}
+
+#endif
