@@ -95,6 +95,8 @@ final class IvyFilterBar: UIView {
 
     /// The filter button, for the navigation bar.
     let barButtonItem = UIBarButtonItem()
+    /// The same button, for inside a search field.
+    let fieldButton = UIButton(type: .system)
     private let chipStack = UIStackView()
 
     /// Whether any filter is on.
@@ -152,6 +154,11 @@ final class IvyFilterBar: UIView {
         barButtonItem.image = UIImage(systemName: isActive ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
         barButtonItem.accessibilityLabel = IvyLocalizedString("FILTER_BUTTON", comment: "Button that opens the search filters.")
         barButtonItem.menu = filterMenu()
+        fieldButton.setImage(barButtonItem.image, for: .normal)
+        fieldButton.tintColor = .Signal.accent
+        fieldButton.accessibilityLabel = barButtonItem.accessibilityLabel
+        fieldButton.menu = barButtonItem.menu
+        fieldButton.showsMenuAsPrimaryAction = true
 
         chipStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         if let chatName, filter.threadUniqueId != nil {
@@ -390,7 +397,11 @@ final class IvySearchViewController: UIViewController, UISearchResultsUpdating, 
         // The filters stay in view above the results.
         let bar = IvyFilterBar(showsContent: true, presenter: self) { [weak self] _ in self?.runSearch() }
         filterBar = bar
-        navigationItem.rightBarButtonItems = [.doneButton { [weak self] in self?.dismiss(animated: true) }, bar.barButtonItem]
+        navigationItem.rightBarButtonItem = .doneButton { [weak self] in self?.dismiss(animated: true) }
+        // The filter button sits in the search field, where it is looked for.
+        bar.fieldButton.frame = CGRect(x: 0, y: 0, width: 32, height: 28)
+        searchController.searchBar.searchTextField.rightView = bar.fieldButton
+        searchController.searchBar.searchTextField.rightViewMode = .always
         let stack = UIStackView(arrangedSubviews: [bar, tableView])
         stack.axis = .vertical
         view.backgroundColor = .Signal.groupedBackground

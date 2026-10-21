@@ -294,6 +294,11 @@ extension ConversationViewController {
                 navigationItem.titleView = headerView
             }
         case .search:
+            // Ivy: on iPad and Mac the search field joins the existing bar
+            // instead of adding a row, so the chat doesn't jump.
+            if #available(iOS 16, *), UIDevice.current.userInterfaceIdiom != .phone {
+                navigationItem.preferredSearchBarPlacement = .inline
+            }
             navigationItem.searchController = searchController.uiSearchController
         case .selection:
             navigationItem.titleView = nil
