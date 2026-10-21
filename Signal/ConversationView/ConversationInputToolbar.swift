@@ -508,7 +508,7 @@ public class ConversationInputToolbar: UIView, QuotedReplyPreviewDelegate {
                 accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "sendButton"),
             )
             button.tintColor = conversationStyle.bubbleChatColorOutgoing.asChatUIElementTintColor()
-            button.menu = ivySendLaterMenu() // Ivy: send later
+            ivyInstallSendLater(on: button) // Ivy: send later
             return button
         }
 
@@ -524,7 +524,7 @@ public class ConversationInputToolbar: UIView, QuotedReplyPreviewDelegate {
         let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleVoiceMemoLongPress(gesture:)))
         longPressGestureRecognizer.minimumPressDuration = 0
         view.voiceMemoButton.addGestureRecognizer(longPressGestureRecognizer)
-        view.sendButton.menu = ivySendLaterMenu() // Ivy: send later
+        ivyInstallSendLater(on: view.sendButton) // Ivy: send later
         return view
     }()
 
