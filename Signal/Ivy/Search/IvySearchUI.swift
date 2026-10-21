@@ -51,7 +51,9 @@ enum IvyFind {
 
 // MARK: - Filters
 
-/// Buttons for the chat, person, date and type filters.
+/// The chat, person, date and type filters: a filter button that opens
+/// one menu, and a row of the filters that are on, each with a way to
+/// turn it off. The row only shows while a filter is on.
 final class IvyFilterBar: UIView {
 
     enum DateRange: CaseIterable {
@@ -91,11 +93,9 @@ final class IvyFilterBar: UIView {
     private let onChange: (IvySearchFilter) -> Void
     private weak var presenter: UIViewController?
 
-    private let chatButton = UIButton(type: .system)
-    private let personButton = UIButton(type: .system)
-    private let dateButton = UIButton(type: .system)
-    private let contentButton = UIButton(type: .system)
-    private let clearButton = UIButton(type: .system)
+    /// The filter button, for the navigation bar.
+    let barButtonItem = UIBarButtonItem()
+    private let chipStack = UIStackView()
 
     /// Whether any filter is on.
     var isActive: Bool {
@@ -109,29 +109,15 @@ final class IvyFilterBar: UIView {
         super.init(frame: .zero)
 
         backgroundColor = .Signal.groupedBackground
-        var buttons = [chatButton, personButton, dateButton]
-        if showsContent {
-            buttons.append(contentButton)
-        }
-        var clear = UIButton.Configuration.plain()
-        clear.title = IvyLocalizedString("FILTER_CLEAR", comment: "Button that turns off all search filters.")
-        clear.baseForegroundColor = .Signal.accent
-        clear.buttonSize = .small
-        clearButton.configuration = clear
-        clearButton.addAction(UIAction { [weak self] _ in self?.clear() }, for: .primaryActionTriggered)
-        let stack = UIStackView(arrangedSubviews: buttons + [clearButton])
-        stack.axis = .horizontal
-        stack.spacing = 8
+        chipStack.axis = .horizontal
+        chipStack.spacing = 8
         let scrollView = UIScrollView()
         scrollView.showsHorizontalScrollIndicator = false
-        scrollView.addSubview(stack)
+        scrollView.addSubview(chipStack)
         addSubview(scrollView)
         scrollView.autoPinEdgesToSuperviewEdges()
-        stack.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16))
-        stack.autoMatch(.height, to: .height, of: scrollView, withOffset: -16)
-        for button in buttons {
-            button.showsMenuAsPrimaryAction = true
-        }
+        chipStack.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16))
+        chipStack.autoMatch(.height, to: .height, of: scrollView, withOffset: -16)
         let separator = UIView()
         separator.backgroundColor = .Signal.opaqueSeparator
         addSubview(separator)
@@ -146,87 +132,131 @@ final class IvyFilterBar: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    /// Off: the filter's name and icon, tinted. On: its value, filled.
-    private func style(_ button: UIButton, systemImage: String, label: String, value: String?) {
-        let isActive = value != nil
-        var configuration = isActive ? UIButton.Configuration.filled() : UIButton.Configuration.tinted()
-        configuration.title = value ?? label
-        configuration.image = UIImage(systemName: systemImage, withConfiguration: UIImage.SymbolConfiguration(scale: .small))
-        configuration.imagePlacement = .leading
-        configuration.imagePadding = 5
-        configuration.cornerStyle = .capsule
-        configuration.baseBackgroundColor = .Signal.accent
-        configuration.baseForegroundColor = isActive ? .white : .Signal.accent
-        configuration.buttonSize = .medium
-        configuration.titleLineBreakMode = .byTruncatingTail
-        button.configuration = configuration
-        button.accessibilityLabel = value.map { label + ": " + $0 } ?? label
+    private static var chatLabel: String {
+        IvyLocalizedString("FILTER_LABEL_CHAT", comment: "Name of the search filter that limits results to one chat.")
+    }
+
+    private static var fromLabel: String {
+        IvyLocalizedString("FILTER_LABEL_FROM", comment: "Name of the search filter that limits results to messages from one person.")
+    }
+
+    private static var dateLabel: String {
+        IvyLocalizedString("FILTER_LABEL_DATE", comment: "Name of the search filter that limits results to a time span.")
+    }
+
+    private static var typeLabel: String {
+        IvyLocalizedString("FILTER_LABEL_TYPE", comment: "Name of the search filter for links, photos or files.")
     }
 
     private func update() {
-        style(
-            chatButton,
-            systemImage: "bubble.left.and.bubble.right",
-            label: IvyLocalizedString("FILTER_LABEL_CHAT", comment: "Name of the search filter that limits results to one chat."),
-            value: filter.threadUniqueId == nil ? nil : chatName,
-        )
-        chatButton.menu = UIMenu(children: [
+        barButtonItem.image = UIImage(systemName: isActive ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
+        barButtonItem.accessibilityLabel = IvyLocalizedString("FILTER_BUTTON", comment: "Button that opens the search filters.")
+        barButtonItem.menu = filterMenu()
+
+        chipStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        if let chatName, filter.threadUniqueId != nil {
+            addChip(label: Self.chatLabel, value: chatName) { $0.filter.threadUniqueId = nil; $0.chatName = nil }
+        }
+        if let personName, filter.author != nil {
+            addChip(label: Self.fromLabel, value: personName) { $0.filter.author = nil; $0.personName = nil }
+        }
+        if dateRange != .any {
+            addChip(label: Self.dateLabel, value: dateRange.title) { $0.dateRange = .any; $0.filter.since = nil }
+        }
+        if filter.content != .any {
+            addChip(label: Self.typeLabel, value: Self.title(for: filter.content)) { $0.filter.content = .any }
+        }
+        var clearConfiguration = UIButton.Configuration.plain()
+        clearConfiguration.title = IvyLocalizedString("FILTER_CLEAR", comment: "Button that turns off all search filters.")
+        clearConfiguration.baseForegroundColor = .Signal.accent
+        clearConfiguration.buttonSize = .small
+        let clearButton = UIButton(configuration: clearConfiguration, primaryAction: UIAction { [weak self] _ in self?.clear() })
+        chipStack.addArrangedSubview(clearButton)
+        isHidden = !isActive
+    }
+
+    /// A filter that is on: its value, and a cross that turns it off.
+    private func addChip(label: String, value: String, remove: @escaping (IvyFilterBar) -> Void) {
+        var configuration = UIButton.Configuration.filled()
+        configuration.title = value
+        configuration.image = UIImage(systemName: "xmark", withConfiguration: UIImage.SymbolConfiguration(scale: .small))
+        configuration.imagePlacement = .trailing
+        configuration.imagePadding = 6
+        configuration.cornerStyle = .capsule
+        configuration.baseBackgroundColor = .Signal.accent
+        configuration.baseForegroundColor = .white
+        configuration.buttonSize = .medium
+        configuration.titleLineBreakMode = .byTruncatingTail
+        let chip = UIButton(configuration: configuration, primaryAction: UIAction { [weak self] _ in
+            guard let self else { return }
+            remove(self)
+            self.changed()
+        })
+        chip.accessibilityLabel = label + ": " + value
+        chip.accessibilityHint = IvyLocalizedString("FILTER_REMOVE_HINT", comment: "Accessibility hint on an active search filter: tapping turns it off.")
+        chip.setContentHuggingPriority(.required, for: .horizontal)
+        chipStack.addArrangedSubview(chip)
+    }
+
+    /// One menu with every filter, each in its own section.
+    private func filterMenu() -> UIMenu {
+        var sections: [UIMenuElement] = []
+
+        var chatItems: [UIMenuElement] = [
             UIAction(title: IvyLocalizedString("FILTER_CHAT_ANY", comment: "Search filter: messages from any chat."), state: filter.threadUniqueId == nil ? .on : .off) { [weak self] _ in
                 self?.filter.threadUniqueId = nil
                 self?.chatName = nil
                 self?.changed()
             },
-            UIAction(title: IvyLocalizedString("FILTER_CHOOSE", comment: "Search filter action that chooses a chat or person."), image: UIImage(systemName: "bubble.left.and.bubble.right")) { [weak self] _ in
-                self?.chooseChat()
-            },
-        ])
+        ]
+        if let chatName, filter.threadUniqueId != nil {
+            chatItems.append(UIAction(title: chatName, state: .on) { _ in })
+        }
+        chatItems.append(UIAction(title: IvyLocalizedString("FILTER_CHOOSE", comment: "Search filter action that chooses a chat or person."), image: UIImage(systemName: "bubble.left.and.bubble.right")) { [weak self] _ in
+            self?.chooseChat()
+        })
+        sections.append(UIMenu(title: Self.chatLabel, options: .displayInline, children: chatItems))
 
-        style(
-            personButton,
-            systemImage: "person",
-            label: IvyLocalizedString("FILTER_LABEL_FROM", comment: "Name of the search filter that limits results to messages from one person."),
-            value: filter.author == nil ? nil : personName,
-        )
-        personButton.menu = UIMenu(children: [
+        var personItems: [UIMenuElement] = [
             UIAction(title: IvyLocalizedString("FILTER_PERSON_ANY", comment: "Search filter: messages from anyone."), state: filter.author == nil ? .on : .off) { [weak self] _ in
                 self?.filter.author = nil
                 self?.personName = nil
                 self?.changed()
             },
-            UIAction(title: IvyLocalizedString("FILTER_CHOOSE", comment: "Search filter action that chooses a chat or person."), image: UIImage(systemName: "person")) { [weak self] _ in
-                self?.choosePerson()
-            },
-        ])
+        ]
+        if let personName, filter.author != nil {
+            personItems.append(UIAction(title: personName, state: .on) { _ in })
+        }
+        personItems.append(UIAction(title: IvyLocalizedString("FILTER_CHOOSE", comment: "Search filter action that chooses a chat or person."), image: UIImage(systemName: "person")) { [weak self] _ in
+            self?.choosePerson()
+        })
+        sections.append(UIMenu(title: Self.fromLabel, options: .displayInline, children: personItems))
 
-        style(
-            dateButton,
-            systemImage: "calendar",
-            label: IvyLocalizedString("FILTER_LABEL_DATE", comment: "Name of the search filter that limits results to a time span."),
-            value: dateRange == .any ? nil : dateRange.title,
-        )
-        dateButton.menu = UIMenu(children: DateRange.allCases.map { range in
+        sections.append(UIMenu(title: Self.dateLabel, subtitle: dateRange.title, image: UIImage(systemName: "calendar"), children: DateRange.allCases.map { range in
             UIAction(title: range.title, state: range == dateRange ? .on : .off) { [weak self] _ in
                 self?.dateRange = range
                 self?.filter.since = range.since()
                 self?.changed()
             }
-        })
+        }))
 
         if showsContent {
-            style(
-                contentButton,
-                systemImage: "line.3.horizontal.decrease.circle",
-                label: IvyLocalizedString("FILTER_LABEL_TYPE", comment: "Name of the search filter for links, photos or files."),
-                value: filter.content == .any ? nil : Self.title(for: filter.content),
-            )
-            contentButton.menu = UIMenu(children: IvySearchFilter.Content.allCases.map { content in
+            sections.append(UIMenu(title: Self.typeLabel, subtitle: Self.title(for: filter.content), image: UIImage(systemName: "paperclip"), children: IvySearchFilter.Content.allCases.map { content in
                 UIAction(title: Self.title(for: content), state: content == filter.content ? .on : .off) { [weak self] _ in
                     self?.filter.content = content
                     self?.changed()
                 }
-            })
+            }))
         }
-        clearButton.isHidden = !isActive
+
+        if isActive {
+            sections.append(UIMenu(options: .displayInline, children: [
+                UIAction(title: IvyLocalizedString("FILTER_CLEAR_ALL", comment: "Menu action that turns off all search filters."), image: UIImage(systemName: "xmark.circle"), attributes: .destructive) { [weak self] _ in
+                    self?.clear()
+                },
+            ]))
+        }
+        return UIMenu(title: IvyLocalizedString("FILTER_BUTTON", comment: "Button that opens the search filters."), children: sections)
     }
 
     static func title(for content: IvySearchFilter.Content) -> String {
@@ -344,7 +374,6 @@ final class IvySearchViewController: UIViewController, UISearchResultsUpdating, 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = IvyFind.searchTitle
-        navigationItem.rightBarButtonItem = .doneButton { [weak self] in self?.dismiss(animated: true) }
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
@@ -361,6 +390,7 @@ final class IvySearchViewController: UIViewController, UISearchResultsUpdating, 
         // The filters stay in view above the results.
         let bar = IvyFilterBar(showsContent: true, presenter: self) { [weak self] _ in self?.runSearch() }
         filterBar = bar
+        navigationItem.rightBarButtonItems = [.doneButton { [weak self] in self?.dismiss(animated: true) }, bar.barButtonItem]
         let stack = UIStackView(arrangedSubviews: [bar, tableView])
         stack.axis = .vertical
         view.backgroundColor = .Signal.groupedBackground
@@ -599,6 +629,7 @@ final class IvyLibraryViewController: UIViewController, UITableViewDataSource, U
         // The filters stay in view above the list.
         let bar = IvyFilterBar(showsContent: false, presenter: self) { [weak self] _ in self?.load() }
         filterBar = bar
+        navigationItem.rightBarButtonItems = (navigationItem.rightBarButtonItems ?? []) + [bar.barButtonItem]
         let stack = UIStackView(arrangedSubviews: [bar, tableView])
         stack.axis = .vertical
         view.backgroundColor = .Signal.groupedBackground

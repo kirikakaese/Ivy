@@ -459,6 +459,9 @@
 /* Title of an imported event that has none. */
 "EVENT_UNTITLED" = "Termin";
 
+/* Button that opens the search filters. */
+"FILTER_BUTTON" = "Filter";
+
 /* Search filter: messages from any chat. */
 "FILTER_CHAT_ANY" = "Alle Chats";
 
@@ -473,6 +476,9 @@
 
 /* Button that turns off all search filters. */
 "FILTER_CLEAR" = "Zurücksetzen";
+
+/* Menu action that turns off all search filters. */
+"FILTER_CLEAR_ALL" = "Filter zurücksetzen";
 
 /* Search filter: messages from any date. */
 "FILTER_DATE_ANY" = "Jederzeit";
@@ -506,6 +512,9 @@
 
 /* Shown when a group is chosen as the person to search for. */
 "FILTER_PERSON_NEEDS_CONTACT" = "Wähle eine Person, keine Gruppe.";
+
+/* Accessibility hint on an active search filter: tapping turns it off. */
+"FILTER_REMOVE_HINT" = "Entfernt diesen Filter.";
 
 /* Search filter: any kind of message. */
 "FILTER_TYPE_ANY" = "Alles";
