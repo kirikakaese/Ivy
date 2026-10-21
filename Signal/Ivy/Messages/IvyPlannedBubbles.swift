@@ -61,7 +61,11 @@ final class IvyPlannedMessagesView: UIView {
             ? .zero
             : NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 4, trailing: 16)
         for message in messages.prefix(Self.maxBubbles) {
-            stack.addArrangedSubview(bubble(for: message))
+            let bubble = bubble(for: message)
+            stack.addArrangedSubview(bubble)
+            // Only once the bubble is in the stack: a constraint between
+            // views without a common ancestor raises an exception.
+            bubble.widthAnchor.constraint(lessThanOrEqualTo: stack.layoutMarginsGuide.widthAnchor, multiplier: 0.8).isActive = true
         }
         if messages.count > Self.maxBubbles, let chat {
             var configuration = UIButton.Configuration.plain()
@@ -96,7 +100,6 @@ final class IvyPlannedMessagesView: UIView {
             bubble.menu = UIMenu(children: IvyScheduledUI.menuActions(for: message, from: presenter))
         }
         bubble.showsMenuAsPrimaryAction = true
-        bubble.widthAnchor.constraint(lessThanOrEqualTo: stack.layoutMarginsGuide.widthAnchor, multiplier: 0.8).isActive = true
         return bubble
     }
 }
