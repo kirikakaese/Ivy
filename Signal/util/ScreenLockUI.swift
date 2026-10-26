@@ -278,6 +278,9 @@ class ScreenLockUI {
         guard
             SSKEnvironment.shared.preferencesRef.isScreenSecurityEnabled
             || sensitiveContentViewControllers.elements.count > 0
+            // Ivy: with a lock, the chats never show outside the app: not in
+            // the app switcher, and not for a moment before the lock comes up.
+            || (appReadiness.isAppReady && ScreenLock.shared.isScreenLockEnabled())
         else {
             return .none
         }

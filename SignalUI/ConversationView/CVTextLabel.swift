@@ -295,7 +295,8 @@ public class CVTextLabel {
                     let isIvyItem = dataItem.dataType == .date || dataItem.dataType == .task
                     let underline: NSUnderlineStyle = isIvyItem ? [.single, .patternDot] : .single
                     attributedText.addAttribute(.underlineStyle, value: underline.rawValue, range: range)
-                    attributedText.addAttribute(.underlineColor, value: bodyTextColor, range: range)
+                    // Ivy: a faint line, so dates and tasks don't draw the eye.
+                    attributedText.addAttribute(.underlineColor, value: isIvyItem ? bodyTextColor.withAlphaComponent(0.35) : bodyTextColor, range: range)
                 }
             }
         }
