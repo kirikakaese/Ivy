@@ -189,6 +189,7 @@ extension ConversationSettingsViewController {
         }
         section.add(.switch(
             withText: IvyLocalizedString("CHAT_LINK_PREVIEWS", comment: "Switch in a chat's settings that turns link previews on or off for this chat."),
+            image: Theme.iconImage(.groupInfoGroupLink),
             isOn: { !IvyLinkPreviews.areOff(for: chat) },
             actionBlock: { uiSwitch in
                 IvyLinkPreviews.setOff(!uiSwitch.isOn, for: chat)

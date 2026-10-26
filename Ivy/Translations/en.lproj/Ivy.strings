@@ -81,6 +81,15 @@
 /* Title of the settings for syncing with Apple Calendar and Apple Reminders. */
 "APPLE_SYNC_TITLE" = "Apple Calendar and Reminders";
 
+/* Backup settings: the user's paid backup plan was bought in Signal's own app, which Ivy uses but can't manage. */
+"BACKUP_PLAN_MANAGED_IN_SIGNAL" = "Your paid plan was bought in the Signal app. Ivy uses it too; renew or manage it in Signal.";
+
+/* Heading of the calendar's agenda when it starts on another day. Embeds {{ date }}. */
+"CALENDAR_AGENDA_FROM_DATE_FORMAT" = "From %@";
+
+/* Heading of the calendar's agenda, which lists everything coming up from today. */
+"CALENDAR_AGENDA_FROM_TODAY" = "Coming Up";
+
 /* Shown in the calendar when nothing is planned for the shown dates. */
 "CALENDAR_EMPTY" = "Nothing planned.";
 

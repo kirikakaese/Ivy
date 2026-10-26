@@ -32,6 +32,11 @@ public enum IvyConfiguration {
     public static let showsPayments = false
     public static let showsDonations = false
 
+    /// Signal's paid backup plan is an App Store purchase of Signal's own
+    /// app. Ivy uses the plan the account has, but can't see, renew or
+    /// manage that purchase; that stays in Signal.
+    public static let managesBackupSubscription = false
+
     /// Debug logs stay on the device. The user can export them and share
     /// them with whoever they choose; they are never uploaded to Signal.
     public static let uploadsDebugLogs = false

@@ -2837,10 +2837,11 @@ private struct BackupSubscriptionLoadedView: View {
                 .paid,
                 .paidButExpiring,
                 .paidButExpired,
-                .paidButFailedToRenew:
+                .paidButFailedToRenew,
+                // Ivy: the subscription belongs to Signal's App Store app,
+                // which Ivy can't see; it works all the same.
+                .paidButIAPNotFoundLocally:
                 Image(.backupsSubscribed).resizable()
-            case .paidButIAPNotFoundLocally:
-                Image(.backupsLogoWarningBadged).resizable()
             }
         }
         .frame(width: 64, height: 64)
@@ -2886,11 +2887,9 @@ private struct BackupSubscriptionLoadedView: View {
              .paid,
              .paidButExpiring,
              .paidButExpired,
-             .paidButFailedToRenew:
+             .paidButFailedToRenew,
+             .paidButIAPNotFoundLocally: // Ivy: no buttons, see headerIcon
             hContent
-        case .paidButIAPNotFoundLocally:
-            // Two horizontal buttons need full width available
-            vContent
         }
     }
 
@@ -2952,9 +2951,10 @@ private struct BackupSubscriptionLoadedView: View {
                 comment: "Text describing that the user's paid backup plan has failed to renew.",
             ))
         case .paidButIAPNotFoundLocally:
-            Text(OWSLocalizedString(
-                "BACKUP_SETTINGS_BACKUP_PLAN_PAID_BUT_IAP_NOT_FOUND_LOCALLY_DESCRIPTION",
-                comment: "Text describing that the user's paid backup plan did not correspond to a App Store subscription on this device.",
+            // Ivy: renewing here would start a second subscription.
+            Text(IvyLocalizedString(
+                "BACKUP_PLAN_MANAGED_IN_SIGNAL",
+                comment: "Backup settings: the user's paid backup plan was bought in Signal's own app, which Ivy uses but can't manage.",
             ))
         }
     }
@@ -3020,28 +3020,8 @@ private struct BackupSubscriptionLoadedView: View {
                 },
             )
         case .paidButIAPNotFoundLocally:
-            HStack(spacing: 16) {
-                loadedViewButton(
-                    label: OWSLocalizedString(
-                        "BACKUP_SETTINGS_BACKUP_PLAN_PAID_BUT_IAP_NOT_FOUND_LOCALLY_ACTION_BUTTON_TITLE",
-                        comment: "Title for a button allowing users to renew their backup subscription on this device.",
-                    ),
-                    expandWidth: true,
-                    action: {
-                        viewModel.enableBackups(
-                            planSelectionOption: .userChoice(initialSelection: nil),
-                        )
-                    },
-                )
-
-                loadedViewButton(
-                    label: CommonStrings.learnMore,
-                    expandWidth: true,
-                    action: {
-                        viewModel.showBackupIAPNotFoundLocallySheet()
-                    },
-                )
-            }
+            // Ivy: the subscription is managed in Signal's app.
+            EmptyView()
         }
     }
 

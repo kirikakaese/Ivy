@@ -49,6 +49,7 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
     /// Scrolled to the top when Home's tab is chosen again.
     let tableView = UITableView(frame: .zero, style: .insetGrouped)
     private let quickActions = UIStackView()
+    private var compactQuickActions = false
     private var sections: [Section] = []
     private var needsReload = false
 
@@ -57,18 +58,20 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         title = IvyLocalizedString("HOME_TITLE", comment: "Title of the Home section with today's agenda, tasks and important messages.")
         view.backgroundColor = .Signal.groupedBackground
 
-        quickActions.axis = .horizontal
+        quickActions.axis = .vertical
         quickActions.distribution = .fillEqually
-        quickActions.alignment = .fill
         quickActions.spacing = 8
-        for button in quickActionButtons() {
-            quickActions.addArrangedSubview(button)
-        }
+        layoutQuickActions()
 
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "row")
         tableView.backgroundColor = .clear
+        // The cards line up with the quick actions instead of getting the
+        // list's own margin on top of the page's.
+        tableView.directionalLayoutMargins = .zero
+        tableView.preservesSuperviewLayoutMargins = false
+        tableView.insetsLayoutMarginsFromSafeArea = false
 
         // The same frame as the calendar: controls on top, then the list.
         let stack = UIStackView(arrangedSubviews: [quickActions, tableView])
@@ -125,6 +128,31 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
 
     // MARK: - Quick actions
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if previousTraitCollection?.horizontalSizeClass != traitCollection.horizontalSizeClass {
+            layoutQuickActions()
+        }
+    }
+
+    /// On a phone, two rows of two with the icon beside a one-line title;
+    /// with more room, one row of four with the icon above.
+    private func layoutQuickActions() {
+        quickActions.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        let isCompact = traitCollection.horizontalSizeClass == .compact
+        compactQuickActions = isCompact
+        let buttons = quickActionButtons()
+        let rows = isCompact ? [Array(buttons.prefix(2)), Array(buttons.dropFirst(2))] : [buttons]
+        for rowButtons in rows {
+            let row = UIStackView(arrangedSubviews: rowButtons)
+            row.axis = .horizontal
+            row.distribution = .fillEqually
+            row.alignment = .fill
+            row.spacing = 8
+            quickActions.addArrangedSubview(row)
+        }
+    }
+
     private func quickActionButtons() -> [UIButton] {
         [
             quickAction(
@@ -155,24 +183,29 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
         ]
     }
 
-    /// A tile like the calendar's mode switcher: icon above a title that
-    /// wraps instead of being cut off.
+    /// A tile: icon above a title that wraps, or, compact, beside it.
     private func quickAction(title: String, systemImage: String, action: @escaping () -> Void) -> UIButton {
+        let compact = compactQuickActions
         var configuration = UIButton.Configuration.gray()
         // The icon keeps Ivy's color; the title stays readable.
         configuration.image = UIImage(systemName: systemImage, withConfiguration: UIImage.SymbolConfiguration(textStyle: .body, scale: .medium))?
             .withTintColor(.Signal.accent, renderingMode: .alwaysOriginal)
-        configuration.imagePlacement = .top
-        configuration.imagePadding = 6
+        configuration.imagePlacement = compact ? .leading : .top
+        configuration.imagePadding = compact ? 10 : 6
         var attributedTitle = AttributedString(title)
         attributedTitle.font = UIFont.dynamicTypeFootnoteClamped.medium()
         configuration.attributedTitle = attributedTitle
-        configuration.titleAlignment = .center
-        configuration.titleLineBreakMode = .byWordWrapping
+        configuration.titleAlignment = compact ? .leading : .center
+        configuration.titleLineBreakMode = compact ? .byTruncatingTail : .byWordWrapping
         configuration.baseForegroundColor = .Signal.label
         configuration.cornerStyle = .large
-        configuration.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 6, bottom: 12, trailing: 6)
+        configuration.contentInsets = compact
+            ? NSDirectionalEdgeInsets(top: 14, leading: 14, bottom: 14, trailing: 10)
+            : NSDirectionalEdgeInsets(top: 12, leading: 6, bottom: 12, trailing: 6)
         let button = UIButton(configuration: configuration, primaryAction: UIAction { _ in action() })
+        if compact {
+            button.contentHorizontalAlignment = .leading
+        }
         button.accessibilityLabel = title
         button.toolTip = title
         return button
