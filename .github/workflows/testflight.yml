@@ -1,6 +1,6 @@
 name: TestFlight
 
-# Builds the iOS app, signs it with the Ivy team's App Store certificate and
+# Builds the iOS app, signs it with a certificate made for the run and
 # uploads it to TestFlight. Run it by hand from the Actions tab. Setup and
 # the secrets it needs: docs/TESTFLIGHT.md.
 on:
@@ -59,9 +59,7 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY: ${{ secrets.ASC_KEY }}
           IVY_BUNDLE_ID: io.github.kirikakaese.ivy
-        run: |
-          ruby Scripts/ivy/asc-check.rb "$RUNNER_TEMP/check.p8"
-          rm -f "$RUNNER_TEMP/check.p8"
+        run: ruby Scripts/ivy/asc-check.rb
 
       - name: Cache dependencies
         uses: actions/cache@v4
