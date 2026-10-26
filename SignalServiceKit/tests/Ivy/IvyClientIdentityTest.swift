@@ -26,4 +26,11 @@ final class IvyClientIdentityTest: XCTestCase {
             HttpHeaders.userAgentHeaderValueSignalIos,
         )
     }
+
+    /// Ivy's own build count after the upstream build number never reaches
+    /// the servers.
+    func testIvyBuildCountStaysLocal() {
+        XCTAssertEqual(AppVersionImpl.ivyClientBuildNumber("1910.42"), "1910")
+        XCTAssertEqual(AppVersionImpl.ivyClientBuildNumber("1910"), "1910")
+    }
 }

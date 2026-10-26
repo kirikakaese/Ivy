@@ -119,5 +119,6 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Feature | Phase | iPhone | iPad | macOS | Notes |
 |---|---|---|---|---|---|
 | Accessibility review | 7 | planned | planned | planned | |
+| TestFlight builds | 7 | done | done | – | Actions > TestFlight; setup in `docs/TESTFLIGHT.md` |
 | Signed and notarized builds | 7 | planned | planned | planned | |
 | Sparkle updates | 7 | – | – | planned | Platform-only distribution mechanism |

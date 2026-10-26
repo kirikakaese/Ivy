@@ -19,7 +19,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(IVY_UPSTREAM_MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>$(IVY_UPSTREAM_BUILD_NUMBER)</string>
+	<string>$(IVY_UPSTREAM_BUILD_NUMBER).$(IVY_BUILD)</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>

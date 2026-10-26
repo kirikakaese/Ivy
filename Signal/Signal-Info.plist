@@ -48,7 +48,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(IVY_UPSTREAM_BUILD_NUMBER)</string>
+	<string>$(IVY_UPSTREAM_BUILD_NUMBER).$(IVY_BUILD)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>

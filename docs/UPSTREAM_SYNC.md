@@ -29,7 +29,7 @@ git ls-remote --tags --refs https://github.com/signalapp/Signal-iOS \
    - `Pods`: upstream updates its Pods submodule pointer. Ivy does not use the submodule; keep it removed.
    - `.github/`: upstream workflow changes do not apply to Ivy; keep Ivy's versions.
    - `Signal.xcodeproj/project.pbxproj`: keep both sides' additions, then re-apply Ivy's settings (product name, bundle ID prefix, build phases) if upstream changed the same lines.
-   - `Info.plist` files of the app and its extensions: upstream changes the version number there. Keep Ivy's `$(IVY_UPSTREAM_MARKETING_VERSION)` and `$(IVY_UPSTREAM_BUILD_NUMBER)` and update `Config/Ivy.xcconfig` instead (next step).
+   - `Info.plist` files of the app and its extensions: upstream changes the version number there. Keep Ivy's `$(IVY_UPSTREAM_MARKETING_VERSION)` and `$(IVY_UPSTREAM_BUILD_NUMBER).$(IVY_BUILD)` and update `Config/Ivy.xcconfig` instead (next step).
 5. Set the client identity: in `Config/Ivy.xcconfig`, set `IVY_UPSTREAM_MARKETING_VERSION` and `IVY_UPSTREAM_BUILD_NUMBER` to the merged release (for `8.33.0.2000`: `8.33` and `2000`). Ivy reports exactly this version to Signal's servers.
 6. Update dependencies: `make dependencies`. If `Podfile.lock` changed, commit it.
    If the merge changes the libsignal, RingRTC or MobileCoin version in the `Podfile`, pushing the branch starts the "Mac Catalyst dependencies" workflow, which builds and publishes the Mac versions (WebRTC takes a few hours). Then copy each new release's tag, asset name and SHA-256 into `Scripts/ivy/catalyst-dependencies.json` and commit it; the Mac build uses them from then on.
