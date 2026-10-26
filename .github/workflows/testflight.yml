@@ -53,6 +53,16 @@ jobs:
         with:
           bundler-cache: true
 
+      - name: Check the API key and the app record
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY: ${{ secrets.ASC_KEY }}
+          IVY_BUNDLE_ID: io.github.kirikakaese.ivy
+        run: |
+          ruby Scripts/ivy/asc-check.rb "$RUNNER_TEMP/check.p8"
+          rm -f "$RUNNER_TEMP/check.p8"
+
       - name: Cache dependencies
         uses: actions/cache@v4
         with:

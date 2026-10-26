@@ -15,9 +15,9 @@ LOG_DIR="$HOME/Library/Logs/Ivy-CI"
 mkdir -p "$WORK" "$LOG_DIR"
 
 KEY_PATH="$WORK/AuthKey_${ASC_KEY_ID}.p8"
-printf '%s\n' "$ASC_KEY" > "$KEY_PATH"
-chmod 600 "$KEY_PATH"
 trap 'rm -f "$KEY_PATH"' EXIT
+# Checks the key and the app record first and writes the key file.
+IVY_BUNDLE_ID=io.github.kirikakaese.ivy ruby "$(dirname "$0")/asc-check.rb" "$KEY_PATH"
 
 AUTH=(
   -allowProvisioningUpdates
