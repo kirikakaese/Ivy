@@ -14,6 +14,12 @@ WORK="${RUNNER_TEMP:-$(mktemp -d)}/testflight"
 LOG_DIR="$HOME/Library/Logs/Ivy-CI"
 mkdir -p "$WORK" "$LOG_DIR"
 
+# Pasted secrets can carry a trailing line break, which breaks the sign-in.
+ASC_KEY_ID="$(printf '%s' "$ASC_KEY_ID" | tr -d '[:space:]')"
+ASC_ISSUER_ID="$(printf '%s' "$ASC_ISSUER_ID" | tr -d '[:space:]')"
+APPLE_TEAM_ID="$(printf '%s' "$APPLE_TEAM_ID" | tr -d '[:space:]')"
+export ASC_KEY_ID ASC_ISSUER_ID APPLE_TEAM_ID
+
 KEY_PATH="$WORK/AuthKey_${ASC_KEY_ID}.p8"
 trap 'rm -f "$KEY_PATH"' EXIT
 # Checks the key and the app record first and writes the key file.
