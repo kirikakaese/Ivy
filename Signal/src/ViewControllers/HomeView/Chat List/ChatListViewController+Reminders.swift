@@ -300,6 +300,12 @@ extension ChatListViewController {
         let db = DependenciesBridge.shared.db
         let backupSubscriptionIssueStore = BackupSubscriptionIssueStore()
 
+        // Ivy: a subscription bought in Signal's App Store app is never
+        // found here, and Ivy can't renew it; there's nothing to fix.
+        if !IvyConfiguration.managesBackupSubscription {
+            viewState.backupIAPNotFoundLocallyAlerts = []
+            return
+        }
         viewState.backupIAPNotFoundLocallyAlerts = db.read { tx in
             var alerts = Set<BackupIAPNotFoundLocallyAlertType>()
             if backupSubscriptionIssueStore.shouldShowIAPSubscriptionNotFoundLocallyChatListBadge(tx: tx) {

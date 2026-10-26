@@ -569,7 +569,14 @@ struct ConversationHeaderBuilder {
         } else {
             nil
         }
-        return UIButton(configuration: config, primaryAction: action)
+        let button = UIButton(configuration: config, primaryAction: action)
+        // Ivy: a button doesn't grow with a title that wraps, so a long name's
+        // second line ran into the description below it.
+        if let titleLabel = button.titleLabel {
+            titleLabel.numberOfLines = 0
+            button.heightAnchor.constraint(greaterThanOrEqualTo: titleLabel.heightAnchor).isActive = true
+        }
+        return button
     }
 
     static func threadAttributedString(

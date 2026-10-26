@@ -350,6 +350,9 @@ public final class ConversationViewController: OWSViewController {
 
         configureGestureRecognizersIfNeeded()
         ivyGuardLockedChat() // Ivy: locked chats ask to be opened
+        // Ivy: the top bar blurs the messages behind it from the start,
+        // not only after the list has scrolled.
+        setContentScrollView(collectionView, for: .top)
 
         ensureBannerState()
 

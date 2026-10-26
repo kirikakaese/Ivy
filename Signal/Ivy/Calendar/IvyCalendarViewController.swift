@@ -91,6 +91,11 @@ final class IvyCalendarViewController: UIViewController, UITableViewDataSource, 
         tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "item")
         tableView.backgroundColor = .clear
+        // The cards line up with the controls above them instead of
+        // getting the list's own margin on top of the page's.
+        tableView.directionalLayoutMargins = .zero
+        tableView.preservesSuperviewLayoutMargins = false
+        tableView.insetsLayoutMarginsFromSafeArea = false
 
         let stack = UIStackView(arrangedSubviews: [modeControl, navigationRow, monthView, tableView])
         stack.axis = .vertical
@@ -235,8 +240,14 @@ final class IvyCalendarViewController: UIViewController, UITableViewDataSource, 
         let formatter = DateFormatter()
         switch mode {
         case .agenda:
+            if calendar.isDateInToday(interval.start) {
+                return IvyLocalizedString("CALENDAR_AGENDA_FROM_TODAY", comment: "Heading of the calendar's agenda, which lists everything coming up from today.")
+            }
             formatter.setLocalizedDateFormatFromTemplate("MMMMd")
-            return formatter.string(from: interval.start) + " – " + formatter.string(from: interval.end.addingTimeInterval(-1))
+            return String(
+                format: IvyLocalizedString("CALENDAR_AGENDA_FROM_DATE_FORMAT", comment: "Heading of the calendar's agenda when it starts on another day. Embeds {{ date }}."),
+                formatter.string(from: interval.start),
+            )
         case .day:
             formatter.setLocalizedDateFormatFromTemplate("EEEEMMMMd")
             return formatter.string(from: selectedDay)
@@ -249,14 +260,42 @@ final class IvyCalendarViewController: UIViewController, UITableViewDataSource, 
         }
     }
 
+    /// Nothing planned: a card like Home's, with a way to add something.
     private func emptyView() -> UIView {
         let label = UILabel()
         label.text = IvyLocalizedString("CALENDAR_EMPTY", comment: "Shown in the calendar when nothing is planned for the shown dates.")
-        label.font = .dynamicTypeSubheadline
+        label.font = .dynamicTypeBody
         label.textColor = .Signal.secondaryLabel
-        label.textAlignment = .center
         label.numberOfLines = 0
-        return label
+
+        var configuration = UIButton.Configuration.plain()
+        configuration.title = IvyLocalizedString("EVENT_NEW", comment: "Action that makes a new calendar event.")
+        configuration.image = UIImage(systemName: "plus.circle.fill")
+        configuration.imagePadding = 8
+        configuration.contentInsets = .zero
+        configuration.baseForegroundColor = .Signal.accent
+        let addButton = UIButton(configuration: configuration, primaryAction: UIAction { [weak self] _ in
+            self?.ivyPresentEventEditor(IvyLinkHandler.newEvent(), isNew: true)
+        })
+        addButton.contentHorizontalAlignment = .leading
+
+        let content = UIStackView(arrangedSubviews: [label, addButton])
+        content.axis = .vertical
+        content.spacing = 14
+        content.alignment = .fill
+        let card = UIView()
+        card.backgroundColor = .Signal.secondaryGroupedBackground
+        card.layer.cornerRadius = 22
+        card.layer.cornerCurve = .continuous
+        card.addSubview(content)
+        content.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 16))
+
+        let container = UIView()
+        container.addSubview(card)
+        card.autoPinEdge(toSuperviewEdge: .top, withInset: 12)
+        card.autoPinEdge(toSuperviewEdge: .leading)
+        card.autoPinEdge(toSuperviewEdge: .trailing)
+        return container
     }
 
     // MARK: - Table
