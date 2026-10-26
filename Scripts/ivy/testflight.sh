@@ -68,6 +68,11 @@ for profile in "$SIGNING"/profiles/*.mobileprovision; do
     *"$APP_GROUP"*) ;;
     *) missing="$missing $bundle_id" ;;
   esac
+  if [ "$bundle_id" = "$IVY_BUNDLE_ID" ] && \
+    ! /usr/libexec/PlistBuddy -c 'Print :Entitlements:com.apple.developer.usernotifications.communication' "$plist" >/dev/null 2>&1; then
+    echo "::error::The App ID $IVY_BUNDLE_ID doesn't have Communication Notifications, which show the sender's picture in notifications. On developer.apple.com > Identifiers, open it, tick Communication Notifications, save, and run the workflow again. (docs/TESTFLIGHT.md, step 7)"
+    exit 1
+  fi
 done
 if [ -n "$missing" ]; then
   echo "::error::These App IDs don't have the App Group $APP_GROUP yet:$missing. On developer.apple.com > Identifiers, create the App Group (filter: App Groups) if needed, then open each of these App IDs, click Configure next to App Groups, tick the group, and save. Then run the workflow again. (docs/TESTFLIGHT.md, step 6)"

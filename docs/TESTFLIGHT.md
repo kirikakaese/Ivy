@@ -19,6 +19,7 @@ The workflow creates the App IDs of the extensions, a distribution certificate a
    - Identifiers > + > App Groups: description `Ivy`, identifier `group.io.github.kirikakaese.ivy.group`.
    - The first workflow run creates the extensions' App IDs (`.SignalNSE`, `.shareextension`, `.widgets`) and stops with a list of the App IDs that still lack the group. For each of them (and the app's own App ID): open it under Identifiers, tick **App Groups** if it isn't, click **Configure**, tick the group, **Continue**, **Save**.
    - Run the workflow again.
+7. **Communication Notifications.** On developer.apple.com > Identifiers, open `io.github.kirikakaese.ivy`, tick **Communication Notifications**, and save. It lets notifications show the sender's picture instead of the app icon; the workflow stops with a reminder while it's missing.
 
 Each run creates its own distribution certificate and App Store profiles and removes them at the end, so they never pile up. Builds already uploaded stay valid.
 
@@ -34,5 +35,5 @@ The app's version stays the upstream Signal release (8.32), because Ivy reports 
 
 ## What differs from the Mac beta
 
-- The iOS build uses `*-AppStore.entitlements`: data protection, the App Group and the keychain group. Ivy doesn't use Apple push, so the push, VoIP and notification filtering entitlements that Apple grants to Signal are left out. On iPhone, messages arrive while Ivy is open and through Background App Refresh.
+- The iOS build uses `*-AppStore.entitlements`: data protection, the App Group, the keychain group and, for the app, communication notifications. Ivy doesn't use Apple push, so the push, VoIP and notification filtering entitlements that Apple grants to Signal are left out. On iPhone, messages arrive while Ivy is open and through Background App Refresh.
 - The encryption question is answered in `Info.plist` (`ITSAppUsesNonExemptEncryption`), as upstream does.
