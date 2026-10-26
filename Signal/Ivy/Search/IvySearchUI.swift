@@ -95,6 +95,8 @@ final class IvyFilterBar: UIView {
 
     /// The filter button, for the navigation bar.
     let barButtonItem = UIBarButtonItem()
+    /// The same button, for inside a search field.
+    let fieldButton = UIButton(type: .system)
     private let chipStack = UIStackView()
 
     /// Whether any filter is on.
@@ -152,6 +154,11 @@ final class IvyFilterBar: UIView {
         barButtonItem.image = UIImage(systemName: isActive ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
         barButtonItem.accessibilityLabel = IvyLocalizedString("FILTER_BUTTON", comment: "Button that opens the search filters.")
         barButtonItem.menu = filterMenu()
+        fieldButton.setImage(barButtonItem.image, for: .normal)
+        fieldButton.tintColor = .Signal.accent
+        fieldButton.accessibilityLabel = barButtonItem.accessibilityLabel
+        fieldButton.menu = barButtonItem.menu
+        fieldButton.showsMenuAsPrimaryAction = true
 
         chipStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
         if let chatName, filter.threadUniqueId != nil {
@@ -320,7 +327,7 @@ final class IvyFilterBar: UIView {
 // MARK: - Search
 
 /// One search across chats, tasks, events and chat notes.
-final class IvySearchViewController: UIViewController, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate {
+final class IvySearchViewController: UIViewController, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate {
 
     private enum Section {
         case messages([IvySearchResult])
@@ -355,7 +362,7 @@ final class IvySearchViewController: UIViewController, UISearchResultsUpdating, 
     }
 
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
-    private let searchController = UISearchController(searchResultsController: nil)
+    private let searchBar = UISearchBar()
     private var showsSuggestions = true
     private var filterBar: IvyFilterBar?
     private var sections = [Section]()
@@ -374,12 +381,9 @@ final class IvySearchViewController: UIViewController, UISearchResultsUpdating, 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = IvyFind.searchTitle
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.hidesNavigationBarDuringPresentation = false
-        searchController.searchBar.placeholder = IvyLocalizedString("SEARCH_EVERYTHING_PLACEHOLDER", comment: "Placeholder of the search across chats, tasks, events and chat notes.")
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
+        searchBar.delegate = self
+        searchBar.searchBarStyle = .minimal
+        searchBar.placeholder = IvyLocalizedString("SEARCH_EVERYTHING_PLACEHOLDER", comment: "Placeholder of the search across chats, tasks, events and chat notes.")
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "result")
         tableView.keyboardDismissMode = .onDrag
 
@@ -390,8 +394,16 @@ final class IvySearchViewController: UIViewController, UISearchResultsUpdating, 
         // The filters stay in view above the results.
         let bar = IvyFilterBar(showsContent: true, presenter: self) { [weak self] _ in self?.runSearch() }
         filterBar = bar
-        navigationItem.rightBarButtonItems = [.doneButton { [weak self] in self?.dismiss(animated: true) }, bar.barButtonItem]
-        let stack = UIStackView(arrangedSubviews: [bar, tableView])
+        navigationItem.rightBarButtonItem = .doneButton { [weak self] in self?.dismiss(animated: true) }
+        // The filter button sits right next to the search field.
+        bar.fieldButton.setContentHuggingPriority(.required, for: .horizontal)
+        bar.fieldButton.autoSetDimensions(to: CGSize(width: 36, height: 36))
+        let searchRow = UIStackView(arrangedSubviews: [searchBar, bar.fieldButton])
+        searchRow.alignment = .center
+        searchRow.spacing = 4
+        searchRow.isLayoutMarginsRelativeArrangement = true
+        searchRow.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 12)
+        let stack = UIStackView(arrangedSubviews: [searchRow, bar, tableView])
         stack.axis = .vertical
         view.backgroundColor = .Signal.groupedBackground
         view.addSubview(stack)
@@ -403,18 +415,22 @@ final class IvySearchViewController: UIViewController, UISearchResultsUpdating, 
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        searchController.searchBar.becomeFirstResponder()
+        searchBar.becomeFirstResponder()
     }
 
-    func updateSearchResults(for searchController: UISearchController) {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         runSearch()
+    }
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
     }
 
     /// Searches a moment after typing stops, off the main thread.
     private func runSearch() {
         searchGeneration += 1
         let generation = searchGeneration
-        let text = searchController.searchBar.text ?? ""
+        let text = searchBar.text ?? ""
         let filter = filterBar?.filter ?? IvySearchFilter()
         let tasks = IvyTaskManager.shared.allTasks()
         let events = IvyEventManager.shared.allEvents()
@@ -462,7 +478,7 @@ final class IvySearchViewController: UIViewController, UISearchResultsUpdating, 
         }
         sections = [Section.messages(messages), .tasks(tasks), .events(events), .notes(notes)].filter { !$0.results.isEmpty }
         chatNames = names
-        let query = (searchController.searchBar.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        let query = (searchBar.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         showsSuggestions = query.isEmpty && results.isEmpty && filterBar?.isActive != true
         tableView.reloadData()
     }
