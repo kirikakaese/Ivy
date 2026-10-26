@@ -8,3 +8,8 @@
 // (8.32.0.1910). Update both values with every upstream merge.
 IVY_UPSTREAM_MARKETING_VERSION = 8.32
 IVY_UPSTREAM_BUILD_NUMBER = 1910
+
+// Counts Ivy's builds of that release, after the upstream build number
+// (1910.42). TestFlight needs a new number for every upload; CI sets it to
+// the run number. Signal's servers only see the upstream build number.
+IVY_BUILD = 0

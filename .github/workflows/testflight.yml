@@ -1,0 +1,82 @@
+name: TestFlight
+
+# Builds the iOS app, signs it with the Ivy team's App Store certificate and
+# uploads it to TestFlight. Run it by hand from the Actions tab. Setup and
+# the secrets it needs: docs/TESTFLIGHT.md.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  XCODE_APP: /Applications/Xcode_26.6.app
+
+jobs:
+  upload:
+    name: Build and upload to TestFlight
+    runs-on: macos-26
+    timeout-minutes: 180
+    steps:
+      - name: Check secrets
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY: ${{ secrets.ASC_KEY }}
+        run: |
+          missing=""
+          for name in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_KEY; do
+            [ -n "${!name}" ] || missing="$missing $name"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secrets:$missing (see docs/TESTFLIGHT.md)"
+            exit 1
+          fi
+
+      - name: Select Xcode
+        run: echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Download Metal toolchain
+        run: xcodebuild -downloadComponent MetalToolchain
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/Library/Caches/org.signal.libsignal
+            ~/Library/Caches/org.signal.ringrtc
+          key: deps-${{ hashFiles('Podfile.lock') }}
+
+      - name: Install dependencies
+        run: make dependencies
+
+      - name: Build, sign and upload
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY: ${{ secrets.ASC_KEY }}
+          IVY_BUILD: ${{ github.run_number }}
+        run: Scripts/ivy/testflight.sh
+
+      - name: Upload logs
+        if: failure() || cancelled()
+        uses: actions/upload-artifact@v6
+        with:
+          name: testflight-logs
+          path: ~/Library/Logs/Ivy-CI

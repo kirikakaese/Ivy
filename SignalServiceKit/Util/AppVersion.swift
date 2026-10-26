@@ -221,15 +221,23 @@ public class AppVersionImpl: AppVersion {
 
     // MARK: - Setup
 
+    // Ivy: the upstream build number in a bundle version like "1910.42".
+    static func ivyClientBuildNumber(_ bundleVersion: String) -> String {
+        bundleVersion.split(separator: ".").first.map(String.init) ?? bundleVersion
+    }
+
     private init(bundle: Bundle, userDefaults: UserDefaults) {
         let marketingVersion = bundle.string(forInfoDictionaryKey: "CFBundleShortVersionString")
         var marketingVersionComponents = marketingVersion.components(separatedBy: ".")
         while marketingVersionComponents.count < 3 {
             marketingVersionComponents.append("0")
         }
-        let buildNumber = bundle.string(forInfoDictionaryKey: "CFBundleVersion")
+        let bundleVersion = bundle.string(forInfoDictionaryKey: "CFBundleVersion")
+        // Ivy: the bundle version is the upstream build number and Ivy's own
+        // build count (1910.42); servers see the upstream build number only.
+        let buildNumber = Self.ivyClientBuildNumber(bundleVersion)
         self.currentAppVersion = "\(marketingVersionComponents.joined(separator: ".")).\(buildNumber)"
-        self.prettyAppVersion = "\(marketingVersion) (\(buildNumber))"
+        self.prettyAppVersion = "\(marketingVersion) (\(bundleVersion))"
 
         if
             let rawBuildDetails = bundle.app.object(forInfoDictionaryKey: "BuildDetails"),
