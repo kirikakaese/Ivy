@@ -50,11 +50,20 @@ der = key.sign(OpenSSL::Digest.new('SHA256'), signing_input)
 r, s = OpenSSL::ASN1.decode(der).value.map { |n| n.value.to_s(2).rjust(32, "\0") }
 token = "#{signing_input}.#{b64(r + s)}"
 
-uri = URI("https://api.appstoreconnect.apple.com/v1/apps?filter[bundleId]=#{bundle_id}")
-request = Net::HTTP::Get.new(uri)
-request['Authorization'] = "Bearer #{token}"
-response = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(request) }
+def get(path, token)
+  uri = URI("https://api.appstoreconnect.apple.com#{path}")
+  request = Net::HTTP::Get.new(uri)
+  request['Authorization'] = "Bearer #{token}"
+  Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(request) }
+end
 
+def apple_says(response)
+  JSON.parse(response.body).fetch('errors', []).map { |e| e['detail'] || e['title'] }.compact.join(' ')
+rescue JSON::ParserError
+  response.body[0, 300]
+end
+
+response = get("/v1/apps?filter[bundleId]=#{bundle_id}", token)
 case response.code
 when '200'
   apps = JSON.parse(response.body).fetch('data')
@@ -64,8 +73,28 @@ when '200'
   puts "API key works; app record found: #{apps.first.dig('attributes', 'name')}"
 when '401'
   fail_with('Apple rejects the key (401). Check that ASC_KEY_ID is the Key ID of this .p8, that ASC_ISSUER_ID is the Issuer ID above the team keys, and that the key is a Team key, not an Individual key, and not revoked.')
-when '403'
-  fail_with('Apple accepts the key but it may not do this (403). Give the key the Admin role.')
 else
-  fail_with("App Store Connect answered #{response.code}: #{response.body[0, 300]}")
+  fail_with("App Store Connect answered #{response.code}: #{apple_says(response)}")
 end
+
+# Signing needs the developer side of the account too: certificates, App
+# IDs and profiles. Apple refuses these to keys without the Admin role and
+# while an agreement waits to be accepted.
+{
+  'certificates' => '/v1/certificates?limit=1',
+  'App IDs' => "/v1/bundleIds?filter[identifier]=#{bundle_id}",
+  'profiles' => '/v1/profiles?limit=1',
+}.each do |what, path|
+  response = get(path, token)
+  next if response.code == '200'
+  detail = apple_says(response)
+  hint = if detail.match?(/agreement/i)
+    'Accept the pending agreement on developer.apple.com/account and in App Store Connect > Business.'
+  elsif response.code == '403'
+    'Give the API key the Admin role (App Store Connect > Users and Access > Integrations), or create a new Admin key.'
+  else
+    ''
+  end
+  fail_with("The key may not read #{what} (#{response.code}): #{detail} #{hint}".strip)
+end
+puts 'The key may manage certificates, App IDs and profiles.'
