@@ -1,0 +1,4 @@
+# Only MollySocket is reachable from outside; the gateway stays internal.
+{$IVY_RELAY_DOMAIN} {
+	reverse_proxy h2c://mollysocket:8020
+}

@@ -118,6 +118,11 @@ public class PushRegistrationManager: NSObject, PKPushRegistryDelegate {
 
     // Vanilla push token is obtained from the system via AppDelegate
     public func didReceiveVanillaPushToken(_ tokenData: Data) {
+        // Ivy: the token belongs to the push relay; Signal never gets it.
+        if !IvyConfiguration.usesApplePushNotifications {
+            IvyPushToken.shared.didReceive(tokenData)
+            return
+        }
         guard let vanillaTokenFuture = self.vanillaTokenFuture else {
             Logger.warn("System volunteered a push token even though we didn't request one. Syncing.")
             Task {
@@ -136,6 +141,11 @@ public class PushRegistrationManager: NSObject, PKPushRegistryDelegate {
 
     // Vanilla push token is obtained from the system via AppDelegate
     public func didFailToReceiveVanillaPushToken(error: Error) {
+        // Ivy: only the push relay asks for a token.
+        if !IvyConfiguration.usesApplePushNotifications {
+            IvyPushToken.shared.didFail(error)
+            return
+        }
         guard let vanillaTokenFuture = self.vanillaTokenFuture else {
             owsFailDebug("promise completion in \(#function) unexpectedly nil")
             return

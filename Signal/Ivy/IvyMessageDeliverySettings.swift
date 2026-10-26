@@ -8,9 +8,10 @@ import SignalUI
 
 /// The "Message Delivery" section of Settings > Notifications.
 ///
-/// Ivy receives no push notifications. On the Mac it receives messages while
-/// it runs, so it can open at login. On iPhone and iPad it relies on
-/// Background App Refresh while it is not in the foreground.
+/// Signal's servers send Ivy no push notifications. On the Mac Ivy receives
+/// messages while it runs, so it can open at login. On iPhone and iPad it
+/// relies on Background App Refresh while it is not in the foreground, or on
+/// a push relay the user runs (Ivy Push).
 enum IvyMessageDeliverySettings {
 
     @MainActor
@@ -59,6 +60,13 @@ enum IvyMessageDeliverySettings {
                 if let url = URL(string: UIApplication.openSettingsURLString) {
                     UIApplication.shared.open(url)
                 }
+            },
+        ))
+        section.add(.disclosureItem(
+            withText: IvyLocalizedString("PUSH_RELAY_TITLE", comment: "Title of the push relay settings and the item that opens them."),
+            accessoryText: IvyPushRelayViewController.statusText,
+            actionBlock: { [weak viewController] in
+                viewController?.navigationController?.pushViewController(IvyPushRelayViewController(), animated: true)
             },
         ))
 #endif

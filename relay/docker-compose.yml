@@ -1,0 +1,43 @@
+# Ivy Push relay. See docs/PUSH_RELAY.md for the setup.
+services:
+  caddy:
+    image: caddy:2
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - IVY_RELAY_DOMAIN=${IVY_RELAY_DOMAIN:?set IVY_RELAY_DOMAIN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+
+  mollysocket:
+    image: ghcr.io/mollyim/mollysocket:1
+    restart: always
+    working_dir: /data
+    command: server
+    volumes:
+      - mollysocket-data:/data
+    environment:
+      - MOLLY_DB=/data/mollysocket.db
+      - MOLLY_HOST=0.0.0.0
+      - MOLLY_PORT=8020
+      # Only your account may register, and MollySocket may only call the gateway.
+      - MOLLY_ALLOWED_UUIDS=["${IVY_ACCOUNT_ID:?set IVY_ACCOUNT_ID in .env}"]
+      - MOLLY_ALLOWED_ENDPOINTS=["http://ivy-gateway:8080"]
+      - RUST_LOG=info
+
+  ivy-gateway:
+    build: https://github.com/kirikakaese/Ivy.git#main:relay/gateway
+    restart: always
+    environment:
+      - APNS_TEAM_ID=${APNS_TEAM_ID:?set APNS_TEAM_ID in .env}
+      - APNS_KEY_ID=${APNS_KEY_ID:?set APNS_KEY_ID in .env}
+      - APNS_KEY_FILE=/run/secrets/apns.p8
+    volumes:
+      - ./apns.p8:/run/secrets/apns.p8:ro
+
+volumes:
+  caddy-data:
+  mollysocket-data:

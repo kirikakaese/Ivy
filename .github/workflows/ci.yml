@@ -35,6 +35,20 @@ jobs:
       - name: Check Ivy's own strings
         run: python3 Scripts/ivy/ivy_strings.py check
 
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: relay/gateway/go.mod
+
+      - name: Test the push relay gateway
+        working-directory: relay/gateway
+        run: |
+          test -z "$(gofmt -l .)" || { gofmt -l .; exit 1; }
+          go vet ./...
+          go test ./...
+
+      - name: Build the push relay gateway image
+        run: docker build relay/gateway
+
   build:
     name: ${{ matrix.name }} build and test
     runs-on: macos-26

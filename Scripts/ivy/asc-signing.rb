@@ -64,6 +64,8 @@ def prepare(dir)
   records = TARGETS.to_h do |identifier, (name, data_protection)|
     record_id = bundle_id_record(identifier, name)
     ensure_capability(record_id, identifier, 'APP_GROUPS')
+    # Wake-ups from the user's push relay (docs/PUSH_RELAY.md).
+    ensure_capability(record_id, identifier, 'PUSH_NOTIFICATIONS') if identifier == PREFIX
     if data_protection
       ensure_capability(record_id, identifier, 'DATA_PROTECTION', [{
         key: 'DATA_PROTECTION_PERMISSION_LEVEL', options: [{ key: 'COMPLETE_PROTECTION' }],
