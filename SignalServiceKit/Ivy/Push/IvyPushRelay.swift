@@ -4,7 +4,7 @@
 //
 
 public import Foundation
-public import LibSignalClient
+import LibSignalClient
 
 /// Ivy Push: a relay on the user's own server wakes Ivy with Apple push
 /// notifications when messages arrive, as Signal's servers only push to the
