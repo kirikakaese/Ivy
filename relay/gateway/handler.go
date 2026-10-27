@@ -16,8 +16,8 @@ import (
 var deviceToken = regexp.MustCompile(`^[0-9a-f]{64,200}$`)
 
 // newHandler serves POST /apns/<token>[?sandbox=1], the push endpoint Ivy
-// registers with MollySocket, and GET /health.
-func newHandler(sender pushSender) http.Handler {
+// registers with MollySocket, and GET /health. Outcomes go to stats.
+func newHandler(sender pushSender, stats *stats) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
@@ -39,14 +39,15 @@ func newHandler(sender pushSender) http.Handler {
 			return
 		}
 		err := sender.wake(token, r.URL.Query().Get("sandbox") == "1")
+		stats.record(token, err)
 		switch {
 		case err == nil:
 			w.WriteHeader(http.StatusCreated)
 		case errors.Is(err, errUnregistered):
-			log.Printf("ivy-gateway: device %s… is no longer registered with Apple", token[:8])
+			log.Printf("ivy-gateway: device %s is no longer registered with Apple", deviceID(token))
 			w.WriteHeader(http.StatusGone)
 		default:
-			log.Printf("ivy-gateway: push to %s… failed: %v", token[:8], err)
+			log.Printf("ivy-gateway: wake-up for device %s failed: %v", deviceID(token), err)
 			w.WriteHeader(http.StatusBadGateway)
 		}
 	})

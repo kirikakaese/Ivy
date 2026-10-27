@@ -36,9 +36,14 @@ services:
       - APNS_TEAM_ID=${APNS_TEAM_ID:?set APNS_TEAM_ID in .env}
       - APNS_KEY_ID=${APNS_KEY_ID:?set APNS_KEY_ID in .env}
       - APNS_KEY_FILE=/run/secrets/apns.p8
+      # The status page at https://<domain>/admin (user "admin"); off when empty.
+      - IVY_ADMIN_PASSWORD=${IVY_ADMIN_PASSWORD:-}
+      - MOLLYSOCKET_URL=http://mollysocket:8020
     volumes:
       - ./apns.p8:/run/secrets/apns.p8:ro
+      - gateway-data:/data
 
 volumes:
   caddy-data:
   mollysocket-data:
+  gateway-data:

@@ -60,6 +60,7 @@ Edit `.env` on the server (`nano .env`):
 | `IVY_RELAY_DOMAIN` | your domain, for example `relay.example.com` |
 | `APNS_TEAM_ID` | developer.apple.com > Membership details > Team ID |
 | `APNS_KEY_ID` | the Key ID from step 1 |
+| `IVY_ADMIN_PASSWORD` | a password for the status page, for example from `openssl rand -base64 24`. Leave it empty to turn the page off. |
 | `IVY_ALLOWED_ACCOUNTS` | optional: only these accounts may use the relay, for example `["account ID"]`. Ivy shows the ID under Settings > Notifications > Push Relay. Leave it out to serve every Ivy account. |
 
 Start it:
@@ -85,6 +86,19 @@ Without the variable, builds have no built-in relay; users can still tap **Conne
 ## Turning it off
 
 In Ivy: Settings > Notifications > Push Relay > **Instant Notifications** off. Ivy removes the Ivy Push device and doesn't connect by itself again. **Use Another Relay** connects to a different relay instead.
+
+## Status page
+
+`https://relay.example.com/admin` (user `admin`, password `IVY_ADMIN_PASSWORD`) shows whether the relay works:
+
+- **Status**: Operational, Degraded (Apple rejected the latest wake-up) or Down (MollySocket doesn't answer), with what needs attention.
+- **Overview**: connected accounts, devices woken in the last day and week, wake-ups and failures in the last 24 hours.
+- **Wake-ups per hour** for the last 24 hours.
+- **Apple push**: last delivery, last rejection with Apple's reason, totals.
+- **Relay**: MollySocket's version and counters, removed devices, how long the gateway has been running.
+- **Recent wake-ups**: each with time, result and a short device code.
+
+The page shows no account IDs, phone numbers or push tokens; devices appear only as a code derived from their token. It refreshes every 30 seconds. The counts are kept in the `gateway-data` volume, so they survive restarts.
 
 ## Updates and maintenance
 

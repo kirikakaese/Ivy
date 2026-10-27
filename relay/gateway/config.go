@@ -18,6 +18,10 @@ type config struct {
 	keyPEM     []byte
 	production string
 	sandbox    string
+
+	adminPassword  string
+	dataDir        string
+	mollySocketURL string
 }
 
 const (
@@ -40,6 +44,12 @@ func configFromEnvironment(getenv func(string) string) (config, error) {
 	}
 	if c.bundleID == "" {
 		c.bundleID = "io.github.kirikakaese.ivy"
+	}
+	c.adminPassword = getenv("IVY_ADMIN_PASSWORD")
+	c.dataDir = getenv("IVY_DATA_DIR")
+	c.mollySocketURL = getenv("MOLLYSOCKET_URL")
+	if c.mollySocketURL == "" {
+		c.mollySocketURL = "http://mollysocket:8020"
 	}
 	var missing []string
 	if c.teamID == "" {
