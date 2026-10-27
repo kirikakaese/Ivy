@@ -13,3 +13,9 @@ IVY_UPSTREAM_BUILD_NUMBER = 1910
 // (1910.42). TestFlight needs a new number for every upload; CI sets it to
 // the run number. Signal's servers only see the upstream build number.
 IVY_BUILD = 0
+
+// The push relay Ivy connects to by itself (docs/PUSH_RELAY.md), as a host
+// name without https:// since xcconfig treats // as a comment. Empty means
+// none; users can still enter a relay by hand. TestFlight builds take it from
+// the repository variable IVY_PUSH_RELAY_HOST.
+IVY_PUSH_RELAY_HOST =

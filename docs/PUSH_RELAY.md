@@ -2,7 +2,7 @@
 
 Signal's servers send push notifications only to the official Signal app. Without them, iOS wakes Ivy only now and then (Background App Refresh), so notifications can be late, and never come while Ivy is swiped away.
 
-Ivy Push fixes that with a small relay on your own server:
+Ivy Push fixes that with a small relay on a server. One relay serves every Ivy user: TestFlight builds connect to the relay built into them by themselves, and anyone can turn that off (Settings > Notifications > Push Relay > Instant Notifications) or enter a relay of their own.
 
 1. Ivy adds a linked device called **Ivy Push** to your account. Its keys are made for it and thrown away, so it can't read your messages.
 2. [MollySocket](https://github.com/mollyim/mollysocket) on your server stays connected to Signal as that device. When an urgent message arrives (not read receipts or typing), it calls the Ivy gateway next to it.
@@ -12,6 +12,8 @@ Ivy Push fixes that with a small relay on your own server:
 The relay learns when you get messages, never what they say or who sent them. It keeps the password of the Ivy Push device, which can receive encrypted messages but not decrypt or send them. Removing the device (in Ivy or under Linked Devices) cuts the relay off.
 
 If the relay is down, Ivy falls back to Background App Refresh.
+
+Whoever runs the relay learns when its users get messages. Tell the people who use your builds that it's on by default and where to turn it off.
 
 ## What you need
 
@@ -56,9 +58,9 @@ Edit `.env` on the server (`nano .env`):
 | Setting | Value |
 |---|---|
 | `IVY_RELAY_DOMAIN` | your domain, for example `relay.example.com` |
-| `IVY_ACCOUNT_ID` | in Ivy: Settings > Notifications > Push Relay > Account ID (tap to copy) |
 | `APNS_TEAM_ID` | developer.apple.com > Membership details > Team ID |
 | `APNS_KEY_ID` | the Key ID from step 1 |
+| `IVY_ALLOWED_ACCOUNTS` | optional: only these accounts may use the relay, for example `["account ID"]`. Ivy shows the ID under Settings > Notifications > Push Relay. Leave it out to serve every Ivy account. |
 
 Start it:
 
@@ -71,14 +73,18 @@ The first start builds the gateway and fetches a certificate, which takes a minu
 
 Ports 80 and 443 must be reachable; with a firewall (for example `ufw`), allow them: `ufw allow 80,443/tcp`.
 
-## 3. Ivy
+## 3. Build it into Ivy
 
-On the iPhone your account was registered on:
+1. In GitHub > the Ivy repository > Settings > Secrets and variables > Actions > **Variables**, add a repository variable `IVY_PUSH_RELAY_HOST` with your domain, for example `relay.example.com` (no `https://`).
+2. Run the TestFlight workflow.
 
-1. Settings > Notifications > **Push Relay** > **Connect Relay**.
-2. Enter your domain and tap **Continue**. Allow notifications if asked.
+On the new build, Ivy connects by itself the next time it opens, on the phone each account was registered on. Settings > Notifications > **Push Relay** then shows "Connected", and Settings > Linked Devices shows **Ivy Push**. Send yourself a message from another device while Ivy is closed to check.
 
-"Connected" means the relay accepted Ivy. Under Settings > Linked Devices you now see **Ivy Push**. Send yourself a message from another device while Ivy is closed to check.
+Without the variable, builds have no built-in relay; users can still tap **Connect Relay** there and enter a relay's address.
+
+## Turning it off
+
+In Ivy: Settings > Notifications > Push Relay > **Instant Notifications** off. Ivy removes the Ivy Push device and doesn't connect by itself again. **Use Another Relay** connects to a different relay instead.
 
 ## Updates and maintenance
 
@@ -88,13 +94,13 @@ docker compose pull && docker compose up -d --build
 ```
 
 - Signal removes linked devices that don't connect for 45 days, so keep the relay running. If the device was removed, Ivy shows "Device removed" under Push Relay; tap **Connect Again**.
-- To stop using Ivy Push, tap **Disconnect** in Ivy, then `docker compose down -v` on the server.
+- To shut the relay down: remove the `IVY_PUSH_RELAY_HOST` variable, run the TestFlight workflow, then `docker compose down -v` on the server. Ivy falls back to Background App Refresh; the Ivy Push devices stay linked until users turn the switch off or Signal removes them after 45 days.
 
 ## Troubleshooting
 
 | Ivy says | Check |
 |---|---|
 | No relay answered | The domain points at the server, ports 80 and 443 are open, `docker compose ps` shows all three services running |
-| Doesn't accept this account | `IVY_ACCOUNT_ID` in `.env` matches the ID in Ivy; after changing `.env`, run `docker compose up -d` |
+| Doesn't accept this account | `IVY_ALLOWED_ACCOUNTS` in `.env` contains the ID shown in Ivy, or remove it; after changing `.env`, run `docker compose up -d` |
 | Most linked devices allowed | Signal allows 5 linked devices; remove one under Linked Devices |
 | Connected, but no notifications | `docker compose logs ivy-gateway`: "InvalidProviderToken" means `APNS_TEAM_ID`, `APNS_KEY_ID` or `apns.p8` don't match; "BadDeviceToken" usually means a build without push, install the latest TestFlight build and connect again |

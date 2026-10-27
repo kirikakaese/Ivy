@@ -111,6 +111,7 @@ run archive \
   'IVY_PROFILE_appex=Ivy CI $(PRODUCT_BUNDLE_IDENTIFIER)' \
   OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN" \
   IVY_BUILD="$IVY_BUILD" \
+  IVY_PUSH_RELAY_HOST="${IVY_PUSH_RELAY_HOST:-}" \
   archive
 
 profiles=""

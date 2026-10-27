@@ -15,6 +15,9 @@ import LibSignalClient
 /// relay (MollySocket, see relay/ and docs/PUSH_RELAY.md) stays connected as
 /// that device and calls Ivy's push gateway whenever an urgent message waits.
 /// Ivy's notification service then fetches and shows the messages.
+///
+/// Builds with a built-in relay connect to it by themselves unless the user
+/// turns instant notifications off; any relay can also be entered by hand.
 public final class IvyPushRelay {
 
     public static let shared = IvyPushRelay()
@@ -47,6 +50,12 @@ public final class IvyPushRelay {
 
     private let store = KeyValueStore(collection: "IvyPushRelay")
     private static let connectionKey = "connection"
+    private static let optedOutKey = "optedOut"
+    private static let lastAutomaticAttemptKey = "lastAutomaticAttempt"
+
+    /// How long Ivy waits after an automatic connection attempt before it
+    /// tries again, for example after the relay was unreachable.
+    static let automaticRetryInterval: TimeInterval = .day
 
     private let session: URLSession = {
         let configuration = URLSessionConfiguration.ephemeral
@@ -78,7 +87,54 @@ public final class IvyPushRelay {
         }
     }
 
-    /// The account ID the relay must allow (`IVY_ACCOUNT_ID`).
+    /// The relay this build connects to by itself, from the build setting
+    /// `IVY_PUSH_RELAY_HOST` (a GitHub variable for TestFlight builds).
+    public static var builtInRelayURL: URL? {
+        guard let host = Bundle.main.object(forInfoDictionaryKey: "IvyPushRelayHost") as? String else {
+            return nil
+        }
+        return relayURL(from: host)
+    }
+
+    /// Whether the user turned instant notifications off.
+    public var isOptedOut: Bool {
+        SSKEnvironment.shared.databaseStorageRef.read { tx in
+            store.getBool(Self.optedOutKey, defaultValue: false, transaction: tx)
+        }
+    }
+
+    private func setOptedOut(_ optedOut: Bool) async {
+        await SSKEnvironment.shared.databaseStorageRef.awaitableWrite { tx in
+            self.store.setBool(optedOut, key: Self.optedOutKey, transaction: tx)
+        }
+    }
+
+    /// The built-in relay, if Ivy should connect to it by itself now: the
+    /// user didn't opt out, this is the primary device, and the last attempt
+    /// is more than a day ago.
+    public func relayForAutomaticConnection() async -> URL? {
+        guard let relayURL = Self.builtInRelayURL, connection == nil else {
+            return nil
+        }
+        return await SSKEnvironment.shared.databaseStorageRef.awaitableWrite { tx -> URL? in
+            guard
+                !self.store.getBool(Self.optedOutKey, defaultValue: false, transaction: tx),
+                DependenciesBridge.shared.tsAccountManager.registrationState(tx: tx).isPrimaryDevice == true
+            else {
+                return nil
+            }
+            if
+                let lastAttempt = self.store.getDate(Self.lastAutomaticAttemptKey, transaction: tx),
+                -lastAttempt.timeIntervalSinceNow < Self.automaticRetryInterval
+            {
+                return nil
+            }
+            self.store.setDate(Date(), key: Self.lastAutomaticAttemptKey, transaction: tx)
+            return relayURL
+        }
+    }
+
+    /// The account ID a relay can be limited to (`IVY_ALLOWED_ACCOUNTS`).
     public var accountId: String? {
         DependenciesBridge.shared.tsAccountManager.localIdentifiersWithMaybeSneakyTransaction?
             .aci.rawUUID.uuidString.lowercased()
@@ -124,6 +180,7 @@ public final class IvyPushRelay {
         try await serialQueue.runWithoutTaskCancellationHandler {
             try await self._connect(relayURL: relayURL, token: apnsToken.hexadecimalString)
         }
+        await setOptedOut(false)
     }
 
     private func _connect(relayURL: URL, token: String) async throws {
@@ -167,14 +224,17 @@ public final class IvyPushRelay {
         }
     }
 
-    /// Removes the push device from the account and forgets the relay.
-    public func disconnect() async throws {
+    /// Removes the push device from the account and forgets the relay. With
+    /// `optOut`, Ivy doesn't connect to the built-in relay by itself again.
+    public func disconnect(optOut: Bool) async throws {
         try await serialQueue.runWithoutTaskCancellationHandler {
-            guard let connection = self.connection else {
-                return
+            if let connection = self.connection {
+                try await self.unlink(connection)
+                await self.save(nil)
             }
-            try await self.unlink(connection)
-            await self.save(nil)
+        }
+        if optOut {
+            await setOptedOut(true)
         }
     }
 

@@ -16,13 +16,29 @@ final class IvyPushToken {
     private let waiting = AtomicValue<[CheckedContinuation<Data?, Never>]>([], lock: .init())
 
     /// Asks iOS for the push token again when a relay is connected, so a
-    /// changed token reaches the relay.
+    /// changed token reaches the relay. Otherwise connects to the built-in
+    /// relay, unless the user turned instant notifications off.
     @MainActor
-    func refreshIfConnected() {
-        guard IvyPushRelay.shared.isConnected else {
+    func refresh() {
+        let relay = IvyPushRelay.shared
+        if relay.isConnected {
+            UIApplication.shared.registerForRemoteNotifications()
             return
         }
-        UIApplication.shared.registerForRemoteNotifications()
+        Task {
+            guard
+                let relayURL = await relay.relayForAutomaticConnection(),
+                let token = await requestToken()
+            else {
+                return
+            }
+            do {
+                try await relay.connect(relayURL: relayURL, apnsToken: token)
+                Logger.info("Connected to the built-in push relay.")
+            } catch {
+                Logger.warn("Couldn't connect to the built-in push relay: \(error)")
+            }
+        }
     }
 
     /// The push token, or `nil` if iOS doesn't hand one out in time.
@@ -96,6 +112,10 @@ final class IvyPushRelayViewController: OWSTableViewController2 {
     }
 
     private func updateTableContents() {
+        let relay = IvyPushRelay.shared
+        let builtInRelay = IvyPushRelay.builtInRelayURL
+        let connection = relay.connection
+
         let contents = OWSTableContents(title: IvyLocalizedString(
             "PUSH_RELAY_TITLE",
             comment: "Title of the push relay settings and the item that opens them.",
@@ -106,15 +126,22 @@ final class IvyPushRelayViewController: OWSTableViewController2 {
             "PUSH_RELAY_INTRO",
             comment: "Explains the push relay on its settings screen.",
         )
-        introSection.add(.disclosureItem(
-            withText: IvyLocalizedString("PUSH_RELAY_SETUP_GUIDE", comment: "Item that opens the guide for setting up a push relay."),
-            actionBlock: { [weak self] in
-                self?.present(SFSafariViewController(url: Self.setupGuideURL), animated: true)
-            },
-        ))
+        if let builtInRelay {
+            introSection.add(.switch(
+                withText: IvyLocalizedString("PUSH_RELAY_SWITCH", comment: "Switch that turns the push relay on or off."),
+                isOn: { connection != nil },
+                actionBlock: { [weak self] uiSwitch in
+                    if uiSwitch.isOn {
+                        self?.connect(to: connection?.relayURL ?? builtInRelay)
+                    } else {
+                        self?.disconnect(optOut: true)
+                    }
+                },
+            ))
+        }
         contents.add(introSection)
 
-        if let connection = IvyPushRelay.shared.connection {
+        if let connection {
             let statusSection = OWSTableSection()
             statusSection.add(.copyableItem(
                 label: IvyLocalizedString("PUSH_RELAY_ADDRESS", comment: "Label for the address of the connected push relay."),
@@ -136,37 +163,49 @@ final class IvyPushRelayViewController: OWSTableViewController2 {
                     },
                 ))
             }
-            contents.add(statusSection)
-
-            let disconnectSection = OWSTableSection()
-            disconnectSection.add(.actionItem(
-                withText: IvyLocalizedString("PUSH_RELAY_DISCONNECT", comment: "Button that removes the push relay."),
-                textColor: .Signal.red,
-                actionBlock: { [weak self] in
-                    self?.confirmDisconnect()
-                },
-            ))
-            contents.add(disconnectSection)
-        } else {
-            let connectSection = OWSTableSection()
-            if let accountId = IvyPushRelay.shared.accountId {
-                connectSection.footerTitle = IvyLocalizedString(
-                    "PUSH_RELAY_ACCOUNT_ID_FOOTER",
-                    comment: "Explains that the relay needs the account ID.",
-                )
-                connectSection.add(.copyableItem(
-                    label: IvyLocalizedString("PUSH_RELAY_ACCOUNT_ID", comment: "Label for the account ID the push relay must allow."),
-                    value: accountId,
+            if builtInRelay == nil {
+                statusSection.add(.actionItem(
+                    withText: IvyLocalizedString("PUSH_RELAY_DISCONNECT", comment: "Button that removes the push relay."),
+                    textColor: .Signal.red,
+                    actionBlock: { [weak self] in
+                        self?.confirmDisconnect()
+                    },
                 ))
             }
-            connectSection.add(.actionItem(
-                withText: IvyLocalizedString("PUSH_RELAY_CONNECT", comment: "Button that connects Ivy to a push relay."),
-                actionBlock: { [weak self] in
-                    self?.askForAddress()
-                },
-            ))
-            contents.add(connectSection)
+            contents.add(statusSection)
         }
+
+        // Any relay can be entered by hand, for example one's own.
+        let ownRelaySection = OWSTableSection()
+        ownRelaySection.headerTitle = builtInRelay == nil ? nil : IvyLocalizedString(
+            "PUSH_RELAY_OWN_HEADER",
+            comment: "Header of the section for using one's own push relay instead of the built-in one.",
+        )
+        ownRelaySection.footerTitle = IvyLocalizedString(
+            "PUSH_RELAY_ACCOUNT_ID_FOOTER",
+            comment: "Explains that a relay can be limited to the account ID.",
+        )
+        ownRelaySection.add(.disclosureItem(
+            withText: IvyLocalizedString("PUSH_RELAY_SETUP_GUIDE", comment: "Item that opens the guide for setting up a push relay."),
+            actionBlock: { [weak self] in
+                self?.present(SFSafariViewController(url: Self.setupGuideURL), animated: true)
+            },
+        ))
+        if let accountId = relay.accountId {
+            ownRelaySection.add(.copyableItem(
+                label: IvyLocalizedString("PUSH_RELAY_ACCOUNT_ID", comment: "Label for the account ID a push relay can be limited to."),
+                value: accountId,
+            ))
+        }
+        ownRelaySection.add(.actionItem(
+            withText: builtInRelay == nil && connection == nil
+                ? IvyLocalizedString("PUSH_RELAY_CONNECT", comment: "Button that connects Ivy to a push relay.")
+                : IvyLocalizedString("PUSH_RELAY_USE_OTHER", comment: "Button that connects Ivy to a push relay other than the current one."),
+            actionBlock: { [weak self] in
+                self?.askForAddress()
+            },
+        ))
+        contents.add(ownRelaySection)
 
         self.contents = contents
     }
@@ -266,21 +305,22 @@ final class IvyPushRelayViewController: OWSTableViewController2 {
             proceedTitle: IvyLocalizedString("PUSH_RELAY_DISCONNECT", comment: "Button that removes the push relay."),
             proceedStyle: .destructive,
             proceedAction: { [weak self] _ in
-                self?.disconnect()
+                self?.disconnect(optOut: false)
             },
             fromViewController: self,
         )
     }
 
-    private func disconnect() {
+    private func disconnect(optOut: Bool) {
         Task {
             do {
                 try await ModalActivityIndicatorViewController.presentAndPropagateResult(from: self) {
-                    try await IvyPushRelay.shared.disconnect()
+                    try await IvyPushRelay.shared.disconnect(optOut: optOut)
                 }
                 UIApplication.shared.unregisterForRemoteNotifications()
                 updateTableContents()
             } catch {
+                updateTableContents()
                 Logger.warn("Couldn't remove the push relay: \(error)")
                 OWSActionSheets.showActionSheet(
                     title: IvyLocalizedString("PUSH_RELAY_DISCONNECT_ERROR", comment: "Shown when the push relay's linked device couldn't be removed."),

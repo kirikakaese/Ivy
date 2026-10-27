@@ -972,8 +972,9 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
 
     private func scheduleBgAppRefresh() {
         MessageFetchBGRefreshTask.getShared(appReadiness: appReadiness)?.scheduleTask()
-        // Ivy: keep the push relay's token current.
-        IvyPushToken.shared.refreshIfConnected()
+        // Ivy: keep the push relay's token current, or connect to the
+        // built-in relay.
+        IvyPushToken.shared.refresh()
     }
 
     /// The user must unlock the device once after reboot before the database encryption key can be accessed.

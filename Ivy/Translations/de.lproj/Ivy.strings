@@ -1099,7 +1099,7 @@
 "PUSH_RELAY_ACCOUNT_ID" = "Konto-ID";
 
 /* Explains that the relay needs the account ID. */
-"PUSH_RELAY_ACCOUNT_ID_FOOTER" = "Dein Relay nimmt nur dieses Konto an. Trage die ID bei der Einrichtung als IVY_ACCOUNT_ID ein.";
+"PUSH_RELAY_ACCOUNT_ID_FOOTER" = "Du kannst auch selbst ein Relay betreiben. Damit nur dein Konto es nutzt, trage diese ID in IVY_ALLOWED_ACCOUNTS ein.";
 
 /* Label for the address of the connected push relay. */
 "PUSH_RELAY_ADDRESS" = "Relay";
@@ -1129,7 +1129,7 @@
 "PUSH_RELAY_DISCONNECT_TITLE" = "Push-Relay trennen?";
 
 /* Shown when the push relay doesn't allow this account. */
-"PUSH_RELAY_ERROR_ACCOUNT" = "Das Relay nimmt dieses Konto nicht an. Prüfe IVY_ACCOUNT_ID in der .env-Datei des Relays.";
+"PUSH_RELAY_ERROR_ACCOUNT" = "Das Relay nimmt dieses Konto nicht an. Wenn es dein Relay ist, prüfe IVY_ALLOWED_ACCOUNTS in seiner .env-Datei.";
 
 /* Shown when the push relay address is not a valid HTTPS address. */
 "PUSH_RELAY_ERROR_ADDRESS" = "Gib eine Adresse wie relay.example.com ein. Nur HTTPS wird unterstützt.";
@@ -1156,7 +1156,10 @@
 "PUSH_RELAY_ERROR_TOKEN" = "iOS hat Ivy kein Push-Token gegeben. Prüfe deine Internetverbindung und versuche es erneut.";
 
 /* Explains the push relay on its settings screen. */
-"PUSH_RELAY_INTRO" = "Ein Relay auf deinem eigenen Server weckt Ivy, sobald eine Nachricht ankommt. So kommen Mitteilungen sofort, auch wenn Ivy geschlossen ist. Dafür fügt Ivy ein verknüpftes Gerät namens „Ivy Push“ hinzu. Es hat keine Schlüssel und kann deine Nachrichten nicht lesen; das Relay erfährt nur, wann Nachrichten ankommen.";
+"PUSH_RELAY_INTRO" = "Ein Push-Relay weckt Ivy, sobald eine Nachricht ankommt. So kommen Mitteilungen sofort, auch wenn Ivy geschlossen ist. Dafür fügt Ivy ein verknüpftes Gerät namens „Ivy Push“ hinzu. Es hat keine Schlüssel und kann deine Nachrichten nicht lesen; das Relay erfährt nur, wann Nachrichten ankommen.";
+
+/* Header of the section for using one's own push relay instead of the built-in one. */
+"PUSH_RELAY_OWN_HEADER" = "Eigenes Relay";
 
 /* Button that sets up the push relay again. */
 "PUSH_RELAY_RECONNECT" = "Erneut verbinden";
@@ -1182,8 +1185,14 @@
 /* Accessory text when the push relay is set up. */
 "PUSH_RELAY_STATUS_ON" = "An";
 
+/* Switch that turns the push relay on or off. */
+"PUSH_RELAY_SWITCH" = "Sofortige Mitteilungen";
+
 /* Title of the push relay settings and the item that opens them. */
 "PUSH_RELAY_TITLE" = "Push-Relay";
+
+/* Button that connects Ivy to a push relay other than the current one. */
+"PUSH_RELAY_USE_OTHER" = "Anderes Relay verwenden";
 
 /* Text of the daily summary of muted chats. Embeds {{ number of messages }} and {{ number of chats }}. */
 "QUIET_SUMMARY_BODY_FORMAT" = "%1$@ ungelesene Nachrichten in %2$@ Chats";

@@ -23,8 +23,9 @@ services:
       - MOLLY_DB=/data/mollysocket.db
       - MOLLY_HOST=0.0.0.0
       - MOLLY_PORT=8020
-      # Only your account may register, and MollySocket may only call the gateway.
-      - MOLLY_ALLOWED_UUIDS=["${IVY_ACCOUNT_ID:?set IVY_ACCOUNT_ID in .env}"]
+      # Every Ivy account may register unless IVY_ALLOWED_ACCOUNTS limits it.
+      # MollySocket may only call the gateway.
+      - MOLLY_ALLOWED_UUIDS=${IVY_ALLOWED_ACCOUNTS:-["*"]}
       - MOLLY_ALLOWED_ENDPOINTS=["http://ivy-gateway:8080"]
       - RUST_LOG=info
 

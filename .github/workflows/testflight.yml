@@ -80,6 +80,7 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY: ${{ secrets.ASC_KEY }}
           IVY_BUILD: ${{ github.run_number }}
+          IVY_PUSH_RELAY_HOST: ${{ vars.IVY_PUSH_RELAY_HOST }}
         run: Scripts/ivy/testflight.sh
 
       - name: Upload logs
