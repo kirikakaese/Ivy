@@ -17,6 +17,7 @@ import (
 const (
 	eventLimit   = 100
 	hoursKept    = 7 * 24
+	daysKept     = 90
 	deviceMaxAge = 30 * 24 * time.Hour
 )
 
@@ -32,6 +33,28 @@ type event struct {
 	Kind   string    `json:"kind"`
 	Device string    `json:"device"`
 	Detail string    `json:"detail,omitempty"`
+}
+
+// dayHealth counts the minutes of a day (UTC) by the relay's status.
+type dayHealth struct {
+	OK       int `json:"ok"`
+	Degraded int `json:"degraded"`
+	Down     int `json:"down"`
+}
+
+// status sums up a day for the public history: a few minutes down make it
+// a bad day, shorter trouble a degraded one.
+func (d dayHealth) status() string {
+	switch {
+	case d.Down >= 5:
+		return "down"
+	case d.Down > 0 || d.Degraded >= 5:
+		return "degraded"
+	case d.OK > 0 || d.Degraded > 0:
+		return "ok"
+	default:
+		return "none"
+	}
 }
 
 type hourCounts struct {
@@ -56,6 +79,7 @@ type stats struct {
 	LastFailure time.Time             `json:"lastFailure"`
 	LastError   string                `json:"lastError"`
 	Devices     map[string]time.Time  `json:"devices"`
+	Days        map[string]*dayHealth `json:"days"`
 	Events      []event               `json:"events"`
 	started     time.Time
 	dirty       bool
@@ -68,6 +92,7 @@ func newStats(path string, now func() time.Time) *stats {
 		Since:   now(),
 		Hours:   map[int64]*hourCounts{},
 		Devices: map[string]time.Time{},
+		Days:    map[string]*dayHealth{},
 		started: now(),
 	}
 	if path == "" {
@@ -85,6 +110,9 @@ func newStats(path string, now func() time.Time) *stats {
 			}
 			if saved.Devices != nil {
 				s.Devices = saved.Devices
+			}
+			if saved.Days != nil {
+				s.Days = saved.Days
 			}
 		}
 	}
@@ -147,6 +175,58 @@ func (s *stats) prune(now time.Time) {
 			delete(s.Devices, device)
 		}
 	}
+}
+
+const dayFormat = "2006-01-02"
+
+// recordHealth counts one minute with the given status for today.
+func (s *stats) recordHealth(status string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	now := s.now().UTC()
+	key := now.Format(dayFormat)
+	day := s.Days[key]
+	if day == nil {
+		day = &dayHealth{}
+		s.Days[key] = day
+	}
+	switch status {
+	case "ok":
+		day.OK++
+	case "degraded":
+		day.Degraded++
+	default:
+		day.Down++
+	}
+	oldest := now.AddDate(0, 0, -daysKept).Format(dayFormat)
+	for key := range s.Days {
+		if key < oldest {
+			delete(s.Days, key)
+		}
+	}
+	s.dirty = true
+}
+
+type dayPoint struct {
+	Date   string `json:"date"`
+	Status string `json:"status"`
+}
+
+// history returns the last 90 days, oldest first.
+func (s *stats) history() []dayPoint {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	today := s.now().UTC()
+	points := make([]dayPoint, 0, daysKept)
+	for i := daysKept - 1; i >= 0; i-- {
+		key := today.AddDate(0, 0, -i).Format(dayFormat)
+		status := "none"
+		if day := s.Days[key]; day != nil {
+			status = day.status()
+		}
+		points = append(points, dayPoint{Date: key, Status: status})
+	}
+	return points
 }
 
 // save writes the stats to disk if they changed.

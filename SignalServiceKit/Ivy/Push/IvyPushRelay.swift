@@ -161,6 +161,11 @@ public final class IvyPushRelay {
         return components.url
     }
 
+    /// The relay's public status page (relay/gateway/public).
+    public static func statusPageURL(for relayURL: URL) -> URL {
+        return relayURL.appendingPathComponent("status/")
+    }
+
     static func endpoint(forToken token: String, sandbox: Bool) -> String {
         return gatewayBaseURL + token + (sandbox ? "?sandbox=1" : "")
     }

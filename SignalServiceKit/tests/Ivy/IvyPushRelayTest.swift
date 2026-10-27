@@ -18,6 +18,13 @@ final class IvyPushRelayTest: XCTestCase {
         XCTAssertNil(IvyPushRelay.relayURL(from: ""))
     }
 
+    func testStatusPage() {
+        XCTAssertEqual(
+            IvyPushRelay.statusPageURL(for: URL(string: "https://relay.example.com")!).absoluteString,
+            "https://relay.example.com/status/",
+        )
+    }
+
     func testEndpointPointsAtGateway() {
         XCTAssertEqual(
             IvyPushRelay.endpoint(forToken: "ab12", sandbox: false),

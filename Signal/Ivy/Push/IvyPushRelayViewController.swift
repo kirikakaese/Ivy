@@ -151,6 +151,12 @@ final class IvyPushRelayViewController: OWSTableViewController2 {
                 name: IvyLocalizedString("PUSH_RELAY_STATE", comment: "Label for the state of the push relay's linked device."),
                 accessoryText: stateText,
             ))
+            statusSection.add(.disclosureItem(
+                withText: IvyLocalizedString("PUSH_RELAY_SERVICE_STATUS", comment: "Item that opens the push relay's public status page."),
+                actionBlock: { [weak self] in
+                    self?.present(SFSafariViewController(url: IvyPushRelay.statusPageURL(for: connection.relayURL)), animated: true)
+                },
+            ))
             if deviceState == .removed {
                 statusSection.footerTitle = IvyLocalizedString(
                     "PUSH_RELAY_DEVICE_REMOVED_FOOTER",

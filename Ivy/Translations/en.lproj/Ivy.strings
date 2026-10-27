@@ -1164,6 +1164,9 @@
 /* Button that sets up the push relay again. */
 "PUSH_RELAY_RECONNECT" = "Connect Again";
 
+/* Item that opens the push relay public status page. */
+"PUSH_RELAY_SERVICE_STATUS" = "Service Status";
+
 /* Item that opens the guide for setting up a push relay. */
 "PUSH_RELAY_SETUP_GUIDE" = "Setup Guide";
 

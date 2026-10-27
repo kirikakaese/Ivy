@@ -1,10 +1,27 @@
-# Only MollySocket and the gateway's admin page are reachable from outside;
-# the gateway's push endpoint and MollySocket's metrics stay internal.
+# From outside, only MollySocket's registration, the public status page and
+# the admin page are reachable. The gateway's push endpoint and MollySocket's
+# metrics stay inside the Docker network.
 {$IVY_RELAY_DOMAIN} {
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+		-Server
+	}
+	request_body {
+		max_size 64KB
+	}
+
+	handle /status* {
+		reverse_proxy ivy-gateway:8080
+	}
 	handle /admin* {
 		reverse_proxy ivy-gateway:8080
 	}
 	handle /metrics* {
+		respond 404
+	}
+	handle /apns* {
 		respond 404
 	}
 	handle {

@@ -7,8 +7,9 @@
 // notification service fetches and shows the message.
 //
 // The gateway sees no message content. Its push endpoint is meant to be
-// reachable only from MollySocket, inside the Docker network; the optional
-// admin page under /admin/ is password protected.
+// reachable only from MollySocket, inside the Docker network. The public
+// status page is under /status/, the password-protected admin page under
+// /admin/.
 package main
 
 import (
@@ -41,12 +42,16 @@ func main() {
 		}
 	}()
 
+	relay := newRelayProbe(config.mollySocketURL)
 	mux := newHandler(sender, stats)
+	monitor := &monitor{stats: stats, relay: relay, bundleID: config.bundleID, now: time.Now}
+	go monitor.run()
+	monitor.register(mux)
 	(&admin{
 		password: config.adminPassword,
 		bundleID: config.bundleID,
 		stats:    stats,
-		relay:    newRelayProbe(config.mollySocketURL),
+		relay:    relay,
 		now:      time.Now,
 		sleep:    time.Sleep,
 	}).register(mux)

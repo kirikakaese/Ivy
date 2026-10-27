@@ -31,11 +31,18 @@ The TestFlight workflow turns on Push Notifications for the App ID `io.github.ki
 
 ## 2. The server
 
-Log in to the server (`ssh root@<server IP>`) and install Docker if needed:
+Most providers let you add an SSH key when you create the server; do that. Otherwise copy it over once from your computer: `ssh-copy-id root@<server IP>`.
+
+Log in to the server (`ssh root@<server IP>`), harden it and install Docker:
 
 ```sh
+curl -fsSLO https://raw.githubusercontent.com/kirikakaese/Ivy/main/relay/harden.sh
+less harden.sh   # read what it does first
+bash harden.sh
 curl -fsSL https://get.docker.com | sh
 ```
+
+`harden.sh` (Debian or Ubuntu) turns on automatic security updates (with a restart at 04:00 when one needs it), a firewall that only lets in SSH, HTTP and HTTPS, key-only SSH logins, fail2ban against password guessing, and safer kernel network settings. It leaves password logins on while no SSH key is set up, so you can't lock yourself out; run it again after adding a key.
 
 Get the relay files and prepare the settings:
 
@@ -72,7 +79,9 @@ docker compose logs -f
 
 The first start builds the gateway and fetches a certificate, which takes a minute or two. Opening `https://relay.example.com/discover` in a browser should show a short text starting with `{"mollysocket"`.
 
-Ports 80 and 443 must be reachable; with a firewall (for example `ufw`), allow them: `ufw allow 80,443/tcp`.
+Ports 80 and 443 must be reachable; `harden.sh` opens them. If your provider has its own firewall in its web console, allow them there too.
+
+The containers run with no extra privileges, memory limits and rotated logs; the gateway's file system is read-only. From outside, only MollySocket's registration, the status pages and HTTPS are reachable.
 
 ## 3. Build it into Ivy
 
@@ -87,7 +96,11 @@ Without the variable, builds have no built-in relay; users can still tap **Conne
 
 In Ivy: Settings > Notifications > Push Relay > **Instant Notifications** off. Ivy removes the Ivy Push device and doesn't connect by itself again. **Use Another Relay** connects to a different relay instead.
 
-## Status page
+## Public status page
+
+`https://relay.example.com/status` shows anyone whether instant notifications work right now (working, some delays, down) and a bar for each of the last 90 days. It tells nothing about who uses the relay, how many or when. Ivy links to it under Settings > Notifications > Push Relay > Service Status. The relay checks itself once a minute; visitors never cause checks.
+
+## Admin page
 
 `https://relay.example.com/admin` (user `admin`, password `IVY_ADMIN_PASSWORD`) shows whether the relay works:
 
@@ -97,6 +110,8 @@ In Ivy: Settings > Notifications > Push Relay > **Instant Notifications** off. I
 - **Apple push**: last delivery, last rejection with Apple's reason, totals.
 - **Relay**: MollySocket's version and counters, removed devices, how long the gateway has been running.
 - **Recent wake-ups**: each with time, result and a short device code.
+
+After 10 wrong passwords from one address, the page refuses that address for 15 minutes.
 
 The page shows no account IDs, phone numbers or push tokens; devices appear only as a code derived from their token. It refreshes every 30 seconds. The counts are kept in the `gateway-data` volume, so they survive restarts.
 
