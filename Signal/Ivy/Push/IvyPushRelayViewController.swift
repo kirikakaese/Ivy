@@ -200,7 +200,7 @@ final class IvyPushRelayViewController: OWSTableViewController2 {
         alert.addAction(UIAlertAction(title: CommonStrings.cancelButton, style: .cancel))
         alert.addAction(UIAlertAction(title: CommonStrings.continueButton, style: .default) { [weak self, weak alert] _ in
             guard let url = IvyPushRelay.relayURL(from: alert?.textFields?.first?.text ?? "") else {
-                self?.showError(.invalidAddress)
+                self?.showError(IvyPushRelay.RelayError.invalidAddress)
                 return
             }
             self?.connect(to: url)
