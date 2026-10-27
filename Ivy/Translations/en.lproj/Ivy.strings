@@ -895,7 +895,7 @@
 "NOTIFICATIONS_BACKGROUND_REFRESH" = "Background App Refresh";
 
 /* Footer explaining that on iPhone and iPad messages arrive in the background only through Background App Refresh. */
-"NOTIFICATIONS_BACKGROUND_REFRESH_FOOTER" = "Ivy receives messages right away while it is open. In the background, the system lets Ivy check for new messages from time to time, so notifications can arrive late. Keep Background App Refresh turned on for Ivy.";
+"NOTIFICATIONS_BACKGROUND_REFRESH_FOOTER" = "Ivy receives messages right away while it is open. In the background, the system lets Ivy check for new messages from time to time, so notifications can arrive late. Keep Background App Refresh turned on for Ivy. For instant notifications, set up a push relay.";
 
 /* Background App Refresh is turned off. */
 "NOTIFICATIONS_BACKGROUND_REFRESH_OFF" = "Off";
@@ -1094,6 +1094,108 @@
 
 /* Stands for the user in the list of who picked a time. */
 "PLAN_YOU" = "You";
+
+/* Label for the account ID the push relay must allow. */
+"PUSH_RELAY_ACCOUNT_ID" = "Account ID";
+
+/* Explains that the relay needs the account ID. */
+"PUSH_RELAY_ACCOUNT_ID_FOOTER" = "You can also run a relay yourself. To let only your account use it, add this ID to IVY_ALLOWED_ACCOUNTS.";
+
+/* Label for the address of the connected push relay. */
+"PUSH_RELAY_ADDRESS" = "Relay";
+
+/* Asks for the address of the push relay. */
+"PUSH_RELAY_ADDRESS_PROMPT" = "Enter your relay's address.";
+
+/* Button that connects Ivy to a push relay. */
+"PUSH_RELAY_CONNECT" = "Connect Relay";
+
+/* Shown after Ivy connected to the push relay. */
+"PUSH_RELAY_CONNECTED_TOAST" = "Push relay connected";
+
+/* Shown when the push relay's linked device was removed from the account. */
+"PUSH_RELAY_DEVICE_REMOVED_FOOTER" = "The “Ivy Push” device is no longer linked to your account. Connect again to add a new one.";
+
+/* Button that removes the push relay. */
+"PUSH_RELAY_DISCONNECT" = "Disconnect";
+
+/* Shown when the push relay's linked device couldn't be removed. */
+"PUSH_RELAY_DISCONNECT_ERROR" = "Couldn't remove the “Ivy Push” device. Check your connection and try again.";
+
+/* Explains what removing the push relay does. */
+"PUSH_RELAY_DISCONNECT_MESSAGE" = "Ivy removes the “Ivy Push” device from your account. Messages then arrive through Background App Refresh again.";
+
+/* Title of the confirmation before removing the push relay. */
+"PUSH_RELAY_DISCONNECT_TITLE" = "Disconnect Push Relay?";
+
+/* Shown when the push relay doesn't allow this account. */
+"PUSH_RELAY_ERROR_ACCOUNT" = "The relay doesn't accept this account. If it's your relay, check IVY_ALLOWED_ACCOUNTS in its .env file.";
+
+/* Shown when the push relay address is not a valid HTTPS address. */
+"PUSH_RELAY_ERROR_ADDRESS" = "Enter an address like relay.example.com. Only HTTPS is supported.";
+
+/* Shown when the account has the most linked devices allowed. */
+"PUSH_RELAY_ERROR_DEVICES" = "Your account already has the most linked devices allowed. Remove one under Linked Devices and try again.";
+
+/* Shown when the push relay may not call its push gateway. */
+"PUSH_RELAY_ERROR_GATEWAY" = "The relay may not call Ivy's push gateway. Use the docker-compose.yml from the setup guide.";
+
+/* Shown when connecting to the push relay failed for another reason. */
+"PUSH_RELAY_ERROR_GENERIC" = "Ivy couldn't connect to the relay. Try again later.";
+
+/* Shown when no push relay answers at the address. */
+"PUSH_RELAY_ERROR_NOT_A_RELAY" = "No relay answered at this address. Check the address and that the relay is running.";
+
+/* Shown when the push relay is set up on a linked device. */
+"PUSH_RELAY_ERROR_PRIMARY" = "A push relay can only be set up on the phone your account was registered on.";
+
+/* Title shown when connecting to the push relay failed. */
+"PUSH_RELAY_ERROR_TITLE" = "Couldn't Connect";
+
+/* Shown when iOS gave Ivy no push token. */
+"PUSH_RELAY_ERROR_TOKEN" = "iOS didn't give Ivy a push token. Check your internet connection and try again.";
+
+/* Explains the push relay on its settings screen. */
+"PUSH_RELAY_INTRO" = "A push relay wakes Ivy as soon as a message arrives, so notifications come right away, even while Ivy is closed. For this, Ivy adds a linked device called “Ivy Push”. It has no keys and can't read your messages; the relay only learns when messages arrive.";
+
+/* Header of the section for using one's own push relay instead of the built-in one. */
+"PUSH_RELAY_OWN_HEADER" = "Your Own Relay";
+
+/* Button that sets up the push relay again. */
+"PUSH_RELAY_RECONNECT" = "Connect Again";
+
+/* Item that opens the push relay public status page. */
+"PUSH_RELAY_SERVICE_STATUS" = "Service Status";
+
+/* Item that opens the guide for setting up a push relay. */
+"PUSH_RELAY_SETUP_GUIDE" = "Setup Guide";
+
+/* Label for the state of the push relay's linked device. */
+"PUSH_RELAY_STATE" = "Status";
+
+/* The push relay is set up and its linked device exists. */
+"PUSH_RELAY_STATE_CONNECTED" = "Connected";
+
+/* The push relay's linked device was removed. */
+"PUSH_RELAY_STATE_REMOVED" = "Device removed";
+
+/* The push relay's linked device couldn't be checked. */
+"PUSH_RELAY_STATE_UNKNOWN" = "Not checked";
+
+/* Accessory text when no push relay is set up. */
+"PUSH_RELAY_STATUS_OFF" = "Off";
+
+/* Accessory text when the push relay is set up. */
+"PUSH_RELAY_STATUS_ON" = "On";
+
+/* Switch that turns the push relay on or off. */
+"PUSH_RELAY_SWITCH" = "Instant Notifications";
+
+/* Title of the push relay settings and the item that opens them. */
+"PUSH_RELAY_TITLE" = "Push Relay";
+
+/* Button that connects Ivy to a push relay other than the current one. */
+"PUSH_RELAY_USE_OTHER" = "Use Another Relay";
 
 /* Text of the daily summary of muted chats. Embeds {{ number of messages }} and {{ number of chats }}. */
 "QUIET_SUMMARY_BODY_FORMAT" = "%1$@ unread messages in %2$@ chats";

@@ -895,7 +895,7 @@
 "NOTIFICATIONS_BACKGROUND_REFRESH" = "Hintergrundaktualisierung";
 
 /* Footer explaining that on iPhone and iPad messages arrive in the background only through Background App Refresh. */
-"NOTIFICATIONS_BACKGROUND_REFRESH_FOOTER" = "Ivy empfängt Nachrichten sofort, solange die App geöffnet ist. Im Hintergrund lässt das System Ivy nur ab und zu nach neuen Nachrichten sehen, deshalb können Mitteilungen verspätet ankommen. Lass die Hintergrundaktualisierung für Ivy eingeschaltet.";
+"NOTIFICATIONS_BACKGROUND_REFRESH_FOOTER" = "Ivy empfängt Nachrichten sofort, solange die App geöffnet ist. Im Hintergrund lässt das System Ivy nur ab und zu nach neuen Nachrichten sehen, deshalb können Mitteilungen verspätet ankommen. Lass die Hintergrundaktualisierung für Ivy eingeschaltet. Für sofortige Mitteilungen richte ein Push-Relay ein.";
 
 /* Background App Refresh is turned off. */
 "NOTIFICATIONS_BACKGROUND_REFRESH_OFF" = "Aus";
@@ -1094,6 +1094,108 @@
 
 /* Stands for the user in the list of who picked a time. */
 "PLAN_YOU" = "Du";
+
+/* Label for the account ID the push relay must allow. */
+"PUSH_RELAY_ACCOUNT_ID" = "Konto-ID";
+
+/* Explains that the relay needs the account ID. */
+"PUSH_RELAY_ACCOUNT_ID_FOOTER" = "Du kannst auch selbst ein Relay betreiben. Damit nur dein Konto es nutzt, trage diese ID in IVY_ALLOWED_ACCOUNTS ein.";
+
+/* Label for the address of the connected push relay. */
+"PUSH_RELAY_ADDRESS" = "Relay";
+
+/* Asks for the address of the push relay. */
+"PUSH_RELAY_ADDRESS_PROMPT" = "Gib die Adresse deines Relays ein.";
+
+/* Button that connects Ivy to a push relay. */
+"PUSH_RELAY_CONNECT" = "Relay verbinden";
+
+/* Shown after Ivy connected to the push relay. */
+"PUSH_RELAY_CONNECTED_TOAST" = "Push-Relay verbunden";
+
+/* Shown when the push relay's linked device was removed from the account. */
+"PUSH_RELAY_DEVICE_REMOVED_FOOTER" = "Das Gerät „Ivy Push“ ist nicht mehr mit deinem Konto verknüpft. Verbinde dich erneut, um ein neues hinzuzufügen.";
+
+/* Button that removes the push relay. */
+"PUSH_RELAY_DISCONNECT" = "Trennen";
+
+/* Shown when the push relay's linked device couldn't be removed. */
+"PUSH_RELAY_DISCONNECT_ERROR" = "Das Gerät „Ivy Push“ konnte nicht entfernt werden. Prüfe deine Verbindung und versuche es erneut.";
+
+/* Explains what removing the push relay does. */
+"PUSH_RELAY_DISCONNECT_MESSAGE" = "Ivy entfernt das Gerät „Ivy Push“ aus deinem Konto. Nachrichten kommen dann wieder über die Hintergrundaktualisierung an.";
+
+/* Title of the confirmation before removing the push relay. */
+"PUSH_RELAY_DISCONNECT_TITLE" = "Push-Relay trennen?";
+
+/* Shown when the push relay doesn't allow this account. */
+"PUSH_RELAY_ERROR_ACCOUNT" = "Das Relay nimmt dieses Konto nicht an. Wenn es dein Relay ist, prüfe IVY_ALLOWED_ACCOUNTS in seiner .env-Datei.";
+
+/* Shown when the push relay address is not a valid HTTPS address. */
+"PUSH_RELAY_ERROR_ADDRESS" = "Gib eine Adresse wie relay.example.com ein. Nur HTTPS wird unterstützt.";
+
+/* Shown when the account has the most linked devices allowed. */
+"PUSH_RELAY_ERROR_DEVICES" = "Dein Konto hat bereits die maximale Anzahl verknüpfter Geräte. Entferne eines unter „Verknüpfte Geräte“ und versuche es erneut.";
+
+/* Shown when the push relay may not call its push gateway. */
+"PUSH_RELAY_ERROR_GATEWAY" = "Das Relay darf Ivys Push-Gateway nicht aufrufen. Verwende die docker-compose.yml aus der Anleitung.";
+
+/* Shown when connecting to the push relay failed for another reason. */
+"PUSH_RELAY_ERROR_GENERIC" = "Ivy konnte keine Verbindung zum Relay herstellen. Versuche es später erneut.";
+
+/* Shown when no push relay answers at the address. */
+"PUSH_RELAY_ERROR_NOT_A_RELAY" = "Unter dieser Adresse hat kein Relay geantwortet. Prüfe die Adresse und ob das Relay läuft.";
+
+/* Shown when the push relay is set up on a linked device. */
+"PUSH_RELAY_ERROR_PRIMARY" = "Ein Push-Relay kann nur auf dem Telefon eingerichtet werden, auf dem dein Konto registriert wurde.";
+
+/* Title shown when connecting to the push relay failed. */
+"PUSH_RELAY_ERROR_TITLE" = "Verbindung fehlgeschlagen";
+
+/* Shown when iOS gave Ivy no push token. */
+"PUSH_RELAY_ERROR_TOKEN" = "iOS hat Ivy kein Push-Token gegeben. Prüfe deine Internetverbindung und versuche es erneut.";
+
+/* Explains the push relay on its settings screen. */
+"PUSH_RELAY_INTRO" = "Ein Push-Relay weckt Ivy, sobald eine Nachricht ankommt. So kommen Mitteilungen sofort, auch wenn Ivy geschlossen ist. Dafür fügt Ivy ein verknüpftes Gerät namens „Ivy Push“ hinzu. Es hat keine Schlüssel und kann deine Nachrichten nicht lesen; das Relay erfährt nur, wann Nachrichten ankommen.";
+
+/* Header of the section for using one's own push relay instead of the built-in one. */
+"PUSH_RELAY_OWN_HEADER" = "Eigenes Relay";
+
+/* Button that sets up the push relay again. */
+"PUSH_RELAY_RECONNECT" = "Erneut verbinden";
+
+/* Item that opens the push relay public status page. */
+"PUSH_RELAY_SERVICE_STATUS" = "Dienststatus";
+
+/* Item that opens the guide for setting up a push relay. */
+"PUSH_RELAY_SETUP_GUIDE" = "Anleitung zur Einrichtung";
+
+/* Label for the state of the push relay's linked device. */
+"PUSH_RELAY_STATE" = "Status";
+
+/* The push relay is set up and its linked device exists. */
+"PUSH_RELAY_STATE_CONNECTED" = "Verbunden";
+
+/* The push relay's linked device was removed. */
+"PUSH_RELAY_STATE_REMOVED" = "Gerät entfernt";
+
+/* The push relay's linked device couldn't be checked. */
+"PUSH_RELAY_STATE_UNKNOWN" = "Nicht geprüft";
+
+/* Accessory text when no push relay is set up. */
+"PUSH_RELAY_STATUS_OFF" = "Aus";
+
+/* Accessory text when the push relay is set up. */
+"PUSH_RELAY_STATUS_ON" = "An";
+
+/* Switch that turns the push relay on or off. */
+"PUSH_RELAY_SWITCH" = "Sofortige Mitteilungen";
+
+/* Title of the push relay settings and the item that opens them. */
+"PUSH_RELAY_TITLE" = "Push-Relay";
+
+/* Button that connects Ivy to a push relay other than the current one. */
+"PUSH_RELAY_USE_OTHER" = "Anderes Relay verwenden";
 
 /* Text of the daily summary of muted chats. Embeds {{ number of messages }} and {{ number of chats }}. */
 "QUIET_SUMMARY_BODY_FORMAT" = "%1$@ ungelesene Nachrichten in %2$@ Chats";

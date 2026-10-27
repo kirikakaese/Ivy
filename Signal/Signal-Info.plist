@@ -49,6 +49,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(IVY_UPSTREAM_BUILD_NUMBER).$(IVY_BUILD)</string>
+	<key>IvyPushRelayHost</key>
+	<string>$(IVY_PUSH_RELAY_HOST)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>

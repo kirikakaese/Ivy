@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<!-- Ivy: only what Ivy uses. Apple grants upstream's push, VoIP, notification
+<!-- Ivy: only what Ivy uses. Apple grants upstream's VoIP, notification
      filtering, carrier and Wi-Fi Aware entitlements to Signal itself; Ivy
-     does not use Apple push, payments, iCloud or Signal's link domains.
-     Communication notifications show the sender's picture. -->
+     does not use payments, iCloud or Signal's link domains. Apple push is
+     only for the user's own push relay (Ivy Push). Communication
+     notifications show the sender's picture. -->
 <dict>
+	<key>aps-environment</key>
+	<string>production</string>
 	<key>com.apple.developer.default-data-protection</key>
 	<string>NSFileProtectionComplete</string>
 	<key>com.apple.developer.usernotifications.communication</key>

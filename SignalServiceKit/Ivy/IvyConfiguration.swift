@@ -14,6 +14,7 @@ public enum IvyConfiguration {
     /// Signal's servers send Apple push notifications only to the official
     /// app. Ivy registers without a push token, keeps a connection open while
     /// it runs and fetches messages in the background where the system allows.
+    /// Ivy's own push token goes only to the user's push relay (IvyPushRelay).
     public static let usesApplePushNotifications = false
 
     /// Without push notifications, the Mac keeps the connection open while

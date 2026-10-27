@@ -1,0 +1,70 @@
+# Ivy Push relay. See docs/PUSH_RELAY.md for the setup.
+
+x-hardening: &hardening
+  restart: always
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  caddy:
+    <<: *hardening
+    image: caddy:2
+    cap_add:
+      - NET_BIND_SERVICE
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - IVY_RELAY_DOMAIN=${IVY_RELAY_DOMAIN:?set IVY_RELAY_DOMAIN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    mem_limit: 256m
+
+  mollysocket:
+    <<: *hardening
+    image: ghcr.io/mollyim/mollysocket:1
+    working_dir: /data
+    command: server
+    volumes:
+      - mollysocket-data:/data
+    environment:
+      - MOLLY_DB=/data/mollysocket.db
+      - MOLLY_HOST=0.0.0.0
+      - MOLLY_PORT=8020
+      # Every Ivy account may register unless IVY_ALLOWED_ACCOUNTS limits it.
+      # MollySocket may only call the gateway.
+      - MOLLY_ALLOWED_UUIDS=${IVY_ALLOWED_ACCOUNTS:-["*"]}
+      - MOLLY_ALLOWED_ENDPOINTS=["http://ivy-gateway:8080"]
+      - RUST_LOG=info
+    mem_limit: 512m
+
+  ivy-gateway:
+    <<: *hardening
+    build: https://github.com/kirikakaese/Ivy.git#main:relay/gateway
+    read_only: true
+    environment:
+      - APNS_TEAM_ID=${APNS_TEAM_ID:?set APNS_TEAM_ID in .env}
+      - APNS_KEY_ID=${APNS_KEY_ID:?set APNS_KEY_ID in .env}
+      - APNS_KEY_FILE=/run/secrets/apns.p8
+      # The admin page at https://<domain>/admin (user "admin"); off when empty.
+      - IVY_ADMIN_PASSWORD=${IVY_ADMIN_PASSWORD:-}
+      - MOLLYSOCKET_URL=http://mollysocket:8020
+    volumes:
+      - ./apns.p8:/run/secrets/apns.p8:ro
+      - gateway-data:/data
+    mem_limit: 128m
+
+volumes:
+  caddy-data:
+  caddy-config:
+  mollysocket-data:
+  gateway-data:
