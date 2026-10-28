@@ -1134,6 +1134,9 @@
 /* Shown when the push relay address is not a valid HTTPS address. */
 "PUSH_RELAY_ERROR_ADDRESS" = "Enter an address like relay.example.com. Only HTTPS is supported.";
 
+/* Error message when connecting to the push relay failed for another reason. Embeds {{ the general message }} and {{ technical details for a bug report }}. */
+"PUSH_RELAY_ERROR_DETAILS_FORMAT" = "%1$@\n\nDetails: %2$@";
+
 /* Shown when the account has the most linked devices allowed. */
 "PUSH_RELAY_ERROR_DEVICES" = "Your account already has the most linked devices allowed. Remove one under Linked Devices and try again.";
 
