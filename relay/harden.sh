@@ -48,7 +48,10 @@ Unattended-Upgrade::Remove-Unused-Dependencies "true";
 CONF
 systemctl enable --now unattended-upgrades >/dev/null
 
-ssh_port="$(sshd -T 2>/dev/null | awk '/^port /{print $2; exit}')"
+# Ubuntu 24.04 starts sshd on demand, so its runtime directory may be
+# missing; sshd -T and -t refuse to run without it.
+mkdir -p /run/sshd
+ssh_port="$(sshd -T 2>/dev/null | awk '/^port /{print $2; exit}' || true)"
 ssh_port="${ssh_port:-22}"
 
 say "Firewall: SSH (port $ssh_port), HTTP and HTTPS only"
@@ -80,7 +83,7 @@ LoginGraceTime 30
 X11Forwarding no
 CONF
   if sshd -t; then
-    systemctl reload ssh 2>/dev/null || systemctl reload sshd
+    systemctl reload ssh 2>/dev/null || systemctl reload sshd 2>/dev/null || true
     echo "Password logins are off. Log in with your SSH key from now on."
   else
     rm -f /etc/ssh/sshd_config.d/10-ivy-hardening.conf
