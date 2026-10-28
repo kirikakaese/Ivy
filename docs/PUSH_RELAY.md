@@ -105,7 +105,7 @@ In Ivy: Settings > Notifications > Push Relay > **Instant Notifications** off. I
 - **Services**, each with its own state:
   - *Ivy Push relay*: MollySocket answers and stays connected to Signal (many reconnections in ten minutes count as trouble).
   - *Apple push delivery*: Apple accepts wake-ups (a rejection within the last hour counts as trouble, mostly rejections as down).
-  - *Signal service*: the relay checks once a minute whether Signal's chat server answers and how fast. A server error or an answer slower than 3 seconds counts as trouble, three missed checks in a row as down.
+  - *Signal service*: the relay checks once a minute whether Signal's chat server answers and how fast. A server error or an answer slower than 3 seconds counts as trouble, three missed checks in a row as down. Signal's server uses a certificate only Signal's apps trust; the check accepts that, since it only looks whether the server answers and sends nothing.
 - **Measurements**: uptime over 30 and 90 days (per minute), wake-up time (median time for Apple to accept a wake-up, last 24 hours, from 10 wake-ups), share accepted by Apple (last 24 hours, from 50 wake-ups).
 - **Incidents, maintenance and notices** posted on the admin page, with their updates; resolved ones stay listed for 14 days.
 - A bar for each of the last 90 days.

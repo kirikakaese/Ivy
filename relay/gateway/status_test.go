@@ -256,3 +256,31 @@ func TestAdminPostsAPI(t *testing.T) {
 		t.Fatal("deleted")
 	}
 }
+
+func TestSignalOwnCertificateCountsAsReachable(t *testing.T) {
+	// Like Signal's chat server: a certificate from an authority the
+	// system doesn't trust.
+	signal := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	defer signal.Close()
+	s := newSignalStatus(signal.URL, time.Now)
+	if status, detail := s.current(); status != statusOK || !strings.HasPrefix(detail, "reachable, ") || s.lastError() != "" {
+		t.Fatalf("%s %q %q", status, detail, s.lastError())
+	}
+}
+
+func TestNoticesListNoServicesAsEmpty(t *testing.T) {
+	p := newPosts("", time.Now)
+	if _, err := p.create(postInput{Kind: kindNotice, Title: "New build", Components: []string{"apple"}}); err != nil {
+		t.Fatal(err)
+	}
+	data, _ := json.Marshal(p.all())
+	if !strings.Contains(string(data), `"components":[]`) {
+		t.Fatalf("notices need an empty list, not null: %s", data)
+	}
+	// Notices saved before this fix had none.
+	p.list[0].Components = nil
+	data, _ = json.Marshal(p.all())
+	if !strings.Contains(string(data), `"components":[]`) {
+		t.Fatalf("old notices: %s", data)
+	}
+}

@@ -48,7 +48,7 @@ function renderPost(post) {
   if (post.kind === "maintenance" && post.starts) {
     meta.push(`${timeFormat.format(new Date(post.starts))} – ${timeFormat.format(new Date(post.ends))}`);
   }
-  if (post.components.length) meta.push(post.components.join(", "));
+  if (post.components && post.components.length) meta.push(post.components.join(", "));
   const updates = el("ol");
   for (const update of [...post.updates].reverse()) {
     updates.append(el("li", {},

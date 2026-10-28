@@ -158,7 +158,7 @@ func (p *posts) create(in postInput) (*post, error) {
 	if postSteps[in.Kind] == nil || in.Title == "" || len(in.Title) > 120 || len(in.Message) > 2000 {
 		return nil, errInvalidPost
 	}
-	var components []string
+	components := []string{}
 	for _, id := range in.Components {
 		if componentByID(id) != nil {
 			components = append(components, id)
@@ -180,7 +180,7 @@ func (p *posts) create(in postInput) (*post, error) {
 		created.Starts, created.Ends = in.Starts, in.Ends
 		created.Updates = []postUpdate{{Time: now, Step: "scheduled", Message: in.Message}}
 	case kindNotice:
-		created.Components = nil
+		created.Components = []string{}
 		created.Updates = []postUpdate{{Time: now, Step: "posted", Message: in.Message}}
 	}
 	p.mu.Lock()
@@ -255,6 +255,10 @@ func (p *posts) all() []post {
 	out := make([]post, 0, len(p.list))
 	for i := len(p.list) - 1; i >= 0; i-- {
 		copied := *p.list[i]
+		if copied.Components == nil {
+			// Notices saved by earlier versions have none.
+			copied.Components = []string{}
+		}
 		copied.Updates = append([]postUpdate{}, p.list[i].Updates...)
 		out = append(out, copied)
 	}

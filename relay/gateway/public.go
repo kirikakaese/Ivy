@@ -66,8 +66,8 @@ func (m *monitor) evaluate() adminStatus {
 
 	signal, description := m.signal.current()
 	automatic["signal"] = componentStatus{Status: signal, Detail: description}
-	if signal == statusDown {
-		status.Problems = append(status.Problems, "Signal's chat server doesn't answer the relay.")
+	if lastErr := m.signal.lastError(); lastErr != "" {
+		status.Problems = append(status.Problems, "Signal's chat server didn't answer the relay: "+lastErr)
 	}
 
 	active := []post{}
