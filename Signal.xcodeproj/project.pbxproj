@@ -4310,6 +4310,7 @@
 		4F23695ABF4456AA5E687394 /* IvyPushRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BFD376480761A00A043EA9 /* IvyPushRelay.swift */; };
 		D96F4C3697115C2ECBA53EF7 /* IvyPushRelayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD4CA74581FEB93480C037C /* IvyPushRelayViewController.swift */; };
 		5860C3EB166CCD33F4161B63 /* IvyPushRelayTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92FCBD4550A03DF0E3E7739 /* IvyPushRelayTest.swift */; };
+		64B5FD1129C09F47BD48FFEA /* IvyWakeNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D87C864ABB90F980979E0B /* IvyWakeNotification.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8950,6 +8951,7 @@
 		B6BFD376480761A00A043EA9 /* IvyPushRelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPushRelay.swift; sourceTree = "<group>"; };
 		EFD4CA74581FEB93480C037C /* IvyPushRelayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPushRelayViewController.swift; sourceTree = "<group>"; };
 		F92FCBD4550A03DF0E3E7739 /* IvyPushRelayTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPushRelayTest.swift; sourceTree = "<group>"; };
+		04D87C864ABB90F980979E0B /* IvyWakeNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWakeNotification.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -9433,6 +9435,7 @@
 				501052682BDB232A0097DDC5 /* PrivacyInfo.xcprivacy */,
 				342FFE9C272458D4000AC89F /* SignalNSE-AppStore.entitlements */,
 				342FFE9B272458D4000AC89F /* SignalNSE.entitlements */,
+				04D87C864ABB90F980979E0B /* IvyWakeNotification.swift */,
 			);
 			path = SignalNSE;
 			sourceTree = "<group>";
@@ -19145,6 +19148,7 @@
 				342FFE9A272458AB000AC89F /* NSEContext.swift in Sources */,
 				342FFE98272458AB000AC89F /* NSEEnvironment.swift in Sources */,
 				D943F3EF2892F89B008C0C8B /* NSELogger.swift in Sources */,
+				64B5FD1129C09F47BD48FFEA /* IvyWakeNotification.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
