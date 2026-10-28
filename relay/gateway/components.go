@@ -4,6 +4,8 @@
 package main
 
 import (
+	"crypto/x509"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -55,7 +57,10 @@ func componentByID(id string) *componentInfo {
 // signalStatus checks Signal's chat server from the relay: whether it
 // answers and how fast. Signal's own status page offers no data to read.
 // Any HTTP answer counts as reachable; a server error or a slow answer as
-// trouble, and three failed checks in a row as down.
+// trouble, and three failed checks in a row as down. Signal's chat server
+// uses a certificate from Signal's own authority, which only Signal's apps
+// trust, so a TLS answer signed by an unknown authority also counts as
+// reachable: the check sends nothing and only wants to know that it answers.
 type signalStatus struct {
 	url    string
 	client *http.Client
@@ -66,6 +71,7 @@ type signalStatus struct {
 	failures int
 	status   string
 	detail   string
+	lastErr  string
 }
 
 const (
@@ -76,6 +82,13 @@ const (
 
 func newSignalStatus(url string, now func() time.Time) *signalStatus {
 	return &signalStatus{url: url, client: &http.Client{Timeout: 10 * time.Second}, now: now, status: statusUnknown}
+}
+
+// lastError is why the latest check failed, for the admin page.
+func (s *signalStatus) lastError() string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.lastErr
 }
 
 // current returns Signal's status, checking at most once a minute.
@@ -93,7 +106,17 @@ func (s *signalStatus) current() (string, string) {
 	started := time.Now()
 	resp, err := s.client.Get(s.url)
 	took := time.Since(started)
+	var unknownAuthority x509.UnknownAuthorityError
+	if err != nil && errors.As(err, &unknownAuthority) {
+		s.failures, s.lastErr = 0, ""
+		s.status, s.detail = statusOK, fmt.Sprintf("reachable, %d ms", took.Milliseconds())
+		if took >= signalSlow {
+			s.status, s.detail = statusDegraded, fmt.Sprintf("slow, %.1f s", took.Seconds())
+		}
+		return s.status, s.detail
+	}
 	if err != nil {
+		s.lastErr = err.Error()
 		s.failures++
 		s.detail = "not answering"
 		if s.failures >= signalDownAfter {
@@ -105,7 +128,7 @@ func (s *signalStatus) current() (string, string) {
 	}
 	_, _ = io.Copy(io.Discard, io.LimitReader(resp.Body, 64<<10))
 	resp.Body.Close()
-	s.failures = 0
+	s.failures, s.lastErr = 0, ""
 	switch {
 	case resp.StatusCode >= 500:
 		s.status, s.detail = statusDegraded, fmt.Sprintf("answering with errors (%d)", resp.StatusCode)

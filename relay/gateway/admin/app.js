@@ -250,7 +250,7 @@ function showFormFields() {
 function postCard(post) {
   const closed = Boolean(post.closed);
   const step = post.updates.length ? post.updates[post.updates.length - 1].step : "";
-  const names = post.components.map((id) => (postMeta.components.find((c) => c.id === id) || { name: id }).name);
+  const names = (post.components || []).map((id) => (postMeta.components.find((c) => c.id === id) || { name: id }).name);
   const meta = [kindText[post.kind]];
   if (post.impact) meta.push(post.impact === "major" ? "major" : "minor");
   if (post.starts) meta.push(`${timeFormat.format(new Date(post.starts))} – ${timeFormat.format(new Date(post.ends))}`);
