@@ -436,7 +436,11 @@ public final class IvyPushRelay {
             attributes: attributes,
             apnRegistrationId: nil,
         )
-        let response = try await Self.step("Signal device link") { try await SSKEnvironment.shared.networkManagerRef.asyncRequest(request) }
+        // Like linking a real device, this goes over HTTPS instead of the chat
+        // connection, which can't send requests authenticated this way.
+        let response = try await Self.step("Signal device link") {
+            try await SSKEnvironment.shared.signalServiceRef.urlSessionForMainSignalService().performRequest(request)
+        }
         guard
             let body = response.responseBodyData,
             let linked = try? JSONDecoder().decode(LinkDeviceResponse.self, from: body)
