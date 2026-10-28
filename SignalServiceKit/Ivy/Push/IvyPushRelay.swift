@@ -48,6 +48,43 @@ public final class IvyPushRelay {
         case relayFailed(String)
     }
 
+    /// A step of setting up the relay that failed for a reason the app has
+    /// no message for. Its description names the step and, for answers from
+    /// a server, the status and the start of the answer.
+    public struct StepFailure: Error, CustomStringConvertible {
+        public let step: String
+        public let underlying: Error
+
+        public var description: String {
+            guard let code = underlying.httpStatusCode else {
+                return "\(step): \(underlying)"
+            }
+            var text = "\(step): HTTP \(code)"
+            if
+                let body = underlying.httpResponseData,
+                let answer = String(data: body.prefix(300), encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
+                !answer.isEmpty
+            {
+                text += " \(answer)"
+            }
+            return text
+        }
+    }
+
+    private static func step<T>(_ name: String, _ work: () async throws -> T) async throws -> T {
+        do {
+            return try await work()
+        } catch let error as RelayError {
+            throw error
+        } catch let error as StepFailure {
+            throw error
+        } catch let error as DeviceLimitExceededError {
+            throw error
+        } catch {
+            throw StepFailure(step: name, underlying: error)
+        }
+    }
+
     private let store = KeyValueStore(collection: "IvyPushRelay")
     private static let connectionKey = "connection"
     private static let optedOutKey = "optedOut"
@@ -189,7 +226,7 @@ public final class IvyPushRelay {
     }
 
     private func _connect(relayURL: URL, token: String) async throws {
-        try await discover(relayURL)
+        try await Self.step("relay check") { try await discover(relayURL) }
 
         var connection = self.connection
         if let existing = connection, existing.relayURL != relayURL {
@@ -297,7 +334,7 @@ public final class IvyPushRelay {
             "ping": false,
         ] as [String: Any])
 
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await Self.step("relay registration") { try await session.data(for: request) }
         guard
             (response as? HTTPURLResponse)?.statusCode == 200,
             let status = (try? JSONDecoder().decode(RelayResponse.self, from: data))?.mollysocket.status
@@ -371,7 +408,7 @@ public final class IvyPushRelay {
         let provisioning = DeviceProvisioningServiceImpl(networkManager: SSKEnvironment.shared.networkManagerRef)
         let code: DeviceProvisioningCodeResponse
         do {
-            code = try await provisioning.requestDeviceProvisioningCode()
+            code = try await Self.step("Signal linking code") { try await provisioning.requestDeviceProvisioningCode() }
         } catch is DeviceLimitExceededError {
             throw RelayError.tooManyDevices
         }
@@ -399,7 +436,7 @@ public final class IvyPushRelay {
             attributes: attributes,
             apnRegistrationId: nil,
         )
-        let response = try await SSKEnvironment.shared.networkManagerRef.asyncRequest(request)
+        let response = try await Self.step("Signal device link") { try await SSKEnvironment.shared.networkManagerRef.asyncRequest(request) }
         guard
             let body = response.responseBodyData,
             let linked = try? JSONDecoder().decode(LinkDeviceResponse.self, from: body)

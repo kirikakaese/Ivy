@@ -293,7 +293,11 @@ final class IvyPushRelayViewController: OWSTableViewController2 {
         case IvyPushRelay.RelayError.notPrimaryDevice:
             message = IvyLocalizedString("PUSH_RELAY_ERROR_PRIMARY", comment: "Shown when the push relay is set up on a linked device.")
         default:
-            message = IvyLocalizedString("PUSH_RELAY_ERROR_GENERIC", comment: "Shown when connecting to the push relay failed for another reason.")
+            message = String(
+                format: IvyLocalizedString("PUSH_RELAY_ERROR_DETAILS_FORMAT", comment: "Error message when connecting to the push relay failed for another reason. Embeds {{ the general message }} and {{ technical details for a bug report }}."),
+                IvyLocalizedString("PUSH_RELAY_ERROR_GENERIC", comment: "Shown when connecting to the push relay failed for another reason."),
+                String(String(describing: error).prefix(400)),
+            )
         }
         OWSActionSheets.showActionSheet(
             title: IvyLocalizedString("PUSH_RELAY_ERROR_TITLE", comment: "Title shown when connecting to the push relay failed."),
