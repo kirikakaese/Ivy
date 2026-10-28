@@ -206,6 +206,12 @@ public class UserNotificationPresenter {
             }
         }
 
+        // Ivy: while a push relay wake-up is handled, the first message
+        // becomes the wake-up's notification instead of a second one.
+        if checkForCancel, IvyWakeCapture.shared.take(contentToUse) {
+            return
+        }
+
         let request = UNNotificationRequest(identifier: notificationIdentifier, content: contentToUse, trigger: trigger)
 
         do {
