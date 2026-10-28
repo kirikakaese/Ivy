@@ -18,7 +18,7 @@ Whoever runs the relay learns when its users get messages. Tell the people who u
 ## What you need
 
 - A small server that is always on, with Docker. The smallest VPS plan of most providers is plenty (1 CPU, 1 GB of memory, a few euros a month).
-- A domain or subdomain pointing at it, for example `relay.example.com` (an A record with the server's IP address). The relay gets an HTTPS certificate from Let's Encrypt by itself.
+- Two names pointing at it, for example `relay.example.com` for the relay and `status.example.com` for the Ivy Status page (an A record each with the server's IPv4 address, and an AAAA record each if it has IPv6). The relay gets HTTPS certificates from Let's Encrypt by itself.
 - An Apple push key (below).
 
 ## 1. Apple push key
@@ -64,7 +64,8 @@ Edit `.env` on the server (`nano .env`):
 
 | Setting | Value |
 |---|---|
-| `IVY_RELAY_DOMAIN` | your domain, for example `relay.example.com` |
+| `IVY_RELAY_DOMAIN` | the relay's name, for example `relay.example.com` |
+| `IVY_STATUS_DOMAIN` | the status page's name, for example `status.example.com` |
 | `APNS_TEAM_ID` | developer.apple.com > Membership details > Team ID |
 | `APNS_KEY_ID` | the Key ID from step 1 |
 | `IVY_ADMIN_PASSWORD` | a password for the status page, for example from `openssl rand -base64 24`. Leave it empty to turn the page off. |
@@ -98,7 +99,7 @@ In Ivy: Settings > Notifications > Push Relay > **Instant Notifications** off. I
 
 ## Ivy Status page
 
-`https://relay.example.com/status` (the bare address redirects there) is Ivy's public status page. Anyone can open it; Ivy links to it under Settings > Notifications > Push Relay > Service Status. It shows:
+`https://status.example.com` is Ivy's public status page; the relay's own address and its old `/status` path forward there. Anyone can open it; Ivy links to it under Settings > Notifications > Push Relay > Service Status. It shows:
 
 - **Overall status**: All good, Maintenance, Some trouble or Something isn't working.
 - **Services**, each with its own state:
@@ -115,7 +116,7 @@ Signal's own status page (status.signal.org) offers no data to read, so the rela
 
 ## Admin page
 
-`https://relay.example.com/admin` (user `admin`, password `IVY_ADMIN_PASSWORD`) shows whether the relay works and runs the status page:
+`https://status.example.com/admin` (user `admin`, password `IVY_ADMIN_PASSWORD`) shows whether the relay works and runs the status page:
 
 - **Status**: Operational, Maintenance, Degraded or Down, with what needs attention.
 - **Status page**: for each service what the checks found and what the public page shows.

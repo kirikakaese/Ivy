@@ -23,6 +23,7 @@ services:
       - "443:443"
     environment:
       - IVY_RELAY_DOMAIN=${IVY_RELAY_DOMAIN:?set IVY_RELAY_DOMAIN in .env}
+      - IVY_STATUS_DOMAIN=${IVY_STATUS_DOMAIN:?set IVY_STATUS_DOMAIN in .env}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
@@ -55,7 +56,7 @@ services:
       - APNS_TEAM_ID=${APNS_TEAM_ID:?set APNS_TEAM_ID in .env}
       - APNS_KEY_ID=${APNS_KEY_ID:?set APNS_KEY_ID in .env}
       - APNS_KEY_FILE=/run/secrets/apns.p8
-      # The admin page at https://<domain>/admin (user "admin"); off when empty.
+      # The admin page at https://<status domain>/admin (user "admin"); off when empty.
       - IVY_ADMIN_PASSWORD=${IVY_ADMIN_PASSWORD:-}
       - MOLLYSOCKET_URL=http://mollysocket:8020
     volumes:
