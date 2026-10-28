@@ -12,6 +12,14 @@
 		max_size 64KB
 	}
 
+	# Visitors opening the address see the status page; MollySocket's own
+	# start page is for Molly on Android. Ivy registers with POST /.
+	@startPage {
+		path /
+		method GET HEAD
+	}
+	redir @startPage /status/ 302
+
 	handle /status* {
 		reverse_proxy ivy-gateway:8080
 	}
