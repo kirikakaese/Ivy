@@ -97,31 +97,39 @@ func TestPostsChangeComponents(t *testing.T) {
 }
 
 func TestSignalStatus(t *testing.T) {
-	body := `{"page":{"name":"Signal"},"status":{"indicator":"minor","description":"Partially Degraded Service"}}`
+	code := http.StatusNotFound
+	delay := time.Duration(0)
 	calls := 0
 	signal := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		calls++
-		_, _ = w.Write([]byte(body))
+		time.Sleep(delay)
+		w.WriteHeader(code)
 	}))
-	defer signal.Close()
 
 	now := time.Now()
 	s := newSignalStatus(signal.URL, func() time.Time { return now })
-	if status, detail := s.current(); status != statusDegraded || detail != "Partially Degraded Service" {
-		t.Fatalf("%s %q", status, detail)
+	if status, detail := s.current(); status != statusOK || !strings.HasPrefix(detail, "reachable, ") {
+		t.Fatalf("any answer counts as reachable: %s %q", status, detail)
 	}
-	body = `{"status":{"indicator":"none","description":"All Systems Operational"}}`
-	if status, _ := s.current(); status != statusDegraded || calls != 1 {
-		t.Fatal("Signal is asked at most every 5 minutes")
+	code = http.StatusServiceUnavailable
+	if status, _ := s.current(); status != statusOK || calls != 1 {
+		t.Fatal("Signal is checked at most once a minute")
 	}
 	now = now.Add(signalCheckInterval)
-	if status, _ := s.current(); status != statusOK || calls != 2 {
-		t.Fatal("asked again after 5 minutes")
+	if status, detail := s.current(); status != statusDegraded || !strings.Contains(detail, "503") {
+		t.Fatalf("server errors: %s %q", status, detail)
 	}
-	body = `not json`
-	now = now.Add(signalCheckInterval)
-	if status, _ := s.current(); status != statusUnknown {
-		t.Fatal("unreadable answers are unknown")
+
+	signal.Close()
+	for i := 1; i <= signalDownAfter; i++ {
+		now = now.Add(signalCheckInterval)
+		status, _ := s.current()
+		if i < signalDownAfter && status != statusDegraded {
+			t.Fatalf("check %d without answer: %s", i, status)
+		}
+		if i == signalDownAfter && status != statusDown {
+			t.Fatalf("three checks without answer: %s", status)
+		}
 	}
 	if status, _ := newSignalStatus("", time.Now).current(); status != statusUnknown {
 		t.Fatal("no address, no status")

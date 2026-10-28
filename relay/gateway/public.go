@@ -66,8 +66,8 @@ func (m *monitor) evaluate() adminStatus {
 
 	signal, description := m.signal.current()
 	automatic["signal"] = componentStatus{Status: signal, Detail: description}
-	if signal == statusUnknown {
-		status.Notes = append(status.Notes, "Signal's status couldn't be read, so the page shows it as unknown.")
+	if signal == statusDown {
+		status.Problems = append(status.Problems, "Signal's chat server doesn't answer the relay.")
 	}
 
 	active := []post{}
@@ -110,7 +110,7 @@ type publicComponent struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Status      string `json:"status"`
-	// Detail is only passed on for Signal, in Signal's own words.
+	// Detail is only passed on for Signal: reachable and how fast.
 	Detail string `json:"detail,omitempty"`
 }
 

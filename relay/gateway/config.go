@@ -52,10 +52,10 @@ func configFromEnvironment(getenv func(string) string) (config, error) {
 	if c.mollySocketURL == "" {
 		c.mollySocketURL = "http://mollysocket:8020"
 	}
-	// Signal's status page summary; "off" leaves Signal out.
-	c.signalStatusURL = getenv("SIGNAL_STATUS_URL")
+	// Signal's chat server, checked once a minute; "off" leaves Signal out.
+	c.signalStatusURL = getenv("SIGNAL_CHECK_URL")
 	if c.signalStatusURL == "" {
-		c.signalStatusURL = "https://status.signal.org/api/v2/status.json"
+		c.signalStatusURL = "https://chat.signal.org/"
 	}
 	if c.signalStatusURL == "off" {
 		c.signalStatusURL = ""

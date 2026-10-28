@@ -121,3 +121,4 @@ p { margin: 0; }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .days { gap: 1px; }
 }
+.about a { color: inherit; }

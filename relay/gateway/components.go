@@ -4,7 +4,8 @@
 package main
 
 import (
-	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 	"sync"
 	"time"
@@ -39,7 +40,7 @@ type componentInfo struct {
 var components = []componentInfo{
 	{ID: "relay", Name: "Ivy Push relay", Description: "Stays connected to Signal for each account and notices new messages."},
 	{ID: "apple", Name: "Apple push delivery", Description: "Hands wake-ups to Apple, which delivers them to iPhones and iPads."},
-	{ID: "signal", Name: "Signal service", Description: "Signal's servers, which carry all of Ivy's messages and calls. As reported by Signal."},
+	{ID: "signal", Name: "Signal service", Description: "Signal's servers, which carry all of Ivy's messages and calls. Checked from the relay."},
 }
 
 func componentByID(id string) *componentInfo {
@@ -51,34 +52,33 @@ func componentByID(id string) *componentInfo {
 	return nil
 }
 
-// signalStatus reads the summary Signal publishes on its status page, in the
-// common status page format ({"status":{"indicator","description"}}).
+// signalStatus checks Signal's chat server from the relay: whether it
+// answers and how fast. Signal's own status page offers no data to read.
+// Any HTTP answer counts as reachable; a server error or a slow answer as
+// trouble, and three failed checks in a row as down.
 type signalStatus struct {
 	url    string
 	client *http.Client
 	now    func() time.Time
 
-	mu          sync.Mutex
-	checked     time.Time
-	status      string
-	description string
+	mu       sync.Mutex
+	checked  time.Time
+	failures int
+	status   string
+	detail   string
 }
 
-const signalCheckInterval = 5 * time.Minute
+const (
+	signalCheckInterval = time.Minute
+	signalSlow          = 3 * time.Second
+	signalDownAfter     = 3
+)
 
 func newSignalStatus(url string, now func() time.Time) *signalStatus {
-	return &signalStatus{url: url, client: &http.Client{Timeout: 5 * time.Second}, now: now, status: statusUnknown}
+	return &signalStatus{url: url, client: &http.Client{Timeout: 10 * time.Second}, now: now, status: statusUnknown}
 }
 
-var signalIndicators = map[string]string{
-	"none":        statusOK,
-	"minor":       statusDegraded,
-	"major":       statusDown,
-	"critical":    statusDown,
-	"maintenance": statusMaintenance,
-}
-
-// current returns Signal's status, asking Signal at most every 5 minutes.
+// current returns Signal's status, checking at most once a minute.
 func (s *signalStatus) current() (string, string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -87,31 +87,34 @@ func (s *signalStatus) current() (string, string) {
 	}
 	now := s.now()
 	if !s.checked.IsZero() && now.Sub(s.checked) < signalCheckInterval {
-		return s.status, s.description
+		return s.status, s.detail
 	}
 	s.checked = now
-	s.status, s.description = statusUnknown, ""
+	started := time.Now()
 	resp, err := s.client.Get(s.url)
+	took := time.Since(started)
 	if err != nil {
-		return s.status, s.description
-	}
-	defer resp.Body.Close()
-	var summary struct {
-		Status struct {
-			Indicator   string `json:"indicator"`
-			Description string `json:"description"`
-		} `json:"status"`
-	}
-	if resp.StatusCode != http.StatusOK || json.NewDecoder(resp.Body).Decode(&summary) != nil {
-		return s.status, s.description
-	}
-	if status, ok := signalIndicators[summary.Status.Indicator]; ok {
-		s.status = status
-		if len(summary.Status.Description) <= 200 {
-			s.description = summary.Status.Description
+		s.failures++
+		s.detail = "not answering"
+		if s.failures >= signalDownAfter {
+			s.status = statusDown
+		} else if s.status == statusUnknown || s.status == statusOK {
+			s.status = statusDegraded
 		}
+		return s.status, s.detail
 	}
-	return s.status, s.description
+	_, _ = io.Copy(io.Discard, io.LimitReader(resp.Body, 64<<10))
+	resp.Body.Close()
+	s.failures = 0
+	switch {
+	case resp.StatusCode >= 500:
+		s.status, s.detail = statusDegraded, fmt.Sprintf("answering with errors (%d)", resp.StatusCode)
+	case took >= signalSlow:
+		s.status, s.detail = statusDegraded, fmt.Sprintf("slow, %.1f s", took.Seconds())
+	default:
+		s.status, s.detail = statusOK, fmt.Sprintf("reachable, %d ms", took.Milliseconds())
+	}
+	return s.status, s.detail
 }
 
 // reconnectWatch notices when MollySocket keeps losing its connections to
