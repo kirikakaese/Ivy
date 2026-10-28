@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Ivy Push Status</title>
+<title>Ivy Status Admin</title>
 <link rel="stylesheet" href="app.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='%232f8f5b'/%3E%3C/svg%3E">
 </head>
@@ -14,7 +14,7 @@
     <div class="brand">
       <span class="leaf" aria-hidden="true"></span>
       <div>
-        <h1>Ivy Push</h1>
+        <h1>Ivy Status Admin</h1>
         <p class="sub" id="domain"></p>
       </div>
     </div>
@@ -34,6 +34,58 @@
     <div class="kpi"><span class="label">Active devices</span><span class="value" id="k-active">–</span><span class="hint" id="k-active-hint">woken in the last 24 h</span></div>
     <div class="kpi"><span class="label">Wake-ups, 24 h</span><span class="value" id="k-sent">–</span><span class="hint" id="k-sent-hint"></span></div>
     <div class="kpi"><span class="label">Failed, 24 h</span><span class="value" id="k-failed">–</span><span class="hint" id="k-failed-hint"></span></div>
+  </section>
+
+  <section class="card" id="statuspage">
+    <div class="card-head">
+      <h2>Status page</h2>
+      <a class="link" href="/status/" target="_blank" rel="noopener">Open the public page</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Service</th><th>Checks found</th><th>Page shows</th><th>Detail</th></tr></thead>
+        <tbody id="components"></tbody>
+      </table>
+    </div>
+    <p class="footnote">Posts below change what the page shows: an incident makes its services “Some trouble” (minor) or “Down” (major), maintenance shows “Maintenance” while it runs.</p>
+  </section>
+
+  <section class="grid">
+    <form class="card form" id="new-post">
+      <h2>New post</h2>
+      <label>Type
+        <select id="p-kind">
+          <option value="incident">Incident</option>
+          <option value="maintenance">Maintenance</option>
+          <option value="notice">Notice</option>
+        </select>
+      </label>
+      <label>Title <input id="p-title" maxlength="120" required placeholder="Notifications arrive late"></label>
+      <label data-for="incident">Impact
+        <select id="p-impact">
+          <option value="minor">Minor: some trouble</option>
+          <option value="major">Major: down</option>
+        </select>
+      </label>
+      <fieldset data-for="incident maintenance">
+        <legend>Affected services</legend>
+        <div id="p-components" class="checks"></div>
+      </fieldset>
+      <div class="row" data-for="maintenance">
+        <label>Starts <input id="p-starts" type="datetime-local"></label>
+        <label>Ends <input id="p-ends" type="datetime-local"></label>
+      </div>
+      <label>Message <textarea id="p-message" rows="3" maxlength="2000" placeholder="What's happening and what people can do."></textarea></label>
+      <div class="actions">
+        <button type="submit" class="primary">Publish</button>
+        <span class="muted" id="p-result" role="status"></span>
+      </div>
+    </form>
+
+    <div class="card">
+      <h2>Posts</h2>
+      <div id="posts" class="post-list"><p class="muted">Loading…</p></div>
+    </div>
   </section>
 
   <section class="card">

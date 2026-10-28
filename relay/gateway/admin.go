@@ -21,13 +21,14 @@ import (
 var adminFiles embed.FS
 
 type adminStatus struct {
-	Status   string        `json:"status"`
-	Problems []string      `json:"problems"`
-	Notes    []string      `json:"notes"`
-	Checked  time.Time     `json:"checked"`
-	BundleID string        `json:"bundleId"`
-	Relay    relayStatus   `json:"relay"`
-	Pushes   statsSnapshot `json:"pushes"`
+	Status     string            `json:"status"`
+	Problems   []string          `json:"problems"`
+	Notes      []string          `json:"notes"`
+	Checked    time.Time         `json:"checked"`
+	BundleID   string            `json:"bundleId"`
+	Relay      relayStatus       `json:"relay"`
+	Pushes     statsSnapshot     `json:"pushes"`
+	Components []componentStatus `json:"components"`
 }
 
 // buildStatus sums up the relay's health for the admin page.
@@ -67,9 +68,8 @@ func plural(n int, one, many string) string {
 
 type admin struct {
 	password string
-	bundleID string
-	stats    *stats
-	relay    *relayProbe
+	monitor  *monitor
+	posts    *posts
 	now      func() time.Time
 	sleep    func(time.Duration)
 
@@ -128,6 +128,80 @@ func (a *admin) authorized(r *http.Request) bool {
 		subtle.ConstantTimeCompare([]byte(password), []byte(a.password)) == 1
 }
 
+func writeJSON(w http.ResponseWriter, value any) {
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(value)
+}
+
+// sameOrigin rejects changes sent from other sites: browsers send the
+// password along with any request to the admin page, so a change must come
+// from the admin page itself, as JSON.
+func sameOrigin(r *http.Request, needJSON bool) bool {
+	if site := r.Header.Get("Sec-Fetch-Site"); site != "" && site != "same-origin" {
+		return false
+	}
+	if origin := r.Header.Get("Origin"); origin != "" {
+		if origin != "https://"+r.Host && origin != "http://"+r.Host {
+			return false
+		}
+	}
+	return !needJSON || strings.HasPrefix(r.Header.Get("Content-Type"), "application/json")
+}
+
+// servePosts handles the posts on the status page:
+//
+//	GET    /admin/posts                 all posts
+//	POST   /admin/posts                 new post (postInput)
+//	POST   /admin/posts/<id>/updates    new step ({"step","message"})
+//	DELETE /admin/posts/<id>            delete a post
+func (a *admin) servePosts(w http.ResponseWriter, r *http.Request) {
+	rest := strings.Trim(strings.TrimPrefix(r.URL.Path, "/admin/posts"), "/")
+	if r.Method == http.MethodGet && rest == "" {
+		writeJSON(w, map[string]any{"posts": a.posts.all(), "components": components, "steps": postSteps})
+		return
+	}
+	if r.Method == http.MethodGet {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	if !sameOrigin(r, r.Method != http.MethodDelete) {
+		http.Error(w, "Changes have to come from the admin page.", http.StatusForbidden)
+		return
+	}
+	body := http.MaxBytesReader(w, r.Body, 16<<10)
+	var err error
+	switch {
+	case r.Method == http.MethodPost && rest == "":
+		var in postInput
+		if err = json.NewDecoder(body).Decode(&in); err == nil {
+			var created *post
+			if created, err = a.posts.create(in); err == nil {
+				w.WriteHeader(http.StatusCreated)
+				writeJSON(w, created)
+				return
+			}
+		}
+	case r.Method == http.MethodPost && strings.HasSuffix(rest, "/updates"):
+		var in struct {
+			Step    string `json:"step"`
+			Message string `json:"message"`
+		}
+		if err = json.NewDecoder(body).Decode(&in); err == nil {
+			err = a.posts.update(strings.TrimSuffix(rest, "/updates"), in.Step, in.Message)
+		}
+	case r.Method == http.MethodDelete && rest != "" && !strings.Contains(rest, "/"):
+		err = a.posts.remove(rest)
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+	if err != nil {
+		http.Error(w, "That didn't work. Check the fields and try again.", http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
 // register adds the admin page under /admin/. Without a password, there is
 // no admin page.
 func (a *admin) register(mux *http.ServeMux) {
@@ -155,8 +229,15 @@ func (a *admin) register(mux *http.ServeMux) {
 				a.recentFailures(ip, true)
 			}
 			a.sleep(time.Second)
-			w.Header().Set("WWW-Authenticate", `Basic realm="Ivy Push", charset="UTF-8"`)
+			w.Header().Set("WWW-Authenticate", `Basic realm="Ivy Status admin", charset="UTF-8"`)
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+		if strings.HasPrefix(r.URL.Path, "/admin/posts") {
+			a.servePosts(w, r)
+			if r.Method != http.MethodGet {
+				a.monitor.refresh()
+			}
 			return
 		}
 		if r.Method != http.MethodGet {
@@ -164,8 +245,7 @@ func (a *admin) register(mux *http.ServeMux) {
 			return
 		}
 		if r.URL.Path == "/admin/status.json" {
-			w.Header().Set("Content-Type", "application/json")
-			_ = json.NewEncoder(w).Encode(buildStatus(a.relay.status(), a.stats.snapshot(), a.bundleID, a.now()))
+			writeJSON(w, a.monitor.evaluate())
 			return
 		}
 		files.ServeHTTP(w, r)

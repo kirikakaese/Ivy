@@ -19,9 +19,10 @@ type config struct {
 	production string
 	sandbox    string
 
-	adminPassword  string
-	dataDir        string
-	mollySocketURL string
+	adminPassword   string
+	dataDir         string
+	mollySocketURL  string
+	signalStatusURL string
 }
 
 const (
@@ -50,6 +51,14 @@ func configFromEnvironment(getenv func(string) string) (config, error) {
 	c.mollySocketURL = getenv("MOLLYSOCKET_URL")
 	if c.mollySocketURL == "" {
 		c.mollySocketURL = "http://mollysocket:8020"
+	}
+	// Signal's chat server, checked once a minute; "off" leaves Signal out.
+	c.signalStatusURL = getenv("SIGNAL_CHECK_URL")
+	if c.signalStatusURL == "" {
+		c.signalStatusURL = "https://chat.signal.org/"
+	}
+	if c.signalStatusURL == "off" {
+		c.signalStatusURL = ""
 	}
 	var missing []string
 	if c.teamID == "" {

@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 )
 
 var deviceToken = regexp.MustCompile(`^[0-9a-f]{64,200}$`)
@@ -38,8 +39,9 @@ func newHandler(sender pushSender, stats *stats) *http.ServeMux {
 			w.WriteHeader(http.StatusCreated)
 			return
 		}
+		started := time.Now()
 		err := sender.wake(token, r.URL.Query().Get("sandbox") == "1")
-		stats.record(token, err)
+		stats.record(token, err, time.Since(started))
 		switch {
 		case err == nil:
 			w.WriteHeader(http.StatusCreated)

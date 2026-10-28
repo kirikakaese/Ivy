@@ -50,8 +50,9 @@ func TestPublicStatusRevealsNoUsage(t *testing.T) {
 	defer molly.Close()
 
 	stats := newStats("", time.Now)
-	stats.record(token, nil)
-	m := &monitor{stats: stats, relay: newRelayProbe(molly.URL), bundleID: "io.example.ivy", now: time.Now}
+	stats.record(token, nil, 300*time.Millisecond)
+	m := testMonitor(molly.URL, "")
+	m.stats = stats
 	mux := newHandler(&fakeSender{}, stats)
 	m.register(mux)
 
@@ -76,7 +77,7 @@ func TestPublicStatusRevealsNoUsage(t *testing.T) {
 		t.Fatalf("view %+v", view)
 	}
 	body := rec.Body.String()
-	for _, secret := range []string{token, deviceID(token), "1.7.1", "io.example.ivy", "connections", "messages"} {
+	for _, secret := range []string{token, deviceID(token), "1.7.1", "io.example.ivy", `"connections"`, `"messages"`, `"sent24h"`, `"active24h"`} {
 		if strings.Contains(body, secret) {
 			t.Fatalf("public status contains %q: %s", secret, body)
 		}
@@ -99,7 +100,8 @@ func TestOldRejectionOnQuietRelayIsANote(t *testing.T) {
 
 func TestAdminLocksOutAfterFailedLogins(t *testing.T) {
 	now := time.Now()
-	a := &admin{password: "secret", stats: newStats("", time.Now), relay: newRelayProbe("http://127.0.0.1:1"),
+	m := testMonitor("http://127.0.0.1:1", "")
+	a := &admin{password: "secret", monitor: m, posts: m.posts,
 		now: func() time.Time { return now }, sleep: func(time.Duration) {}}
 	mux := http.NewServeMux()
 	a.register(mux)
