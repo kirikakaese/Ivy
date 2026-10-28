@@ -87,9 +87,12 @@ class NotificationService: UNNotificationServiceExtension {
         let logger = NSELogger()
         _ = Self.nseDidStart()
         self.contentHandler.set(contentHandler)
+        // Ivy: when the push relay woke Ivy, show the message in its place.
+        let handlingSince = Date()
         self.fetchQueue.enqueueCancellingPrevious {
             let content = await self._didReceive(request, logger: logger)
-            self.completeSilently(content: content, logger: logger)
+            let shown = await IvyWakeNotification.content(replacing: content, wake: request, handlingSince: handlingSince)
+            self.completeSilently(content: shown, logger: logger)
         }
     }
 

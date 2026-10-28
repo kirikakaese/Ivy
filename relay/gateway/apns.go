@@ -100,9 +100,10 @@ func fixed32(n *big.Int) []byte {
 	return out
 }
 
-// The alert is only shown if Ivy's notification service can't run; normally
-// it replaces it with the actual messages.
-var wakePayload = []byte(`{"aps":{"alert":{"body":"New message"},"mutable-content":1}}`)
+// Ivy's notification service replaces the alert with the message it
+// fetched. Only if there's nothing new to show, the alert keeps Signal's
+// "You may have new messages" (APN_Message), translated in the app.
+var wakePayload = []byte(`{"aps":{"alert":{"loc-key":"APN_Message"},"mutable-content":1}}`)
 
 func (s *apnsSender) wake(deviceToken string, sandbox bool) error {
 	bearer, err := s.token()
