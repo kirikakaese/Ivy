@@ -96,24 +96,43 @@ Without the variable, builds have no built-in relay; users can still tap **Conne
 
 In Ivy: Settings > Notifications > Push Relay > **Instant Notifications** off. Ivy removes the Ivy Push device and doesn't connect by itself again. **Use Another Relay** connects to a different relay instead.
 
-## Public status page
+## Ivy Status page
 
-`https://relay.example.com/status` shows anyone whether instant notifications work right now (working, some delays, down) and a bar for each of the last 90 days. It tells nothing about who uses the relay, how many or when. Ivy links to it under Settings > Notifications > Push Relay > Service Status. The relay checks itself once a minute; visitors never cause checks.
+`https://relay.example.com/status` (the bare address redirects there) is Ivy's public status page. Anyone can open it; Ivy links to it under Settings > Notifications > Push Relay > Service Status. It shows:
+
+- **Overall status**: All good, Maintenance, Some trouble or Something isn't working.
+- **Services**, each with its own state:
+  - *Ivy Push relay*: MollySocket answers and stays connected to Signal (many reconnections in ten minutes count as trouble).
+  - *Apple push delivery*: Apple accepts wake-ups (a rejection within the last hour counts as trouble, mostly rejections as down).
+  - *Signal service*: as reported on Signal's own status page. If that can't be read, it shows "Unknown" and doesn't count.
+- **Measurements**: uptime over 30 and 90 days (per minute), wake-up time (median time for Apple to accept a wake-up, last 24 hours, from 10 wake-ups), share accepted by Apple (last 24 hours, from 50 wake-ups).
+- **Incidents, maintenance and notices** posted on the admin page, with their updates; resolved ones stay listed for 14 days.
+- A bar for each of the last 90 days.
+
+It tells nothing about who uses the relay, how many or when. The relay checks itself once a minute; visitors never cause checks.
+
+Signal's status is read from `https://status.signal.org/api/v2/status.json`. To use a different address, set `SIGNAL_STATUS_URL` for the `ivy-gateway` service; `off` leaves Signal out.
 
 ## Admin page
 
-`https://relay.example.com/admin` (user `admin`, password `IVY_ADMIN_PASSWORD`) shows whether the relay works:
+`https://relay.example.com/admin` (user `admin`, password `IVY_ADMIN_PASSWORD`) shows whether the relay works and runs the status page:
 
-- **Status**: Operational, Degraded (Apple rejected the latest wake-up) or Down (MollySocket doesn't answer), with what needs attention.
+- **Status**: Operational, Maintenance, Degraded or Down, with what needs attention.
+- **Status page**: for each service what the checks found and what the public page shows.
+- **New post**:
+  - *Incident*: a title, the affected services and minor (some trouble) or major (down) impact. Add updates as it goes: investigating, identified, monitoring, resolved.
+  - *Maintenance*: a start and an end; the affected services show "Maintenance" in between. Upcoming maintenance is listed on the public page.
+  - *Notice*: a message without effect on the services, for example about a new build.
+- **Posts**: add updates, close or delete them. Changes show on the public page right away.
 - **Overview**: connected accounts, devices woken in the last day and week, wake-ups and failures in the last 24 hours.
 - **Wake-ups per hour** for the last 24 hours.
 - **Apple push**: last delivery, last rejection with Apple's reason, totals.
 - **Relay**: MollySocket's version and counters, removed devices, how long the gateway has been running.
 - **Recent wake-ups**: each with time, result and a short device code.
 
-After 10 wrong passwords from one address, the page refuses that address for 15 minutes.
+After 10 wrong passwords from one address, the page refuses that address for 15 minutes. Changes are only accepted from the admin page itself, not from other sites.
 
-The page shows no account IDs, phone numbers or push tokens; devices appear only as a code derived from their token. It refreshes every 30 seconds. The counts are kept in the `gateway-data` volume, so they survive restarts.
+The page shows no account IDs, phone numbers or push tokens; devices appear only as a code derived from their token. It refreshes every 30 seconds. Counts and posts are kept in the `gateway-data` volume, so they survive restarts.
 
 ## Updates and maintenance
 

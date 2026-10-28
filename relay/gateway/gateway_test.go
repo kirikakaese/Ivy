@@ -38,7 +38,7 @@ func (f *fakeSender) wake(token string, sandbox bool) error {
 	return f.err
 }
 
-func post(t *testing.T, h http.Handler, path, body string) int {
+func postTo(t *testing.T, h http.Handler, path, body string) int {
 	t.Helper()
 	rec := httptest.NewRecorder()
 	h.ServeHTTP(rec, httptest.NewRequest(http.MethodPost, path, strings.NewReader(body)))
@@ -48,10 +48,10 @@ func post(t *testing.T, h http.Handler, path, body string) int {
 func TestUrgentMessageWakesDevice(t *testing.T) {
 	sender := &fakeSender{}
 	h := newHandler(sender, newStats("", time.Now))
-	if code := post(t, h, "/apns/"+token, `{"urgent":true}`); code != http.StatusCreated {
+	if code := postTo(t, h, "/apns/"+token, `{"urgent":true}`); code != http.StatusCreated {
 		t.Fatalf("status %d", code)
 	}
-	if code := post(t, h, "/apns/"+strings.ToUpper(token)+"?sandbox=1", `{"urgent":true}`); code != http.StatusCreated {
+	if code := postTo(t, h, "/apns/"+strings.ToUpper(token)+"?sandbox=1", `{"urgent":true}`); code != http.StatusCreated {
 		t.Fatalf("status %d", code)
 	}
 	want := []recordedWake{{token, false}, {token, true}}
@@ -64,7 +64,7 @@ func TestOtherMessagesDontWake(t *testing.T) {
 	sender := &fakeSender{}
 	h := newHandler(sender, newStats("", time.Now))
 	for _, body := range []string{`{"test":true}`, `{"code":4409}`, `{"urgent":false}`, `not json`} {
-		if code := post(t, h, "/apns/"+token, body); code != http.StatusCreated {
+		if code := postTo(t, h, "/apns/"+token, body); code != http.StatusCreated {
 			t.Fatalf("%s: status %d", body, code)
 		}
 	}
@@ -75,7 +75,7 @@ func TestOtherMessagesDontWake(t *testing.T) {
 
 func TestRejectsBadRequests(t *testing.T) {
 	h := newHandler(&fakeSender{}, newStats("", time.Now))
-	if code := post(t, h, "/apns/not-a-token", `{"urgent":true}`); code != http.StatusNotFound {
+	if code := postTo(t, h, "/apns/not-a-token", `{"urgent":true}`); code != http.StatusNotFound {
 		t.Fatalf("bad token: status %d", code)
 	}
 	rec := httptest.NewRecorder()
@@ -87,7 +87,7 @@ func TestRejectsBadRequests(t *testing.T) {
 
 func TestUnregisteredTokenIsGone(t *testing.T) {
 	h := newHandler(&fakeSender{err: errUnregistered}, newStats("", time.Now))
-	if code := post(t, h, "/apns/"+token, `{"urgent":true}`); code != http.StatusGone {
+	if code := postTo(t, h, "/apns/"+token, `{"urgent":true}`); code != http.StatusGone {
 		t.Fatalf("status %d", code)
 	}
 }

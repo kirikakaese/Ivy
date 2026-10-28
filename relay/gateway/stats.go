@@ -10,6 +10,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"sort"
 	"sync"
 	"time"
 )
@@ -37,10 +38,13 @@ type event struct {
 
 // dayHealth counts the minutes of a day (UTC) by the relay's status.
 type dayHealth struct {
-	OK       int `json:"ok"`
-	Degraded int `json:"degraded"`
-	Down     int `json:"down"`
+	OK          int `json:"ok"`
+	Maintenance int `json:"maintenance,omitempty"`
+	Degraded    int `json:"degraded"`
+	Down        int `json:"down"`
 }
+
+func (d dayHealth) minutes() int { return d.OK + d.Maintenance + d.Degraded + d.Down }
 
 // status sums up a day for the public history: a few minutes down make it
 // a bad day, shorter trouble a degraded one.
@@ -50,7 +54,9 @@ func (d dayHealth) status() string {
 		return "down"
 	case d.Down > 0 || d.Degraded >= 5:
 		return "degraded"
-	case d.OK > 0 || d.Degraded > 0:
+	case d.Maintenance >= 5:
+		return "maintenance"
+	case d.minutes() > 0:
 		return "ok"
 	default:
 		return "none"
@@ -81,6 +87,7 @@ type stats struct {
 	Devices     map[string]time.Time  `json:"devices"`
 	Days        map[string]*dayHealth `json:"days"`
 	Events      []event               `json:"events"`
+	Latencies   []latencySample       `json:"latencies"`
 	started     time.Time
 	dirty       bool
 }
@@ -105,6 +112,7 @@ func newStats(path string, now func() time.Time) *stats {
 			s.TotalSent, s.TotalFailed = saved.TotalSent, saved.TotalFailed
 			s.LastSuccess, s.LastFailure, s.LastError = saved.LastSuccess, saved.LastFailure, saved.LastError
 			s.Events = saved.Events
+			s.Latencies = saved.Latencies
 			if saved.Hours != nil {
 				s.Hours = saved.Hours
 			}
@@ -124,11 +132,26 @@ func deviceID(token string) string {
 	return hex.EncodeToString(sum[:])[:8]
 }
 
-// record notes the outcome of one wake-up.
-func (s *stats) record(token string, err error) {
+// latencySample is how long Apple took to accept one wake-up.
+type latencySample struct {
+	Time time.Time `json:"t"`
+	Ms   float64   `json:"ms"`
+}
+
+const latencyKept = 2000
+
+// record notes the outcome of one wake-up and, if Apple accepted it, how
+// long that took.
+func (s *stats) record(token string, err error, took time.Duration) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	now := s.now()
+	if err == nil {
+		s.Latencies = append(s.Latencies, latencySample{Time: now, Ms: float64(took.Microseconds()) / 1000})
+		if len(s.Latencies) > latencyKept {
+			s.Latencies = s.Latencies[len(s.Latencies)-latencyKept:]
+		}
+	}
 	hour := now.Truncate(time.Hour).Unix()
 	counts := s.Hours[hour]
 	if counts == nil {
@@ -191,12 +214,17 @@ func (s *stats) recordHealth(status string) {
 		s.Days[key] = day
 	}
 	switch status {
-	case "ok":
+	case statusOK:
 		day.OK++
-	case "degraded":
+	case statusMaintenance:
+		day.Maintenance++
+	case statusDegraded:
 		day.Degraded++
-	default:
+	case statusDown:
 		day.Down++
+	default:
+		// Unknown minutes don't count either way.
+		return
 	}
 	oldest := now.AddDate(0, 0, -daysKept).Format(dayFormat)
 	for key := range s.Days {
@@ -227,6 +255,26 @@ func (s *stats) history() []dayPoint {
 		points = append(points, dayPoint{Date: key, Status: status})
 	}
 	return points
+}
+
+// uptime is the share of checked minutes in the last n days in which
+// nothing was down; nil while no minute was checked.
+func (s *stats) uptime(days int) *float64 {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	today := s.now().UTC()
+	up, total := 0, 0
+	for i := 0; i < days; i++ {
+		if day := s.Days[today.AddDate(0, 0, -i).Format(dayFormat)]; day != nil {
+			up += day.OK + day.Maintenance + day.Degraded
+			total += day.minutes()
+		}
+	}
+	if total == 0 {
+		return nil
+	}
+	value := float64(up) / float64(total) * 100
+	return &value
 }
 
 // save writes the stats to disk if they changed.
@@ -272,7 +320,18 @@ type statsSnapshot struct {
 	Active7d        int         `json:"active7d"`
 	Hourly          []hourPoint `json:"hourly"`
 	Events          []event     `json:"events"`
+	// WakeMedianMs is the median time Apple took to accept a wake-up in
+	// the last 24 hours, with at least minLatencySamples of them.
+	WakeMedianMs *float64 `json:"wakeMedianMs"`
+	// Acceptance24h is the share of wake-ups Apple accepted in the last
+	// 24 hours, with at least minAcceptanceSamples of them.
+	Acceptance24h *float64 `json:"acceptance24h"`
 }
+
+const (
+	minLatencySamples    = 10
+	minAcceptanceSamples = 50
+)
 
 func optionalTime(t time.Time) *time.Time {
 	if t.IsZero() {
@@ -314,6 +373,24 @@ func (s *stats) snapshot() statsSnapshot {
 		if age <= 7*24*time.Hour {
 			snap.Active7d++
 		}
+	}
+	var recent []float64
+	for _, sample := range s.Latencies {
+		if now.Sub(sample.Time) <= 24*time.Hour {
+			recent = append(recent, sample.Ms)
+		}
+	}
+	if len(recent) >= minLatencySamples {
+		sort.Float64s(recent)
+		median := recent[len(recent)/2]
+		if len(recent)%2 == 0 {
+			median = (recent[len(recent)/2-1] + recent[len(recent)/2]) / 2
+		}
+		snap.WakeMedianMs = &median
+	}
+	if attempts := snap.Sent24h + snap.Failed24h; attempts >= minAcceptanceSamples {
+		rate := float64(snap.Sent24h) / float64(attempts) * 100
+		snap.Acceptance24h = &rate
 	}
 	// Newest first.
 	snap.Events = make([]event, 0, len(s.Events))

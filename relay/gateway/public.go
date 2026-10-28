@@ -15,22 +15,83 @@ import (
 //go:embed public
 var publicFiles embed.FS
 
-// monitor checks the relay once a minute, counts the result into the daily
-// history and keeps it for the public status page, so visitors never cause
-// checks themselves.
+// monitor checks the relay, Apple push delivery and Signal once a minute,
+// combines them with the posts written on the admin page, counts the result
+// into the daily history and keeps it for the public status page, so
+// visitors never cause checks themselves.
 type monitor struct {
 	stats    *stats
 	relay    *relayProbe
+	signal   *signalStatus
+	posts    *posts
 	bundleID string
 	now      func() time.Time
 
-	mu     sync.Mutex
-	latest *adminStatus
+	mu        sync.Mutex
+	reconnect reconnectWatch
+	latest    *adminStatus
 }
 
+// evaluate checks everything now without counting it into the history.
+func (m *monitor) evaluate() adminStatus {
+	now := m.now()
+	relay := m.relay.status()
+	pushes := m.stats.snapshot()
+	status := buildStatus(relay, pushes, m.bundleID, now)
+
+	m.mu.Lock()
+	unstable := relay.Reachable && m.reconnect.unstable(now, relay.Reconnections)
+	m.mu.Unlock()
+
+	automatic := map[string]componentStatus{}
+	switch {
+	case !relay.Reachable:
+		automatic["relay"] = componentStatus{Status: statusDown, Detail: "MollySocket doesn't answer."}
+	case unstable:
+		automatic["relay"] = componentStatus{Status: statusDegraded, Detail: "Connections to Signal keep dropping."}
+		status.Problems = append(status.Problems, "MollySocket reconnected to Signal 20 or more times in ten minutes.")
+	default:
+		automatic["relay"] = componentStatus{Status: statusOK}
+	}
+
+	latestFailed := pushes.LastFailure != nil && (pushes.LastSuccess == nil || pushes.LastFailure.After(*pushes.LastSuccess))
+	switch {
+	case pushes.Failed24h >= 10 && pushes.Failed24h >= pushes.Sent24h:
+		automatic["apple"] = componentStatus{Status: statusDown, Detail: "Apple turns down most wake-ups."}
+	case latestFailed && now.Sub(*pushes.LastFailure) < time.Hour:
+		automatic["apple"] = componentStatus{Status: statusDegraded, Detail: "Apple turned down the latest wake-up."}
+	default:
+		automatic["apple"] = componentStatus{Status: statusOK}
+	}
+
+	signal, description := m.signal.current()
+	automatic["signal"] = componentStatus{Status: signal, Detail: description}
+	if signal == statusUnknown {
+		status.Notes = append(status.Notes, "Signal's status couldn't be read, so the page shows it as unknown.")
+	}
+
+	active := []post{}
+	for _, item := range m.posts.all() {
+		if item.active(now) {
+			active = append(active, item)
+		}
+	}
+	status.Components = componentStatuses(automatic, active)
+	status.Status = overall(status.Components)
+	return status
+}
+
+// check evaluates and counts the result as one minute of history.
 func (m *monitor) check() adminStatus {
-	status := buildStatus(m.relay.status(), m.stats.snapshot(), m.bundleID, m.now())
+	status := m.refresh()
 	m.stats.recordHealth(status.Status)
+	return status
+}
+
+// refresh evaluates and shows the result on the public page right away,
+// for example after a post changed, without counting it into the history.
+func (m *monitor) refresh() adminStatus {
+	status := m.evaluate()
 	m.mu.Lock()
 	m.latest = &status
 	m.mu.Unlock()
@@ -44,31 +105,118 @@ func (m *monitor) run() {
 	}
 }
 
+type publicComponent struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Status      string `json:"status"`
+	// Detail is only passed on for Signal, in Signal's own words.
+	Detail string `json:"detail,omitempty"`
+}
+
+type publicMetrics struct {
+	Uptime30      *float64 `json:"uptime30"`
+	Uptime90      *float64 `json:"uptime90"`
+	WakeMedianMs  *float64 `json:"wakeMedianMs"`
+	Acceptance24h *float64 `json:"acceptance24h"`
+}
+
+type publicPost struct {
+	ID         string       `json:"id"`
+	Kind       string       `json:"kind"`
+	Title      string       `json:"title"`
+	Impact     string       `json:"impact,omitempty"`
+	Components []string     `json:"components"`
+	Starts     *time.Time   `json:"starts,omitempty"`
+	Ends       *time.Time   `json:"ends,omitempty"`
+	Created    time.Time    `json:"created"`
+	Closed     *time.Time   `json:"closed,omitempty"`
+	Updates    []postUpdate `json:"updates"`
+}
+
 type publicStatus struct {
-	Status  string     `json:"status"`
-	Message string     `json:"message"`
-	Checked *time.Time `json:"checked"`
-	Days    []dayPoint `json:"days"`
+	Status     string            `json:"status"`
+	Message    string            `json:"message"`
+	Checked    *time.Time        `json:"checked"`
+	Components []publicComponent `json:"components"`
+	Metrics    publicMetrics     `json:"metrics"`
+	Active     []publicPost      `json:"active"`
+	Upcoming   []publicPost      `json:"upcoming"`
+	Recent     []publicPost      `json:"recent"`
+	Days       []dayPoint        `json:"days"`
 }
 
 var publicMessages = map[string]string{
-	"ok":       "Instant notifications are working.",
-	"degraded": "Notifications may be late: Apple is turning down some wake-ups.",
-	"down":     "Instant notifications are down. Ivy still gets messages while it's open and through Background App Refresh.",
-	"unknown":  "The first check hasn't finished yet.",
+	statusOK:          "Everything is working.",
+	statusMaintenance: "Maintenance is under way. Notifications may be late meanwhile.",
+	statusDegraded:    "Some parts are slow or partly unavailable. Notifications may be late.",
+	statusDown:        "Part of Ivy isn't working right now. Ivy still gets messages while it's open.",
+	statusUnknown:     "The first check hasn't finished yet.",
 }
 
-// publicView tells visitors whether instant notifications work and how the
-// last 90 days went, and nothing about who uses the relay or when.
-func (m *monitor) publicView() publicStatus {
-	view := publicStatus{Status: "unknown", Days: m.stats.history()}
-	m.mu.Lock()
-	if m.latest != nil {
-		view.Status = m.latest.Status
-		checked := m.latest.Checked
-		view.Checked = &checked
+const recentPosts = 14 * 24 * time.Hour
+
+func toPublicPost(item post) publicPost {
+	names := []string{}
+	for _, id := range item.Components {
+		if info := componentByID(id); info != nil {
+			names = append(names, info.Name)
+		}
 	}
+	return publicPost{
+		ID: item.ID, Kind: item.Kind, Title: item.Title, Impact: item.Impact, Components: names,
+		Starts: item.Starts, Ends: item.Ends, Created: item.Created, Closed: item.Closed, Updates: item.Updates,
+	}
+}
+
+// publicView tells visitors how Ivy is doing, and nothing about who uses
+// the relay, how many or when.
+func (m *monitor) publicView() publicStatus {
+	now := m.now()
+	view := publicStatus{
+		Status:     statusUnknown,
+		Days:       m.stats.history(),
+		Components: []publicComponent{},
+		Active:     []publicPost{},
+		Upcoming:   []publicPost{},
+		Recent:     []publicPost{},
+	}
+	m.mu.Lock()
+	latest := m.latest
 	m.mu.Unlock()
+	if latest != nil {
+		view.Status = latest.Status
+		checked := latest.Checked
+		view.Checked = &checked
+		for _, c := range latest.Components {
+			pc := publicComponent{ID: c.ID, Name: c.Name, Description: c.Description, Status: c.Status}
+			if c.ID == "signal" {
+				pc.Detail = c.Detail
+			}
+			view.Components = append(view.Components, pc)
+		}
+	}
+	snap := m.stats.snapshot()
+	view.Metrics = publicMetrics{
+		Uptime30:      m.stats.uptime(30),
+		Uptime90:      m.stats.uptime(90),
+		WakeMedianMs:  snap.WakeMedianMs,
+		Acceptance24h: snap.Acceptance24h,
+	}
+	for _, item := range m.posts.all() {
+		switch {
+		case item.active(now):
+			view.Active = append(view.Active, toPublicPost(item))
+		case item.upcoming(now):
+			view.Upcoming = append(view.Upcoming, toPublicPost(item))
+		case item.Kind == kindNotice:
+			// Notices disappear once removed.
+		case item.Closed != nil && now.Sub(*item.Closed) < recentPosts:
+			view.Recent = append(view.Recent, toPublicPost(item))
+		case item.Kind == kindMaintenance && item.Ends != nil && now.Sub(*item.Ends) < recentPosts:
+			view.Recent = append(view.Recent, toPublicPost(item))
+		}
+	}
 	view.Message = publicMessages[view.Status]
 	return view
 }

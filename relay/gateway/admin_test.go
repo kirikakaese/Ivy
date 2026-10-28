@@ -18,9 +18,9 @@ import (
 func TestStatsCountsAndHidesTokens(t *testing.T) {
 	now := time.Date(2026, 10, 27, 12, 30, 0, 0, time.UTC)
 	s := newStats("", func() time.Time { return now })
-	s.record(token, nil)
-	s.record(token, errors.New("Apple answered 403 InvalidProviderToken"))
-	s.record(token, errUnregistered)
+	s.record(token, nil, 300*time.Millisecond)
+	s.record(token, errors.New("Apple answered 403 InvalidProviderToken"), 0)
+	s.record(token, errUnregistered, 0)
 
 	snap := s.snapshot()
 	if snap.Sent24h != 1 || snap.Failed24h != 1 || snap.Unregistered24h != 1 {
@@ -45,7 +45,7 @@ func TestStatsSurviveRestart(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "stats.json")
 	now := time.Now()
 	s := newStats(path, func() time.Time { return now })
-	s.record(token, nil)
+	s.record(token, nil, 300*time.Millisecond)
 	if err := s.save(); err != nil {
 		t.Fatal(err)
 	}
@@ -84,6 +84,18 @@ func TestParseMetrics(t *testing.T) {
 	}
 }
 
+// testMonitor checks a fake MollySocket and, if given, a fake Signal status.
+func testMonitor(mollyURL, signalURL string) *monitor {
+	return &monitor{
+		stats:    newStats("", time.Now),
+		relay:    newRelayProbe(mollyURL),
+		signal:   newSignalStatus(signalURL, time.Now),
+		posts:    newPosts("", time.Now),
+		bundleID: "io.example.ivy",
+		now:      time.Now,
+	}
+}
+
 func TestAdminNeedsPassword(t *testing.T) {
 	molly := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
@@ -96,9 +108,9 @@ func TestAdminNeedsPassword(t *testing.T) {
 	defer molly.Close()
 
 	mux := newHandler(&fakeSender{}, newStats("", time.Now))
+	m := testMonitor(molly.URL, "")
 	(&admin{
-		password: "correct horse", bundleID: "io.example.ivy", stats: newStats("", time.Now),
-		relay: newRelayProbe(molly.URL), now: time.Now, sleep: func(time.Duration) {},
+		password: "correct horse", monitor: m, posts: m.posts, now: time.Now, sleep: func(time.Duration) {},
 	}).register(mux)
 
 	get := func(path, user, password string) *httptest.ResponseRecorder {
@@ -136,7 +148,8 @@ func TestAdminNeedsPassword(t *testing.T) {
 
 func TestNoAdminWithoutPassword(t *testing.T) {
 	mux := newHandler(&fakeSender{}, newStats("", time.Now))
-	(&admin{stats: newStats("", time.Now), relay: newRelayProbe("http://127.0.0.1:1"), now: time.Now, sleep: func(time.Duration) {}}).register(mux)
+	m := testMonitor("http://127.0.0.1:1", "")
+	(&admin{monitor: m, posts: m.posts, now: time.Now, sleep: func(time.Duration) {}}).register(mux)
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/admin/", nil))
 	if rec.Code != http.StatusNotFound {

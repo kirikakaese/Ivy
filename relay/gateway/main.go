@@ -8,8 +8,8 @@
 //
 // The gateway sees no message content. Its push endpoint is meant to be
 // reachable only from MollySocket, inside the Docker network. The public
-// status page is under /status/, the password-protected admin page under
-// /admin/.
+// Ivy Status page is under /status/, the password-protected admin page,
+// where posts for the status page are written, under /admin/.
 package main
 
 import (
@@ -42,16 +42,27 @@ func main() {
 		}
 	}()
 
-	relay := newRelayProbe(config.mollySocketURL)
+	postsPath := ""
+	if config.dataDir != "" {
+		postsPath = filepath.Join(config.dataDir, "posts.json")
+	}
+	posts := newPosts(postsPath, time.Now)
+
 	mux := newHandler(sender, stats)
-	monitor := &monitor{stats: stats, relay: relay, bundleID: config.bundleID, now: time.Now}
+	monitor := &monitor{
+		stats:    stats,
+		relay:    newRelayProbe(config.mollySocketURL),
+		signal:   newSignalStatus(config.signalStatusURL, time.Now),
+		posts:    posts,
+		bundleID: config.bundleID,
+		now:      time.Now,
+	}
 	go monitor.run()
 	monitor.register(mux)
 	(&admin{
 		password: config.adminPassword,
-		bundleID: config.bundleID,
-		stats:    stats,
-		relay:    relay,
+		monitor:  monitor,
+		posts:    posts,
 		now:      time.Now,
 		sleep:    time.Sleep,
 	}).register(mux)
