@@ -1,5 +1,32 @@
+diff --git a/proto/SignalService.proto b/proto/SignalService.proto
+index 450cada..5467289 100644
+--- a/proto/SignalService.proto
++++ b/proto/SignalService.proto
+@@ -37,6 +37,7 @@ message Envelope {
+   optional string updatedPni           = 15; // MOLLY: Used by linked device if primary device changes phone number
+   optional bool   story                = 16;
+   optional bytes  reportingToken       = 17;
++  optional bytes  sourceServiceIdBinary = 19; // Ivy: 16 bytes for an ACI
+   // NEXT ID: 18
+ }
+ 
+diff --git a/src/ws/proto_signalservice.rs b/src/ws/proto_signalservice.rs
+index 750ba65..7c7feae 100644
+--- a/src/ws/proto_signalservice.rs
++++ b/src/ws/proto_signalservice.rs
+@@ -28,6 +28,10 @@ pub struct Envelope {
+     /// NEXT ID: 18
+     #[prost(bytes = "vec", optional, tag = "17")]
+     pub reporting_token: ::core::option::Option<::prost::alloc::vec::Vec<u8>>,
++    /// Ivy: the sender as binary service ID (16 bytes for an ACI); Signal's
++    /// server sends this instead of the string field.
++    #[prost(bytes = "vec", optional, tag = "19")]
++    pub source_service_id_binary: ::core::option::Option<::prost::alloc::vec::Vec<u8>>,
+ }
+ /// Nested message and enum types in `Envelope`.
+ pub mod envelope {
 diff --git a/src/ws/signalwebsocket.rs b/src/ws/signalwebsocket.rs
-index ecb03f4..5846f88 100644
+index ecb03f4..3c45b01 100644
 --- a/src/ws/signalwebsocket.rs
 +++ b/src/ws/signalwebsocket.rs
 @@ -75,6 +75,8 @@ impl std::error::Error for Error {}
@@ -19,7 +46,7 @@ index ecb03f4..5846f88 100644
              push_endpoint,
              channels: Channels::none(),
              push_instant: Arc::new(Mutex::new(
-@@ -184,6 +187,20 @@ impl SignalWebSocket {
+@@ -184,6 +187,24 @@ impl SignalWebSocket {
          }
      }
  
@@ -28,6 +55,10 @@ index ecb03f4..5846f88 100644
 +     * read state, settings) don't need a wake-up: the device already knows.
 +     */
 +    fn is_from_own_account(&self, envelope: &Envelope) -> bool {
++        if let Some(source) = envelope.source_service_id_binary.as_deref() {
++            // An ACI is the bare 16-byte UUID; PNIs carry a prefix byte.
++            return source.len() == 16 && aci_bytes(&self.account).as_deref() == Some(source);
++        }
 +        match envelope.source_service_id.as_deref() {
 +            Some(source) => {
 +                let source = source.to_lowercase();
@@ -40,19 +71,40 @@ index ecb03f4..5846f88 100644
      fn on_response(&self, response: Option<WebSocketResponseMessage>) {
          log::debug!("New response");
          if response.is_some() {
-@@ -203,7 +220,7 @@ impl SignalWebSocket {
+@@ -203,7 +224,9 @@ impl SignalWebSocket {
                      let _ = tx.unbounded_send(1);
                  }
                  if self.waiting_timeout_reached() {
 -                    if envelope.urgent() {
-+                    if envelope.urgent() && !self.is_from_own_account(&envelope) {
++                    if envelope.urgent() && self.is_from_own_account(&envelope) {
++                        log::info!("Ivy: no wake-up for a message between the account's own devices.");
++                    } else if envelope.urgent() {
                          let _ = self.send_push().await?;
                      }
                  } else {
-@@ -359,3 +376,31 @@ impl SignalWebSocket {
+@@ -227,6 +250,7 @@ impl SignalWebSocket {
+                 None => Some(Envelope {
+                     r#type: None,
+                     source_service_id: None,
++                    source_service_id_binary: None,
+                     source_device: None,
+                     destination_service_id: None,
+                     timestamp: None,
+@@ -359,3 +383,54 @@ impl SignalWebSocket {
          instant.elapsed() > PUSH_TIMEOUT
      }
  }
++
++/// Ivy: the 16 bytes of a UUID written as text.
++fn aci_bytes(uuid: &str) -> Option<Vec<u8>> {
++    let hex: String = uuid.chars().filter(|c| *c != '-').collect();
++    if hex.len() != 32 {
++        return None;
++    }
++    (0..16)
++        .map(|i| u8::from_str_radix(&hex[2 * i..2 * i + 2], 16).ok())
++        .collect()
++}
 +
 +#[cfg(test)]
 +mod ivy_tests {
@@ -79,5 +131,17 @@ index ecb03f4..5846f88 100644
 +        assert!(ws.is_from_own_account(&envelope(Some("ACI:0f3c9a12-5b7d-4e21-9c44-7a1b2c3d4e5f"))));
 +        assert!(!ws.is_from_own_account(&envelope(Some("5f0c2b6e-0000-4000-8000-000000000001"))));
 +        assert!(!ws.is_from_own_account(&envelope(None)), "sealed sender messages have no source");
++
++        let mut own = envelope(None);
++        own.source_service_id_binary = aci_bytes("0f3c9a12-5b7d-4e21-9c44-7a1b2c3d4e5f");
++        assert!(ws.is_from_own_account(&own), "the server sends the sender as 16 bytes");
++        let mut other = envelope(None);
++        other.source_service_id_binary = aci_bytes("5f0c2b6e-0000-4000-8000-000000000001");
++        assert!(!ws.is_from_own_account(&other));
++        let mut pni = envelope(None);
++        let mut bytes = vec![1u8];
++        bytes.extend(aci_bytes("0f3c9a12-5b7d-4e21-9c44-7a1b2c3d4e5f").unwrap());
++        pni.source_service_id_binary = Some(bytes);
++        assert!(!ws.is_from_own_account(&pni), "a PNI with the same UUID isn't the ACI");
 +    }
 +}
