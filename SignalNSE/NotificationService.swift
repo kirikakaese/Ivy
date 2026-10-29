@@ -87,12 +87,25 @@ class NotificationService: UNNotificationServiceExtension {
         let logger = NSELogger()
         _ = Self.nseDidStart()
         self.contentHandler.set(contentHandler)
-        // Ivy: when the push relay woke Ivy, show the message in its place.
-        let handlingSince = Date()
+        // Ivy: when the push relay woke Ivy, its first message notification
+        // takes the place of the wake-up push (IvyWakeCapture).
+        let capturesWake = !IvyConfiguration.usesApplePushNotifications
+        if capturesWake {
+            IvyWakeCapture.shared.begin()
+        }
         self.fetchQueue.enqueueCancellingPrevious {
             let content = await self._didReceive(request, logger: logger)
-            let shown = await IvyWakeNotification.content(replacing: content, wake: request, handlingSince: handlingSince)
-            self.completeSilently(content: shown, logger: logger)
+            if capturesWake {
+                // Notifications can follow just after fetching finishes.
+                for _ in 0..<10 where IvyWakeCapture.shared.captured == nil {
+                    try? await Task.sleep(nanoseconds: 100 * NSEC_PER_MSEC)
+                }
+            }
+            if capturesWake, let message = IvyWakeCapture.shared.end() {
+                self.completeSilently(content: Self.ivyWakeContent(message, badge: content.badge), logger: logger)
+                return
+            }
+            self.completeSilently(content: content, logger: logger)
         }
     }
 
@@ -189,10 +202,27 @@ class NotificationService: UNNotificationServiceExtension {
 
         self.fetchQueue.cancelAll()
 
+        // Ivy: a message already found still replaces the wake-up push.
+        if let message = IvyWakeCapture.shared.end() {
+            completeSilently(content: Self.ivyWakeContent(message, badge: nil), logger: logger)
+            return
+        }
+
         // We complete silently here so that nothing is presented to the user.
         // By default the OS will present whatever the raw content of the original
         // notification is to the user otherwise.
         completeSilently(content: UNMutableNotificationContent(), logger: logger)
+    }
+
+    // Ivy: the captured message, with the badge from the fetch.
+    private static func ivyWakeContent(_ message: UNNotificationContent, badge: NSNumber?) -> UNNotificationContent {
+        guard let content = message.mutableCopy() as? UNMutableNotificationContent else {
+            return message
+        }
+        if let badge {
+            content.badge = badge
+        }
+        return content
     }
 
     private func startProxyIfEnabled(logger: NSELogger) async throws(CancellationError) {

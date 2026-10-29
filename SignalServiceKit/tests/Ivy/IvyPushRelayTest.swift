@@ -4,6 +4,7 @@
 //
 
 import LibSignalClient
+import UserNotifications
 import XCTest
 
 @testable import SignalServiceKit
@@ -47,5 +48,21 @@ final class IvyPushRelayTest: XCTestCase {
             message: bundle.lastResortPreKey.publicKey().serialize(),
             signature: bundle.lastResortPreKey.signature,
         ))
+    }
+
+    func testWakeCaptureTakesOnlyTheFirstMessage() {
+        let capture = IvyWakeCapture()
+        let first = UNMutableNotificationContent()
+        first.body = "first"
+        let second = UNMutableNotificationContent()
+        second.body = "second"
+
+        XCTAssertFalse(capture.take(first), "nothing is captured outside a wake-up")
+        capture.begin()
+        XCTAssertTrue(capture.take(first))
+        XCTAssertFalse(capture.take(second), "later messages are posted as usual")
+        XCTAssertEqual(capture.end()?.body, "first")
+        XCTAssertNil(capture.end())
+        XCTAssertFalse(capture.take(second), "capturing ends with the wake-up")
     }
 }
