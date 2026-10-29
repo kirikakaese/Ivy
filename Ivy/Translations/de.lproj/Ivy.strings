@@ -1344,6 +1344,36 @@
 /* Header of the filter shortcuts shown before anything is searched. */
 "SEARCH_SUGGESTIONS" = "Suchen nach";
 
+/* Chat list banner line naming the affected services. Embeds {{ the services, comma-separated }}. */
+"SERVICE_STATUS_AFFECTED_FORMAT" = "Betroffen: %@";
+
+/* Accessibility label of the button that hides the chat list banner's details. */
+"SERVICE_STATUS_COLLAPSE" = "Details ausblenden";
+
+/* Chat list banner text when notifications may be late. */
+"SERVICE_STATUS_DEGRADED_DETAIL" = "Mitteilungen kommen eventuell verspätet.";
+
+/* Chat list banner title when Ivy Status reports problems. */
+"SERVICE_STATUS_DEGRADED_TITLE" = "Dienst eingeschränkt";
+
+/* Chat list banner text when instant notifications may not work. */
+"SERVICE_STATUS_DOWN_DETAIL" = "Mitteilungen kommen eventuell nicht an, solange Ivy geschlossen ist. Ist Ivy geöffnet, kommen Nachrichten weiterhin an.";
+
+/* Chat list banner title when Ivy Status reports an outage. */
+"SERVICE_STATUS_DOWN_TITLE" = "Dienststörung";
+
+/* Accessibility label of the button that shows the chat list banner's details. */
+"SERVICE_STATUS_EXPAND" = "Details anzeigen";
+
+/* Chat list banner title during maintenance of Ivy's services. */
+"SERVICE_STATUS_MAINTENANCE_TITLE" = "Wartungsarbeiten";
+
+/* Chat list banner title for a notice from Ivy Status. */
+"SERVICE_STATUS_NOTICE_TITLE" = "Hinweis von Ivy";
+
+/* Chat list banner title when Ivy can't reach its push relay. */
+"SERVICE_STATUS_UNREACHABLE_TITLE" = "Ivy Push nicht erreichbar";
+
 /* Header of the chat folders in the sidebar. */
 "SIDEBAR_FOLDERS" = "Ordner";
 

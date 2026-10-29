@@ -68,3 +68,26 @@ extension HomeTabBarController.Tabs {
         }
     }
 }
+
+// MARK: - Profile picture
+
+extension HomeTabViewController {
+
+    /// The profile picture that opens Settings, as on Chats and Calls. Only
+    /// on a section's first page, not when the page is shown as a sheet.
+    func ivyUpdateProfileButton() {
+        guard
+            navigationController?.viewControllers.first === self,
+            navigationController?.presentingViewController == nil
+        else {
+            return
+        }
+        navigationItem.leftBarButtonItem = createSettingsBarButtonItem(
+            databaseStorage: SSKEnvironment.shared.databaseStorageRef,
+            buildActions: { settingsAction in [settingsAction] },
+            showAppSettings: { [weak self] in
+                self?.presentFormSheet(AppSettingsViewController.inModalNavigationController(), animated: true)
+            },
+        )
+    }
+}
