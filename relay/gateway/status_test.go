@@ -284,3 +284,19 @@ func TestNoticesListNoServicesAsEmpty(t *testing.T) {
 		t.Fatalf("old notices: %s", data)
 	}
 }
+
+func TestResolvedNoticesStayListed(t *testing.T) {
+	m := testMonitor("http://127.0.0.1:1", "")
+	resolved, _ := m.posts.create(postInput{Kind: kindNotice, Title: "Delays after a server move"})
+	removed, _ := m.posts.create(postInput{Kind: kindNotice, Title: "Typo"})
+	if err := m.posts.update(resolved.ID, "resolved", "All caught up."); err != nil {
+		t.Fatal(err)
+	}
+	if err := m.posts.update(removed.ID, "removed", ""); err != nil {
+		t.Fatal(err)
+	}
+	view := m.publicView()
+	if len(view.Active) != 0 || len(view.Recent) != 1 || view.Recent[0].Title != "Delays after a server move" {
+		t.Fatalf("active %+v, recent %+v", view.Active, view.Recent)
+	}
+}

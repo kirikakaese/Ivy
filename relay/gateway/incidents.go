@@ -33,7 +33,7 @@ const (
 var postSteps = map[string][]string{
 	kindIncident:    {"investigating", "identified", "monitoring", "resolved"},
 	kindMaintenance: {"scheduled", "in_progress", "completed"},
-	kindNotice:      {"posted", "removed"},
+	kindNotice:      {"posted", "resolved", "removed"},
 }
 
 // finalSteps end a post.

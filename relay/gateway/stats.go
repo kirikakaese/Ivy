@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -36,12 +37,54 @@ type event struct {
 	Detail string    `json:"detail,omitempty"`
 }
 
-// dayHealth counts the minutes of a day (UTC) by the relay's status.
+// dayHealth counts the minutes of a day (UTC) by status: overall, per hour
+// with trouble, and per service.
 type dayHealth struct {
 	OK          int `json:"ok"`
 	Maintenance int `json:"maintenance,omitempty"`
 	Degraded    int `json:"degraded"`
 	Down        int `json:"down"`
+	// Hours holds the minutes that weren't fine, by hour ("0" to "23").
+	Hours map[string]*troubleMinutes `json:"hours,omitempty"`
+	// Components holds the same for each service, by its ID.
+	Components map[string]*dayHealth `json:"components,omitempty"`
+}
+
+type troubleMinutes struct {
+	Maintenance int `json:"maintenance,omitempty"`
+	Degraded    int `json:"degraded,omitempty"`
+	Down        int `json:"down,omitempty"`
+}
+
+// count adds one minute with the given status in the given hour; unknown
+// minutes don't count either way.
+func (d *dayHealth) count(status string, hour int) bool {
+	var trouble func(*troubleMinutes)
+	switch status {
+	case statusOK:
+		d.OK++
+		return true
+	case statusMaintenance:
+		d.Maintenance++
+		trouble = func(t *troubleMinutes) { t.Maintenance++ }
+	case statusDegraded:
+		d.Degraded++
+		trouble = func(t *troubleMinutes) { t.Degraded++ }
+	case statusDown:
+		d.Down++
+		trouble = func(t *troubleMinutes) { t.Down++ }
+	default:
+		return false
+	}
+	if d.Hours == nil {
+		d.Hours = map[string]*troubleMinutes{}
+	}
+	key := strconv.Itoa(hour)
+	if d.Hours[key] == nil {
+		d.Hours[key] = &troubleMinutes{}
+	}
+	trouble(d.Hours[key])
+	return true
 }
 
 func (d dayHealth) minutes() int { return d.OK + d.Maintenance + d.Degraded + d.Down }
@@ -202,8 +245,9 @@ func (s *stats) prune(now time.Time) {
 
 const dayFormat = "2006-01-02"
 
-// recordHealth counts one minute with the given status for today.
-func (s *stats) recordHealth(status string) {
+// recordHealth counts one minute for today: the overall status and each
+// service's.
+func (s *stats) recordHealth(status string, services ...componentStatus) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	now := s.now().UTC()
@@ -213,17 +257,19 @@ func (s *stats) recordHealth(status string) {
 		day = &dayHealth{}
 		s.Days[key] = day
 	}
-	switch status {
-	case statusOK:
-		day.OK++
-	case statusMaintenance:
-		day.Maintenance++
-	case statusDegraded:
-		day.Degraded++
-	case statusDown:
-		day.Down++
-	default:
-		// Unknown minutes don't count either way.
+	counted := day.count(status, now.Hour())
+	for _, service := range services {
+		if day.Components == nil {
+			day.Components = map[string]*dayHealth{}
+		}
+		if day.Components[service.ID] == nil {
+			day.Components[service.ID] = &dayHealth{}
+		}
+		if day.Components[service.ID].count(service.Status, now.Hour()) {
+			counted = true
+		}
+	}
+	if !counted {
 		return
 	}
 	oldest := now.AddDate(0, 0, -daysKept).Format(dayFormat)
@@ -236,23 +282,49 @@ func (s *stats) recordHealth(status string) {
 }
 
 type dayPoint struct {
-	Date   string `json:"date"`
-	Status string `json:"status"`
+	Date    string        `json:"date"`
+	Status  string        `json:"status"`
+	Minutes *dayMinutes   `json:"minutes,omitempty"`
+	Hours   []troubleHour `json:"hours,omitempty"`
 }
 
-// history returns the last 90 days, oldest first.
-func (s *stats) history() []dayPoint {
+type dayMinutes struct {
+	OK          int `json:"ok"`
+	Maintenance int `json:"maintenance"`
+	Degraded    int `json:"degraded"`
+	Down        int `json:"down"`
+}
+
+// troubleHour is an hour of a day (UTC) with minutes that weren't fine.
+type troubleHour struct {
+	Hour int `json:"hour"`
+	troubleMinutes
+}
+
+// history returns the last 90 days, oldest first, overall or for one
+// service.
+func (s *stats) history(component string) []dayPoint {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	today := s.now().UTC()
 	points := make([]dayPoint, 0, daysKept)
 	for i := daysKept - 1; i >= 0; i-- {
 		key := today.AddDate(0, 0, -i).Format(dayFormat)
-		status := "none"
-		if day := s.Days[key]; day != nil {
-			status = day.status()
+		point := dayPoint{Date: key, Status: "none"}
+		day := s.Days[key]
+		if day != nil && component != "" {
+			day = day.Components[component]
 		}
-		points = append(points, dayPoint{Date: key, Status: status})
+		if day != nil && day.minutes() > 0 {
+			point.Status = day.status()
+			point.Minutes = &dayMinutes{OK: day.OK, Maintenance: day.Maintenance, Degraded: day.Degraded, Down: day.Down}
+			for hour := 0; hour < 24; hour++ {
+				if trouble := day.Hours[strconv.Itoa(hour)]; trouble != nil {
+					point.Hours = append(point.Hours, troubleHour{Hour: hour, troubleMinutes: *trouble})
+				}
+			}
+		}
+		points = append(points, point)
 	}
 	return points
 }

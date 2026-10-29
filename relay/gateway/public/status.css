@@ -102,12 +102,21 @@ p { margin: 0; }
 .history .post { background: transparent; }
 
 .days { display: grid; grid-template-columns: repeat(90, minmax(0, 1fr)); gap: 2px; height: 36px; }
-.days span { border-radius: 2px; background: var(--none); }
-.days span.ok { background: var(--ok); }
-.days span.maintenance { background: var(--maint); }
-.days span.degraded { background: var(--warn); }
-.days span.down { background: var(--bad); }
+.days span { border-radius: 2px; background: var(--none); cursor: default; }
 .days span:hover { opacity: 0.75; }
+.tip { position: fixed; z-index: 10; pointer-events: none; display: grid; gap: 6px; width: 264px; max-width: calc(100vw - 24px); padding: 10px 12px; border-radius: 10px; background: var(--fg); color: var(--surface); font-size: 13px; box-shadow: 0 6px 24px rgb(0 0 0 / 0.18); }
+.tip b { font-weight: 600; }
+.tip .line { display: grid; grid-template-columns: repeat(24, minmax(0, 1fr)); gap: 1px; height: 12px; }
+.tip .line i { border-radius: 1px; }
+.tip .line i.none { background: color-mix(in srgb, var(--surface) 22%, transparent); }
+.tip .hours { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.7; }
+.service-days { grid-column: 1 / -1; margin-top: 6px; }
+.service-days summary { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; list-style: none; font-size: 13px; color: var(--muted); }
+.service-days summary::-webkit-details-marker { display: none; }
+.service-days summary::before { content: ""; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform 0.15s; }
+.service-days[open] summary::before { transform: rotate(45deg); }
+.service-days .days { height: 28px; margin-top: 10px; }
+.service-days .scale { margin-top: 6px; }
 .scale { display: flex; justify-content: space-between; font-size: 12px; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; background: var(--none); }
@@ -115,6 +124,7 @@ p { margin: 0; }
 .legend i.maintenance { background: var(--maint); }
 .legend i.degraded { background: var(--warn); }
 .legend i.down { background: var(--bad); }
+.legend i.partial { background: linear-gradient(to top, var(--ok) 35%, var(--bad)); }
 .about { display: grid; gap: 8px; font-size: 14px; max-width: 64ch; }
 @media (max-width: 620px) {
   .wrap { padding-top: 28px; }
