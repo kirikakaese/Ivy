@@ -33,6 +33,8 @@ private let globalEnvironment = NSEEnvironment()
 class NotificationService: UNNotificationServiceExtension {
     private typealias ContentHandler = (UNNotificationContent) -> Void
     private let contentHandler = AtomicOptional<ContentHandler>(nil, lock: .init())
+    // Ivy: the wake-up's own content, for a fallback when time runs out
+    private let ivyWakeContent = AtomicOptional<UNNotificationContent>(nil, lock: .init())
     private let fetchQueue = SerialTaskQueue()
 
     // MARK: -
@@ -92,6 +94,7 @@ class NotificationService: UNNotificationServiceExtension {
         let capturesWake = !IvyConfiguration.usesApplePushNotifications
         if capturesWake {
             IvyWakeCapture.shared.begin()
+            ivyWakeContent.set(request.content)
         }
         self.fetchQueue.enqueueCancellingPrevious {
             let content = await self._didReceive(request, logger: logger)
@@ -101,8 +104,15 @@ class NotificationService: UNNotificationServiceExtension {
                     try? await Task.sleep(nanoseconds: 100 * NSEC_PER_MSEC)
                 }
             }
-            if capturesWake, let message = IvyWakeCapture.shared.end() {
-                self.completeSilently(content: Self.ivyWakeContent(message, badge: content.badge), logger: logger)
+            if capturesWake {
+                await IvyWakeCapture.removeFallbacks()
+                if let message = IvyWakeCapture.shared.end() {
+                    self.completeSilently(content: Self.ivyWakeContent(message, badge: content.badge), logger: logger)
+                } else if let repeated = await IvyWakeCapture.quietRepeatOfNewestMessage(badge: content.badge) {
+                    self.completeSilently(content: repeated, logger: logger)
+                } else {
+                    self.completeSilently(content: IvyWakeCapture.fallbackContent(request.content, badge: content.badge), logger: logger)
+                }
                 return
             }
             self.completeSilently(content: content, logger: logger)
@@ -205,6 +215,12 @@ class NotificationService: UNNotificationServiceExtension {
         // Ivy: a message already found still replaces the wake-up push.
         if let message = IvyWakeCapture.shared.end() {
             completeSilently(content: Self.ivyWakeContent(message, badge: nil), logger: logger)
+            return
+        }
+        // Ivy: otherwise the wake-up's own text shows; mark it, so it goes
+        // away once the message shows.
+        if let wakeContent = ivyWakeContent.swap(nil) {
+            completeSilently(content: IvyWakeCapture.fallbackContent(wakeContent, badge: nil), logger: logger)
             return
         }
 

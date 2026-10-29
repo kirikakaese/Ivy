@@ -13,7 +13,18 @@ public import UserNotifications
 /// notification isn't posted on its own: it becomes the wake-up's content,
 /// and the user sees one notification, right away. Further messages from the
 /// same wake-up are posted as usual.
+///
+/// A wake-up without anything new, often because an earlier wake-up
+/// already fetched its message, must still show something. If a message
+/// notification is showing, the newest one is shown again quietly in its
+/// place, so nothing changes for the user. Otherwise the wake-up keeps its
+/// own text ("You may have new messages"); that fallback goes away as soon
+/// as a message notification shows, a later wake-up comes in or Ivy is
+/// opened.
 public final class IvyWakeCapture {
+
+    /// Marks a wake-up's fallback notification.
+    static let fallbackKey = "ivyWakeFallback"
 
     public static let shared = IvyWakeCapture()
 
@@ -37,6 +48,60 @@ public final class IvyWakeCapture {
     /// The captured notification so far, for when time runs out.
     public var captured: UNNotificationContent? {
         state.get().captured
+    }
+
+    /// The wake-up's own content, marked as a fallback.
+    public static func fallbackContent(_ wakeContent: UNNotificationContent, badge: NSNumber?) -> UNNotificationContent {
+        guard let content = wakeContent.mutableCopy() as? UNMutableNotificationContent else {
+            return wakeContent
+        }
+        content.userInfo[fallbackKey] = true
+        if let badge {
+            content.badge = badge
+        }
+        return content
+    }
+
+    /// The newest message notification still shown, to be shown again
+    /// without sound or banner in place of a wake-up without anything new;
+    /// nil if none is shown. The shown one is removed, so it isn't doubled.
+    public static func quietRepeatOfNewestMessage(badge: NSNumber?) async -> UNNotificationContent? {
+        let center = UNUserNotificationCenter.current()
+        let newest = await center.deliveredNotifications()
+            .filter { isMessage($0.request.content) }
+            .max { $0.date < $1.date }
+        guard let newest else {
+            return nil
+        }
+        center.removeDeliveredNotifications(withIdentifiers: [newest.request.identifier])
+        return quietCopy(of: newest.request.content, badge: badge)
+    }
+
+    static func isMessage(_ content: UNNotificationContent) -> Bool {
+        content.userInfo[fallbackKey] == nil && AppNotificationUserInfo(content.userInfo).threadId != nil
+    }
+
+    static func quietCopy(of content: UNNotificationContent, badge: NSNumber?) -> UNNotificationContent {
+        guard let copy = content.mutableCopy() as? UNMutableNotificationContent else {
+            return content
+        }
+        copy.sound = nil
+        copy.interruptionLevel = .passive
+        if let badge {
+            copy.badge = badge
+        }
+        return copy
+    }
+
+    /// Removes fallback notifications still shown.
+    public static func removeFallbacks() async {
+        let center = UNUserNotificationCenter.current()
+        let identifiers = await center.deliveredNotifications()
+            .filter { $0.request.content.userInfo[fallbackKey] != nil }
+            .map(\.request.identifier)
+        if !identifiers.isEmpty {
+            center.removeDeliveredNotifications(withIdentifiers: identifiers)
+        }
     }
 
     /// Takes the notification as the wake-up's content if a wake-up is

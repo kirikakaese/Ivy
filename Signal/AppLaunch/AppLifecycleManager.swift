@@ -1552,6 +1552,9 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
 
         refreshConnection(isAppActive: true)
 
+        // Ivy: Ivy fetches what a "You may have new messages" was about.
+        Task { await IvyWakeCapture.removeFallbacks() }
+
         // Every time we become active...
         if registeredState != nil {
             // TODO: Should we run this immediately even if we would like to process already decrypted envelopes handed to us by the NSE?
