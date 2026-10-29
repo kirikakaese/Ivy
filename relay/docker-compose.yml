@@ -32,7 +32,9 @@ services:
 
   mollysocket:
     <<: *hardening
-    image: ghcr.io/mollyim/mollysocket:1
+    # MollySocket with Ivy's patch (relay/mollysocket): no wake-up for
+    # messages between the account's own devices.
+    build: https://github.com/kirikakaese/Ivy.git#main:relay/mollysocket
     working_dir: /data
     command: server
     volumes:

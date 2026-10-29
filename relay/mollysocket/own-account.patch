@@ -1,0 +1,83 @@
+diff --git a/src/ws/signalwebsocket.rs b/src/ws/signalwebsocket.rs
+index ecb03f4..5846f88 100644
+--- a/src/ws/signalwebsocket.rs
++++ b/src/ws/signalwebsocket.rs
+@@ -75,6 +75,8 @@ impl std::error::Error for Error {}
+ #[derive(Debug)]
+ pub struct SignalWebSocket {
+     creds: String,
++    /// Ivy: the account's ACI, to tell its own devices' messages apart.
++    account: String,
+     push_endpoint: url::Url,
+     pub channels: Channels,
+     push_instant: Arc<Mutex<Instant>>,
+@@ -129,6 +131,7 @@ impl SignalWebSocket {
+         let push_endpoint = url::Url::parse(&push_endpoint)?;
+         Ok(Self {
+             creds: format!("{}.{}:{}", uuid, device_id, password),
++            account: uuid.to_lowercase(),
+             push_endpoint,
+             channels: Channels::none(),
+             push_instant: Arc::new(Mutex::new(
+@@ -184,6 +187,20 @@ impl SignalWebSocket {
+         }
+     }
+ 
++    /**
++     * Ivy: messages the account's own devices send each other (sent messages,
++     * read state, settings) don't need a wake-up: the device already knows.
++     */
++    fn is_from_own_account(&self, envelope: &Envelope) -> bool {
++        match envelope.source_service_id.as_deref() {
++            Some(source) => {
++                let source = source.to_lowercase();
++                source == self.account || source == format!("aci:{}", self.account)
++            }
++            None => false,
++        }
++    }
++
+     fn on_response(&self, response: Option<WebSocketResponseMessage>) {
+         log::debug!("New response");
+         if response.is_some() {
+@@ -203,7 +220,7 @@ impl SignalWebSocket {
+                     let _ = tx.unbounded_send(1);
+                 }
+                 if self.waiting_timeout_reached() {
+-                    if envelope.urgent() {
++                    if envelope.urgent() && !self.is_from_own_account(&envelope) {
+                         let _ = self.send_push().await?;
+                     }
+                 } else {
+@@ -359,3 +376,31 @@ impl SignalWebSocket {
+         instant.elapsed() > PUSH_TIMEOUT
+     }
+ }
++
++#[cfg(test)]
++mod ivy_tests {
++    use super::*;
++
++    fn envelope(source: Option<&str>) -> Envelope {
++        Envelope {
++            source_service_id: source.map(String::from),
++            urgent: Some(true),
++            ..Default::default()
++        }
++    }
++
++    #[test]
++    fn own_account_is_recognised() {
++        let ws = SignalWebSocket::new(
++            "0F3C9A12-5B7D-4E21-9C44-7A1B2C3D4E5F",
++            2,
++            "pw",
++            "http://ivy-gateway:8080/apns/ab",
++        )
++        .unwrap();
++        assert!(ws.is_from_own_account(&envelope(Some("0f3c9a12-5b7d-4e21-9c44-7a1b2c3d4e5f"))));
++        assert!(ws.is_from_own_account(&envelope(Some("ACI:0f3c9a12-5b7d-4e21-9c44-7a1b2c3d4e5f"))));
++        assert!(!ws.is_from_own_account(&envelope(Some("5f0c2b6e-0000-4000-8000-000000000001"))));
++        assert!(!ws.is_from_own_account(&envelope(None)), "sealed sender messages have no source");
++    }
++}

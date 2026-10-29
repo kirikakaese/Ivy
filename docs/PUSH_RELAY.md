@@ -5,7 +5,7 @@ Signal's servers send push notifications only to the official Signal app. Withou
 Ivy Push fixes that with a small relay on a server. One relay serves every Ivy user: TestFlight builds connect to the relay built into them by themselves, and anyone can turn that off (Settings > Notifications > Push Relay > Instant Notifications) or enter a relay of their own.
 
 1. Ivy adds a linked device called **Ivy Push** to your account. Its keys are made for it and thrown away, so it can't read your messages.
-2. [MollySocket](https://github.com/mollyim/mollysocket) on your server stays connected to Signal as that device. When an urgent message arrives (not read receipts or typing), it calls the Ivy gateway next to it.
+2. [MollySocket](https://github.com/mollyim/mollysocket) on your server stays connected to Signal as that device. When an urgent message arrives (not read receipts or typing), it calls the Ivy gateway next to it. Ivy's small patch (`relay/mollysocket`) skips what the account's own devices send each other, for example when you read a chat or send a message on the Mac, so the phone isn't woken for something it already knows.
 3. The gateway sends Ivy a push through Apple, with no content.
 4. Ivy's notification service wakes up, fetches the messages and shows them as usual.
 
@@ -142,6 +142,7 @@ cd ivy-relay
 docker compose pull && docker compose up -d --build
 ```
 
+- MollySocket is built on the server from the upstream version pinned in `relay/mollysocket/Dockerfile`, plus Ivy's patch. The first build takes about 10 minutes. To move to a newer MollySocket, change `MOLLYSOCKET_COMMIT` there and check that the patch still applies (CI builds it).
 - Signal removes linked devices that don't connect for 45 days, so keep the relay running. If the device was removed, Ivy shows "Device removed" under Push Relay; tap **Connect Again**.
 - To shut the relay down: remove the `IVY_PUSH_RELAY_HOST` variable, run the TestFlight workflow, then `docker compose down -v` on the server. Ivy falls back to Background App Refresh; the Ivy Push devices stay linked until users turn the switch off or Signal removes them after 45 days.
 
