@@ -48,6 +48,7 @@ public enum IvyConfiguration {
     public static let licenseURL = URL(string: "https://github.com/kirikakaese/Ivy/blob/main/LICENSE")!
     /// Ivy is not supported by Signal, so problems are reported here.
     public static let issuesURL = URL(string: "https://github.com/kirikakaese/Ivy/issues")!
+    public static let privacyPolicyURL = URL(string: "https://github.com/kirikakaese/Ivy/blob/main/docs/PRIVACY.md")!
 
     public static var keepsConnectionWhileInactive: Bool {
 #if targetEnvironment(macCatalyst)

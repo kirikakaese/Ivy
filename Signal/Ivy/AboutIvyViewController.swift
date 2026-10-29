@@ -80,6 +80,12 @@ final class AboutIvyViewController: OWSTableViewController2 {
         let privacySection = OWSTableSection()
         privacySection.headerTitle = IvyLocalizedString("ABOUT_PRIVACY_TITLE", comment: "Title of the privacy statement on the About Ivy screen.")
         privacySection.footerTitle = IvyLocalizedString("ABOUT_PRIVACY_STATEMENT", comment: "Ivy's privacy statement on the About Ivy screen.")
+        privacySection.add(.disclosureItem(
+            withText: IvyLocalizedString("ABOUT_PRIVACY_POLICY", comment: "Item that opens Ivy's full privacy policy."),
+            actionBlock: { [weak self] in
+                self?.present(SFSafariViewController(url: IvyConfiguration.privacyPolicyURL), animated: true)
+            },
+        ))
         contents.add(privacySection)
 
         self.contents = contents
