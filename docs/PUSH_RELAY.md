@@ -160,7 +160,6 @@ docker compose restart caddy
 
 - `restart caddy` loads a changed Caddyfile; `up -d` alone keeps the old one.
 - After a change to `relay/mollysocket`, also run `docker compose build --no-cache mollysocket` before `up -d` (about 10 minutes).
-- To check which gateway runs: `docker cp ivy-relay-ivy-gateway-1:/ivy-gateway /tmp/gw && grep -c "<text from the new code>" /tmp/gw`.
 
 - MollySocket is built on the server from the upstream version pinned in `relay/mollysocket/Dockerfile`, plus Ivy's patch. The first build takes about 10 minutes. To move to a newer MollySocket, change `MOLLYSOCKET_COMMIT` there and check that the patch still applies (CI builds it).
 - Signal removes linked devices that don't connect for 45 days, so keep the relay running. If the device was removed, Ivy shows "Device removed" under Push Relay; tap **Connect Again**.
