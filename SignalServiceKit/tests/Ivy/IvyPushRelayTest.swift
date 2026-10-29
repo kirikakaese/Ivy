@@ -78,4 +78,26 @@ final class IvyPushRelayTest: XCTestCase {
         XCTAssertNotNil(fallback.userInfo["aps"])
         XCTAssertNil(wake.userInfo[IvyWakeCapture.fallbackKey], "the original stays unchanged")
     }
+
+    func testQuietRepeatOfAMessage() {
+        let message = UNMutableNotificationContent()
+        message.title = "Anna"
+        message.body = "See you later"
+        message.threadIdentifier = "thread-1"
+        message.sound = .default
+        var userInfo = AppNotificationUserInfo()
+        userInfo.threadId = "thread-1"
+        message.userInfo = userInfo.build()
+        XCTAssertTrue(IvyWakeCapture.isMessage(message))
+
+        let quiet = IvyWakeCapture.quietCopy(of: message, badge: 2)
+        XCTAssertEqual(quiet.body, "See you later")
+        XCTAssertEqual(quiet.threadIdentifier, "thread-1")
+        XCTAssertNil(quiet.sound)
+        XCTAssertEqual(quiet.interruptionLevel, .passive)
+        XCTAssertEqual(quiet.badge, 2)
+
+        let fallback = IvyWakeCapture.fallbackContent(UNNotificationContent(), badge: nil)
+        XCTAssertFalse(IvyWakeCapture.isMessage(fallback), "a fallback isn't repeated")
+    }
 }
