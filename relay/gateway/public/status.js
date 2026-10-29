@@ -193,15 +193,21 @@ function hideTip() {
   $("tip").hidden = true;
 }
 
+// With a mouse the tooltip follows the pointer; a tap shows it until the
+// next tap elsewhere. Phones don't send clicks for plain page areas, so
+// taps are taken from pointerdown.
 document.addEventListener("pointerover", (event) => {
   if (event.target.ivyDay) showTip(event.target);
-  else if (event.pointerType === "mouse") hideTip();
 });
-document.addEventListener("click", (event) => {
+document.addEventListener("pointerout", (event) => {
+  if (event.pointerType !== "touch" && event.target.ivyDay && !(event.relatedTarget && event.relatedTarget.ivyDay)) hideTip();
+});
+document.addEventListener("pointerdown", (event) => {
   if (event.target.ivyDay) showTip(event.target);
   else hideTip();
 });
 window.addEventListener("scroll", hideTip, { passive: true });
+window.addEventListener("blur", hideTip);
 
 function uptime(days) {
   let up = 0, total = 0;
