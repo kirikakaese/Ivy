@@ -9,7 +9,7 @@ import UniformTypeIdentifiers
 
 /// Events, tasks with a due date and open reminders, as an agenda or by day,
 /// week or month.
-final class IvyCalendarViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIDocumentPickerDelegate {
+final class IvyCalendarViewController: UIViewController, HomeTabViewController, UITableViewDataSource, UITableViewDelegate, UIDocumentPickerDelegate {
 
     enum Mode: Int, CaseIterable {
         case agenda
@@ -116,6 +116,11 @@ final class IvyCalendarViewController: UIViewController, UITableViewDataSource, 
             NotificationCenter.default.addObserver(self, selector: #selector(reload), name: name, object: nil)
         }
         reload()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        ivyUpdateProfileButton()
     }
 
     private func configureArrow(_ button: UIButton, systemName: String, step: Int) {

@@ -87,7 +87,13 @@ extension HomeTabViewController {
             barButtonView = contextButton
         }
 
-        let barButtonItem = UIBarButtonItem(customView: barButtonView)
+        // Ivy: a badge while Ivy Status reports a problem.
+        let ivyBarButtonView = UIView.container()
+        ivyBarButtonView.addSubview(barButtonView)
+        barButtonView.autoPinEdgesToSuperviewEdges()
+        IvyServiceStatusBadge.add(to: ivyBarButtonView, on: avatarView, avatarDiameter: CGFloat(sizeClass.diameter))
+
+        let barButtonItem = UIBarButtonItem(customView: ivyBarButtonView)
         barButtonItem.accessibilityLabel = CommonStrings.openAppSettingsButton
         if #available(iOS 26.0, *) {
             barButtonItem.hidesSharedBackground = true

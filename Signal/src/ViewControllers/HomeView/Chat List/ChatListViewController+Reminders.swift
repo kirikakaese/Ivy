@@ -24,8 +24,12 @@ public class CLVReminderViews {
     fileprivate let paymentsReminderView = UIView()
     fileprivate var usernameCorruptedReminderView = UIView()
     fileprivate var usernameLinkCorruptedReminderView = UIView()
+    // Ivy: problems Ivy Status reports
+    private let ivyStatusBanner = IvyServiceStatusBanner()
 
-    public weak var chatListViewController: ChatListViewController?
+    public weak var chatListViewController: ChatListViewController? {
+        didSet { ivyStatusBanner.presentingViewController = chatListViewController } // Ivy: Ivy Status
+    }
 
     init() {
         reminderStackView.axis = .vertical
@@ -37,6 +41,15 @@ public class CLVReminderViews {
 
         reminderStackView.addArrangedSubview(expiredView)
         expiredView.accessibilityIdentifier = "expiredView"
+
+        // Ivy: Ivy Status, kept current while Ivy is open.
+        reminderStackView.addArrangedSubview(ivyStatusBanner.container)
+        ivyStatusBanner.onLayoutChange = { [weak self] in
+            guard let chatListViewController = self?.chatListViewController else { return }
+            chatListViewController.loadCoordinator.loadIfNecessary()
+            chatListViewController.tableView.recomputeRowHeights()
+        }
+        IvyServiceStatusMonitor.shared.start()
 
         outageView = ReminderView(
             style: .warning,
@@ -190,7 +203,8 @@ public class CLVReminderViews {
             !self.expiredView.isHidden ||
             !self.paymentsReminderView.isHidden ||
             !self.usernameCorruptedReminderView.isHidden ||
-            !self.usernameLinkCorruptedReminderView.isHidden
+            !self.usernameLinkCorruptedReminderView.isHidden ||
+            !self.ivyStatusBanner.container.isHidden // Ivy: Ivy Status
 
     }
 }

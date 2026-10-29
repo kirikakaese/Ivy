@@ -9,7 +9,7 @@ import SignalUI
 /// Home: quick actions, today's agenda, open tasks, important unread
 /// messages and unread chats by folder. It uses the same list style as the
 /// calendar, so both pages look alike.
-final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+final class IvyHomeViewController: UIViewController, HomeTabViewController, UITableViewDataSource, UITableViewDelegate {
 
     /// Open tasks shown at most.
     static let maxTasks = 6
@@ -107,6 +107,7 @@ final class IvyHomeViewController: UIViewController, UITableViewDataSource, UITa
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        ivyUpdateProfileButton()
         reload()
     }
 

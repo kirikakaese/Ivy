@@ -27,7 +27,13 @@
 		method GET HEAD
 	}
 	redir @startPage https://{$IVY_STATUS_DOMAIN}/ 302
-	redir /status* https://{$IVY_STATUS_DOMAIN}/ 302
+	# Ivy reads the status data from the relay it uses; the page itself
+	# lives at the status address.
+	@statusPage {
+		path /status*
+		not path /status/status.json
+	}
+	redir @statusPage https://{$IVY_STATUS_DOMAIN}/ 302
 	redir /admin* https://{$IVY_STATUS_DOMAIN}/admin/ 302
 
 	handle /metrics* {
@@ -35,6 +41,9 @@
 	}
 	handle /apns* {
 		respond 404
+	}
+	handle /status/status.json {
+		reverse_proxy ivy-gateway:8080
 	}
 	handle {
 		reverse_proxy h2c://mollysocket:8020

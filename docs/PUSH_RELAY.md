@@ -112,6 +112,15 @@ In Ivy: Settings > Notifications > Push Relay > **Instant Notifications** off. I
 
 It tells nothing about who uses the relay, how many or when. The relay checks itself once a minute; visitors never cause checks.
 
+### In Ivy
+
+While Ivy is open on a device that uses the relay, it reads the status data from the relay (`https://<relay>/status/status.json`) when it comes to the front and every 5 minutes. When something is wrong, a banner at the top of the chat list says what, and the profile picture on every tab gets a yellow badge:
+
+- an open incident, with its title and latest update, then a problem the relay found by itself, then maintenance; a notice shows in the chat list only, without the badge;
+- *Can't reach Ivy Push* when the relay didn't answer twice in a row while the device was online.
+
+The banner opens the status page; its arrow collapses it to the title until the next, different problem.
+
 Signal's own status page (status.signal.org) offers no data to read, so the relay checks `https://chat.signal.org/` itself. To check a different address, set `SIGNAL_CHECK_URL` for the `ivy-gateway` service; `off` leaves Signal out.
 
 ## Admin page
