@@ -105,6 +105,7 @@ p { margin: 0; }
 .days span { border-radius: 2px; background: var(--none); cursor: default; }
 .days span:hover { opacity: 0.75; }
 .tip { position: fixed; z-index: 10; pointer-events: none; display: grid; gap: 6px; width: 264px; max-width: calc(100vw - 24px); padding: 10px 12px; border-radius: 10px; background: var(--fg); color: var(--surface); font-size: 13px; box-shadow: 0 6px 24px rgb(0 0 0 / 0.18); }
+.tip[hidden] { display: none; }
 .tip b { font-weight: 600; }
 .tip .line { display: grid; grid-template-columns: repeat(24, minmax(0, 1fr)); gap: 1px; height: 12px; }
 .tip .line i { border-radius: 1px; }
