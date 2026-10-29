@@ -251,7 +251,9 @@ func (m *monitor) register(mux *http.ServeMux) {
 			_ = json.NewEncoder(w).Encode(m.publicView())
 			return
 		}
-		w.Header().Set("Cache-Control", "public, max-age=300")
+		// Browsers fetch the page again each time, so updates show right
+		// away; its files are small.
+		w.Header().Set("Cache-Control", "no-cache")
 		files.ServeHTTP(w, r)
 	})
 }
