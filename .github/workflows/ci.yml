@@ -49,6 +49,16 @@ jobs:
       - name: Build the push relay gateway image
         run: docker build relay/gateway
 
+  relay-mollysocket:
+    name: Patched MollySocket
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build MollySocket with Ivy's patch
+        run: docker build relay/mollysocket
+
   build:
     name: ${{ matrix.name }} build and test
     runs-on: macos-26
