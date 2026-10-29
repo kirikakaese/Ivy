@@ -24,8 +24,11 @@
 /* Notice on the About Ivy screen that Ivy is independent from Signal. */
 "ABOUT_NOT_AFFILIATED" = "Ivy ist eine unabhängige App, die mit dem Signal-Netzwerk kompatibel ist. Ivy steht in keiner Verbindung zu Signal Messenger LLC oder der Signal Technology Foundation und wird von ihnen weder empfohlen noch unterstützt.";
 
+/* Item that opens Ivy's full privacy policy. */
+"ABOUT_PRIVACY_POLICY" = "Datenschutzerklärung";
+
 /* Ivy's privacy statement on the About Ivy screen. */
-"ABOUT_PRIVACY_STATEMENT" = "Ivy verbindet sich nur mit den Servern von Signal, genauso wie die offizielle Signal-App, und deine Nachrichten sind Ende-zu-Ende-verschlüsselt. Ivy enthält keine Analyse- und keine Absturzberichte. Debug-Protokolle bleiben auf diesem Gerät, solange du sie nicht exportierst. Ivys eigene Daten wie Erinnerungen und Ordnerfarben werden verschlüsselt auf deinen Geräten gespeichert und nur Ende-zu-Ende-verschlüsselt mit deinen eigenen Geräten synchronisiert. Wenn du auf einem Gerät den Abgleich mit Apple Kalender oder Erinnerungen einschaltest, speichert auch Apple die abgeglichenen Termine und Aufgaben. Sprachnachrichten werden nur auf dem Gerät transkribiert.";
+"ABOUT_PRIVACY_STATEMENT" = "Ivy verbindet sich mit den Servern von Signal, genauso wie die offizielle Signal-App, und deine Nachrichten sind Ende-zu-Ende-verschlüsselt. Wenn sofortige Mitteilungen eingeschaltet sind, erfährt Ivys Push-Relay außerdem, wann verschlüsselte Daten für dein Konto ankommen, aber nie, was sie enthalten oder wer sie geschickt hat. Ivy enthält keine Analyse- und keine Absturzberichte. Debug-Protokolle bleiben auf diesem Gerät, solange du sie nicht exportierst. Ivys eigene Daten wie Erinnerungen und Ordnerfarben werden verschlüsselt auf deinen Geräten gespeichert und nur Ende-zu-Ende-verschlüsselt mit deinen eigenen Geräten synchronisiert. Wenn du auf einem Gerät den Abgleich mit Apple Kalender oder Erinnerungen einschaltest, speichert auch Apple die abgeglichenen Termine und Aufgaben. Sprachnachrichten werden nur auf dem Gerät transkribiert.";
 
 /* Title of the privacy statement on the About Ivy screen. */
 "ABOUT_PRIVACY_TITLE" = "Datenschutz";

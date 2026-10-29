@@ -24,8 +24,11 @@
 /* Notice on the About Ivy screen that Ivy is independent from Signal. */
 "ABOUT_NOT_AFFILIATED" = "Ivy is an independent app that is compatible with the Signal network. It is not affiliated with, endorsed by or supported by Signal Messenger LLC or the Signal Technology Foundation.";
 
+/* Item that opens Ivy's full privacy policy. */
+"ABOUT_PRIVACY_POLICY" = "Privacy Policy";
+
 /* Ivy's privacy statement on the About Ivy screen. */
-"ABOUT_PRIVACY_STATEMENT" = "Ivy connects only to Signal's servers, in the same way as the official Signal app, and your messages are end-to-end encrypted. Ivy contains no analytics and no crash reporting. Debug logs stay on this device unless you export them. Ivy's own data, such as reminders and folder colors, is stored encrypted on your devices and synced only to your own devices, end-to-end encrypted. If you turn on sync with Apple Calendar or Reminders on a device, the synced events and tasks are also stored by Apple. Voice messages are transcribed only on the device.";
+"ABOUT_PRIVACY_STATEMENT" = "Ivy connects to Signal's servers in the same way as the official Signal app, and your messages are end-to-end encrypted. If instant notifications are on, Ivy's push relay also learns when encrypted data arrives for your account, never what it says or who sent it. Ivy contains no analytics and no crash reporting. Debug logs stay on this device unless you export them. Ivy's own data, such as reminders and folder colors, is stored encrypted on your devices and synced only to your own devices, end-to-end encrypted. If you turn on sync with Apple Calendar or Reminders on a device, the synced events and tasks are also stored by Apple. Voice messages are transcribed only on the device.";
 
 /* Title of the privacy statement on the About Ivy screen. */
 "ABOUT_PRIVACY_TITLE" = "Privacy";
