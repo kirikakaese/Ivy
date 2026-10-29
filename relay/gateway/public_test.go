@@ -13,17 +13,20 @@ import (
 )
 
 func TestDayStatus(t *testing.T) {
-	cases := map[dayHealth]string{
-		{}:                       "none",
-		{OK: 1440}:               "ok",
-		{OK: 1437, Degraded: 3}:  "ok",
-		{OK: 1400, Degraded: 40}: "degraded",
-		{OK: 1438, Down: 2}:      "degraded",
-		{OK: 1380, Down: 60}:     "down",
+	cases := []struct {
+		day  dayHealth
+		want string
+	}{
+		{dayHealth{}, "none"},
+		{dayHealth{OK: 1440}, "ok"},
+		{dayHealth{OK: 1437, Degraded: 3}, "ok"},
+		{dayHealth{OK: 1400, Degraded: 40}, "degraded"},
+		{dayHealth{OK: 1438, Down: 2}, "degraded"},
+		{dayHealth{OK: 1380, Down: 60}, "down"},
 	}
-	for day, want := range cases {
-		if got := day.status(); got != want {
-			t.Errorf("%+v: %s, want %s", day, got, want)
+	for _, c := range cases {
+		if got := c.day.status(); got != c.want {
+			t.Errorf("%+v: %s, want %s", c.day, got, c.want)
 		}
 	}
 }
@@ -33,9 +36,56 @@ func TestHistoryCoversNinetyDays(t *testing.T) {
 	s := newStats("", func() time.Time { return now })
 	s.recordHealth("ok")
 	s.recordHealth("down")
-	history := s.history()
+	history := s.history("")
 	if len(history) != 90 || history[89].Date != "2026-10-27" || history[89].Status != "degraded" || history[0].Status != "none" {
 		t.Fatalf("history ends %+v, starts %+v", history[89], history[0])
+	}
+	if history[0].Minutes != nil || history[0].Hours != nil {
+		t.Fatalf("a day without data has no minutes: %+v", history[0])
+	}
+}
+
+func TestHistoryKeepsHoursAndServices(t *testing.T) {
+	now := time.Date(2026, 10, 29, 12, 30, 0, 0, time.UTC)
+	s := newStats("", func() time.Time { return now })
+	services := func(relay, signal string) []componentStatus {
+		return []componentStatus{
+			{componentInfo: componentInfo{ID: "relay"}, Status: relay},
+			{componentInfo: componentInfo{ID: "signal"}, Status: signal},
+		}
+	}
+	for i := 0; i < 10; i++ {
+		s.recordHealth(statusOK, services(statusOK, statusOK)...)
+	}
+	now = now.Add(2 * time.Hour)
+	for i := 0; i < 7; i++ {
+		s.recordHealth(statusDown, services(statusDown, statusUnknown)...)
+	}
+	s.recordHealth(statusDegraded, services(statusOK, statusDegraded)...)
+
+	day := s.history("")[89]
+	if day.Status != "down" || *day.Minutes != (dayMinutes{OK: 10, Degraded: 1, Down: 7}) {
+		t.Fatalf("overall %+v %+v", day, day.Minutes)
+	}
+	if len(day.Hours) != 1 || day.Hours[0].Hour != 14 || day.Hours[0].Down != 7 || day.Hours[0].Degraded != 1 {
+		t.Fatalf("hours %+v", day.Hours)
+	}
+	relay := s.history("relay")[89]
+	if relay.Status != "down" || relay.Minutes.OK != 11 || relay.Minutes.Down != 7 {
+		t.Fatalf("relay %+v %+v", relay, relay.Minutes)
+	}
+	signal := s.history("signal")[89]
+	if signal.Status != "ok" || signal.Minutes.OK != 10 || signal.Minutes.Degraded != 1 || signal.Minutes.Down != 0 {
+		t.Fatalf("signal: unknown minutes don't count, %+v %+v", signal, signal.Minutes)
+	}
+	if apple := s.history("apple")[89]; apple.Status != "none" {
+		t.Fatalf("apple wasn't checked: %+v", apple)
+	}
+
+	// Saved days from before keep working.
+	var old dayHealth
+	if err := json.Unmarshal([]byte(`{"ok":1440,"degraded":0,"down":0}`), &old); err != nil || old.status() != "ok" {
+		t.Fatalf("%v %+v", err, old)
 	}
 }
 

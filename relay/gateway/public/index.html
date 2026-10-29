@@ -46,14 +46,17 @@
       <h3>Last 90 days</h3>
       <span class="muted" id="uptime-days"></span>
     </div>
-    <div class="days" id="days" role="img" aria-label="Status of each of the last 90 days"></div>
+    <div class="days" id="days" role="group" aria-label="Status of each of the last 90 days"></div>
+    <div class="marks" id="marks" aria-hidden="true"></div>
     <div class="scale muted"><span>90 days ago</span><span>Today</span></div>
     <div class="legend muted">
       <span><i class="ok"></i>Working</span>
+      <span><i class="partial"></i>Part of the day</span>
       <span><i class="maintenance"></i>Maintenance</span>
       <span><i class="degraded"></i>Some trouble</span>
       <span><i class="down"></i>Down</span>
       <span><i class="none"></i>No data</span>
+      <span><i class="mark"></i>Incident or maintenance</span>
     </div>
   </section>
 
@@ -68,6 +71,7 @@
     <p id="checked"></p>
   </section>
 </main>
+<div class="tip" id="tip" role="tooltip" hidden></div>
 <script src="status.js"></script>
 </body>
 </html>

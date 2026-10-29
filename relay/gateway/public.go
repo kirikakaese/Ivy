@@ -84,7 +84,7 @@ func (m *monitor) evaluate() adminStatus {
 // check evaluates and counts the result as one minute of history.
 func (m *monitor) check() adminStatus {
 	status := m.refresh()
-	m.stats.recordHealth(status.Status)
+	m.stats.recordHealth(status.Status, status.Components...)
 	return status
 }
 
@@ -112,6 +112,8 @@ type publicComponent struct {
 	Status      string `json:"status"`
 	// Detail is only passed on for Signal: reachable and how fast.
 	Detail string `json:"detail,omitempty"`
+	// Days is the service's own 90-day history.
+	Days []dayPoint `json:"days"`
 }
 
 type publicMetrics struct {
@@ -144,6 +146,9 @@ type publicStatus struct {
 	Upcoming   []publicPost      `json:"upcoming"`
 	Recent     []publicPost      `json:"recent"`
 	Days       []dayPoint        `json:"days"`
+	// Marked are the incidents and maintenance of the last 90 days, shown
+	// as marks under the days they touched.
+	Marked []publicPost `json:"marked"`
 }
 
 var publicMessages = map[string]string{
@@ -175,11 +180,12 @@ func (m *monitor) publicView() publicStatus {
 	now := m.now()
 	view := publicStatus{
 		Status:     statusUnknown,
-		Days:       m.stats.history(),
+		Days:       m.stats.history(""),
 		Components: []publicComponent{},
 		Active:     []publicPost{},
 		Upcoming:   []publicPost{},
 		Recent:     []publicPost{},
+		Marked:     []publicPost{},
 	}
 	m.mu.Lock()
 	latest := m.latest
@@ -189,7 +195,7 @@ func (m *monitor) publicView() publicStatus {
 		checked := latest.Checked
 		view.Checked = &checked
 		for _, c := range latest.Components {
-			pc := publicComponent{ID: c.ID, Name: c.Name, Description: c.Description, Status: c.Status}
+			pc := publicComponent{ID: c.ID, Name: c.Name, Description: c.Description, Status: c.Status, Days: m.stats.history(c.ID)}
 			if c.ID == "signal" {
 				pc.Detail = c.Detail
 			}
@@ -204,13 +210,16 @@ func (m *monitor) publicView() publicStatus {
 		Acceptance24h: snap.Acceptance24h,
 	}
 	for _, item := range m.posts.all() {
+		if item.Kind != kindNotice && !item.upcoming(now) && (item.Closed == nil || now.Sub(*item.Closed) < daysKept*24*time.Hour) {
+			view.Marked = append(view.Marked, toPublicPost(item))
+		}
 		switch {
 		case item.active(now):
 			view.Active = append(view.Active, toPublicPost(item))
 		case item.upcoming(now):
 			view.Upcoming = append(view.Upcoming, toPublicPost(item))
-		case item.Kind == kindNotice:
-			// Notices disappear once removed.
+		case item.Kind == kindNotice && item.step() != "resolved":
+			// Removed notices disappear; resolved ones stay listed.
 		case item.Closed != nil && now.Sub(*item.Closed) < recentPosts:
 			view.Recent = append(view.Recent, toPublicPost(item))
 		case item.Kind == kindMaintenance && item.Ends != nil && now.Sub(*item.Ends) < recentPosts:
