@@ -181,6 +181,8 @@ final class IvyServiceStatusBanner: ChatListBackupProgressView {
 
     /// Called when the banner's height or visibility changed.
     var onLayoutChange: (() -> Void)?
+    /// What the banner showed last, so only real changes are reported.
+    private var shown: String?
     weak var presentingViewController: UIViewController?
 
     /// Holds the banner with the chat list's margins; hidden when all is well.
@@ -218,7 +220,8 @@ final class IvyServiceStatusBanner: ChatListBackupProgressView {
     func update() {
         let monitor = IvyServiceStatusMonitor.shared
         guard let status = monitor.status else {
-            setHidden(true)
+            container.isHidden = true
+            reportChange(nil)
             return
         }
         let isCollapsed = monitor.isCollapsed
@@ -233,11 +236,15 @@ final class IvyServiceStatusBanner: ChatListBackupProgressView {
         chevronButton.accessibilityLabel = isCollapsed
             ? IvyLocalizedString("SERVICE_STATUS_EXPAND", comment: "Accessibility label of the button that shows the chat list banner's details.")
             : IvyLocalizedString("SERVICE_STATUS_COLLAPSE", comment: "Accessibility label of the button that hides the chat list banner's details.")
-        setHidden(false)
+        container.isHidden = false
+        reportChange([status.id, status.bannerTitle, String(isCollapsed), status.bannerDetail ?? ""].joined(separator: "\n"))
     }
 
-    private func setHidden(_ hidden: Bool) {
-        container.isHidden = hidden
+    private func reportChange(_ state: String?) {
+        guard state != shown else {
+            return
+        }
+        shown = state
         onLayoutChange?()
     }
 

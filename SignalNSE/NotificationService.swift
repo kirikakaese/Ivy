@@ -111,7 +111,7 @@ class NotificationService: UNNotificationServiceExtension {
                 } else if let repeated = await IvyWakeCapture.quietRepeatOfNewestMessage(badge: content.badge) {
                     self.completeSilently(content: repeated, logger: logger)
                 } else {
-                    self.completeSilently(content: IvyWakeCapture.fallbackContent(request.content, badge: content.badge), logger: logger)
+                    self.completeSilently(content: IvyWakeCapture.fallbackContent(request.content, badge: content.badge, quiet: IvyWakeCapture.appLeftForegroundRecently()), logger: logger)
                 }
                 return
             }
@@ -220,7 +220,7 @@ class NotificationService: UNNotificationServiceExtension {
         // Ivy: otherwise the wake-up's own text shows; mark it, so it goes
         // away once the message shows.
         if let wakeContent = ivyWakeContent.swap(nil) {
-            completeSilently(content: IvyWakeCapture.fallbackContent(wakeContent, badge: nil), logger: logger)
+            completeSilently(content: IvyWakeCapture.fallbackContent(wakeContent, badge: nil, quiet: IvyWakeCapture.appLeftForegroundRecently()), logger: logger)
             return
         }
 

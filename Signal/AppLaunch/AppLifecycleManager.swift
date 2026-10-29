@@ -101,6 +101,8 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
         }
 
         clearAppropriateNotificationsAndRestoreBadgeCount()
+        // Ivy: wake-ups right after this find nothing new; see IvyWakeCapture.
+        IvyWakeCapture.noteAppLeftForeground()
 
         let backgroundTask = OWSBackgroundTask(label: #function)
         flushQueue.async {
@@ -2150,6 +2152,12 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void,
     ) {
+        // Ivy: while Ivy is open it gets messages itself, so a push relay
+        // wake-up's "You may have new messages" isn't shown.
+        if IvyWakeCapture.isFallback(notification.request.content) {
+            completionHandler([])
+            return
+        }
         appReadiness.runNowOrWhenAppDidBecomeReadySync {
             // We need to respect the in-app notification sound preference. This method, which is called
             // for modern UNUserNotification users, could be a place to do that, but since we'd still

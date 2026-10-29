@@ -44,10 +44,12 @@ public class CLVReminderViews {
 
         // Ivy: Ivy Status, kept current while Ivy is open.
         reminderStackView.addArrangedSubview(ivyStatusBanner.container)
+        // The chat list reloads in full, after the current update: resizing
+        // its rows in place while sections change crashes the table.
         ivyStatusBanner.onLayoutChange = { [weak self] in
-            guard let chatListViewController = self?.chatListViewController else { return }
-            chatListViewController.loadCoordinator.loadIfNecessary()
-            chatListViewController.tableView.recomputeRowHeights()
+            DispatchQueue.main.async {
+                self?.chatListViewController?.loadCoordinator.scheduleHardReset()
+            }
         }
         IvyServiceStatusMonitor.shared.start()
 
