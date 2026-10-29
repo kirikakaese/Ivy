@@ -123,8 +123,9 @@ func (s *apnsSender) wake(deviceToken string, sandbox bool) error {
 	req.Header.Set("apns-push-type", "alert")
 	req.Header.Set("apns-priority", "10")
 	req.Header.Set("apns-expiration", strconv.FormatInt(s.now().Add(24*time.Hour).Unix(), 10))
-	// Wake-ups that pile up while the phone is offline show as one.
-	req.Header.Set("apns-collapse-id", "ivy-wake")
+	// No collapse ID: Ivy shows a message in place of the wake-up, and a
+	// shared ID made each new message replace the one before. Apple keeps
+	// only the latest wake-up for an offline phone anyway.
 	resp, err := s.client.Do(req)
 	if err != nil {
 		return err
