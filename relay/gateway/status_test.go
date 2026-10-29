@@ -300,3 +300,17 @@ func TestResolvedNoticesStayListed(t *testing.T) {
 		t.Fatalf("active %+v, recent %+v", view.Active, view.Recent)
 	}
 }
+
+func TestIncidentsAndMaintenanceAreMarked(t *testing.T) {
+	m := testMonitor("http://127.0.0.1:1", "")
+	incident, _ := m.posts.create(postInput{Kind: kindIncident, Title: "Relay unreachable", Impact: impactMajor, Components: []string{"relay"}})
+	_ = m.posts.update(incident.ID, "resolved", "")
+	_, _ = m.posts.create(postInput{Kind: kindNotice, Title: "New build"})
+	later := time.Now().Add(48 * time.Hour)
+	end := later.Add(time.Hour)
+	_, _ = m.posts.create(postInput{Kind: kindMaintenance, Title: "Server update", Starts: &later, Ends: &end})
+	view := m.publicView()
+	if len(view.Marked) != 1 || view.Marked[0].Title != "Relay unreachable" || view.Marked[0].Components[0] != "Ivy Push relay" {
+		t.Fatalf("marked %+v", view.Marked)
+	}
+}

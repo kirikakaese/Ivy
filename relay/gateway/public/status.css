@@ -109,13 +109,28 @@ p { margin: 0; }
 .tip .line { display: grid; grid-template-columns: repeat(24, minmax(0, 1fr)); gap: 1px; height: 12px; }
 .tip .line i { border-radius: 1px; }
 .tip .line i.none { background: color-mix(in srgb, var(--surface) 22%, transparent); }
-.tip .hours { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.7; }
+.tip .hours { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.7; white-space: nowrap; }
+.tip .zone { font-size: 11px; opacity: 0.7; margin-top: -4px; }
+.tip .post-line { display: flex; gap: 6px; align-items: baseline; }
+.tip .post-line::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--warn); transform: translateY(-1px); }
+.tip .post-line.down::before { background: var(--bad); }
+.tip .post-line.maintenance::before { background: var(--maint); }
+.marks { display: grid; grid-template-columns: repeat(90, minmax(0, 1fr)); gap: 2px; height: 6px; margin-top: -6px; }
+.marks span { display: grid; place-items: center; }
+.marks i { width: 4px; height: 4px; border-radius: 50%; background: var(--warn); }
+.marks i.down { background: var(--bad); }
+.marks i.maintenance { background: var(--maint); }
 .service-days { grid-column: 1 / -1; margin-top: 6px; }
 .service-days summary { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; list-style: none; font-size: 13px; color: var(--muted); }
 .service-days summary::-webkit-details-marker { display: none; }
 .service-days summary::before { content: ""; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform 0.15s; }
 .service-days[open] summary::before { transform: rotate(45deg); }
 .service-days .days { height: 28px; margin-top: 10px; }
+.service-days .marks { margin-top: 4px; }
+.service-days .week { font-weight: 600; }
+.service-days .week::before { content: "· "; color: var(--muted); font-weight: 400; }
+.service-days .week.degraded { color: var(--warn); }
+.service-days .week.down { color: var(--bad); }
 .service-days .scale { margin-top: 6px; }
 .scale { display: flex; justify-content: space-between; font-size: 12px; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; }
@@ -125,6 +140,7 @@ p { margin: 0; }
 .legend i.degraded { background: var(--warn); }
 .legend i.down { background: var(--bad); }
 .legend i.partial { background: linear-gradient(to top, var(--ok) 35%, var(--bad)); }
+.legend i.mark { width: 6px; height: 6px; border-radius: 50%; margin: 0 8px 1px 2px; background: var(--fg); opacity: 0.6; }
 .about { display: grid; gap: 8px; font-size: 14px; max-width: 64ch; }
 @media (max-width: 620px) {
   .wrap { padding-top: 28px; }

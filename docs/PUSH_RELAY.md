@@ -108,7 +108,7 @@ In Ivy: Settings > Notifications > Push Relay > **Instant Notifications** off. I
   - *Signal service*: the relay checks once a minute whether Signal's chat server answers and how fast. A server error or an answer slower than 3 seconds counts as trouble, three missed checks in a row as down. Signal's server uses a certificate only Signal's apps trust; the check accepts that, since it only looks whether the server answers and sends nothing.
 - **Measurements**: uptime over 30 and 90 days (per minute), wake-up time (median time for Apple to accept a wake-up, last 24 hours, from 10 wake-ups), share accepted by Apple (last 24 hours, from 50 wake-ups).
 - **Incidents, maintenance and notices** posted on the admin page, with their updates; resolved ones stay listed for 14 days.
-- A bar for each of the last 90 days: green, fading into the problem's colour at the top the longer it lasted. Hovering or tapping a day shows what happened and a timeline of its hours (UTC). Each service has the same bars, folded away until opened.
+- A bar for each of the last 90 days: green, fading into the problem's colour at the top the longer it lasted. Hovering or tapping a day shows what happened, a timeline of its hours in the visitor's time and the incidents or maintenance of that day, which are also marked with a dot under the day. Each service has the same bars, folded away until opened; its summary shows its uptime and whether it was down or had trouble in the last 7 days.
 
 It tells nothing about who uses the relay, how many or when. The relay checks itself once a minute; visitors never cause checks.
 

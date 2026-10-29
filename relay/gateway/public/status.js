@@ -24,6 +24,8 @@ const percent = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
 let checked = null;
 // Services whose 90 days are open, kept across refreshes.
 const openServices = new Set();
+const hourFormat = new Intl.DateTimeFormat(undefined, { hour: "numeric" });
+let marked = [];
 
 function el(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
@@ -94,14 +96,58 @@ function daySummary(day) {
   return parts.join(" · ");
 }
 
-function renderDays(container, days, label) {
+// The incidents and maintenance that touched each day (UTC), for one
+// service by its name or for all.
+function postsByDay(service) {
+  const byDay = new Map();
+  for (const post of marked) {
+    if (service && !post.components.includes(service)) continue;
+    const start = new Date(post.kind === "maintenance" && post.starts ? post.starts : post.created);
+    let end = post.closed ? new Date(post.closed) : new Date();
+    if (post.kind === "maintenance" && post.ends && new Date(post.ends) < end) end = new Date(post.ends);
+    for (let day = new Date(start.toISOString().slice(0, 10) + "T00:00:00Z"); day <= end; day.setUTCDate(day.getUTCDate() + 1)) {
+      const key = day.toISOString().slice(0, 10);
+      if (!byDay.has(key)) byDay.set(key, []);
+      byDay.get(key).push(post);
+    }
+  }
+  return byDay;
+}
+
+function markClass(post) {
+  return post.kind === "maintenance" ? "maintenance" : post.impact === "major" ? "down" : "degraded";
+}
+
+// Bars for 90 days, with a mark under days that had an incident or
+// maintenance.
+function renderDays(container, marks, days, label, service) {
+  const byDay = postsByDay(service);
   container.replaceChildren(...days.map((day) => {
-    const span = el("span", { "aria-label": `${dateFormat.format(new Date(day.date + "T00:00:00Z"))}: ${daySummary(day)}` });
+    const posts = byDay.get(day.date) || [];
+    const titles = posts.map((post) => `${kindText[post.kind]}: ${post.title}`);
+    const span = el("span", { "aria-label": [`${dateFormat.format(new Date(day.date + "T00:00:00Z"))}: ${daySummary(day)}`, ...titles].join(". ") });
     span.style.background = dayBackground(day);
     span.ivyDay = day;
     span.ivyLabel = label;
+    span.ivyPosts = posts;
     return span;
   }));
+  marks.replaceChildren(...days.map((day) => {
+    const posts = byDay.get(day.date) || [];
+    if (!posts.length) return el("span");
+    const worst = posts.find((post) => markClass(post) === "down") || posts.find((post) => markClass(post) === "degraded") || posts[0];
+    return el("span", {}, el("i", { class: markClass(worst) }));
+  }));
+}
+
+// A UTC hour of a day, in the visitor's time.
+function localHour(date, hour) {
+  return hourFormat.format(new Date(Date.parse(date + "T00:00:00Z") + hour * 3600000));
+}
+
+function zoneName(date) {
+  const part = new Intl.DateTimeFormat(undefined, { timeZoneName: "short" }).formatToParts(new Date(date + "T12:00:00Z")).find((p) => p.type === "timeZoneName");
+  return part ? part.value : "";
 }
 
 // The tooltip: the day, what happened and when, hour by hour (UTC).
@@ -127,11 +173,14 @@ function showTip(span) {
     line.append(cell);
   }
   const title = dateFormat.format(new Date(day.date + "T00:00:00Z")) + (span.ivyLabel ? ` · ${span.ivyLabel}` : "");
+  const ticks = [0, 6, 12, 18, 24].map((hour) => el("span", {}, localHour(day.date, hour)));
   tip.replaceChildren(
     el("b", {}, title),
     el("span", {}, daySummary(day)),
     line,
-    el("div", { class: "hours" }, el("span", {}, "00"), el("span", {}, "06"), el("span", {}, "12"), el("span", {}, "18"), el("span", {}, "24 UTC")));
+    el("div", { class: "hours" }, ...ticks),
+    el("span", { class: "zone" }, `Your time (${zoneName(day.date)})`),
+    ...span.ivyPosts.map((post) => el("span", { class: `post-line ${markClass(post)}` }, `${kindText[post.kind]}: ${post.title}`)));
   tip.hidden = false;
   const bar = span.getBoundingClientRect(), box = tip.getBoundingClientRect();
   const left = Math.min(Math.max(bar.left + bar.width / 2 - box.width / 2, 12), window.innerWidth - box.width - 12);
@@ -166,13 +215,26 @@ function uptime(days) {
   return total ? (up / total) * 100 : null;
 }
 
+// How the last 7 days went, for the summary of a folded service.
+function lastWeek(days) {
+  const week = days.slice(-7).map((day) => day.status);
+  if (week.includes("down")) return { class: "down", text: "down this week" };
+  if (week.includes("degraded")) return { class: "degraded", text: "trouble this week" };
+  return null;
+}
+
 function renderService(c) {
   const days = el("div", { class: "days", role: "group", "aria-label": `${c.name}, status of each of the last 90 days` });
-  renderDays(days, c.days || [], c.name);
+  const marks = el("div", { class: "marks", "aria-hidden": "true" });
+  renderDays(days, marks, c.days || [], c.name, c.name);
   const up = uptime(c.days || []);
+  const week = lastWeek(c.days || []);
+  const summary = el("summary", {}, up == null ? "Last 90 days · no data yet" : `Last 90 days · ${percent.format(up)} % up`);
+  if (week) summary.append(el("span", { class: `week ${week.class}` }, week.text));
   const details = el("details", { class: "service-days" },
-    el("summary", {}, up == null ? "Last 90 days · no data yet" : `Last 90 days · ${percent.format(up)} % up`),
+    summary,
     days,
+    marks,
     el("div", { class: "scale muted" }, el("span", {}, "90 days ago"), el("span", {}, "Today")));
   details.open = openServices.has(c.id);
   details.addEventListener("toggle", () => {
@@ -198,6 +260,7 @@ function metric(id, value, format) {
 
 function render(data) {
   checked = data.checked;
+  marked = data.marked || [];
   $("hero").dataset.status = data.status;
   $("headline").textContent = headlines[data.status] || data.status;
   $("message").textContent = data.message;
@@ -216,7 +279,7 @@ function render(data) {
   metric("m-accept", data.metrics.acceptance24h, (v) => `${percent.format(v)} %`);
 
   hideTip();
-  renderDays($("days"), data.days, "");
+  renderDays($("days"), $("marks"), data.days, "", "");
   let known = 0, good = 0;
   for (const day of data.days) {
     if (day.status !== "none") known++;

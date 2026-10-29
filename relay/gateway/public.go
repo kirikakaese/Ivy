@@ -146,6 +146,9 @@ type publicStatus struct {
 	Upcoming   []publicPost      `json:"upcoming"`
 	Recent     []publicPost      `json:"recent"`
 	Days       []dayPoint        `json:"days"`
+	// Marked are the incidents and maintenance of the last 90 days, shown
+	// as marks under the days they touched.
+	Marked []publicPost `json:"marked"`
 }
 
 var publicMessages = map[string]string{
@@ -182,6 +185,7 @@ func (m *monitor) publicView() publicStatus {
 		Active:     []publicPost{},
 		Upcoming:   []publicPost{},
 		Recent:     []publicPost{},
+		Marked:     []publicPost{},
 	}
 	m.mu.Lock()
 	latest := m.latest
@@ -206,6 +210,9 @@ func (m *monitor) publicView() publicStatus {
 		Acceptance24h: snap.Acceptance24h,
 	}
 	for _, item := range m.posts.all() {
+		if item.Kind != kindNotice && !item.upcoming(now) && (item.Closed == nil || now.Sub(*item.Closed) < daysKept*24*time.Hour) {
+			view.Marked = append(view.Marked, toPublicPost(item))
+		}
 		switch {
 		case item.active(now):
 			view.Active = append(view.Active, toPublicPost(item))
