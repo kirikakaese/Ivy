@@ -50,12 +50,34 @@ public final class IvyWakeCapture {
         state.get().captured
     }
 
-    /// The wake-up's own content, marked as a fallback.
-    public static func fallbackContent(_ wakeContent: UNNotificationContent, badge: NSNumber?) -> UNNotificationContent {
+    private static let leftForegroundKey = "IvyAppLeftForeground"
+    /// How long after leaving Ivy a fallback stays quiet.
+    static let quietAfterLeaving: TimeInterval = 90
+
+    /// The main app notes when it leaves the foreground: it had fetched
+    /// everything until then, so wake-ups right after usually bring nothing.
+    public static func noteAppLeftForeground(defaults: UserDefaults = CurrentAppContext().appUserDefaults()) {
+        defaults.set(Date(), forKey: leftForegroundKey)
+    }
+
+    public static func appLeftForegroundRecently(defaults: UserDefaults = CurrentAppContext().appUserDefaults(), now: Date = Date()) -> Bool {
+        guard let left = defaults.object(forKey: leftForegroundKey) as? Date else {
+            return false
+        }
+        return now.timeIntervalSince(left) < quietAfterLeaving
+    }
+
+    /// The wake-up's own content, marked as a fallback; without sound or
+    /// banner when quiet, right after Ivy was open.
+    public static func fallbackContent(_ wakeContent: UNNotificationContent, badge: NSNumber?, quiet: Bool = false) -> UNNotificationContent {
         guard let content = wakeContent.mutableCopy() as? UNMutableNotificationContent else {
             return wakeContent
         }
         content.userInfo[fallbackKey] = true
+        if quiet {
+            content.sound = nil
+            content.interruptionLevel = .passive
+        }
         if let badge {
             content.badge = badge
         }
