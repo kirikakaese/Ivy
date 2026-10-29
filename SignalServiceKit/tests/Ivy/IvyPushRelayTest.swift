@@ -65,4 +65,17 @@ final class IvyPushRelayTest: XCTestCase {
         XCTAssertNil(capture.end())
         XCTAssertFalse(capture.take(second), "capturing ends with the wake-up")
     }
+
+    func testWakeFallbackKeepsTheWakeTextAndIsMarked() {
+        let wake = UNMutableNotificationContent()
+        wake.body = "You may have new messages"
+        wake.userInfo = ["aps": ["mutable-content": 1]]
+
+        let fallback = IvyWakeCapture.fallbackContent(wake, badge: 3)
+        XCTAssertEqual(fallback.body, "You may have new messages")
+        XCTAssertEqual(fallback.badge, 3)
+        XCTAssertEqual(fallback.userInfo[IvyWakeCapture.fallbackKey] as? Bool, true)
+        XCTAssertNotNil(fallback.userInfo["aps"])
+        XCTAssertNil(wake.userInfo[IvyWakeCapture.fallbackKey], "the original stays unchanged")
+    }
 }

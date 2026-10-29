@@ -102,41 +102,15 @@ class NotificationService: UNNotificationServiceExtension {
                 }
             }
             if capturesWake {
-                await Self.ivyRemoveWakeFallbacks()
+                await IvyWakeCapture.removeFallbacks()
                 if let message = IvyWakeCapture.shared.end() {
                     self.completeSilently(content: Self.ivyWakeContent(message, badge: content.badge), logger: logger)
                 } else {
-                    self.completeSilently(content: Self.ivyWakeFallback(request.content, badge: content.badge), logger: logger)
+                    self.completeSilently(content: IvyWakeCapture.fallbackContent(request.content, badge: content.badge), logger: logger)
                 }
                 return
             }
             self.completeSilently(content: content, logger: logger)
-        }
-    }
-
-    // Ivy: without anything new to show, the wake-up keeps its own text
-    // ("You may have new messages"), marked so that the next wake-up
-    // replaces it instead of stacking another one.
-    private static let ivyWakeFallbackKey = "ivyWakeFallback"
-
-    private static func ivyWakeFallback(_ wakeContent: UNNotificationContent, badge: NSNumber?) -> UNNotificationContent {
-        guard let content = wakeContent.mutableCopy() as? UNMutableNotificationContent else {
-            return wakeContent
-        }
-        content.userInfo[ivyWakeFallbackKey] = true
-        if let badge {
-            content.badge = badge
-        }
-        return content
-    }
-
-    private static func ivyRemoveWakeFallbacks() async {
-        let center = UNUserNotificationCenter.current()
-        let identifiers = await center.deliveredNotifications()
-            .filter { $0.request.content.userInfo[ivyWakeFallbackKey] != nil }
-            .map(\.request.identifier)
-        if !identifiers.isEmpty {
-            center.removeDeliveredNotifications(withIdentifiers: identifiers)
         }
     }
 

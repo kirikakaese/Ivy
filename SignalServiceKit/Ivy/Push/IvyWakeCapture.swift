@@ -13,7 +13,14 @@ public import UserNotifications
 /// notification isn't posted on its own: it becomes the wake-up's content,
 /// and the user sees one notification, right away. Further messages from the
 /// same wake-up are posted as usual.
+///
+/// A wake-up without anything new keeps its own text ("You may have new
+/// messages"). That fallback goes away as soon as a message notification
+/// shows, a later wake-up comes in or Ivy is opened.
 public final class IvyWakeCapture {
+
+    /// Marks a wake-up's fallback notification.
+    static let fallbackKey = "ivyWakeFallback"
 
     public static let shared = IvyWakeCapture()
 
@@ -37,6 +44,29 @@ public final class IvyWakeCapture {
     /// The captured notification so far, for when time runs out.
     public var captured: UNNotificationContent? {
         state.get().captured
+    }
+
+    /// The wake-up's own content, marked as a fallback.
+    public static func fallbackContent(_ wakeContent: UNNotificationContent, badge: NSNumber?) -> UNNotificationContent {
+        guard let content = wakeContent.mutableCopy() as? UNMutableNotificationContent else {
+            return wakeContent
+        }
+        content.userInfo[fallbackKey] = true
+        if let badge {
+            content.badge = badge
+        }
+        return content
+    }
+
+    /// Removes fallback notifications still shown.
+    public static func removeFallbacks() async {
+        let center = UNUserNotificationCenter.current()
+        let identifiers = await center.deliveredNotifications()
+            .filter { $0.request.content.userInfo[fallbackKey] != nil }
+            .map(\.request.identifier)
+        if !identifiers.isEmpty {
+            center.removeDeliveredNotifications(withIdentifiers: identifiers)
+        }
     }
 
     /// Takes the notification as the wake-up's content if a wake-up is

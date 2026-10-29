@@ -206,8 +206,12 @@ public class UserNotificationPresenter {
             }
         }
 
-        // Ivy: while a push relay wake-up is handled, the first message
-        // becomes the wake-up's notification instead of a second one.
+        // Ivy: a message replaces the push relay's "You may have new
+        // messages". While a wake-up is handled, the first message becomes
+        // the wake-up's notification instead of a second one.
+        if userInfo.threadId != nil, !IvyConfiguration.usesApplePushNotifications {
+            await IvyWakeCapture.removeFallbacks()
+        }
         if checkForCancel, IvyWakeCapture.shared.take(contentToUse) {
             return
         }
