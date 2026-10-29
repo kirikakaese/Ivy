@@ -77,6 +77,16 @@ public final class IvyWakeCapture {
         return quietCopy(of: newest.request.content, badge: badge)
     }
 
+    /// Whether this is a wake-up showing its own text, marked or not (a
+    /// notification service that didn't finish leaves it unmarked).
+    public static func isFallback(_ content: UNNotificationContent) -> Bool {
+        if content.userInfo[fallbackKey] != nil {
+            return true
+        }
+        let alert = (content.userInfo["aps"] as? [AnyHashable: Any])?["alert"] as? [AnyHashable: Any]
+        return alert?["loc-key"] as? String == "APN_Message" && AppNotificationUserInfo(content.userInfo).threadId == nil
+    }
+
     static func isMessage(_ content: UNNotificationContent) -> Bool {
         content.userInfo[fallbackKey] == nil && AppNotificationUserInfo(content.userInfo).threadId != nil
     }

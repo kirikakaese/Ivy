@@ -100,4 +100,17 @@ final class IvyPushRelayTest: XCTestCase {
         let fallback = IvyWakeCapture.fallbackContent(UNNotificationContent(), badge: nil)
         XCTAssertFalse(IvyWakeCapture.isMessage(fallback), "a fallback isn't repeated")
     }
+
+    func testFallbackIsRecognized() {
+        let wake = UNMutableNotificationContent()
+        wake.userInfo = ["aps": ["alert": ["loc-key": "APN_Message"], "mutable-content": 1]]
+        XCTAssertTrue(IvyWakeCapture.isFallback(wake), "an unmarked wake-up")
+        XCTAssertTrue(IvyWakeCapture.isFallback(IvyWakeCapture.fallbackContent(UNNotificationContent(), badge: nil)))
+
+        let message = UNMutableNotificationContent()
+        var userInfo = AppNotificationUserInfo()
+        userInfo.threadId = "thread-1"
+        message.userInfo = userInfo.build()
+        XCTAssertFalse(IvyWakeCapture.isFallback(message))
+    }
 }
