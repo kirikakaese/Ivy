@@ -146,10 +146,20 @@ The page shows no account IDs, phone numbers or push tokens; devices appear only
 
 ## Updates and maintenance
 
+The server folder holds downloaded copies of the relay files, not a clone of the repository, and Docker keeps the gateway's source from GitHub until it's told to fetch it again. To update:
+
 ```sh
 cd ivy-relay
-docker compose pull && docker compose up -d --build
+for f in docker-compose.yml Caddyfile; do
+  curl -fsSLO "https://raw.githubusercontent.com/kirikakaese/Ivy/main/relay/$f"
+done
+docker compose build --no-cache ivy-gateway
+docker compose pull && docker compose up -d
+docker compose restart caddy
 ```
+
+- `restart caddy` loads a changed Caddyfile; `up -d` alone keeps the old one.
+- After a change to `relay/mollysocket`, also run `docker compose build --no-cache mollysocket` before `up -d` (about 10 minutes).
 
 - MollySocket is built on the server from the upstream version pinned in `relay/mollysocket/Dockerfile`, plus Ivy's patch. The first build takes about 10 minutes. To move to a newer MollySocket, change `MOLLYSOCKET_COMMIT` there and check that the patch still applies (CI builds it).
 - Signal removes linked devices that don't connect for 45 days, so keep the relay running. If the device was removed, Ivy shows "Device removed" under Push Relay; tap **Connect Again**.
