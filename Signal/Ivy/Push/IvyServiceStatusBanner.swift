@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import SafariServices
 import SignalServiceKit
 import SignalUI
 
@@ -31,9 +30,6 @@ final class IvyServiceStatusMonitor: NSObject {
             }
         }
     }
-
-    /// The status page to open from the banner.
-    private(set) var statusPageURL: URL?
 
     private var failures = 0
     private var timer: Timer?
@@ -81,11 +77,9 @@ final class IvyServiceStatusMonitor: NSObject {
             defer { isRefreshing = false }
             guard let relayURL = IvyPushRelay.shared.connection?.relayURL else {
                 failures = 0
-                statusPageURL = nil
                 status = nil
                 return
             }
-            statusPageURL = IvyPushRelay.statusPageURL(for: relayURL)
             do {
                 status = try await IvyServiceStatus.fetch(relayURL: relayURL)
                 failures = 0
@@ -319,10 +313,10 @@ final class IvyServiceStatusBanner: UIView {
     }
 
     private func openStatusPage() {
-        guard let url = IvyServiceStatusMonitor.shared.statusPageURL, let presentingViewController else {
+        guard let presentingViewController else {
             return
         }
-        presentingViewController.present(SFSafariViewController(url: url), animated: true)
+        IvyStatusViewController.present(from: presentingViewController)
     }
 }
 
