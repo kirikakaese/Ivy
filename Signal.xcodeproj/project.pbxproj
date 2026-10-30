@@ -4314,6 +4314,9 @@
 		F9085954DDFD6A35FCEA92FD /* IvyServiceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3B0A53CECB7F613655137D /* IvyServiceStatus.swift */; };
 		99E38D393E712AB0D41A9EFB /* IvyServiceStatusBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E19F9A7FC8BA13331853440 /* IvyServiceStatusBanner.swift */; };
 		1D8519ECC1B055EDE25CCF42 /* IvyServiceStatusTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7190A714556E022D7A05A881 /* IvyServiceStatusTest.swift */; };
+		8EC02A8DD40B63FA187FD2A2 /* IvyDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C776AACA4B28AD1042CD703 /* IvyDesign.swift */; };
+		61EDFDADA6F8BE4CDC0F130A /* IvyHomeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535CFFFEEFF606AECD7E484B /* IvyHomeComponents.swift */; };
+		3B3338E9C1ADD2B8ACAD6A88 /* IvyCalendarViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54A09A22E07894E06AC5ECA /* IvyCalendarViews.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8958,6 +8961,9 @@
 		EC3B0A53CECB7F613655137D /* IvyServiceStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyServiceStatus.swift; sourceTree = "<group>"; };
 		1E19F9A7FC8BA13331853440 /* IvyServiceStatusBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyServiceStatusBanner.swift; sourceTree = "<group>"; };
 		7190A714556E022D7A05A881 /* IvyServiceStatusTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyServiceStatusTest.swift; sourceTree = "<group>"; };
+		5C776AACA4B28AD1042CD703 /* IvyDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDesign.swift; sourceTree = "<group>"; };
+		535CFFFEEFF606AECD7E484B /* IvyHomeComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyHomeComponents.swift; sourceTree = "<group>"; };
+		F54A09A22E07894E06AC5ECA /* IvyCalendarViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyCalendarViews.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16625,6 +16631,7 @@
 				F2ECFB519F725A530C26FE72 /* Search */,
 				25A976A36D22245F9DA5142C /* Writing */,
 				986F0FA18009E5BEDE3694A7 /* Push */,
+				5C776AACA4B28AD1042CD703 /* IvyDesign.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16762,6 +16769,7 @@
 				7B310D4DCEE11ACF5D16ED69 /* IvyCalendarViewController.swift */,
 				4BF6659F3E8BD0E5BCB66301 /* IvyEventEditorViewController.swift */,
 				D49E567C849E214354297EC4 /* IvySharedPlansUI.swift */,
+				F54A09A22E07894E06AC5ECA /* IvyCalendarViews.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -16780,6 +16788,7 @@
 			children = (
 				30F98B14828E824AB53B1E0E /* IvyHomeViewController.swift */,
 				9F3A291D560F283712D68940 /* IvyHomeSettingsViewController.swift */,
+				535CFFFEEFF606AECD7E484B /* IvyHomeComponents.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -20351,6 +20360,9 @@
 				950B6A6FB1B3231294F22F14 /* IvyDetectedItemsUI.swift in Sources */,
 				D96F4C3697115C2ECBA53EF7 /* IvyPushRelayViewController.swift in Sources */,
 				99E38D393E712AB0D41A9EFB /* IvyServiceStatusBanner.swift in Sources */,
+				8EC02A8DD40B63FA187FD2A2 /* IvyDesign.swift in Sources */,
+				61EDFDADA6F8BE4CDC0F130A /* IvyHomeComponents.swift in Sources */,
+				3B3338E9C1ADD2B8ACAD6A88 /* IvyCalendarViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

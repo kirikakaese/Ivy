@@ -59,8 +59,47 @@ final class IvyCalendarUITest: XCTestCase {
     func testMonthViewHasWholeWeeks() {
         let monthView = IvyMonthView()
         let today = Date()
-        monthView.update(month: today, selectedDay: today, daysWithItems: [], calendar: .current)
+        monthView.update(month: today, selectedDay: today, tones: [:], calendar: .current)
         XCTAssertEqual(monthView.dayButtons.count % 7, 0)
         XCTAssertGreaterThanOrEqual(monthView.dayButtons.count, 28)
+    }
+
+    @MainActor
+    func testOverlappingItemsShareTheWidth() {
+        let base = Date(timeIntervalSince1970: 1_800_000_000)
+        func item(_ startHours: Double, _ endHours: Double) -> IvyCalendarItem {
+            let start = base.addingTimeInterval(startHours * 3600)
+            let end = base.addingTimeInterval(endHours * 3600)
+            return IvyCalendarItem(kind: .event(IvyEvent(title: "", startAt: start, endAt: end)), start: start, end: end, isAllDay: false)
+        }
+        let placed = IvyDayTimelineView.columns(for: [item(0, 2), item(1, 3), item(4, 5), item(1.5, 1.5)])
+        XCTAssertEqual(placed.count, 4)
+        let alone = placed.first { $0.item.start == base.addingTimeInterval(4 * 3600) }
+        XCTAssertEqual(alone?.columns, 1, "an item that overlaps nothing takes the whole width")
+        let overlapping = placed.filter { $0.item.start < base.addingTimeInterval(4 * 3600) }
+        XCTAssertEqual(Set(overlapping.map(\.columns)), [3])
+        XCTAssertEqual(Set(overlapping.map(\.column)).count, 3)
+    }
+
+    func testDayHeadingsAreRelativeNearToday() {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        XCTAssertNotNil(IvyCalendarUI.dayHeading(today).detail)
+        let later = calendar.date(byAdding: .day, value: 10, to: today)!
+        XCTAssertNil(IvyCalendarUI.dayHeading(later).detail)
+        let allDay = IvyCalendarItem(kind: .task(IvyTask(title: "a")), start: today, end: today, isAllDay: true)
+        XCTAssertEqual(IvyCalendarUI.shortTimeText(for: allDay), IvyLocalizedString("EVENT_ALL_DAY", comment: ""))
+    }
+
+    func testDotsFollowTheKindsOfItems() {
+        let calendar = Calendar.current
+        let day = calendar.startOfDay(for: Date().addingTimeInterval(86_400 * 3))
+        let event = IvyEvent(title: "e", startAt: day.addingTimeInterval(3600), endAt: day.addingTimeInterval(7200))
+        let items = [
+            IvyCalendarItem(kind: .task(IvyTask(title: "t", dueAt: day.addingTimeInterval(1800))), start: day.addingTimeInterval(1800), end: day.addingTimeInterval(1800), isAllDay: false),
+            IvyCalendarItem(kind: .event(event), start: event.startAt, end: event.endAt, isAllDay: false),
+        ]
+        let tones = IvyCalendar.tonesByDay(items, in: DateInterval(start: day, duration: 86_400), calendar: calendar)
+        XCTAssertEqual(tones[day], [.blue, .green])
     }
 }

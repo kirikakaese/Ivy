@@ -65,6 +65,36 @@ enum IvyCalendarUI {
         return start + " – " + end
     }
 
+    /// The time for an agenda row: start and end on two lines, or "All day".
+    static func shortTimeText(for item: IvyCalendarItem) -> String {
+        if item.isAllDay {
+            return IvyLocalizedString("EVENT_ALL_DAY", comment: "Shown instead of a time for an all-day event.")
+        }
+        let start = DateFormatter.localizedString(from: item.start, dateStyle: .none, timeStyle: .short)
+        guard item.end > item.start else {
+            return start
+        }
+        return start + "\n" + DateFormatter.localizedString(from: item.end, dateStyle: .none, timeStyle: .short)
+    }
+
+    /// A day heading: "Today" or "Tomorrow" with the date beside it, or the
+    /// date alone.
+    static func dayHeading(_ day: Date, calendar: Calendar = .current) -> (title: String, detail: String?) {
+        let formatter = DateFormatter()
+        formatter.calendar = calendar
+        if calendar.isDateInToday(day) || calendar.isDateInTomorrow(day) || calendar.isDateInYesterday(day) {
+            let relative = DateFormatter()
+            relative.calendar = calendar
+            relative.doesRelativeDateFormatting = true
+            relative.dateStyle = .medium
+            relative.timeStyle = .none
+            formatter.setLocalizedDateFormatFromTemplate("EEEdMMM")
+            return (relative.string(from: day), formatter.string(from: day))
+        }
+        formatter.setLocalizedDateFormatFromTemplate("EEEEdMMMM")
+        return (formatter.string(from: day), nil)
+    }
+
     static func dayTitle(_ day: Date) -> String {
         let formatter = DateFormatter()
         formatter.doesRelativeDateFormatting = true

@@ -6,9 +6,9 @@
 import SignalServiceKit
 import SignalUI
 
-/// Home: quick actions, today's agenda, open tasks, important unread
-/// messages and unread chats by folder. It uses the same list style as the
-/// calendar, so both pages look alike.
+/// Home: a greeting, quick actions and what's next, then important unread
+/// messages as chat rows, open tasks, the other lists, and unread chats by
+/// folder. Cards use Ivy's pastel tones, like the calendar.
 final class IvyHomeViewController: UIViewController, HomeTabViewController, UITableViewDataSource, UITableViewDelegate {
 
     /// Open tasks shown at most.
@@ -24,15 +24,24 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
 
     private struct ImportantRow {
         let message: IvyImportantMessage
+        let thread: TSThread
         let chatName: String
+        /// Who wrote it, in group chats.
+        let sender: String?
         let text: String
+        let date: Date
+    }
+
+    private struct FolderChip {
+        let folder: ChatFolder
+        let unreadCount: Int
+        let color: UIColor
     }
 
     private enum Row {
-        case agenda(IvyCalendarItem, title: String)
         case task(IvyTask, listName: String?)
         case important(ImportantRow)
-        case folder(ChatFolder, unreadCount: Int)
+        case folders([FolderChip])
         case star(IvyStar, chatName: String)
         case scheduled(IvyScheduledMessage, chatName: String)
         case waiting(IvyWaitingQuestion, chatName: String)
@@ -44,49 +53,44 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
     private struct Section {
         let title: String
         let rows: [Row]
+        /// "All", on the trailing side of the heading.
+        var action: (() -> Void)?
     }
 
     /// Scrolled to the top when Home's tab is chosen again.
     let tableView = UITableView(frame: .zero, style: .insetGrouped)
-    private let quickActions = UIStackView()
-    private var compactQuickActions = false
+    private let header = IvyHomeHeaderView()
     private var sections: [Section] = []
     private var needsReload = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = IvyLocalizedString("HOME_TITLE", comment: "Title of the Home section with today's agenda, tasks and important messages.")
+        // The greeting below takes the place of a title in the bar.
+        navigationItem.title = ""
         view.backgroundColor = .Signal.groupedBackground
 
-        quickActions.axis = .vertical
-        quickActions.distribution = .fillEqually
-        quickActions.spacing = 8
-        layoutQuickActions()
+        header.quickActions = quickActions()
+        header.onOpenNextUp = { [weak self] item in
+            guard let self else { return }
+            if let item {
+                open(item)
+            } else {
+                homeTabBarController?.selectedHomeTab = .calendar
+            }
+        }
 
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "row")
+        tableView.register(IvyImportantCell.self, forCellReuseIdentifier: IvyImportantCell.reuseIdentifier)
+        tableView.register(IvyFolderChipsCell.self, forCellReuseIdentifier: IvyFolderChipsCell.reuseIdentifier)
+        tableView.register(IvySectionHeaderView.self, forHeaderFooterViewReuseIdentifier: IvySectionHeaderView.reuseIdentifier)
         tableView.backgroundColor = .clear
-        // The cards line up with the quick actions instead of getting the
-        // list's own margin on top of the page's.
-        tableView.directionalLayoutMargins = .zero
-        tableView.preservesSuperviewLayoutMargins = false
-        tableView.insetsLayoutMarginsFromSafeArea = false
-
-        // The same frame as the calendar: controls on top, then the list.
-        let stack = UIStackView(arrangedSubviews: [quickActions, tableView])
-        stack.axis = .vertical
-        stack.spacing = 4
-        stack.isLayoutMarginsRelativeArrangement = true
-        stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 0, trailing: 16)
-        view.addSubview(stack)
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            stack.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            stack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            stack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-        ])
+        tableView.sectionHeaderTopPadding = 0
+        tableView.tableHeaderView = header
+        view.addSubview(tableView)
+        tableView.autoPinEdgesToSuperviewEdges()
 
         for name in [
             IvyTaskManager.tasksDidChange,
@@ -111,6 +115,21 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
         reload()
     }
 
+    /// The header sizes itself to the table's width.
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        let width = tableView.bounds.width
+        let height = header.systemLayoutSizeFitting(
+            CGSize(width: width, height: UIView.layoutFittingCompressedSize.height),
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel,
+        ).height
+        if header.frame.size != CGSize(width: width, height: height) {
+            header.frame = CGRect(x: 0, y: 0, width: width, height: height)
+            tableView.tableHeaderView = header
+        }
+    }
+
     /// Reloads soon, once, after a burst of changes.
     @objc
     private func setNeedsReload() {
@@ -129,87 +148,34 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
 
     // MARK: - Quick actions
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if previousTraitCollection?.horizontalSizeClass != traitCollection.horizontalSizeClass {
-            layoutQuickActions()
-        }
-    }
-
-    /// On a phone, two rows of two with the icon beside a one-line title;
-    /// with more room, one row of four with the icon above.
-    private func layoutQuickActions() {
-        quickActions.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        let isCompact = traitCollection.horizontalSizeClass == .compact
-        compactQuickActions = isCompact
-        let buttons = quickActionButtons()
-        let rows = isCompact ? [Array(buttons.prefix(2)), Array(buttons.dropFirst(2))] : [buttons]
-        for rowButtons in rows {
-            let row = UIStackView(arrangedSubviews: rowButtons)
-            row.axis = .horizontal
-            row.distribution = .fillEqually
-            row.alignment = .fill
-            row.spacing = 8
-            quickActions.addArrangedSubview(row)
-        }
-    }
-
-    private func quickActionButtons() -> [UIButton] {
+    private func quickActions() -> [IvyHomeHeaderView.QuickAction] {
         [
-            quickAction(
+            .init(
                 title: IvyLocalizedString("HOME_NEW_MESSAGE", comment: "Quick action on Home that starts a new message."),
-                systemImage: "square.and.pencil",
+                systemImage: "bubble.left",
             ) { [weak self] in
                 self?.homeTabBarController?.selectedHomeTab = .chatList
                 self?.homeTabBarController?.chatListViewController.showNewConversationView()
             },
-            quickAction(
+            .init(
                 title: IvyLocalizedString("TASK_NEW", comment: "Button that makes a new task."),
-                systemImage: "checklist",
+                systemImage: "checkmark.circle",
             ) { [weak self] in
                 self?.ivyPresentTaskEditor(IvyTask(title: ""), isNew: true)
             },
-            quickAction(
+            .init(
                 title: IvyLocalizedString("EVENT_NEW", comment: "Action that makes a new calendar event."),
-                systemImage: "calendar.badge.plus",
+                systemImage: "calendar",
             ) { [weak self] in
                 self?.ivyPresentEventEditor(IvyLinkHandler.newEvent(), isNew: true)
             },
-            quickAction(
+            .init(
                 title: IvyLocalizedString("HOME_NEW_REMINDER", comment: "Quick action on Home that sets a reminder for a chat."),
-                systemImage: "bell.badge",
+                systemImage: "bell",
             ) { [weak self] in
                 self?.presentReminderChatChooser()
             },
         ]
-    }
-
-    /// A tile: icon above a title that wraps, or, compact, beside it.
-    private func quickAction(title: String, systemImage: String, action: @escaping () -> Void) -> UIButton {
-        let compact = compactQuickActions
-        var configuration = UIButton.Configuration.gray()
-        // The icon keeps Ivy's color; the title stays readable.
-        configuration.image = UIImage(systemName: systemImage, withConfiguration: UIImage.SymbolConfiguration(textStyle: .body, scale: .medium))?
-            .withTintColor(.Signal.accent, renderingMode: .alwaysOriginal)
-        configuration.imagePlacement = compact ? .leading : .top
-        configuration.imagePadding = compact ? 10 : 6
-        var attributedTitle = AttributedString(title)
-        attributedTitle.font = UIFont.dynamicTypeFootnoteClamped.medium()
-        configuration.attributedTitle = attributedTitle
-        configuration.titleAlignment = compact ? .leading : .center
-        configuration.titleLineBreakMode = compact ? .byTruncatingTail : .byWordWrapping
-        configuration.baseForegroundColor = .Signal.label
-        configuration.cornerStyle = .large
-        configuration.contentInsets = compact
-            ? NSDirectionalEdgeInsets(top: 14, leading: 14, bottom: 14, trailing: 10)
-            : NSDirectionalEdgeInsets(top: 12, leading: 6, bottom: 12, trailing: 6)
-        let button = UIButton(configuration: configuration, primaryAction: UIAction { _ in action() })
-        if compact {
-            button.contentHorizontalAlignment = .leading
-        }
-        button.accessibilityLabel = title
-        button.toolTip = title
-        return button
     }
 
     private func presentReminderChatChooser() {
@@ -224,12 +190,14 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
     // MARK: - Contents
 
     private func reload() {
-        var sections = [todaySection(), tasksSection()]
+        updateHeader()
+        var sections = [Section]()
+        if let important = importantSection() {
+            sections.append(important)
+        }
+        sections.append(tasksSection())
         if let scheduled = scheduledSection() {
             sections.append(scheduled)
-        }
-        if let starred = starredSection() {
-            sections.append(starred)
         }
         if let waiting = waitingSection() {
             sections.append(waiting)
@@ -237,44 +205,64 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
         if let drafts = draftsSection() {
             sections.append(drafts)
         }
-        if let important = importantSection() {
-            sections.append(important)
+        if let starred = starredSection() {
+            sections.append(starred)
         }
         if let folders = foldersSection() {
             sections.append(folders)
         }
         self.sections = sections
         tableView.reloadData()
+        view.setNeedsLayout()
     }
 
-    private func todaySection() -> Section {
+    /// The greeting and what's next today, or first thing tomorrow.
+    private func updateHeader() {
+        let now = Date()
         let calendar = Calendar.current
-        let today = calendar.dateInterval(of: .day, for: Date()) ?? DateInterval(start: Date(), duration: 86_400)
+        let start = calendar.startOfDay(for: now)
+        let end = calendar.date(byAdding: .day, value: 2, to: start) ?? now
         let items = IvyCalendar.items(
             events: IvyEventManager.shared.allEvents(),
             tasks: [],
             reminders: IvyReminderManager.shared.openReminders(),
-            in: today,
+            in: DateInterval(start: start, end: end),
             calendar: calendar,
         )
         let chatNames = reminderChatNames()
-        var rows: [Row] = items.map { item in
-            let title: String
-            switch item.kind {
-            case .event(let event): title = event.title
-            case .task(let task): title = task.title
-            case .reminder(let reminder):
-                title = chatNames[reminder.chat] ?? IvyLocalizedString("REMINDER_TITLE", comment: "Title of a reminder notification when the chat is unknown.")
-            }
-            return .agenda(item, title: title)
+        header.update(now: now, nextUp: Self.nextUp(items, now: now, calendar: calendar)) { [weak self] item in
+            self?.title(for: item, chatNames: chatNames) ?? ""
         }
-        if rows.isEmpty {
-            rows.append(.note(IvyLocalizedString("HOME_NOTHING_TODAY", comment: "Shown on Home when there are no events or reminders today.")))
+    }
+
+    /// The item happening now or next, today or tomorrow, and the one after
+    /// it on the same day. All-day items are left out.
+    static func nextUp(_ items: [IvyCalendarItem], now: Date, calendar: Calendar = .current) -> (item: IvyCalendarItem, following: IvyCalendarItem?)? {
+        let timed = items
+            .filter { !$0.isAllDay && max($0.start, $0.end) > now }
+            .sorted { $0.start < $1.start }
+        guard let first = timed.first else {
+            return nil
         }
-        rows.append(.link(IvyLocalizedString("HOME_OPEN_CALENDAR", comment: "Item on Home that opens the calendar.")) { [weak self] in
-            self?.homeTabBarController?.selectedHomeTab = .calendar
-        })
-        return Section(title: IvyCalendarUI.dayTitle(today.start), rows: rows)
+        let following = timed.dropFirst().first { calendar.isDate($0.start, inSameDayAs: first.start) }
+        return (first, following)
+    }
+
+    private func title(for item: IvyCalendarItem, chatNames: [IvyChatReference: String]) -> String {
+        switch item.kind {
+        case .event(let event): return event.title
+        case .task(let task): return task.title
+        case .reminder(let reminder):
+            return chatNames[reminder.chat] ?? IvyLocalizedString("REMINDER_TITLE", comment: "Title of a reminder notification when the chat is unknown.")
+        }
+    }
+
+    private func open(_ item: IvyCalendarItem) {
+        switch item.kind {
+        case .event(let event): ivyPresentEventEditor(event, isNew: false)
+        case .task(let task): ivyPresentTaskEditor(task, isNew: false)
+        case .reminder(let reminder): IvyReminderActionHandler.open(reminderId: reminder.id)
+        }
     }
 
     private func reminderChatNames() -> [IvyChatReference: String] {
@@ -310,13 +298,12 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
         if rows.isEmpty {
             rows.append(.note(IvyLocalizedString("TASKS_EMPTY_TITLE", comment: "Title shown in the list of tasks when there are no open tasks.")))
         }
-        rows.append(.link(IvyLocalizedString("HOME_ALL_TASKS", comment: "Item on Home that opens the list of all tasks.")) { [weak self] in
-            self?.ivyPresentTasks()
-        })
         rows.append(.link(IvyWeeklyReviewViewController.title) { [weak self] in
             self?.ivyPresentWeeklyReview()
         })
-        return Section(title: IvyTaskUI.tasksTitle, rows: rows)
+        return Section(title: IvyTaskUI.tasksTitle, rows: rows) { [weak self] in
+            self?.ivyPresentTasks()
+        }
     }
 
     /// The next messages scheduled to be sent, when there are any.
@@ -325,7 +312,7 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
         guard !pending.isEmpty else {
             return nil
         }
-        var rows: [Row] = SSKEnvironment.shared.databaseStorageRef.read { tx in
+        let rows: [Row] = SSKEnvironment.shared.databaseStorageRef.read { tx in
             pending.prefix(Self.maxStars).map { message in
                 let name = message.chat.thread(tx: tx).map {
                     SSKEnvironment.shared.contactManagerRef.displayName(for: $0, transaction: tx)
@@ -333,10 +320,9 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
                 return .scheduled(message, chatName: name ?? "")
             }
         }
-        rows.append(.link(IvyLocalizedString("HOME_ALL_SCHEDULED", comment: "Item on Home that opens the list of all scheduled messages.")) { [weak self] in
+        return Section(title: IvyScheduledUI.title, rows: rows) { [weak self] in
             self?.presentFormSheet(OWSNavigationController(rootViewController: IvyScheduledMessagesViewController()), animated: true)
-        })
-        return Section(title: IvyScheduledUI.title, rows: rows)
+        }
     }
 
     /// The newest starred messages, when there are any.
@@ -345,7 +331,7 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
         guard !stars.isEmpty else {
             return nil
         }
-        var rows: [Row] = SSKEnvironment.shared.databaseStorageRef.read { tx in
+        let rows: [Row] = SSKEnvironment.shared.databaseStorageRef.read { tx in
             stars.prefix(Self.maxStars).map { star in
                 let name = star.message.chat.thread(tx: tx).map {
                     SSKEnvironment.shared.contactManagerRef.displayName(for: $0, transaction: tx)
@@ -353,10 +339,9 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
                 return .star(star, chatName: name ?? "")
             }
         }
-        rows.append(.link(IvyLocalizedString("HOME_ALL_STARRED", comment: "Item on Home that opens the list of all starred messages.")) { [weak self] in
+        return Section(title: IvyStarredViewController.title, rows: rows) { [weak self] in
             self?.presentFormSheet(OWSNavigationController(rootViewController: IvyStarredViewController()), animated: true)
-        })
-        return Section(title: IvyStarredViewController.title, rows: rows)
+        }
     }
 
     /// Questions the user hasn't answered yet.
@@ -421,10 +406,17 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
                 }
                 let text = message.body?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
                     ?? IvyLocalizedString("REMINDER_BODY_MESSAGE", comment: "Body of a reminder notification about a message without text.")
+                var sender: String?
+                if thread.isGroupThread, let incoming = message as? TSIncomingMessage {
+                    sender = SSKEnvironment.shared.contactManagerRef.displayName(for: incoming.authorAddress, tx: tx).resolvedValue()
+                }
                 return ImportantRow(
                     message: important,
+                    thread: thread,
                     chatName: SSKEnvironment.shared.contactManagerRef.displayName(for: thread, transaction: tx),
+                    sender: sender,
                     text: String(text.prefix(200)),
+                    date: Date(millisecondsSince1970: message.timestamp),
                 )
             }
         }
@@ -442,16 +434,18 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
             (ChatFolderManager.shared.folders(tx: tx), ChatFolderChats.inboxChats(tx: tx))
         }
         let counts = ChatFolderChats.unreadCounts(folders: folders, chats: chats)
-        let rows: [Row] = folders.compactMap { folder in
+        let extras = ChatFolderExtras.fetchAll(store: IvyData.shared?.store)
+        let chips: [FolderChip] = folders.compactMap { folder in
             guard let count = counts[folder.id], count > 0 else { return nil }
-            return .folder(folder, unreadCount: count)
+            let color = extras[folder.id]?.color.map { ChatFolderBar.uiColor(for: $0) } ?? .Signal.accent
+            return FolderChip(folder: folder, unreadCount: count, color: color)
         }
-        guard !rows.isEmpty else {
+        guard !chips.isEmpty else {
             return nil
         }
         return Section(
             title: IvyLocalizedString("HOME_UNREAD_BY_FOLDER", comment: "Header on Home of the folders with unread chats."),
-            rows: rows,
+            rows: [.folders(chips)],
         )
     }
 
@@ -461,17 +455,55 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
         sections.count
     }
 
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        sections[section].title
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: IvySectionHeaderView.reuseIdentifier) as? IvySectionHeaderView
+        let item = sections[section]
+        view?.configure(
+            title: item.title,
+            actionTitle: item.action == nil ? nil : IvyLocalizedString("HOME_SECTION_ALL", comment: "Button beside a heading on Home that opens the whole list."),
+            action: item.action,
+        )
+        return view
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         sections[section].rows.count
     }
 
-    /// Rows look like the calendar's: an icon in Ivy's color, a title and a
-    /// line of detail.
+    /// Important messages look like chat rows; the others have an icon in
+    /// Ivy's colour, a title and a line of detail.
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch sections[indexPath.section].rows[indexPath.row] {
+        case .important(let row):
+            let cell = tableView.dequeueReusableCell(withIdentifier: IvyImportantCell.reuseIdentifier, for: indexPath)
+            (cell as? IvyImportantCell)?.configure(
+                thread: row.thread,
+                chatName: row.chatName,
+                sender: row.sender,
+                text: row.text,
+                date: row.date,
+                reason: Self.title(for: row.message.reason),
+                tone: Self.tone(for: row.message.reason),
+            )
+            return cell
+        case .folders(let chips):
+            let cell = tableView.dequeueReusableCell(withIdentifier: IvyFolderChipsCell.reuseIdentifier, for: indexPath)
+            (cell as? IvyFolderChipsCell)?.configure(chips.map { chip in
+                (
+                    title: ChatFolderBar.title(for: chip.folder),
+                    count: chip.unreadCount,
+                    color: chip.color,
+                    action: { [weak self] in
+                        guard let tabs = self?.homeTabBarController else { return }
+                        tabs.selectedHomeTab = .chatList
+                        tabs.chatListViewController.ivySelectChatFolder(chip.folder)
+                    },
+                )
+            })
+            return cell
+        default:
+            break
+        }
         let cell = tableView.dequeueReusableCell(withIdentifier: "row", for: indexPath)
         var content = UIListContentConfiguration.subtitleCell()
         content.secondaryTextProperties.color = .Signal.secondaryLabel
@@ -480,38 +512,17 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
         cell.selectionStyle = .default
 
         switch sections[indexPath.section].rows[indexPath.row] {
-        case .agenda(let item, let title):
-            content.text = title
-            content.secondaryText = IvyCalendarUI.timeText(for: item)
-            switch item.kind {
-            case .event(let event):
-                content.image = UIImage(systemName: event.recurrence == nil ? "calendar" : "repeat")
-                if !event.location.isEmpty {
-                    content.secondaryText = (content.secondaryText ?? "") + " · " + event.location
-                }
-            case .task(let task):
-                content.image = IvyTaskUI.checkboxImage(isDone: task.isDone)
-            case .reminder:
-                content.image = UIImage(systemName: "bell")
-            }
         case .task(let task, let listName):
             content.text = task.title
             content.secondaryText = IvyTaskUI.subtitle(for: task, listName: listName)
             content.image = IvyTaskUI.checkboxImage(isDone: task.isDone)
+            content.imageProperties.tintColor = .Signal.secondaryLabel
+            cell.accessoryType = .none
             if task.isOverdue(at: Date()) {
-                content.secondaryTextProperties.color = .Signal.red
+                content.secondaryTextProperties.color = IvyTone.red.strong
             }
-        case .important(let row):
-            content.text = row.chatName
-            content.secondaryText = Self.title(for: row.message.reason) + " · " + row.text
-            content.secondaryTextProperties.numberOfLines = 2
-            content.image = UIImage(systemName: Self.imageName(for: row.message.reason))
-        case .folder(let folder, let unreadCount):
-            content = UIListContentConfiguration.valueCell()
-            content.text = ChatFolderBar.title(for: folder)
-            content.secondaryText = unreadCount.formatted()
-            content.image = UIImage(systemName: "folder")
-            content.imageProperties.tintColor = .Signal.accent
+        case .important, .folders:
+            break
         case .star(let star, let chatName):
             content.text = chatName
             content.secondaryText = star.quote
@@ -550,12 +561,6 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch sections[indexPath.section].rows[indexPath.row] {
-        case .agenda(let item, _):
-            switch item.kind {
-            case .event(let event): ivyPresentEventEditor(event, isNew: false)
-            case .task(let task): ivyPresentTaskEditor(task, isNew: false)
-            case .reminder(let reminder): IvyReminderActionHandler.open(reminderId: reminder.id)
-            }
         case .task(let task, _):
             ivyPresentTaskEditor(task, isNew: false)
         case .important(let row):
@@ -564,10 +569,8 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
                 focusMessageId: row.message.messageUniqueId,
                 animated: true,
             )
-        case .folder(let folder, _):
-            guard let tabs = homeTabBarController else { return }
-            tabs.selectedHomeTab = .chatList
-            tabs.chatListViewController.ivySelectChatFolder(folder)
+        case .folders:
+            break
         case .star(let star, _):
             IvyStarredViewController.open(star.message, from: self)
         case .draft(let draft, _):
@@ -590,12 +593,10 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
     /// Events, tasks and reminders can be marked done or deleted from here.
     private func calendarItem(at indexPath: IndexPath) -> IvyCalendarItem? {
         switch sections[indexPath.section].rows[indexPath.row] {
-        case .agenda(let item, _):
-            return item
         case .task(let task, _):
             let date = task.dueAt ?? Date()
             return IvyCalendarItem(kind: .task(task), start: date, end: date, isAllDay: task.isAllDay)
-        case .important, .folder, .star, .scheduled, .waiting, .draft, .note, .link:
+        case .important, .folders, .star, .scheduled, .waiting, .draft, .note, .link:
             return nil
         }
     }
@@ -690,13 +691,14 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
         }
     }
 
-    private static func imageName(for reason: IvyImportantMessage.Reason) -> String {
+    /// The tag colour for why a message is important.
+    static func tone(for reason: IvyImportantMessage.Reason) -> IvyTone {
         switch reason {
-        case .reminder: return "bell"
-        case .mention: return "at"
-        case .reply: return "arrowshape.turn.up.left"
-        case .importantChat: return "star"
-        case .pinnedChat: return "pin"
+        case .reminder: return .brown
+        case .mention: return .blue
+        case .reply: return .brown
+        case .importantChat: return .green
+        case .pinnedChat: return .green
         }
     }
 

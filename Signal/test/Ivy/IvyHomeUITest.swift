@@ -57,4 +57,50 @@ final class IvyHomeUITest: XCTestCase {
             XCTAssertFalse(IvyHomeViewController.title(for: reason).isEmpty)
         }
     }
+
+    @MainActor
+    func testNextUpIsWhatsHappeningNowOrNext() {
+        let now = date(2026, 10, 30, 19)
+        func event(_ title: String, _ start: Date, _ end: Date) -> IvyCalendarItem {
+            IvyCalendarItem(kind: .event(IvyEvent(title: title, startAt: start, endAt: end)), start: start, end: end, isAllDay: false)
+        }
+        let past = event("past", date(2026, 10, 30, 9), date(2026, 10, 30, 10))
+        let running = event("running", date(2026, 10, 30, 18), date(2026, 10, 30, 20))
+        let later = event("later", date(2026, 10, 30, 21), date(2026, 10, 30, 22))
+        let tomorrow = event("tomorrow", date(2026, 10, 31, 9), date(2026, 10, 31, 10))
+        let allDay = IvyCalendarItem(kind: .event(IvyEvent(title: "all day", startAt: now, endAt: now)), start: date(2026, 10, 30), end: date(2026, 10, 31), isAllDay: true)
+
+        let next = IvyHomeViewController.nextUp([tomorrow, later, past, allDay, running], now: now, calendar: calendar)
+        XCTAssertEqual(next.map { title($0.item) }, "running")
+        XCTAssertEqual(next?.following.map(title), "later")
+
+        let onlyTomorrow = IvyHomeViewController.nextUp([past, tomorrow], now: now, calendar: calendar)
+        XCTAssertEqual(onlyTomorrow.map { title($0.item) }, "tomorrow")
+        XCTAssertNil(onlyTomorrow?.following, "the next day's items don't follow")
+        XCTAssertNil(IvyHomeViewController.nextUp([past, allDay], now: now, calendar: calendar))
+
+        XCTAssertEqual(IvyHomeHeaderView.when(running, now: now, calendar: calendar), IvyLocalizedString("HOME_NEXT_NOW", comment: ""))
+        XCTAssertEqual(IvyHomeHeaderView.when(tomorrow, now: now, calendar: calendar), IvyLocalizedString("HOME_NEXT_TOMORROW", comment: ""))
+        XCTAssertTrue(IvyHomeHeaderView.when(later, now: now, calendar: calendar).contains("2"))
+    }
+
+    private func title(_ item: IvyCalendarItem) -> String {
+        if case .event(let event) = item.kind {
+            return event.title
+        }
+        return ""
+    }
+
+    @MainActor
+    func testGreetingFollowsTheTimeOfDay() {
+        let greetings = [6, 13, 20, 2].map { IvyHomeHeaderView.greeting(at: date(2026, 10, 30, $0), calendar: calendar) }
+        XCTAssertEqual(Set(greetings).count, 4)
+        XCTAssertEqual(IvyHomeHeaderView.greeting(at: date(2026, 10, 30, 23), calendar: calendar), greetings[3])
+    }
+
+    @MainActor
+    func testEveryReasonHasATone() {
+        XCTAssertEqual(IvyHomeViewController.tone(for: .mention), .blue)
+        XCTAssertEqual(IvyHomeViewController.tone(for: .reply), .brown)
+    }
 }
