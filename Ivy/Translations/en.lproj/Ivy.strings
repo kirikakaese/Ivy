@@ -135,6 +135,9 @@
 /* Button that shows the previous day, week or month. */
 "CALENDAR_PREVIOUS" = "Previous";
 
+/* Shown under a calendar event that repeats. */
+"CALENDAR_REPEATS" = "Repeats";
+
 /* Title of the calendar. */
 "CALENDAR_TITLE" = "Calendar";
 
@@ -615,6 +618,18 @@
 /* Action that throws away an unsent message on Home. */
 "HOME_DRAFT_DISCARD" = "Discard";
 
+/* Greeting on Home from 11 to 18 o'clock. */
+"HOME_GREETING_DAY" = "Good afternoon";
+
+/* Greeting on Home from 18 to 23 o'clock. */
+"HOME_GREETING_EVENING" = "Good evening";
+
+/* Greeting on Home from 5 to 11 o'clock. */
+"HOME_GREETING_MORNING" = "Good morning";
+
+/* Greeting on Home late at night, from 23 to 5 o'clock. */
+"HOME_GREETING_NIGHT" = "Still up?";
+
 /* Header on Home of important unread messages. */
 "HOME_IMPORTANT" = "Important";
 
@@ -636,6 +651,24 @@
 /* Quick action on Home that sets a reminder for a chat. */
 "HOME_NEW_REMINDER" = "Reminder";
 
+/* On Home's card: how soon the next item starts. Embeds {{ a duration like 45 min }}. */
+"HOME_NEXT_IN_FORMAT" = "In %@";
+
+/* On Home's card: the next item is happening now. */
+"HOME_NEXT_NOW" = "Now";
+
+/* Last line of the card on Home: what comes after the next item. Embeds {{ time and title }}. */
+"HOME_NEXT_THEN_FORMAT" = "Then: %@";
+
+/* On Home's card: the next item is tomorrow. */
+"HOME_NEXT_TOMORROW" = "Tomorrow";
+
+/* Caption of the card on Home with what's happening next. */
+"HOME_NEXT_UP" = "Next up";
+
+/* Shown on Home when nothing else is planned for today. */
+"HOME_NOTHING_LEFT_TODAY" = "Nothing else planned today";
+
 /* Shown on Home when there are no events or reminders today. */
 "HOME_NOTHING_TODAY" = "Nothing planned today";
 
@@ -656,6 +689,9 @@
 
 /* Why a message is important on Home: it replies to the user. */
 "HOME_REASON_REPLY" = "Replied to you";
+
+/* Button beside a heading on Home that opens the whole list. */
+"HOME_SECTION_ALL" = "All";
 
 /* Title of the settings for Home and navigation. */
 "HOME_SETTINGS_TITLE" = "Home and Navigation";
@@ -1253,6 +1289,9 @@
 
 /* Notification action that marks a reminder as done. */
 "REMINDER_DONE" = "Done";
+
+/* Shown under a reminder in the calendar. */
+"REMINDER_KIND" = "Reminder";
 
 /* Reminder option: in one hour. */
 "REMINDER_PRESET_1_HOUR" = "In 1 Hour";
