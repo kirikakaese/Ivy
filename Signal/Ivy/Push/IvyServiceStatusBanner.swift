@@ -184,6 +184,7 @@ final class IvyServiceStatusBanner: UIView {
 
     private let backgroundView = UIView()
     private let stack = UIStackView()
+    private let headerLabel = UILabel()
     private let textLabel = UILabel()
     private let buttons = UIStackView()
     private lazy var detailsButton = Self.button { [weak self] in self?.toggleCollapsed() }
@@ -240,6 +241,14 @@ final class IvyServiceStatusBanner: UIView {
         backgroundView.addSubview(stack)
         stack.autoPinEdgesToSuperviewMargins()
 
+        // Says at a glance what the bubble is about.
+        headerLabel.font = UIFont.dynamicTypeFootnote.semibold()
+        headerLabel.adjustsFontForContentSizeCategory = true
+        headerLabel.text = IvyLocalizedString("SERVICE_STATUS_BANNER_HEADER", comment: "Small heading above the chat list banner that reports a problem from Ivy Status.")
+        stack.addArrangedSubview(headerLabel)
+        headerLabel.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
+        stack.setCustomSpacing(4, after: headerLabel)
+
         textLabel.font = .dynamicTypeSubheadline
         textLabel.adjustsFontForContentSizeCategory = true
         textLabel.numberOfLines = 0
@@ -295,6 +304,7 @@ final class IvyServiceStatusBanner: UIView {
         }
         textLabel.attributedText = text
         textLabel.textColor = palette.text
+        headerLabel.textColor = palette.text.withAlphaComponent(0.7)
 
         for button in [detailsButton, statusButton] {
             if #available(iOS 26, *) {

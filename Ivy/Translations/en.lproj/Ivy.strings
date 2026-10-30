@@ -1350,6 +1350,9 @@
 /* Chat list banner line naming the affected services. Embeds {{ the services, comma-separated }}. */
 "SERVICE_STATUS_AFFECTED_FORMAT" = "Affected: %@";
 
+/* Small heading above the chat list banner that reports a problem from Ivy Status. */
+"SERVICE_STATUS_BANNER_HEADER" = "Ivy service status";
+
 /* Button on the chat list banner that hides its details. */
 "SERVICE_STATUS_COLLAPSE" = "Hide details";
 
