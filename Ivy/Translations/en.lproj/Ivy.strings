@@ -1350,7 +1350,10 @@
 /* Chat list banner line naming the affected services. Embeds {{ the services, comma-separated }}. */
 "SERVICE_STATUS_AFFECTED_FORMAT" = "Affected: %@";
 
-/* Accessibility label of the button that hides the chat list banner's details. */
+/* Small heading above the chat list banner that reports a problem from Ivy Status. */
+"SERVICE_STATUS_BANNER_HEADER" = "Ivy service status";
+
+/* Button on the chat list banner that hides its details. */
 "SERVICE_STATUS_COLLAPSE" = "Hide details";
 
 /* Chat list banner text when notifications may be late. */
@@ -1365,7 +1368,7 @@
 /* Chat list banner title when Ivy Status reports an outage. */
 "SERVICE_STATUS_DOWN_TITLE" = "Service outage";
 
-/* Accessibility label of the button that shows the chat list banner's details. */
+/* Button on the chat list banner that shows its details. */
 "SERVICE_STATUS_EXPAND" = "Show details";
 
 /* Chat list banner title during maintenance of Ivy's services. */
@@ -1373,6 +1376,9 @@
 
 /* Chat list banner title for a notice from Ivy Status. */
 "SERVICE_STATUS_NOTICE_TITLE" = "Notice from Ivy";
+
+/* Button on the chat list banner that opens the Ivy Status page. */
+"SERVICE_STATUS_OPEN_BUTTON" = "Ivy Status";
 
 /* Chat list banner title when Ivy can't reach its push relay. */
 "SERVICE_STATUS_UNREACHABLE_TITLE" = "Can't reach Ivy Push";

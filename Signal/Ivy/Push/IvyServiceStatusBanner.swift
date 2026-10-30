@@ -163,21 +163,15 @@ extension IvyServiceStatus {
         }
         return lines.isEmpty ? nil : lines.joined(separator: "\n")
     }
-
-    var bannerImage: UIImage? {
-        switch level {
-        case .unreachable, .down, .degraded: return UIImage(systemName: "wifi.exclamationmark")
-        case .maintenance: return UIImage(systemName: "wrench.and.screwdriver")
-        case .notice: return UIImage(systemName: "info.circle")
-        }
-    }
 }
 
 // MARK: - Banner
 
-/// The chat list banner, in the style of the backup progress banner. Tap
-/// it for Ivy Status; the chevron collapses it to its title.
-final class IvyServiceStatusBanner: ChatListBackupProgressView {
+/// The chat list banner, in the style of Signal's reminders (like "This
+/// device is no longer registered"), in a pastel tone of the status page's
+/// colour for the problem: its title, details that can be folded away, and
+/// a button for Ivy Status.
+final class IvyServiceStatusBanner: UIView {
 
     /// Called when the banner's height or visibility changed.
     var onLayoutChange: (() -> Void)?
@@ -185,35 +179,111 @@ final class IvyServiceStatusBanner: ChatListBackupProgressView {
     private var shown: String?
     weak var presentingViewController: UIViewController?
 
-    /// Holds the banner with the chat list's margins; hidden when all is well.
+    /// Holds the banner in the chat list; hidden when all is well.
     let container = UIView()
 
-    private lazy var chevronButton: UIButton = {
-        var configuration = UIButton.Configuration.plain()
-        configuration.baseForegroundColor = .Signal.secondaryLabel
-        configuration.contentInsets = .zero
-        let button = UIButton(configuration: configuration, primaryAction: UIAction { [weak self] _ in
-            self?.toggleCollapsed()
-        })
-        NSLayoutConstraint.activate([
-            button.heightAnchor.constraint(equalToConstant: 24),
-            button.widthAnchor.constraint(equalToConstant: 24),
-        ])
-        return button
-    }()
+    private let backgroundView = UIView()
+    private let stack = UIStackView()
+    private let headerLabel = UILabel()
+    private let textLabel = UILabel()
+    private let buttons = UIStackView()
+    private lazy var detailsButton = Self.button { [weak self] in self?.toggleCollapsed() }
+    private lazy var statusButton = Self.button { [weak self] in self?.openStatusPage() }
 
-    override init() {
-        super.init()
-        initializeTrailingAccessoryViews([chevronButton])
+    private struct Palette {
+        let text: UIColor
+        let background: UIColor
+        let button: UIColor
+
+        /// Text is the system's in light mode; colours are (light, dark).
+        init(darkText: UInt32, background: (UInt32, UInt32), button: (UInt32, UInt32)) {
+            self.text = UIColor(light: .Signal.label, dark: UIColor(rgbHex: darkText))
+            self.background = UIColor(light: UIColor(rgbHex: background.0), dark: UIColor(rgbHex: background.1))
+            self.button = UIColor(light: UIColor(rgbHex: button.0), dark: UIColor(rgbHex: button.1))
+        }
+    }
+
+    // Trouble uses the warning colours of SignalUI's ReminderView; the
+    // others follow the status page in the same pastel strength.
+    private static func palette(for level: IvyServiceStatus.Level) -> Palette {
+        switch level {
+        case .down:
+            return Palette(darkText: 0xDE8F87, background: (0xFCEDEB, 0x2A1D1C), button: (0xF6D5D1, 0x422926))
+        case .degraded, .unreachable:
+            return Palette(darkText: 0xC79869, background: (0xFBF2E9, 0x26221D), button: (0xF4DDC7, 0x392D22))
+        case .maintenance:
+            return Palette(darkText: 0x8FB0DA, background: (0xEBF2FB, 0x1C222B), button: (0xD3E3F5, 0x26313F))
+        case .notice:
+            return Palette(darkText: 0x86C29E, background: (0xEBF6EF, 0x1C2520), button: (0xD3EBDC, 0x26372D))
+        }
+    }
+
+    init() {
+        super.init(frame: .zero)
         container.addSubview(self)
-        autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 8, leading: 12, bottom: 4, trailing: 12))
-        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(openStatusPage)))
+        autoPinEdgesToSuperviewEdges()
+
+        layoutMargins = UIEdgeInsets(hMargin: 18, vMargin: 12)
+        addSubview(backgroundView)
+        backgroundView.autoPinEdgesToSuperviewMargins()
+        if #available(iOS 26, *) {
+            backgroundView.layer.cornerRadius = 26
+            backgroundView.layoutMargins = UIEdgeInsets(hMargin: 20, vMargin: 16)
+            stack.spacing = 12
+        } else {
+            backgroundView.layer.cornerRadius = 12
+            backgroundView.layoutMargins = UIEdgeInsets(hMargin: 16, vMargin: 14)
+            stack.spacing = 8
+        }
+
+        stack.axis = .vertical
+        stack.alignment = .trailing
+        backgroundView.addSubview(stack)
+        stack.autoPinEdgesToSuperviewMargins()
+
+        // Says at a glance what the bubble is about.
+        headerLabel.font = UIFont.dynamicTypeFootnote.semibold()
+        headerLabel.adjustsFontForContentSizeCategory = true
+        headerLabel.text = IvyLocalizedString("SERVICE_STATUS_BANNER_HEADER", comment: "Small heading above the chat list banner that reports a problem from Ivy Status.")
+        stack.addArrangedSubview(headerLabel)
+        headerLabel.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
+        stack.setCustomSpacing(4, after: headerLabel)
+
+        textLabel.font = .dynamicTypeSubheadline
+        textLabel.adjustsFontForContentSizeCategory = true
+        textLabel.numberOfLines = 0
+        stack.addArrangedSubview(textLabel)
+        textLabel.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
+
+        buttons.axis = .horizontal
+        buttons.spacing = 8
+        buttons.addArrangedSubviews([detailsButton, statusButton])
+        stack.addArrangedSubview(buttons)
+
+        statusButton.configuration?.title = IvyLocalizedString("SERVICE_STATUS_OPEN_BUTTON", comment: "Button on the chat list banner that opens the Ivy Status page.")
+
         NotificationCenter.default.addObserver(self, selector: #selector(update), name: IvyServiceStatusMonitor.statusDidChange, object: nil)
         update()
     }
 
     required init?(coder: NSCoder) {
         owsFail("Not implemented")
+    }
+
+    private static func button(_ action: @escaping () -> Void) -> UIButton {
+        var configuration = UIButton.Configuration.filled()
+        configuration.cornerStyle = .capsule
+        configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+            var attributes = attributes
+            attributes.font = UIFont.dynamicTypeSubheadline.medium()
+            return attributes
+        }
+        if #available(iOS 26, *) {
+            configuration.contentInsets = NSDirectionalEdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16)
+        } else {
+            configuration.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 0, bottom: 0, trailing: 0)
+        }
+        return UIButton(configuration: configuration, primaryAction: UIAction { _ in action() })
     }
 
     @objc
@@ -225,17 +295,30 @@ final class IvyServiceStatusBanner: ChatListBackupProgressView {
             return
         }
         let isCollapsed = monitor.isCollapsed
-        configure(
-            leadingAccessoryImage: status.bannerImage ?? UIImage(),
-            leadingAccessoryImageTintColor: status.level == .notice ? .Signal.label : .Signal.orange,
-            titleLabelText: status.bannerTitle,
-            progressLabelText: isCollapsed ? nil : status.bannerDetail,
-            trailingAccessoryView: status.bannerDetail == nil ? nil : chevronButton,
-        )
-        chevronButton.configuration?.image = UIImage(systemName: isCollapsed ? "chevron.down" : "chevron.up")
-        chevronButton.accessibilityLabel = isCollapsed
-            ? IvyLocalizedString("SERVICE_STATUS_EXPAND", comment: "Accessibility label of the button that shows the chat list banner's details.")
-            : IvyLocalizedString("SERVICE_STATUS_COLLAPSE", comment: "Accessibility label of the button that hides the chat list banner's details.")
+        let palette = Self.palette(for: status.level)
+        backgroundView.backgroundColor = palette.background
+
+        let text = NSMutableAttributedString(string: status.bannerTitle, attributes: [.font: UIFont.dynamicTypeSubheadline.semibold()])
+        if !isCollapsed, let detail = status.bannerDetail {
+            text.append(NSAttributedString(string: "\n" + detail, attributes: [.font: UIFont.dynamicTypeSubheadline]))
+        }
+        textLabel.attributedText = text
+        textLabel.textColor = palette.text
+        headerLabel.textColor = palette.text.withAlphaComponent(0.7)
+
+        for button in [detailsButton, statusButton] {
+            if #available(iOS 26, *) {
+                button.configuration?.baseBackgroundColor = palette.button
+            } else {
+                button.configuration?.baseBackgroundColor = .clear
+            }
+            button.configuration?.baseForegroundColor = palette.text
+        }
+        detailsButton.isHidden = status.bannerDetail == nil
+        detailsButton.configuration?.title = isCollapsed
+            ? IvyLocalizedString("SERVICE_STATUS_EXPAND", comment: "Button on the chat list banner that shows its details.")
+            : IvyLocalizedString("SERVICE_STATUS_COLLAPSE", comment: "Button on the chat list banner that hides its details.")
+
         container.isHidden = false
         reportChange([status.id, status.bannerTitle, String(isCollapsed), status.bannerDetail ?? ""].joined(separator: "\n"))
     }
@@ -253,7 +336,6 @@ final class IvyServiceStatusBanner: ChatListBackupProgressView {
         update()
     }
 
-    @objc
     private func openStatusPage() {
         guard let url = IvyServiceStatusMonitor.shared.statusPageURL, let presentingViewController else {
             return
