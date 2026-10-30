@@ -4317,6 +4317,10 @@
 		8EC02A8DD40B63FA187FD2A2 /* IvyDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C776AACA4B28AD1042CD703 /* IvyDesign.swift */; };
 		61EDFDADA6F8BE4CDC0F130A /* IvyHomeComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535CFFFEEFF606AECD7E484B /* IvyHomeComponents.swift */; };
 		3B3338E9C1ADD2B8ACAD6A88 /* IvyCalendarViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54A09A22E07894E06AC5ECA /* IvyCalendarViews.swift */; };
+		E92110F7975EB1E557853C01 /* IvyStatusReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C9720F2A279904F9925D5C2 /* IvyStatusReport.swift */; };
+		DF680DE6AC7F608591FC1E61 /* IvyStatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C910D6614E56E6A309F903B4 /* IvyStatusViewController.swift */; };
+		AED2F797D7BF95624F8E64E3 /* IvyStatusReportTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC489E36CAFA9E093D2C68E1 /* IvyStatusReportTest.swift */; };
+		695B591532B8CC95579AE214 /* IvyStatusScreenTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF0636B6B0A829AB1104EB0 /* IvyStatusScreenTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8964,6 +8968,10 @@
 		5C776AACA4B28AD1042CD703 /* IvyDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDesign.swift; sourceTree = "<group>"; };
 		535CFFFEEFF606AECD7E484B /* IvyHomeComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyHomeComponents.swift; sourceTree = "<group>"; };
 		F54A09A22E07894E06AC5ECA /* IvyCalendarViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyCalendarViews.swift; sourceTree = "<group>"; };
+		4C9720F2A279904F9925D5C2 /* IvyStatusReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyStatusReport.swift; sourceTree = "<group>"; };
+		C910D6614E56E6A309F903B4 /* IvyStatusViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyStatusViewController.swift; sourceTree = "<group>"; };
+		CC489E36CAFA9E093D2C68E1 /* IvyStatusReportTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyStatusReportTest.swift; sourceTree = "<group>"; };
+		BCF0636B6B0A829AB1104EB0 /* IvyStatusScreenTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyStatusScreenTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16582,6 +16590,7 @@
 				A193E6D699F8CEA0C438035A /* IvyTaskPhrasesTest.swift */,
 				F92FCBD4550A03DF0E3E7739 /* IvyPushRelayTest.swift */,
 				7190A714556E022D7A05A881 /* IvyServiceStatusTest.swift */,
+				CC489E36CAFA9E093D2C68E1 /* IvyStatusReportTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16650,6 +16659,7 @@
 				EAFD5B5A9212369C80B61116 /* IvyShortcutsTest.swift */,
 				D31AF9968B65D08EC44B0AF6 /* IvySidebarTest.swift */,
 				D780AFE9BE1218FD97BEA166 /* IvyZoomTest.swift */,
+				BCF0636B6B0A829AB1104EB0 /* IvyStatusScreenTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16982,6 +16992,7 @@
 				B6BFD376480761A00A043EA9 /* IvyPushRelay.swift */,
 				0697B7D510135EED2E47C147 /* IvyWakeCapture.swift */,
 				EC3B0A53CECB7F613655137D /* IvyServiceStatus.swift */,
+				4C9720F2A279904F9925D5C2 /* IvyStatusReport.swift */,
 			);
 			path = Push;
 			sourceTree = "<group>";
@@ -16991,6 +17002,7 @@
 			children = (
 				EFD4CA74581FEB93480C037C /* IvyPushRelayViewController.swift */,
 				1E19F9A7FC8BA13331853440 /* IvyServiceStatusBanner.swift */,
+				C910D6614E56E6A309F903B4 /* IvyStatusViewController.swift */,
 			);
 			path = Push;
 			sourceTree = "<group>";
@@ -20363,6 +20375,7 @@
 				8EC02A8DD40B63FA187FD2A2 /* IvyDesign.swift in Sources */,
 				61EDFDADA6F8BE4CDC0F130A /* IvyHomeComponents.swift in Sources */,
 				3B3338E9C1ADD2B8ACAD6A88 /* IvyCalendarViews.swift in Sources */,
+				DF680DE6AC7F608591FC1E61 /* IvyStatusViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20460,6 +20473,7 @@
 				7CD7D977A63E4BFC4EE01F9E /* IvyShortcutsTest.swift in Sources */,
 				BE3A83359DC6FE41F23DC29B /* IvySidebarTest.swift in Sources */,
 				30436A6008B99465BB9225E1 /* IvyZoomTest.swift in Sources */,
+				695B591532B8CC95579AE214 /* IvyStatusScreenTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21761,6 +21775,7 @@
 				4F23695ABF4456AA5E687394 /* IvyPushRelay.swift in Sources */,
 				5FE41E5D7E3A82C9B6F6D5CD /* IvyWakeCapture.swift in Sources */,
 				F9085954DDFD6A35FCEA92FD /* IvyServiceStatus.swift in Sources */,
+				E92110F7975EB1E557853C01 /* IvyStatusReport.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22061,6 +22076,7 @@
 				6ED9B1FCD9919876B2D0C32B /* IvyTaskPhrasesTest.swift in Sources */,
 				5860C3EB166CCD33F4161B63 /* IvyPushRelayTest.swift in Sources */,
 				1D8519ECC1B055EDE25CCF42 /* IvyServiceStatusTest.swift in Sources */,
+				AED2F797D7BF95624F8E64E3 /* IvyStatusReportTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -108,19 +108,10 @@ public struct IvyServiceStatus: Equatable, Sendable {
         return IvyPushRelay.statusPageURL(for: relayURL).appendingPathComponent("status.json")
     }
 
-    private static let session: URLSession = {
-        let configuration = URLSessionConfiguration.ephemeral
-        configuration.timeoutIntervalForRequest = 15
-        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
-        return URLSession(configuration: configuration)
-    }()
-
-    /// Asks the relay how Ivy is doing; nil when all is well.
+    /// Asks the relay how Ivy is doing; nil when all is well. The full
+    /// report is kept for the status screen.
     public static func fetch(relayURL: URL) async throws -> IvyServiceStatus? {
-        let (data, response) = try await session.data(from: reportURL(for: relayURL))
-        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-            throw URLError(.badServerResponse)
-        }
+        let data = try await IvyStatusReport.fetchData(relayURL: relayURL)
         return from(try JSONDecoder().decode(Report.self, from: data))
     }
 }

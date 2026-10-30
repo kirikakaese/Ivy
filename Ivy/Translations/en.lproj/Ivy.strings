@@ -603,9 +603,6 @@
 /* Context menu action that stops hiding a chat. */
 "HIDDEN_CHAT_UNHIDE" = "Show in Chat List";
 
-
-
-
 /* Title of the section on Home with unsent messages. */
 "HOME_DRAFTS" = "Drafts";
 
@@ -1490,6 +1487,168 @@
 
 /* Action that removes the star from a message. */
 "STAR_REMOVE" = "Remove Star";
+
+/* A day on the status screen when everything worked. */
+"STATUS_DAY_ALL_WORKING" = "Working all day";
+
+/* How long a service had trouble on a day. Embeds {{ a duration }}. */
+"STATUS_DAY_DEGRADED_FORMAT" = "%@ some trouble";
+
+/* How long a service was down on a day. Embeds {{ a duration }}. */
+"STATUS_DAY_DOWN_FORMAT" = "%@ down";
+
+/* How long a service was under maintenance on a day. Embeds {{ a duration }}. */
+"STATUS_DAY_MAINTENANCE_FORMAT" = "%@ maintenance";
+
+/* A day without data on the status screen. */
+"STATUS_DAY_NO_DATA" = "No data";
+
+/* Measurement on the status screen: share of wake-ups Apple accepted. */
+"STATUS_METRIC_ACCEPTED" = "Accepted by Apple";
+
+/* Hint under a measurement on the status screen: the last 24 hours. */
+"STATUS_METRIC_LAST_24H" = "last 24 h";
+
+/* Measurement on the status screen: uptime over 30 days. */
+"STATUS_METRIC_UPTIME_30" = "Uptime, 30 days";
+
+/* Measurement on the status screen: uptime over 90 days. */
+"STATUS_METRIC_UPTIME_90" = "Uptime, 90 days";
+
+/* Measurement on the status screen: how long Apple takes to accept a wake-up. */
+"STATUS_METRIC_WAKE" = "Wake-up time";
+
+/* Hint under the wake-up time on the status screen. */
+"STATUS_METRIC_WAKE_HINT" = "median, last 24 h";
+
+/* Start of the 90-day bars on the status screen. */
+"STATUS_PAGE_90_DAYS_AGO" = "90 days ago";
+
+/* When Ivy Status last checked, on the status screen. Embeds {{ a relative time like 1 min ago }}. */
+"STATUS_PAGE_CHECKED_FORMAT" = "Checked %@.";
+
+/* Heading on the status screen while it loads. */
+"STATUS_PAGE_CHECKING" = "Checking…";
+
+/* A service's state on the status screen: some trouble. */
+"STATUS_PAGE_CHIP_DEGRADED" = "Some trouble";
+
+/* A service's state on the status screen: down. */
+"STATUS_PAGE_CHIP_DOWN" = "Down";
+
+/* A service's state on the status screen: under maintenance. */
+"STATUS_PAGE_CHIP_MAINTENANCE" = "Maintenance";
+
+/* A service's state on the status screen: working. */
+"STATUS_PAGE_CHIP_OK" = "Working";
+
+/* A service's state on the status screen: unknown. */
+"STATUS_PAGE_CHIP_UNKNOWN" = "Unknown";
+
+/* Heading on the status screen when some parts have trouble. */
+"STATUS_PAGE_DEGRADED_TITLE" = "Some trouble";
+
+/* Heading on the status screen when part of Ivy isn't working. */
+"STATUS_PAGE_DOWN_TITLE" = "Something isn't working";
+
+/* Kind of post on the status screen: an incident. */
+"STATUS_PAGE_KIND_INCIDENT" = "Incident";
+
+/* Label of a service's 90 days on the status screen. */
+"STATUS_PAGE_LAST_90_DAYS" = "Last 90 days";
+
+/* Heading of the last status that arrived, shown when Ivy Status can't be reached. */
+"STATUS_PAGE_LAST_KNOWN" = "Last known";
+
+/* Heading of the measurements on the status screen. */
+"STATUS_PAGE_MEASUREMENTS" = "Measurements";
+
+/* Text on the status screen when the device is offline. */
+"STATUS_PAGE_OFFLINE_DETAIL" = "Ivy Status loads as soon as your device is online again.";
+
+/* Heading on the status screen when the device is offline. */
+"STATUS_PAGE_OFFLINE_TITLE" = "You're offline";
+
+/* Text on the status screen when everything works. */
+"STATUS_PAGE_OK_DETAIL" = "All services are working.";
+
+/* Heading on the status screen when everything works. */
+"STATUS_PAGE_OK_TITLE" = "All good";
+
+/* Button that opens Ivy Status in the browser. */
+"STATUS_PAGE_OPEN_IN_BROWSER" = "Open in Browser";
+
+/* Heading of the posts of the past 14 days on the status screen. */
+"STATUS_PAGE_RECENT" = "Past 14 days";
+
+/* Button that tries to load Ivy Status again. */
+"STATUS_PAGE_RETRY" = "Try Again";
+
+/* Footer of the status screen when it can't load: it tries again by itself. */
+"STATUS_PAGE_RETRYING" = "Ivy tries again every minute.";
+
+/* Heading of the services on the status screen. */
+"STATUS_PAGE_SERVICES" = "Services";
+
+/* Hint under the 90-day bars on the status screen. */
+"STATUS_PAGE_TAP_A_DAY" = "Tap a day for details.";
+
+/* End of the 90-day bars on the status screen. */
+"STATUS_PAGE_TODAY" = "Today";
+
+/* Text on the status screen when Ivy Status can't be reached. */
+"STATUS_PAGE_UNREACHABLE_DETAIL" = "The relay isn't answering right now. Notifications may be late; while Ivy is open, messages still arrive.";
+
+/* Heading on the status screen when Ivy Status can't be reached. */
+"STATUS_PAGE_UNREACHABLE_TITLE" = "Ivy Status can't be reached";
+
+/* Heading of planned maintenance on the status screen. */
+"STATUS_PAGE_UPCOMING" = "Upcoming";
+
+/* Name of Apple's push delivery on the status screen. */
+"STATUS_SERVICE_APPLE" = "Apple push delivery";
+
+/* What Apple's push delivery does, on the status screen. */
+"STATUS_SERVICE_APPLE_DETAIL" = "Apple accepts the relay's wake-ups";
+
+/* Name of the push relay on the status screen. */
+"STATUS_SERVICE_RELAY" = "Ivy Push relay";
+
+/* What the push relay does, on the status screen. */
+"STATUS_SERVICE_RELAY_DETAIL" = "Wakes Ivy when a message arrives";
+
+/* Name of Signal's service on the status screen. */
+"STATUS_SERVICE_SIGNAL" = "Signal service";
+
+/* What is checked of Signal's service, on the status screen. */
+"STATUS_SERVICE_SIGNAL_DETAIL" = "Signal's server answers";
+
+/* Step of maintenance on the status screen. */
+"STATUS_STEP_COMPLETED" = "Completed";
+
+/* Step of an incident on the status screen. */
+"STATUS_STEP_IDENTIFIED" = "Identified";
+
+/* Step of an incident on the status screen. */
+"STATUS_STEP_INVESTIGATING" = "Investigating";
+
+/* Step of maintenance on the status screen. */
+"STATUS_STEP_IN_PROGRESS" = "In progress";
+
+/* Step of an incident on the status screen. */
+"STATUS_STEP_MONITORING" = "Monitoring";
+
+/* Step of a notice on the status screen. */
+"STATUS_STEP_POSTED" = "Posted";
+
+/* Step of an incident or notice on the status screen. */
+"STATUS_STEP_RESOLVED" = "Resolved";
+
+/* Step of maintenance on the status screen. */
+"STATUS_STEP_SCHEDULED" = "Scheduled";
+
+/* Share of time a service was up. Embeds {{ a percentage }}. */
+"STATUS_UP_FORMAT" = "%@ up";
 
 /* Shown when the problem report page can't be opened. Tells the user where to report problems. */
 "SUPPORT_REPORT_FALLBACK_MESSAGE" = "Please report the problem at github.com/kirikakaese/Ivy/issues.";
