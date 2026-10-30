@@ -114,19 +114,11 @@ final class IvyPushRelayTest: XCTestCase {
         XCTAssertFalse(IvyWakeCapture.isFallback(message))
     }
 
-    func testFallbackIsQuietRightAfterLeavingIvy() {
-        let defaults = UserDefaults(suiteName: "IvyWakeCaptureTest")!
-        defaults.removePersistentDomain(forName: "IvyWakeCaptureTest")
+    func testFallbackIsAlwaysQuiet() {
         let wake = UNMutableNotificationContent()
         wake.sound = .default
-        XCTAssertFalse(IvyWakeCapture.appLeftForegroundRecently(defaults: defaults))
-        XCTAssertEqual(IvyWakeCapture.fallbackContent(wake, badge: nil).interruptionLevel, .active)
-
-        IvyWakeCapture.noteAppLeftForeground(defaults: defaults)
-        XCTAssertTrue(IvyWakeCapture.appLeftForegroundRecently(defaults: defaults))
-        XCTAssertFalse(IvyWakeCapture.appLeftForegroundRecently(defaults: defaults, now: Date().addingTimeInterval(IvyWakeCapture.quietAfterLeaving + 1)))
-        let quiet = IvyWakeCapture.fallbackContent(wake, badge: nil, quiet: true)
-        XCTAssertEqual(quiet.interruptionLevel, .passive)
-        XCTAssertNil(quiet.sound)
+        let fallback = IvyWakeCapture.fallbackContent(wake, badge: nil)
+        XCTAssertEqual(fallback.interruptionLevel, .passive)
+        XCTAssertNil(fallback.sound)
     }
 }

@@ -101,8 +101,6 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
         }
 
         clearAppropriateNotificationsAndRestoreBadgeCount()
-        // Ivy: wake-ups right after this find nothing new; see IvyWakeCapture.
-        IvyWakeCapture.noteAppLeftForeground()
 
         let backgroundTask = OWSBackgroundTask(label: #function)
         flushQueue.async {
