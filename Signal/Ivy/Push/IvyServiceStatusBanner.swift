@@ -168,8 +168,9 @@ extension IvyServiceStatus {
 // MARK: - Banner
 
 /// The chat list banner, in the style of Signal's reminders (like "This
-/// device is no longer registered"): the problem, its details that can be
-/// folded away, and a button for Ivy Status.
+/// device is no longer registered"), in a pastel tone of the status page's
+/// colour for the problem: its title, details that can be folded away, and
+/// a button for Ivy Status.
 final class IvyServiceStatusBanner: UIView {
 
     /// Called when the banner's height or visibility changed.
@@ -188,10 +189,33 @@ final class IvyServiceStatusBanner: UIView {
     private lazy var detailsButton = Self.button { [weak self] in self?.toggleCollapsed() }
     private lazy var statusButton = Self.button { [weak self] in self?.openStatusPage() }
 
-    // As SignalUI's ReminderView: warnings in warm brown, notices in grey.
-    private static let warningText = UIColor(light: .Signal.label, dark: UIColor(rgbHex: 0xC79869))
-    private static let warningBackground = UIColor(light: UIColor(rgbHex: 0xFBF2E9), dark: UIColor(rgbHex: 0x26221D))
-    private static let warningButton = UIColor(light: UIColor(rgbHex: 0xF4DDC7), dark: UIColor(rgbHex: 0x392D22))
+    private struct Palette {
+        let text: UIColor
+        let background: UIColor
+        let button: UIColor
+
+        /// Text is the system's in light mode; colours are (light, dark).
+        init(darkText: UInt32, background: (UInt32, UInt32), button: (UInt32, UInt32)) {
+            self.text = UIColor(light: .Signal.label, dark: UIColor(rgbHex: darkText))
+            self.background = UIColor(light: UIColor(rgbHex: background.0), dark: UIColor(rgbHex: background.1))
+            self.button = UIColor(light: UIColor(rgbHex: button.0), dark: UIColor(rgbHex: button.1))
+        }
+    }
+
+    // Trouble uses the warning colours of SignalUI's ReminderView; the
+    // others follow the status page in the same pastel strength.
+    private static func palette(for level: IvyServiceStatus.Level) -> Palette {
+        switch level {
+        case .down:
+            return Palette(darkText: 0xDE8F87, background: (0xFCEDEB, 0x2A1D1C), button: (0xF6D5D1, 0x422926))
+        case .degraded, .unreachable:
+            return Palette(darkText: 0xC79869, background: (0xFBF2E9, 0x26221D), button: (0xF4DDC7, 0x392D22))
+        case .maintenance:
+            return Palette(darkText: 0x8FB0DA, background: (0xEBF2FB, 0x1C222B), button: (0xD3E3F5, 0x26313F))
+        case .notice:
+            return Palette(darkText: 0x86C29E, background: (0xEBF6EF, 0x1C2520), button: (0xD3EBDC, 0x26372D))
+        }
+    }
 
     init() {
         super.init(frame: .zero)
@@ -262,24 +286,23 @@ final class IvyServiceStatusBanner: UIView {
             return
         }
         let isCollapsed = monitor.isCollapsed
-        let isWarning = status.level != .notice && status.level != .maintenance
-        let textColor = isWarning ? Self.warningText : UIColor.Signal.label
-        backgroundView.backgroundColor = isWarning ? Self.warningBackground : UIColor.Signal.secondaryBackground
+        let palette = Self.palette(for: status.level)
+        backgroundView.backgroundColor = palette.background
 
         let text = NSMutableAttributedString(string: status.bannerTitle, attributes: [.font: UIFont.dynamicTypeSubheadline.semibold()])
         if !isCollapsed, let detail = status.bannerDetail {
             text.append(NSAttributedString(string: "\n" + detail, attributes: [.font: UIFont.dynamicTypeSubheadline]))
         }
         textLabel.attributedText = text
-        textLabel.textColor = textColor
+        textLabel.textColor = palette.text
 
         for button in [detailsButton, statusButton] {
             if #available(iOS 26, *) {
-                button.configuration?.baseBackgroundColor = isWarning ? Self.warningButton : UIColor.Signal.secondaryFill
+                button.configuration?.baseBackgroundColor = palette.button
             } else {
                 button.configuration?.baseBackgroundColor = .clear
             }
-            button.configuration?.baseForegroundColor = textColor
+            button.configuration?.baseForegroundColor = palette.text
         }
         detailsButton.isHidden = status.bannerDetail == nil
         detailsButton.configuration?.title = isCollapsed
