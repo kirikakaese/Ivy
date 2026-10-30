@@ -603,14 +603,8 @@
 /* Context menu action that stops hiding a chat. */
 "HIDDEN_CHAT_UNHIDE" = "In der Chatliste zeigen";
 
-/* Item on Home that opens the list of all scheduled messages. */
-"HOME_ALL_SCHEDULED" = "Alle geplanten Nachrichten";
 
-/* Item on Home that opens the list of all starred messages. */
-"HOME_ALL_STARRED" = "Alle markierten Nachrichten";
 
-/* Item on Home that opens the list of all tasks. */
-"HOME_ALL_TASKS" = "Alle Aufgaben";
 
 /* Title of the section on Home with unsent messages. */
 "HOME_DRAFTS" = "Entwürfe";
