@@ -92,6 +92,17 @@ final class IvySectionHeaderView: UITableViewHeaderFooterView {
     private let detailLabel = UILabel()
     private let actionButton = UIButton(type: .system)
     private var action: (() -> Void)?
+    private var leading: NSLayoutConstraint?
+    private var trailing: NSLayoutConstraint?
+
+    /// Where the table's cards start, so the heading lines up with their
+    /// edge rather than with the text inside them.
+    var cardInset: CGFloat = 0 {
+        didSet {
+            leading?.constant = cardInset + 4
+            trailing?.constant = -(cardInset + 4)
+        }
+    }
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -115,11 +126,15 @@ final class IvySectionHeaderView: UITableViewHeaderFooterView {
         stack.spacing = 8
         contentView.addSubview(stack)
         stack.translatesAutoresizingMaskIntoConstraints = false
+        let leading = stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 4)
+        let trailing = stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4)
+        self.leading = leading
+        self.trailing = trailing
         NSLayoutConstraint.activate([
             stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 18),
             stack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
-            stack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor, constant: 4),
-            stack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor, constant: -4),
+            leading,
+            trailing,
         ])
     }
 
