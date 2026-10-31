@@ -88,6 +88,7 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
         tableView.register(IvySectionHeaderView.self, forHeaderFooterViewReuseIdentifier: IvySectionHeaderView.reuseIdentifier)
         tableView.backgroundColor = .clear
         tableView.sectionHeaderTopPadding = 0
+        tableView.estimatedSectionHeaderHeight = 52
         tableView.tableHeaderView = header
         view.addSubview(tableView)
         tableView.autoPinEdgesToSuperviewEdges()
@@ -458,6 +459,7 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: IvySectionHeaderView.reuseIdentifier) as? IvySectionHeaderView
         let item = sections[section]
+        view?.cardInset = tableView.layoutMargins.left
         view?.configure(
             title: item.title,
             actionTitle: item.action == nil ? nil : IvyLocalizedString("HOME_SECTION_ALL", comment: "Button beside a heading on Home that opens the whole list."),

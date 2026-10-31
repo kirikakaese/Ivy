@@ -84,6 +84,7 @@ final class IvyStatusViewController: UIViewController, UITableViewDataSource, UI
         tableView.register(IvyStatusMetricsCell.self, forCellReuseIdentifier: IvyStatusMetricsCell.reuseIdentifier)
         tableView.register(IvySectionHeaderView.self, forHeaderFooterViewReuseIdentifier: IvySectionHeaderView.reuseIdentifier)
         tableView.sectionHeaderTopPadding = 0
+        tableView.estimatedSectionHeaderHeight = 52
         tableView.backgroundColor = .clear
         tableView.tableHeaderView = hero
         let refreshControl = UIRefreshControl()
@@ -249,6 +250,7 @@ final class IvyStatusViewController: UIViewController, UITableViewDataSource, UI
             return nil
         }
         let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: IvySectionHeaderView.reuseIdentifier) as? IvySectionHeaderView
+        view?.cardInset = tableView.layoutMargins.left
         view?.configure(title: title, detail: sections[section].detail)
         return view
     }

@@ -42,6 +42,8 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
     private let headerLabel = UILabel()
     private let previousButton = UIButton(type: .system)
     private let nextButton = UIButton(type: .system)
+    private let todayButton = UIButton(type: .system)
+    /// The month (or day) with arrows and Today, under the view switcher.
     private let navigationRow = UIStackView()
     private let monthView = IvyMonthView()
     private let monthCard = UIView()
@@ -61,7 +63,7 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
         if navigationController?.viewControllers.first === self, navigationController?.presentingViewController != nil {
             navigationItem.leftBarButtonItem = .doneButton(dismissingFrom: self)
         }
-        navigationItem.rightBarButtonItems = [addButton(), moreButton(), todayBarButton()]
+        navigationItem.rightBarButtonItems = [addButton(), moreButton()]
 
         for (index, mode) in Self.shownModes.enumerated() {
             modeControl.insertSegment(withTitle: mode.title, at: index, animated: false)
@@ -72,18 +74,35 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
             setMode(Self.shownModes[modeControl.selectedSegmentIndex])
         }, for: .valueChanged)
 
-        headerLabel.font = .dynamicTypeHeadline
+        headerLabel.font = UIFont.dynamicTypeTitle2Clamped.semibold()
         headerLabel.textColor = .Signal.label
-        headerLabel.adjustsFontForContentSizeCategory = true
+        headerLabel.adjustsFontSizeToFitWidth = true
+        headerLabel.minimumScaleFactor = 0.7
+        headerLabel.accessibilityTraits = .header
         configureArrow(previousButton, systemName: "chevron.backward", step: -1)
         configureArrow(nextButton, systemName: "chevron.forward", step: 1)
         previousButton.accessibilityLabel = IvyLocalizedString("CALENDAR_PREVIOUS", comment: "Button that shows the previous day, week or month.")
         nextButton.accessibilityLabel = IvyLocalizedString("CALENDAR_NEXT", comment: "Button that shows the next day, week or month.")
-        headerLabel.textAlignment = .center
-        navigationRow.addArrangedSubviews([previousButton, headerLabel, nextButton])
+        var todayConfiguration = UIButton.Configuration.filled()
+        todayConfiguration.cornerStyle = .capsule
+        todayConfiguration.baseBackgroundColor = .Signal.secondaryGroupedBackground
+        todayConfiguration.baseForegroundColor = .Signal.accent
+        todayConfiguration.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 14, bottom: 7, trailing: 14)
+        var todayTitle = AttributedString(IvyLocalizedString("CALENDAR_TODAY", comment: "Button that goes back to today."))
+        todayTitle.font = UIFont.dynamicTypeSubheadlineClamped.semibold()
+        todayConfiguration.attributedTitle = todayTitle
+        todayButton.configuration = todayConfiguration
+        todayButton.setContentHuggingPriority(.required, for: .horizontal)
+        todayButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        todayButton.addAction(UIAction { [weak self] _ in self?.goToToday() }, for: .primaryActionTriggered)
+        headerLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        navigationRow.addArrangedSubviews([headerLabel, previousButton, nextButton, todayButton])
         navigationRow.axis = .horizontal
         navigationRow.alignment = .center
         navigationRow.spacing = 8
+        navigationRow.setCustomSpacing(6, after: previousButton)
+        navigationRow.isLayoutMarginsRelativeArrangement = true
+        navigationRow.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 2, bottom: 0, trailing: 0)
 
         monthView.onSelectDay = { [weak self] day in
             self?.select(day: day)
@@ -114,7 +133,9 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
         tableView.delegate = self
         tableView.register(IvyAgendaCell.self, forCellReuseIdentifier: IvyAgendaCell.reuseIdentifier)
         tableView.register(IvySectionHeaderView.self, forHeaderFooterViewReuseIdentifier: IvySectionHeaderView.reuseIdentifier)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "empty")
         tableView.sectionHeaderTopPadding = 0
+        tableView.estimatedSectionHeaderHeight = 52
         tableView.backgroundColor = .clear
         // The cards line up with the controls above them instead of
         // getting the list's own margin on top of the page's.
@@ -127,6 +148,8 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
         stack.spacing = 12
         stack.isLayoutMarginsRelativeArrangement = true
         stack.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16)
+        stack.setCustomSpacing(14, after: modeControl)
+        stack.setCustomSpacing(10, after: navigationRow)
         stack.setCustomSpacing(4, after: monthCard)
         stack.setCustomSpacing(4, after: weekStrip)
         view.addSubview(stack)
@@ -149,8 +172,16 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
         ivyUpdateProfileButton()
     }
 
+    /// A small round grey button.
     private func configureArrow(_ button: UIButton, systemName: String, step: Int) {
-        button.setImage(UIImage(systemName: systemName), for: .normal)
+        var configuration = UIButton.Configuration.filled()
+        configuration.cornerStyle = .capsule
+        configuration.image = UIImage(systemName: systemName, withConfiguration: UIImage.SymbolConfiguration(textStyle: .footnote, scale: .medium))
+        configuration.baseBackgroundColor = .Signal.secondaryGroupedBackground
+        configuration.baseForegroundColor = .Signal.secondaryLabel
+        button.configuration = configuration
+        button.widthAnchor.constraint(equalToConstant: 32).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 32).isActive = true
         button.setContentHuggingPriority(.required, for: .horizontal)
         button.addAction(UIAction { [weak self] _ in
             self?.move(by: step)
@@ -197,15 +228,23 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
         reload()
     }
 
+    /// A month back or ahead in the month view, a week in the others.
     private func move(by step: Int) {
-        let component: Calendar.Component
-        switch mode {
-        case .agenda, .day: component = .day
-        case .week: component = .weekOfYear
-        case .month: component = .month
+        let component: Calendar.Component = mode == .month ? .month : .weekOfYear
+        guard let day = Calendar.current.date(byAdding: component, value: step, to: selectedDay) else {
+            return
         }
-        if let day = Calendar.current.date(byAdding: component, value: step, to: selectedDay) {
+        if mode == .month {
             select(day: day)
+        } else {
+            selectInWeek(day)
+        }
+    }
+
+    private func goToToday() {
+        selectInWeek(Date())
+        if mode == .agenda {
+            tableView.setContentOffset(CGPoint(x: 0, y: -tableView.adjustedContentInset.top), animated: true)
         }
     }
 
@@ -301,13 +340,11 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
         }
         weekStrip.isHidden = mode == .month
         monthCard.isHidden = mode != .month
-        navigationRow.isHidden = mode != .month
         timeline.isHidden = mode != .day
         tableView.isHidden = mode == .day
-        headerLabel.text = headerText(interval: interval, calendar: calendar)
-        navigationItem.title = navigationTitle(calendar: calendar)
+        headerLabel.text = rowTitle(calendar: calendar)
         tableView.reloadData()
-        tableView.backgroundView = mode != .day && sections.allSatisfy(\.items.isEmpty) ? emptyView() : nil
+        tableView.backgroundView = mode == .agenda && sections.allSatisfy(\.items.isEmpty) ? emptyView() : nil
     }
 
     /// The dots for the week row.
@@ -325,43 +362,20 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
         return IvyCalendar.tonesByDay(items, in: week, calendar: calendar)
     }
 
-    /// The month of the shown week or month, or the shown day.
-    private func navigationTitle(calendar: Calendar) -> String {
+    /// The month of the shown week or month, with the year when it isn't
+    /// this year's, or the shown day.
+    private func rowTitle(calendar: Calendar) -> String {
         let formatter = DateFormatter()
         formatter.calendar = calendar
         switch mode {
         case .day:
-            formatter.setLocalizedDateFormatFromTemplate("EEEdMMM")
+            formatter.setLocalizedDateFormatFromTemplate("EEEEdMMMM")
         case .month:
             formatter.setLocalizedDateFormatFromTemplate("MMMMyyyy")
         case .agenda, .week:
             formatter.setLocalizedDateFormatFromTemplate(calendar.isDate(selectedDay, equalTo: Date(), toGranularity: .year) ? "MMMM" : "MMMMyyyy")
         }
         return formatter.string(from: selectedDay)
-    }
-
-    private func headerText(interval: DateInterval, calendar: Calendar) -> String {
-        let formatter = DateFormatter()
-        switch mode {
-        case .agenda:
-            if calendar.isDateInToday(interval.start) {
-                return IvyLocalizedString("CALENDAR_AGENDA_FROM_TODAY", comment: "Heading of the calendar's agenda, which lists everything coming up from today.")
-            }
-            formatter.setLocalizedDateFormatFromTemplate("MMMMd")
-            return String(
-                format: IvyLocalizedString("CALENDAR_AGENDA_FROM_DATE_FORMAT", comment: "Heading of the calendar's agenda when it starts on another day. Embeds {{ date }}."),
-                formatter.string(from: interval.start),
-            )
-        case .day:
-            formatter.setLocalizedDateFormatFromTemplate("EEEEMMMMd")
-            return formatter.string(from: selectedDay)
-        case .week:
-            formatter.setLocalizedDateFormatFromTemplate("MMMd")
-            return formatter.string(from: interval.start) + " – " + formatter.string(from: interval.end.addingTimeInterval(-1))
-        case .month:
-            formatter.setLocalizedDateFormatFromTemplate("MMMMyyyy")
-            return formatter.string(from: selectedDay)
-        }
     }
 
     /// Nothing planned: a card like Home's, with a way to add something.
@@ -414,6 +428,7 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
             return nil
         }
         let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: IvySectionHeaderView.reuseIdentifier) as? IvySectionHeaderView
+        view?.cardInset = tableView.layoutMargins.left
         view?.configure(
             title: item.title,
             detail: item.detail,
@@ -426,11 +441,34 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
         sections[section].items.isEmpty && mode != .month ? .leastNormalMagnitude : UITableView.automaticDimension
     }
 
+    /// A day in the month view with nothing on it: "Nothing planned" and a
+    /// row to add an event.
+    private func isEmptyDay(_ section: Int) -> Bool {
+        mode == .month && sections[section].items.isEmpty
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        sections[section].items.count
+        isEmptyDay(section) ? 2 : sections[section].items.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if isEmptyDay(indexPath.section) {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "empty", for: indexPath)
+            var content = UIListContentConfiguration.cell()
+            if indexPath.row == 0 {
+                content.text = IvyLocalizedString("CALENDAR_EMPTY", comment: "Shown in the calendar when nothing is planned for the shown dates.")
+                content.textProperties.color = .Signal.secondaryLabel
+                cell.selectionStyle = .none
+            } else {
+                content.text = IvyLocalizedString("EVENT_NEW", comment: "Action that makes a new calendar event.")
+                content.textProperties.color = .Signal.accent
+                content.image = UIImage(systemName: "plus.circle.fill")
+                content.imageProperties.tintColor = .Signal.accent
+                cell.selectionStyle = .default
+            }
+            cell.contentConfiguration = content
+            return cell
+        }
         let cell = tableView.dequeueReusableCell(withIdentifier: IvyAgendaCell.reuseIdentifier, for: indexPath)
         let item = sections[indexPath.section].items[indexPath.row]
         (cell as? IvyAgendaCell)?.configure(item: item, title: title(for: item), detail: detail(for: item))
@@ -470,6 +508,12 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        if isEmptyDay(indexPath.section) {
+            if indexPath.row == 1 {
+                ivyPresentEventEditor(newEventDraft(), isNew: true)
+            }
+            return
+        }
         open(sections[indexPath.section].items[indexPath.row])
     }
 
@@ -485,6 +529,9 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
     }
 
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        guard !isEmptyDay(indexPath.section) else {
+            return nil
+        }
         let item = sections[indexPath.section].items[indexPath.row]
         return UIContextMenuConfiguration(actionProvider: { _ in
             UIMenu(children: IvyCalendarUI.menuActions(for: item))
@@ -492,7 +539,10 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
     }
 
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        IvyCalendarUI.swipeActions(for: sections[indexPath.section].items[indexPath.row])
+        guard !isEmptyDay(indexPath.section) else {
+            return nil
+        }
+        return IvyCalendarUI.swipeActions(for: sections[indexPath.section].items[indexPath.row])
     }
 
     private func openReminder(_ reminder: IvyReminder) {
@@ -562,22 +612,6 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
         }
         start = max(start, selectedDay)
         return IvyEvent(title: "", startAt: start, endAt: start.addingTimeInterval(60 * 60))
-    }
-
-    private func todayBarButton() -> UIBarButtonItem {
-        let item = UIBarButtonItem(
-            title: IvyLocalizedString("CALENDAR_TODAY", comment: "Button that goes back to today."),
-            image: nil,
-            primaryAction: UIAction { [weak self] _ in
-                guard let self else { return }
-                selectInWeek(Date())
-                if mode == .agenda {
-                    tableView.setContentOffset(CGPoint(x: 0, y: -tableView.adjustedContentInset.top), animated: true)
-                }
-            },
-            menu: nil,
-        )
-        return item
     }
 
     private func moreButton() -> UIBarButtonItem {
