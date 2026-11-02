@@ -111,6 +111,23 @@ final class IvyPushRelayViewController: OWSTableViewController2 {
         }
     }
 
+    /// How this device's wake-ups turned out over the last week.
+    private func wakeStatsSection() -> OWSTableSection {
+        let totals = IvyWakeStats.lastWeek()
+        let section = OWSTableSection()
+        section.headerTitle = IvyLocalizedString("PUSH_RELAY_WAKES_HEADER", comment: "Header of the push relay's wake-up counts for the last seven days.")
+        section.footerTitle = IvyLocalizedString("PUSH_RELAY_WAKES_FOOTER", comment: "Explains the push relay's wake-up counts.")
+        let rows: [(IvyWakeStats.Outcome, String)] = [
+            (.message, IvyLocalizedString("PUSH_RELAY_WAKES_MESSAGE", comment: "Wake-ups that brought a new message.")),
+            (.alreadyShown, IvyLocalizedString("PUSH_RELAY_WAKES_ALREADY_SHOWN", comment: "Wake-ups that brought nothing new while a message notification was still shown.")),
+            (.empty, IvyLocalizedString("PUSH_RELAY_WAKES_EMPTY", comment: "Wake-ups that brought nothing new and showed the silent fallback.")),
+        ]
+        for (outcome, title) in rows {
+            section.add(.item(name: title, accessoryText: (totals[outcome] ?? 0).formatted()))
+        }
+        return section
+    }
+
     private func updateTableContents() {
         let relay = IvyPushRelay.shared
         let builtInRelay = IvyPushRelay.builtInRelayURL
@@ -179,6 +196,7 @@ final class IvyPushRelayViewController: OWSTableViewController2 {
                 ))
             }
             contents.add(statusSection)
+            contents.add(wakeStatsSection())
         }
 
         // Any relay can be entered by hand, for example one's own.

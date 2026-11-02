@@ -107,10 +107,13 @@ class NotificationService: UNNotificationServiceExtension {
             if capturesWake {
                 await IvyWakeCapture.removeFallbacks()
                 if let message = IvyWakeCapture.shared.end() {
+                    IvyWakeStats.record(.message)
                     self.completeSilently(content: Self.ivyWakeContent(message, badge: content.badge), logger: logger)
                 } else if let repeated = await IvyWakeCapture.quietRepeatOfNewestMessage(badge: content.badge) {
+                    IvyWakeStats.record(.alreadyShown)
                     self.completeSilently(content: repeated, logger: logger)
                 } else {
+                    IvyWakeStats.record(.empty)
                     self.completeSilently(content: IvyWakeCapture.fallbackContent(request.content, badge: content.badge), logger: logger)
                 }
                 return
@@ -214,12 +217,14 @@ class NotificationService: UNNotificationServiceExtension {
 
         // Ivy: a message already found still replaces the wake-up push.
         if let message = IvyWakeCapture.shared.end() {
+            IvyWakeStats.record(.message)
             completeSilently(content: Self.ivyWakeContent(message, badge: nil), logger: logger)
             return
         }
         // Ivy: otherwise the wake-up's own text shows; mark it, so it goes
         // away once the message shows.
         if let wakeContent = ivyWakeContent.swap(nil) {
+            IvyWakeStats.record(.empty)
             completeSilently(content: IvyWakeCapture.fallbackContent(wakeContent, badge: nil), logger: logger)
             return
         }

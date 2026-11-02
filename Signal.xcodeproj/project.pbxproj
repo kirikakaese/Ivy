@@ -4321,6 +4321,8 @@
 		DF680DE6AC7F608591FC1E61 /* IvyStatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C910D6614E56E6A309F903B4 /* IvyStatusViewController.swift */; };
 		AED2F797D7BF95624F8E64E3 /* IvyStatusReportTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC489E36CAFA9E093D2C68E1 /* IvyStatusReportTest.swift */; };
 		695B591532B8CC95579AE214 /* IvyStatusScreenTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF0636B6B0A829AB1104EB0 /* IvyStatusScreenTest.swift */; };
+		195810D75BE50E39613B5DFD /* IvyWakeStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430DB6D86CD38C649B4A39DA /* IvyWakeStats.swift */; };
+		DD47D61935DC095125CEEB98 /* IvyWakeStatsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14D65251D7791720F81CA0B /* IvyWakeStatsTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8972,6 +8974,8 @@
 		C910D6614E56E6A309F903B4 /* IvyStatusViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyStatusViewController.swift; sourceTree = "<group>"; };
 		CC489E36CAFA9E093D2C68E1 /* IvyStatusReportTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyStatusReportTest.swift; sourceTree = "<group>"; };
 		BCF0636B6B0A829AB1104EB0 /* IvyStatusScreenTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyStatusScreenTest.swift; sourceTree = "<group>"; };
+		430DB6D86CD38C649B4A39DA /* IvyWakeStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWakeStats.swift; sourceTree = "<group>"; };
+		F14D65251D7791720F81CA0B /* IvyWakeStatsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWakeStatsTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16591,6 +16595,7 @@
 				F92FCBD4550A03DF0E3E7739 /* IvyPushRelayTest.swift */,
 				7190A714556E022D7A05A881 /* IvyServiceStatusTest.swift */,
 				CC489E36CAFA9E093D2C68E1 /* IvyStatusReportTest.swift */,
+				F14D65251D7791720F81CA0B /* IvyWakeStatsTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16993,6 +16998,7 @@
 				0697B7D510135EED2E47C147 /* IvyWakeCapture.swift */,
 				EC3B0A53CECB7F613655137D /* IvyServiceStatus.swift */,
 				4C9720F2A279904F9925D5C2 /* IvyStatusReport.swift */,
+				430DB6D86CD38C649B4A39DA /* IvyWakeStats.swift */,
 			);
 			path = Push;
 			sourceTree = "<group>";
@@ -21776,6 +21782,7 @@
 				5FE41E5D7E3A82C9B6F6D5CD /* IvyWakeCapture.swift in Sources */,
 				F9085954DDFD6A35FCEA92FD /* IvyServiceStatus.swift in Sources */,
 				E92110F7975EB1E557853C01 /* IvyStatusReport.swift in Sources */,
+				195810D75BE50E39613B5DFD /* IvyWakeStats.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22077,6 +22084,7 @@
 				5860C3EB166CCD33F4161B63 /* IvyPushRelayTest.swift in Sources */,
 				1D8519ECC1B055EDE25CCF42 /* IvyServiceStatusTest.swift in Sources */,
 				AED2F797D7BF95624F8E64E3 /* IvyStatusReportTest.swift in Sources */,
+				DD47D61935DC095125CEEB98 /* IvyWakeStatsTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
