@@ -31,11 +31,11 @@ public class ContextMenuReactionBarAccessory: ContextMenuTargetedPreviewAccessor
         let isIncomingMessage = itemViewModel?.interaction.interactionType == .incomingMessage
         let alignmentOffset = isIncomingMessage && thread.isGroupThread ? 22 : 0
         let horizontalEdgeAlignment: ContextMenuTargetedPreviewAccessory.AccessoryAlignment.Edge = isIncomingMessage ? (isRTL ? .trailing : .leading) : (isRTL ? .leading : .trailing)
-        // Ivy: the bar sits under the message, above the actions, where a
-        // thumb reaches it. In landscape it stays above the message.
-        let alignment = ContextMenuTargetedPreviewAccessory.AccessoryAlignment(alignments: [(.bottom, .exterior), (horizontalEdgeAlignment, .interior)], alignmentOffset: CGPoint(x: CGFloat(alignmentOffset), y: Self.gapBelowMessage))
+        let alignment = ContextMenuTargetedPreviewAccessory.AccessoryAlignment(alignments: [(.top, .exterior), (horizontalEdgeAlignment, .interior)], alignmentOffset: CGPoint(x: alignmentOffset, y: 12))
         super.init(accessoryView: reactionPicker, accessoryAlignment: alignment)
-        landscapeAccessoryAlignment = ContextMenuTargetedPreviewAccessory.AccessoryAlignment(alignments: [(.top, .exterior), (horizontalEdgeAlignment, .interior)], alignmentOffset: CGPoint(x: alignmentOffset, y: 12))
+        // Ivy: in portrait the bar sits at the bottom of the screen, where a
+        // thumb reaches it; in landscape it stays above the message.
+        ivyPinnedToBottom = true
         reactionPicker.delegate = self
         reactionPicker.isHidden = true
 
@@ -47,15 +47,6 @@ public class ContextMenuReactionBarAccessory: ContextMenuTargetedPreviewAccessor
         highlightClickGestureRecognizer.buttonMaskRequired = [.primary]
         reactionPicker.addGestureRecognizer(highlightClickGestureRecognizer)
         self.highlightClickGestureRecognizer = highlightClickGestureRecognizer
-    }
-
-    // Ivy: space between the message and the bar, and between the bar and
-    // the actions under it.
-    static let gapBelowMessage: CGFloat = 12
-
-    /// How far the actions move down to make room for the bar.
-    static var actionsOffset: CGFloat {
-        gapBelowMessage + MessageReactionPicker.contextMenuHeight + gapBelowMessage
     }
 
     override func animateIn(

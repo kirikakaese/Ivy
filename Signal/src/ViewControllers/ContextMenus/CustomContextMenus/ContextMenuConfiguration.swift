@@ -103,6 +103,10 @@ public class ContextMenuTargetedPreviewAccessory {
     var accessoryAlignment: AccessoryAlignment
     var landscapeAccessoryAlignment: AccessoryAlignment?
 
+    // Ivy: an accessory pinned to the bottom of the screen, in thumb reach,
+    // in portrait. The preview and the other accessories stay above it.
+    var ivyPinnedToBottom: Bool = false
+
     var animateAccessoryPresentationAlongsidePreview: Bool = false
     var targetAnimateOutFrame: CGRect?
 
