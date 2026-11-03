@@ -87,8 +87,6 @@
 /* Backup settings: the user's paid backup plan was bought in Signal's own app, which Ivy uses but can't manage. */
 "BACKUP_PLAN_MANAGED_IN_SIGNAL" = "Dein Abo wurde in der Signal-App abgeschlossen. Ivy nutzt es mit; verlängern oder verwalten kannst du es in Signal.";
 
-
-
 /* Shown in the calendar when nothing is planned for the shown dates. */
 "CALENDAR_EMPTY" = "Nichts geplant.";
 
@@ -1225,6 +1223,21 @@
 
 /* Button that connects Ivy to a push relay other than the current one. */
 "PUSH_RELAY_USE_OTHER" = "Anderes Relay verwenden";
+
+/* Wake-ups that brought nothing new while a message notification was still shown. */
+"PUSH_RELAY_WAKES_ALREADY_SHOWN" = "Nachricht schon angezeigt";
+
+/* Wake-ups that brought nothing new and showed the silent fallback. */
+"PUSH_RELAY_WAKES_EMPTY" = "Nichts Neues";
+
+/* Explains the push relay's wake-up counts. */
+"PUSH_RELAY_WAKES_FOOTER" = "Nur auf diesem Gerät gezählt. „Nichts Neues“ heißt meist, dass Ivy die Nachricht schon selbst geholt hatte, etwa während es offen war; bis Apple das Ausblenden dieser Weckrufe erlaubt, hinterlassen sie einen stillen Hinweis in der Mitteilungszentrale.";
+
+/* Header of the push relay's wake-up counts for the last seven days. */
+"PUSH_RELAY_WAKES_HEADER" = "Weckrufe, letzte 7 Tage";
+
+/* Wake-ups that brought a new message. */
+"PUSH_RELAY_WAKES_MESSAGE" = "Mit neuer Nachricht";
 
 /* Text of the daily summary of muted chats. Embeds {{ number of messages }} and {{ number of chats }}. */
 "QUIET_SUMMARY_BODY_FORMAT" = "%1$@ ungelesene Nachrichten in %2$@ Chats";

@@ -119,7 +119,9 @@ While Ivy is open on a device that uses the relay, it reads the status data from
 - an open incident, with its title and latest update, then a problem the relay found by itself, then maintenance; a notice shows in the chat list only, without the badge;
 - *Can't reach Ivy Push* when the relay didn't answer twice in a row while the device was online.
 
-The banner opens the status page; its arrow collapses it to the title until the next, different problem.
+The banner's Ivy Status button opens the status screen in Ivy; Hide details folds it to the title until the next, different problem.
+
+Under Push Relay, Ivy counts how this device's wake-ups of the last 7 days turned out: with a new message, with the message already shown, or with nothing new. The counts stay on the device; the relay can't tell these cases apart.
 
 Signal's own status page (status.signal.org) offers no data to read, so the relay checks `https://chat.signal.org/` itself. To check a different address, set `SIGNAL_CHECK_URL` for the `ivy-gateway` service; `off` leaves Signal out.
 

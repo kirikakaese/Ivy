@@ -110,6 +110,9 @@ public class MessageFetchBGRefreshTask {
     private func performTask(_ task: BGTask) {
         Logger.info("performing background fetch")
         Task {
+            // Ivy: leftover "You may have new messages" go away even when
+            // Ivy isn't opened for a while.
+            await IvyWakeCapture.removeFallbacks()
             let backgroundMessageFetcher = self.backgroundMessageFetcherFactory.buildFetcher()
             let result = await Result {
                 try await withCooperativeTimeout(seconds: 27) {
