@@ -346,9 +346,11 @@ public class ChatHistoryContextMenuInteraction: ContextMenuInteraction {
         let isIncomingMessage = itemViewModel.interaction.interactionType == .incomingMessage
         let isMessageType = itemViewModel.interaction.interactionType == .outgoingMessage || isIncomingMessage
         let horizontalEdgeAlignment: ContextMenuTargetedPreviewAccessory.AccessoryAlignment.Edge = isIncomingMessage ? (isRTL ? .trailing : .leading) : (isRTL ? .leading : .trailing)
-        let alignment = ContextMenuTargetedPreviewAccessory.AccessoryAlignment(alignments: [(.bottom, .exterior), (horizontalEdgeAlignment, .interior)], alignmentOffset: CGPoint(x: 0, y: 12))
+        // Ivy: with a reaction bar under the message, the actions start below it.
+        let hasReactionBar = targetedPreview.accessoryViews.contains { $0 is ContextMenuReactionBarAccessory }
+        let alignment = ContextMenuTargetedPreviewAccessory.AccessoryAlignment(alignments: [(.bottom, .exterior), (horizontalEdgeAlignment, .interior)], alignmentOffset: CGPoint(x: 0, y: hasReactionBar ? ContextMenuReactionBarAccessory.actionsOffset : 12))
         let accessory = ContextMenuActionsAccessory(menu: menu, accessoryAlignment: alignment)
-        let landscapeAlignmentOffset = isMessageType ? CGPoint(x: 12, y: 0) : alignment.alignmentOffset
+        let landscapeAlignmentOffset = isMessageType ? CGPoint(x: 12, y: 0) : CGPoint(x: 0, y: 12)
         let horizontalLandscapeEdgeAlignment: ContextMenuTargetedPreviewAccessory.AccessoryAlignment.Edge = isIncomingMessage ? (isRTL ? .leading : .trailing) : (isRTL ? .trailing : .leading)
         accessory.landscapeAccessoryAlignment = ContextMenuTargetedPreviewAccessory.AccessoryAlignment(alignments: [isMessageType ? (.top, .interior) : (.bottom, .exterior), (horizontalLandscapeEdgeAlignment, .exterior)], alignmentOffset: landscapeAlignmentOffset)
         accessory.delegate = self
