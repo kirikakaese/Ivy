@@ -42,6 +42,10 @@ class MessageReactionPicker: UIStackView {
         static let selectedBackgroundHeight = pickerHeight - 4
     }
 
+    // Ivy: the context menu leaves this much room for the bar between the
+    // message and its actions.
+    static var contextMenuHeight: CGFloat { LayoutConstants.pickerHeight }
+
     enum Emoji: Equatable {
         case emoji(String)
         case more
