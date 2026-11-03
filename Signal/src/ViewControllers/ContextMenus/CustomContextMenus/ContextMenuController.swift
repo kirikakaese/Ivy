@@ -95,6 +95,38 @@ private class ContextMenuHostView: UIView {
 
     private let minPreviewScaleFactor: CGFloat = 0.1
 
+    // Ivy: accessories pinned to the bottom, and the room they take there.
+    private var ivyIsLandscape: Bool {
+        UIDevice.current.isIPad ? false : bounds.size.width > bounds.size.height
+    }
+
+    private func ivyIsPinned(_ accessory: ContextMenuTargetedPreviewAccessory) -> Bool {
+        accessory.ivyPinnedToBottom && !ivyIsLandscape
+    }
+
+    private static let ivyPinnedGap: CGFloat = 12
+
+    /// The content area for the preview and the other accessories: the
+    /// bottom leaves room for the pinned ones.
+    private var ivyContentRect: CGRect {
+        var rect = bounds.inset(by: contentAreaInsets)
+        let pinned = (accessoryViews ?? []).filter { ivyIsPinned($0) }
+        for accessory in pinned {
+            accessory.accessoryView.sizeToFit()
+            rect.size.height -= accessory.accessoryView.frame.height + Self.ivyPinnedGap
+        }
+        return rect
+    }
+
+    private func ivyLayoutPinned(_ accessory: ContextMenuTargetedPreviewAccessory) {
+        let contentRect = bounds.inset(by: contentAreaInsets)
+        accessory.accessoryView.sizeToFit()
+        var frame = accessory.accessoryView.frame
+        frame.origin.x = max(contentRect.minX, contentRect.midX - frame.width / 2)
+        frame.origin.y = contentRect.maxY - frame.height
+        accessory.accessoryView.frame = frame
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
         blurView?.frame = bounds
@@ -127,6 +159,12 @@ private class ContextMenuHostView: UIView {
                     continue
                 }
 
+                // Ivy: pinned accessories sit at the bottom, apart from the rest.
+                if ivyIsPinned(accessory) {
+                    ivyLayoutPinned(accessory)
+                    continue
+                }
+
                 layoutAccessoryView(accessory, auxVerticalOffset: auxVerticalOffset)
 
                 var frame = accessory.accessoryView.frame
@@ -140,7 +178,7 @@ private class ContextMenuHostView: UIView {
                         }
 
                         // Shrink accessory view if needed
-                        let contentBounds = bounds.inset(by: contentAreaInsets)
+                        let contentBounds = ivyContentRect // Ivy: above pinned accessories
                         if frame.maxY > contentBounds.maxY {
                             frame.size.height -= frame.maxY - contentBounds.maxY
                         }
@@ -160,7 +198,8 @@ private class ContextMenuHostView: UIView {
         var previewFrame = previewSourceFrame
         let auxPreviewFrame = auxPreviewSourceFrame
         let auxVerticalOffset = max(auxPreviewFrame.maxY - previewSourceFrame.maxY, 0)
-        let contentRect = bounds.inset(by: contentAreaInsets)
+        let contentRect = ivyContentRect // Ivy: above pinned accessories
+        let accessoryViews = self.accessoryViews?.filter { !ivyIsPinned($0) }
 
         // Check for Y-offset shift first, aligning to bottom accessory
         let minX: CGFloat = accessoryViews?.map { accessoryFrame($0, previewFrame: previewFrame, auxVerticalOffset: auxVerticalOffset).x }.min() ?? 0
@@ -291,7 +330,7 @@ private class ContextMenuHostView: UIView {
     private func adjustAccessoryFrameForContentRect(_ accessoryFrame: CGRect) -> CGRect {
         var updatedFrame = accessoryFrame
         // Adjust accessory horizontal/vertical overlap if needed
-        let contentRect = bounds.inset(by: contentAreaInsets)
+        let contentRect = ivyContentRect // Ivy: above pinned accessories
         if accessoryFrame.maxY > contentRect.maxY {
             let adjust = accessoryFrame.maxY - contentRect.maxY
             updatedFrame.y -= adjust
