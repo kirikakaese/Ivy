@@ -56,12 +56,21 @@ public struct IvyStatusReport: Codable, Equatable, Sendable {
         public var time: Date
         public var step: String
         public var message: String
+        /// The message in German, when one was written.
+        public var messageDe: String?
+
+        /// The message in the app's language.
+        public var localizedMessage: String {
+            IvyStatusLanguage.pick(message, german: messageDe)
+        }
     }
 
     public struct Post: Codable, Equatable, Sendable {
         public var id: String
         public var kind: String
         public var title: String
+        /// The title in German, when one was written.
+        public var titleDe: String?
         public var impact: String?
         /// The affected services, by name.
         public var components: [String]?
@@ -70,6 +79,11 @@ public struct IvyStatusReport: Codable, Equatable, Sendable {
         public var created: Date
         public var closed: Date?
         public var updates: [Update]?
+
+        /// The title in the app's language.
+        public var localizedTitle: String {
+            IvyStatusLanguage.pick(title, german: titleDe)
+        }
     }
 
     /// ok, maintenance, degraded, down or unknown.
@@ -154,5 +168,20 @@ public struct IvyStatusReport: Codable, Equatable, Sendable {
             }
             return (report, date)
         }
+    }
+}
+
+/// Status posts are written in English and, optionally, German. German
+/// devices show the German text when there is one.
+public enum IvyStatusLanguage {
+    public static var prefersGerman: Bool {
+        Bundle.main.preferredLocalizations.first?.hasPrefix("de") == true
+    }
+
+    public static func pick(_ english: String, german: String?, prefersGerman: Bool = IvyStatusLanguage.prefersGerman) -> String {
+        guard prefersGerman, let german = german?.trimmingCharacters(in: .whitespacesAndNewlines), !german.isEmpty else {
+            return english
+        }
+        return german
     }
 }

@@ -127,6 +127,7 @@ type publicPost struct {
 	ID         string       `json:"id"`
 	Kind       string       `json:"kind"`
 	Title      string       `json:"title"`
+	TitleDE    string       `json:"titleDe,omitempty"`
 	Impact     string       `json:"impact,omitempty"`
 	Components []string     `json:"components"`
 	Starts     *time.Time   `json:"starts,omitempty"`
@@ -169,7 +170,7 @@ func toPublicPost(item post) publicPost {
 		}
 	}
 	return publicPost{
-		ID: item.ID, Kind: item.Kind, Title: item.Title, Impact: item.Impact, Components: names,
+		ID: item.ID, Kind: item.Kind, Title: item.Title, TitleDE: item.TitleDE, Impact: item.Impact, Components: names,
 		Starts: item.Starts, Ends: item.Ends, Created: item.Created, Closed: item.Closed, Updates: item.Updates,
 	}
 }

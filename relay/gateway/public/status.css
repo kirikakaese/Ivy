@@ -16,7 +16,7 @@
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #0f1411;
     --surface: #161d18;
     --border: #2a352d;
@@ -33,6 +33,23 @@
     --none: #2c362f;
     color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1411;
+  --surface: #161d18;
+  --border: #2a352d;
+  --fg: #e6ece7;
+  --muted: #93a197;
+  --ok: #5cc48a;
+  --ok-soft: #1d3326;
+  --maint: #7aa7e0;
+  --maint-soft: #1c2a3d;
+  --warn: #e2a948;
+  --warn-soft: #33281a;
+  --bad: #ef7a72;
+  --bad-soft: #3a1f1d;
+  --none: #2c362f;
+  color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body {
@@ -51,6 +68,15 @@ p { margin: 0; }
 .muted { color: var(--muted); }
 .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
 .brand p { font-size: 14px; }
+.brand-text { flex: 1; min-width: 0; }
+.switches { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); }
+.seg button { font: inherit; font-size: 12px; font-weight: 650; letter-spacing: 0.04em; color: var(--muted); background: none; border: 0; border-radius: 999px; min-width: 32px; height: 28px; padding: 0 9px; cursor: pointer; display: inline-grid; place-items: center; }
+.seg button:hover { color: var(--fg); }
+.seg button[aria-pressed="true"] { background: var(--ok-soft); color: var(--ok); }
+.seg button:focus-visible { outline: 2px solid var(--ok); outline-offset: 1px; }
+.seg svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+.seg svg .fill { fill: currentColor; stroke: none; }
 .leaf { width: 32px; height: 32px; border-radius: 50% 50% 50% 4px; background: var(--ok); transform: rotate(-45deg); flex: none; }
 
 .hero { display: flex; gap: 16px; align-items: flex-start; padding: 22px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); }
@@ -145,6 +171,8 @@ p { margin: 0; }
 .about { display: grid; gap: 8px; font-size: 14px; max-width: 64ch; }
 @media (max-width: 620px) {
   .wrap { padding-top: 28px; }
+  .brand { flex-wrap: wrap; }
+  .switches { width: 100%; justify-content: flex-start; padding-left: 46px; }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .days { gap: 1px; }
 }

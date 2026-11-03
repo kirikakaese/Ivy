@@ -132,7 +132,7 @@ func TestPublicStatusRevealsNoUsage(t *testing.T) {
 			t.Fatalf("public status contains %q: %s", secret, body)
 		}
 	}
-	for _, path := range []string{"/status/", "/status/status.js", "/status/status.css"} {
+	for _, path := range []string{"/status/", "/status/status.js", "/status/status.css", "/status/theme.js"} {
 		if rec := get(path); rec.Code != http.StatusOK {
 			t.Fatalf("%s: %d", path, rec.Code)
 		}

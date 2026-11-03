@@ -28,13 +28,13 @@ func TestPostLifecycle(t *testing.T) {
 	if !incident.active(now) || incident.effect() != statusDown {
 		t.Fatal("a major incident takes its components down")
 	}
-	if err := p.update(incident.ID, "completed", ""); err == nil {
+	if err := p.update(incident.ID, "completed", "", ""); err == nil {
 		t.Fatal("maintenance steps don't apply to incidents")
 	}
-	if err := p.update(incident.ID, "resolved", "Fixed."); err != nil {
+	if err := p.update(incident.ID, "resolved", "Fixed.", ""); err != nil {
 		t.Fatal(err)
 	}
-	if err := p.update(incident.ID, "monitoring", ""); err == nil {
+	if err := p.update(incident.ID, "monitoring", "", ""); err == nil {
 		t.Fatal("a resolved incident takes no more updates")
 	}
 
@@ -246,6 +246,15 @@ func TestAdminPostsAPI(t *testing.T) {
 	if rec := send(http.MethodGet, "/admin/posts", "", nil); rec.Code != http.StatusOK || !strings.Contains(rec.Body.String(), `"resolved"`) {
 		t.Fatalf("list: %d", rec.Code)
 	}
+	if rec := send(http.MethodPatch, "/admin/posts/"+created.ID, `{"titleDe":"Späte Mitteilungen","messagesDe":["Wir schauen nach.","Behoben."]}`, sameSite); rec.Code != http.StatusNoContent {
+		t.Fatalf("translate: %d %s", rec.Code, rec.Body)
+	}
+	if rec := send(http.MethodPatch, "/admin/posts/"+created.ID, `{"titleDe":"x"}`, map[string]string{"Content-Type": "application/json", "Sec-Fetch-Site": "cross-site"}); rec.Code != http.StatusForbidden {
+		t.Fatalf("cross-site translate: %d", rec.Code)
+	}
+	if rec := send(http.MethodGet, "/admin/posts", "", nil); !strings.Contains(rec.Body.String(), `"messageDe":"Behoben."`) {
+		t.Fatalf("translated list: %s", rec.Body)
+	}
 	if rec := send(http.MethodDelete, "/admin/posts/"+created.ID, "", map[string]string{"Sec-Fetch-Site": "cross-site"}); rec.Code != http.StatusForbidden {
 		t.Fatalf("cross-site delete: %d", rec.Code)
 	}
@@ -289,10 +298,10 @@ func TestResolvedNoticesStayListed(t *testing.T) {
 	m := testMonitor("http://127.0.0.1:1", "")
 	resolved, _ := m.posts.create(postInput{Kind: kindNotice, Title: "Delays after a server move"})
 	removed, _ := m.posts.create(postInput{Kind: kindNotice, Title: "Typo"})
-	if err := m.posts.update(resolved.ID, "resolved", "All caught up."); err != nil {
+	if err := m.posts.update(resolved.ID, "resolved", "All caught up.", ""); err != nil {
 		t.Fatal(err)
 	}
-	if err := m.posts.update(removed.ID, "removed", ""); err != nil {
+	if err := m.posts.update(removed.ID, "removed", "", ""); err != nil {
 		t.Fatal(err)
 	}
 	view := m.publicView()
@@ -304,7 +313,7 @@ func TestResolvedNoticesStayListed(t *testing.T) {
 func TestIncidentsAndMaintenanceAreMarked(t *testing.T) {
 	m := testMonitor("http://127.0.0.1:1", "")
 	incident, _ := m.posts.create(postInput{Kind: kindIncident, Title: "Relay unreachable", Impact: impactMajor, Components: []string{"relay"}})
-	_ = m.posts.update(incident.ID, "resolved", "")
+	_ = m.posts.update(incident.ID, "resolved", "", "")
 	_, _ = m.posts.create(postInput{Kind: kindNotice, Title: "New build"})
 	later := time.Now().Add(48 * time.Hour)
 	end := later.Add(time.Hour)
@@ -312,5 +321,39 @@ func TestIncidentsAndMaintenanceAreMarked(t *testing.T) {
 	view := m.publicView()
 	if len(view.Marked) != 1 || view.Marked[0].Title != "Relay unreachable" || view.Marked[0].Components[0] != "Ivy Push relay" {
 		t.Fatalf("marked %+v", view.Marked)
+	}
+}
+
+func TestPostsCarryGermanTexts(t *testing.T) {
+	m := testMonitor("http://127.0.0.1:1", "")
+	notice, err := m.posts.create(postInput{Kind: kindNotice, Title: "Notifications are being improved", TitleDE: " Benachrichtigungen werden verbessert ", Message: "We're working on it.", MessageDE: "Wir arbeiten daran."})
+	if err != nil || notice.TitleDE != "Benachrichtigungen werden verbessert" || notice.Updates[0].MessageDE != "Wir arbeiten daran." {
+		t.Fatalf("%v %+v", err, notice)
+	}
+	if err := m.posts.update(notice.ID, "resolved", "Done.", "Erledigt."); err != nil {
+		t.Fatal(err)
+	}
+	english, _ := m.posts.create(postInput{Kind: kindNotice, Title: "Only English"})
+	if err := m.posts.translate(english.ID, "Nur Englisch", []string{"Übersetzt"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := m.posts.translate(english.ID, "", []string{"a", "b"}); err == nil {
+		t.Fatal("more German messages than updates")
+	}
+	view := m.publicView()
+	byTitle := map[string]publicPost{}
+	for _, p := range append(view.Active, view.Recent...) {
+		byTitle[p.Title] = p
+	}
+	if byTitle["Only English"].TitleDE != "Nur Englisch" || byTitle["Only English"].Updates[0].MessageDE != "Übersetzt" {
+		t.Fatalf("translated %+v", byTitle["Only English"])
+	}
+	resolved := byTitle["Notifications are being improved"]
+	if len(resolved.Updates) != 2 || resolved.Updates[1].MessageDE != "Erledigt." {
+		t.Fatalf("resolved %+v", resolved)
+	}
+	data, _ := json.Marshal(publicPost{Title: "x", Updates: []postUpdate{{Step: "posted"}}})
+	if strings.Contains(string(data), "titleDe") || strings.Contains(string(data), "messageDe") {
+		t.Fatalf("empty German texts are left out: %s", data)
 	}
 }

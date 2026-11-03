@@ -152,7 +152,8 @@ func sameOrigin(r *http.Request, needJSON bool) bool {
 //
 //	GET    /admin/posts                 all posts
 //	POST   /admin/posts                 new post (postInput)
-//	POST   /admin/posts/<id>/updates    new step ({"step","message"})
+//	POST   /admin/posts/<id>/updates    new step ({"step","message","messageDe"})
+//	PATCH  /admin/posts/<id>            German texts ({"titleDe","messagesDe"})
 //	DELETE /admin/posts/<id>            delete a post
 func (a *admin) servePosts(w http.ResponseWriter, r *http.Request) {
 	rest := strings.Trim(strings.TrimPrefix(r.URL.Path, "/admin/posts"), "/")
@@ -183,11 +184,20 @@ func (a *admin) servePosts(w http.ResponseWriter, r *http.Request) {
 		}
 	case r.Method == http.MethodPost && strings.HasSuffix(rest, "/updates"):
 		var in struct {
-			Step    string `json:"step"`
-			Message string `json:"message"`
+			Step      string `json:"step"`
+			Message   string `json:"message"`
+			MessageDE string `json:"messageDe"`
 		}
 		if err = json.NewDecoder(body).Decode(&in); err == nil {
-			err = a.posts.update(strings.TrimSuffix(rest, "/updates"), in.Step, in.Message)
+			err = a.posts.update(strings.TrimSuffix(rest, "/updates"), in.Step, in.Message, in.MessageDE)
+		}
+	case r.Method == http.MethodPatch && rest != "" && !strings.Contains(rest, "/"):
+		var in struct {
+			TitleDE    string   `json:"titleDe"`
+			MessagesDE []string `json:"messagesDe"`
+		}
+		if err = json.NewDecoder(body).Decode(&in); err == nil {
+			err = a.posts.translate(rest, in.TitleDE, in.MessagesDE)
 		}
 	case r.Method == http.MethodDelete && rest != "" && !strings.Contains(rest, "/"):
 		err = a.posts.remove(rest)
