@@ -19,9 +19,15 @@ class ReactionsDetailSheet: InteractiveSheetViewController {
 
     override var placeOnGlassIfAvailable: Bool { true }
 
-    init(reactionState: InteractionReactionState, message: TSMessage) {
+    // Ivy: the row at the bottom that adds a reaction, when reacting is allowed.
+    private let ivyMessage: TSMessage
+    private let ivyQuickBar: IvyQuickReactionsBar?
+
+    init(reactionState: InteractionReactionState, message: TSMessage, canReact: Bool = false) {
         self.reactionState = reactionState
         self.messageId = message.uniqueId
+        self.ivyMessage = message
+        self.ivyQuickBar = canReact ? IvyQuickReactionsBar() : nil
         self.reactionFinder = ReactionFinder(uniqueMessageId: message.uniqueId)
         super.init()
         self.animationsShouldBeInterruptible = true
@@ -46,6 +52,31 @@ class ReactionsDetailSheet: InteractiveSheetViewController {
         setupPaging()
         // Select the "all" reaction page by setting selected emoji to nil
         setSelectedEmoji(nil)
+
+        // Ivy: reacting from the sheet, in thumb reach at its bottom.
+        if let ivyQuickBar {
+            ivyQuickBar.onReact = { [weak self] emoji, isRemoving in
+                self?.ivyReact(emoji: emoji, isRemoving: isRemoving)
+            }
+            ivyQuickBar.onPickOther = { [weak self] in
+                guard let self else { return }
+                let picker = EmojiPickerSheet(message: ivyMessage) { [weak self] emoji in
+                    guard let self, let emoji = emoji?.rawValue else { return }
+                    ivyReact(emoji: emoji, isRemoving: false)
+                }
+                present(picker, animated: true)
+            }
+            ivyQuickBar.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 4, leading: 16, bottom: 12, trailing: 16)
+            stackView.addArrangedSubview(ivyQuickBar)
+            ivyUpdateQuickBar()
+        }
+    }
+
+    private func ivyUpdateQuickBar() {
+        ivyQuickBar?.update(choices: IvyQuickReactionsBar.choices(
+            emojis: reactionState.emojiCounts.map(\.emojiVariant),
+            yours: reactionState.localUserEmojiVariant,
+        ))
     }
 
     override func viewIsAppearing(_ animated: Bool) {
@@ -74,6 +105,7 @@ class ReactionsDetailSheet: InteractiveSheetViewController {
         self.reactionState = reactionState
 
         buildEmojiCountItems()
+        ivyUpdateQuickBar() // Ivy
 
         // If the currently selected emoji still exists, keep it selected.
         // Otherwise, select the "all" page by setting selected emoji to nil.

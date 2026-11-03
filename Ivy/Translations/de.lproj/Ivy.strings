@@ -1257,6 +1257,24 @@
 /* Title of the daily summary of muted chats. */
 "QUIET_SUMMARY_TITLE" = "Stumme Chats";
 
+/* Accessibility label that reacts with an emoji already on the message. Embeds {{ emoji }}. */
+"REACTIONS_QUICK_ADD_A11Y_FORMAT" = "Mit %@ reagieren";
+
+/* Button that opens all emoji to react with. */
+"REACTIONS_QUICK_OTHER" = "Andere";
+
+/* Accessibility label of the button that opens all emoji to react with. */
+"REACTIONS_QUICK_OTHER_A11Y" = "Andere Reaktion wählen";
+
+/* Accessibility label that takes your reaction back. Embeds {{ emoji }}. */
+"REACTIONS_QUICK_REMOVE_A11Y_FORMAT" = "Deine Reaktion %@ entfernen";
+
+/* Heading of the row that adds a reaction, at the bottom of a message's reactions. */
+"REACTIONS_QUICK_TITLE" = "Reagieren";
+
+/* Next to your own reaction in the row that adds a reaction; tapping it takes the reaction back. */
+"REACTIONS_QUICK_YOURS" = "Deine";
+
 /* Header of the reminders that are due. */
 "REMINDERS_DUE" = "Fällig";
 

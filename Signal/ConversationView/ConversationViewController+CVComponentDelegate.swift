@@ -377,7 +377,12 @@ extension ConversationViewController: CVComponentDelegate {
     ) {
         AssertIsOnMainThread()
 
-        let detailSheet = ReactionsDetailSheet(reactionState: reactionState, message: message)
+        // Ivy: the sheet can add a reaction where the reaction bar could.
+        let detailSheet = ReactionsDetailSheet(
+            reactionState: reactionState,
+            message: message,
+            canReact: thread.canSendReactionToThread && shouldShowReactionPickerForInteraction(message),
+        )
         self.present(detailSheet, animated: true, completion: nil)
         self.reactionsDetailSheet = detailSheet
     }
