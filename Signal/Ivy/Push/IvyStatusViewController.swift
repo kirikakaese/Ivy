@@ -880,7 +880,7 @@ final class IvyStatusPostCell: UITableViewCell {
 
     func configure(post: IvyStatusReport.Post, report: IvyStatusReport?) {
         edge.backgroundColor = Self.tone(for: post).strong
-        titleLabel.text = post.title
+        titleLabel.text = post.localizedTitle
         var meta = [IvyStatusTexts.kind(post.kind)]
         if post.kind == "maintenance", let starts = post.starts, let ends = post.ends {
             meta.append(DateIntervalFormatter.localizedString(from: starts, to: ends))
@@ -904,9 +904,9 @@ final class IvyStatusPostCell: UITableViewCell {
             let entry = UIStackView(arrangedSubviews: [headingLabel])
             entry.axis = .vertical
             entry.spacing = 2
-            if !update.message.isEmpty {
+            if !update.localizedMessage.isEmpty {
                 let message = UILabel()
-                message.text = update.message
+                message.text = update.localizedMessage
                 message.font = .dynamicTypeSubheadline
                 message.textColor = .Signal.secondaryLabel
                 message.numberOfLines = 0

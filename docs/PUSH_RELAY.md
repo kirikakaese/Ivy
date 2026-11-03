@@ -110,6 +110,8 @@ In Ivy: Settings > Notifications > Push Relay > **Instant Notifications** off. I
 - **Incidents, maintenance and notices** posted on the admin page, with their updates; resolved ones stay listed for 14 days.
 - A bar for each of the last 90 days: green, fading into the problem's colour at the top the longer it lasted. Hovering or tapping a day shows what happened, a timeline of its hours in the visitor's time and the incidents or maintenance of that day, which are also marked with a dot under the day. Each service has the same bars, folded away until opened; its summary shows its uptime and whether it was down or had trouble in the last 7 days.
 
+The page is in English and German: it follows the browser's language, and the EN | DE switch at the top changes it. Posts show their German text when one was written, otherwise the English one. Next to it, a switch picks automatic, light or dark appearance. Both choices stay in the visitor's browser only.
+
 It tells nothing about who uses the relay, how many or when. The relay checks itself once a minute; visitors never cause checks.
 
 ### In Ivy
@@ -118,6 +120,8 @@ While Ivy is open on a device that uses the relay, it reads the status data from
 
 - an open incident, with its title and latest update, then a problem the relay found by itself, then maintenance; a notice shows in the chat list only, without the badge;
 - *Can't reach Ivy Push* when the relay didn't answer twice in a row while the device was online.
+
+On devices set to German, the banner and the status screen show a post's German title and updates when they exist.
 
 The banner's Ivy Status button opens the status screen in Ivy; Hide details folds it to the title until the next, different problem.
 
@@ -135,7 +139,8 @@ Signal's own status page (status.signal.org) offers no data to read, so the rela
   - *Incident*: a title, the affected services and minor (some trouble) or major (down) impact. Add updates as it goes: investigating, identified, monitoring, resolved.
   - *Maintenance*: a start and an end; the affected services show "Maintenance" in between. Upcoming maintenance is listed on the public page.
   - *Notice*: a message without effect on the services, for example about a new build. *Resolved* ends it and keeps it under the past 14 days; *Removed* takes it off the page.
-- **Posts**: add updates, close or delete them. Changes show on the public page right away.
+  - Each post has an English and a German tab. English is required; German is optional, and a dot on the tab shows it's filled in.
+- **Posts**: add updates (with an optional German message), close or delete them. *Add German text* fills in or corrects the German title and updates of a post, also after it's closed. Each post shows EN or EN · DE. Changes show on the public page right away.
 - **Overview**: connected accounts, devices woken in the last day and week, wake-ups and failures in the last 24 hours.
 - **Wake-ups per hour** for the last 24 hours.
 - **Apple push**: last delivery, last rejection with Apple's reason, totals.

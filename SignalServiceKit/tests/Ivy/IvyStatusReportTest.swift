@@ -53,4 +53,22 @@ final class IvyStatusReportTest: XCTestCase {
         XCTAssertEqual(saved.received, received)
         XCTAssertEqual(saved.report.components.count, 2)
     }
+
+    func testGermanTextsAreReadAndPicked() throws {
+        let german = json
+            .replacingOccurrences(of: #""title":"Relay unreachable""#, with: #""title":"Relay unreachable","titleDe":"Relay nicht erreichbar""#)
+            .replacingOccurrences(of: #""message":""}"#, with: #""message":"Looking into it.","messageDe":"Wir sehen nach."}"#)
+        let post = try XCTUnwrap(IvyStatusReport.decode(Data(german.utf8)).active?.first)
+        XCTAssertEqual(post.titleDe, "Relay nicht erreichbar")
+        XCTAssertEqual(post.updates?.first?.messageDe, "Wir sehen nach.")
+
+        XCTAssertEqual(IvyStatusLanguage.pick(post.title, german: post.titleDe, prefersGerman: true), "Relay nicht erreichbar")
+        XCTAssertEqual(IvyStatusLanguage.pick(post.title, german: post.titleDe, prefersGerman: false), "Relay unreachable")
+        // Without German, or with only blanks, the English text shows.
+        XCTAssertEqual(IvyStatusLanguage.pick("Relay unreachable", german: nil, prefersGerman: true), "Relay unreachable")
+        XCTAssertEqual(IvyStatusLanguage.pick("Relay unreachable", german: "  ", prefersGerman: true), "Relay unreachable")
+
+        // Reports without German texts still decode.
+        XCTAssertNil(try IvyStatusReport.decode(Data(json.utf8)).active?.first?.titleDe)
+    }
 }

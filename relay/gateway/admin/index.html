@@ -60,7 +60,6 @@
           <option value="notice">Notice</option>
         </select>
       </label>
-      <label>Title <input id="p-title" maxlength="120" required placeholder="Notifications arrive late"></label>
       <label data-for="incident">Impact
         <select id="p-impact">
           <option value="minor">Minor: some trouble</option>
@@ -75,7 +74,19 @@
         <label>Starts <input id="p-starts" type="datetime-local"></label>
         <label>Ends <input id="p-ends" type="datetime-local"></label>
       </div>
-      <label>Message <textarea id="p-message" rows="3" maxlength="2000" placeholder="What's happening and what people can do."></textarea></label>
+      <div class="lang-tabs" id="p-lang" role="group" aria-label="Language">
+        <button type="button" data-lang="en" class="on" aria-pressed="true">English</button>
+        <button type="button" data-lang="de" aria-pressed="false">Deutsch <span class="lang-dot" hidden></span></button>
+      </div>
+      <p class="footnote">English is required. German is optional; without it, German devices and browsers see the English text.</p>
+      <div class="lang-pane" data-lang="en">
+        <label>Title <input id="p-title" maxlength="120" required placeholder="Notifications arrive late"></label>
+        <label>Message <textarea id="p-message" rows="3" maxlength="2000" placeholder="What's happening and what people can do."></textarea></label>
+      </div>
+      <div class="lang-pane" data-lang="de" hidden>
+        <label>Title (Deutsch) <input id="p-title-de" lang="de" maxlength="120" placeholder="Mitteilungen kommen verspätet"></label>
+        <label>Message (Deutsch) <textarea id="p-message-de" lang="de" rows="3" maxlength="2000" placeholder="Was los ist und was man tun kann."></textarea></label>
+      </div>
       <div class="actions">
         <button type="submit" class="primary">Publish</button>
         <span class="muted" id="p-result" role="status"></span>

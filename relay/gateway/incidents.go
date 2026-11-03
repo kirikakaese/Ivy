@@ -43,6 +43,9 @@ type postUpdate struct {
 	Time    time.Time `json:"time"`
 	Step    string    `json:"step"`
 	Message string    `json:"message"`
+	// MessageDE is the message in German, if written; English is shown
+	// without it.
+	MessageDE string `json:"messageDe,omitempty"`
 }
 
 // post is an incident, a maintenance window or a notice, written on the
@@ -51,6 +54,7 @@ type post struct {
 	ID         string       `json:"id"`
 	Kind       string       `json:"kind"`
 	Title      string       `json:"title"`
+	TitleDE    string       `json:"titleDe,omitempty"`
 	Impact     string       `json:"impact,omitempty"`
 	Components []string     `json:"components"`
 	Starts     *time.Time   `json:"starts,omitempty"`
@@ -145,17 +149,21 @@ func validStep(kind, step string) bool {
 type postInput struct {
 	Kind       string     `json:"kind"`
 	Title      string     `json:"title"`
+	TitleDE    string     `json:"titleDe"`
 	Impact     string     `json:"impact"`
 	Components []string   `json:"components"`
 	Message    string     `json:"message"`
+	MessageDE  string     `json:"messageDe"`
 	Starts     *time.Time `json:"starts"`
 	Ends       *time.Time `json:"ends"`
 }
 
 func (p *posts) create(in postInput) (*post, error) {
 	in.Title = strings.TrimSpace(in.Title)
+	in.TitleDE = strings.TrimSpace(in.TitleDE)
 	in.Message = strings.TrimSpace(in.Message)
-	if postSteps[in.Kind] == nil || in.Title == "" || len(in.Title) > 120 || len(in.Message) > 2000 {
+	in.MessageDE = strings.TrimSpace(in.MessageDE)
+	if postSteps[in.Kind] == nil || in.Title == "" || len(in.Title) > 120 || len(in.TitleDE) > 120 || len(in.Message) > 2000 || len(in.MessageDE) > 2000 {
 		return nil, errInvalidPost
 	}
 	components := []string{}
@@ -165,23 +173,23 @@ func (p *posts) create(in postInput) (*post, error) {
 		}
 	}
 	now := p.now()
-	created := &post{ID: newID(), Kind: in.Kind, Title: in.Title, Components: components, Created: now}
+	created := &post{ID: newID(), Kind: in.Kind, Title: in.Title, TitleDE: in.TitleDE, Components: components, Created: now}
 	switch in.Kind {
 	case kindIncident:
 		if in.Impact != impactMinor && in.Impact != impactMajor {
 			in.Impact = impactMinor
 		}
 		created.Impact = in.Impact
-		created.Updates = []postUpdate{{Time: now, Step: "investigating", Message: in.Message}}
+		created.Updates = []postUpdate{{Time: now, Step: "investigating", Message: in.Message, MessageDE: in.MessageDE}}
 	case kindMaintenance:
 		if in.Starts == nil || in.Ends == nil || !in.Ends.After(*in.Starts) {
 			return nil, errInvalidPost
 		}
 		created.Starts, created.Ends = in.Starts, in.Ends
-		created.Updates = []postUpdate{{Time: now, Step: "scheduled", Message: in.Message}}
+		created.Updates = []postUpdate{{Time: now, Step: "scheduled", Message: in.Message, MessageDE: in.MessageDE}}
 	case kindNotice:
 		created.Components = []string{}
-		created.Updates = []postUpdate{{Time: now, Step: "posted", Message: in.Message}}
+		created.Updates = []postUpdate{{Time: now, Step: "posted", Message: in.Message, MessageDE: in.MessageDE}}
 	}
 	p.mu.Lock()
 	p.list = append(p.list, created)
@@ -190,9 +198,10 @@ func (p *posts) create(in postInput) (*post, error) {
 }
 
 // update adds a step to a post; a final step closes it.
-func (p *posts) update(id, step, message string) error {
+func (p *posts) update(id, step, message, messageDE string) error {
 	message = strings.TrimSpace(message)
-	if len(message) > 2000 {
+	messageDE = strings.TrimSpace(messageDE)
+	if len(message) > 2000 || len(messageDE) > 2000 {
 		return errInvalidPost
 	}
 	p.mu.Lock()
@@ -202,9 +211,37 @@ func (p *posts) update(id, step, message string) error {
 		return errInvalidPost
 	}
 	now := p.now()
-	found.Updates = append(found.Updates, postUpdate{Time: now, Step: step, Message: message})
+	found.Updates = append(found.Updates, postUpdate{Time: now, Step: step, Message: message, MessageDE: messageDE})
 	if finalSteps[step] {
 		found.Closed = &now
+	}
+	p.mu.Unlock()
+	return p.save()
+}
+
+// translate sets a post's German title and the German messages of its
+// updates, oldest first; also on closed posts. Empty texts remove the
+// German version.
+func (p *posts) translate(id, titleDE string, messagesDE []string) error {
+	titleDE = strings.TrimSpace(titleDE)
+	if len(titleDE) > 120 {
+		return errInvalidPost
+	}
+	p.mu.Lock()
+	found := p.find(id)
+	if found == nil || len(messagesDE) > len(found.Updates) {
+		p.mu.Unlock()
+		return errInvalidPost
+	}
+	for _, message := range messagesDE {
+		if len(strings.TrimSpace(message)) > 2000 {
+			p.mu.Unlock()
+			return errInvalidPost
+		}
+	}
+	found.TitleDE = titleDE
+	for i, message := range messagesDE {
+		found.Updates[i].MessageDE = strings.TrimSpace(message)
 	}
 	p.mu.Unlock()
 	return p.save()

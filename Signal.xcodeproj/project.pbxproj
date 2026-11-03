@@ -4325,6 +4325,7 @@
 		DD47D61935DC095125CEEB98 /* IvyWakeStatsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14D65251D7791720F81CA0B /* IvyWakeStatsTest.swift */; };
 		A8047B0DD35E991180F83C86 /* IvyQuickReactionsBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97EFA618A1444990A92AE6C /* IvyQuickReactionsBar.swift */; };
 		626BDFF62FEE97C769D6045F /* IvyQuickReactionsBarTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2641E188B0E4376862BD27 /* IvyQuickReactionsBarTest.swift */; };
+		FA935779ADC936807B351739 /* IvyChatTopBarCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7159EF4DBA598A1B3AD202AB /* IvyChatTopBarCover.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8980,6 +8981,7 @@
 		F14D65251D7791720F81CA0B /* IvyWakeStatsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyWakeStatsTest.swift; sourceTree = "<group>"; };
 		E97EFA618A1444990A92AE6C /* IvyQuickReactionsBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyQuickReactionsBar.swift; sourceTree = "<group>"; };
 		EF2641E188B0E4376862BD27 /* IvyQuickReactionsBarTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyQuickReactionsBarTest.swift; sourceTree = "<group>"; };
+		7159EF4DBA598A1B3AD202AB /* IvyChatTopBarCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatTopBarCover.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16916,6 +16918,7 @@
 				89EFCA1003F4472813D243CD /* IvyPlannedBubbles.swift */,
 				C8563B9815CA4DABC5E55330 /* IvyDetectedItemsUI.swift */,
 				E97EFA618A1444990A92AE6C /* IvyQuickReactionsBar.swift */,
+				7159EF4DBA598A1B3AD202AB /* IvyChatTopBarCover.swift */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -20389,6 +20392,7 @@
 				3B3338E9C1ADD2B8ACAD6A88 /* IvyCalendarViews.swift in Sources */,
 				DF680DE6AC7F608591FC1E61 /* IvyStatusViewController.swift in Sources */,
 				A8047B0DD35E991180F83C86 /* IvyQuickReactionsBar.swift in Sources */,
+				FA935779ADC936807B351739 /* IvyChatTopBarCover.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
