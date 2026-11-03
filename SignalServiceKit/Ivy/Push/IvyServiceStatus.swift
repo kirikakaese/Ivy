@@ -45,12 +45,14 @@ public struct IvyServiceStatus: Equatable, Sendable {
 
         struct Update: Decodable {
             var message: String
+            var messageDe: String?
         }
 
         struct Post: Decodable {
             var id: String
             var kind: String
             var title: String
+            var titleDe: String?
             var impact: String?
             var components: [String]?
             var updates: [Update]?
@@ -91,10 +93,10 @@ public struct IvyServiceStatus: Equatable, Sendable {
     }
 
     private static func status(for post: Report.Post, level: Level) -> IvyServiceStatus {
-        let detail = post.updates?.last?.message.trimmingCharacters(in: .whitespacesAndNewlines)
+        let detail = post.updates?.last.map { IvyStatusLanguage.pick($0.message, german: $0.messageDe) }?.trimmingCharacters(in: .whitespacesAndNewlines)
         return IvyServiceStatus(
             level: level,
-            title: post.title,
+            title: IvyStatusLanguage.pick(post.title, german: post.titleDe),
             detail: detail?.isEmpty == false ? detail : nil,
             components: post.components ?? [],
             id: "post." + post.id,

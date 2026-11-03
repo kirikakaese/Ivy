@@ -240,6 +240,28 @@ async function api(method, path, body) {
   return response.status === 204 ? null : response.json();
 }
 
+// English and German fields of a form: the tabs switch between them, and a
+// dot shows when German is written.
+function setUpLanguageTabs(tabs, panes) {
+  const dot = tabs.querySelector(".lang-dot");
+  const germanFields = [...panes.find((pane) => pane.dataset.lang === "de").querySelectorAll("input, textarea")];
+  const show = (lang) => {
+    tabs.querySelectorAll("button").forEach((button) => {
+      const on = button.dataset.lang === lang;
+      button.classList.toggle("on", on);
+      button.setAttribute("aria-pressed", String(on));
+    });
+    panes.forEach((pane) => { pane.hidden = pane.dataset.lang !== lang; });
+  };
+  const mark = () => { dot.hidden = !germanFields.some((field) => field.value.trim()); };
+  tabs.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-lang]");
+    if (button) show(button.dataset.lang);
+  });
+  germanFields.forEach((field) => field.addEventListener("input", mark));
+  return { reset: () => { show("en"); mark(); } };
+}
+
 function showFormFields() {
   const kind = $("p-kind").value;
   document.querySelectorAll("#new-post [data-for]").forEach((field) => {
@@ -257,24 +279,29 @@ function postCard(post) {
   if (names.length) meta.push(names.join(", "));
 
   const updates = el("ol", {}, ...post.updates.map((u) => el("li", {},
-    el("b", {}, stepText[u.step] || u.step), ` · ${timeFormat.format(new Date(u.time))}`, u.message ? ` · ${u.message}` : "")));
+    el("b", {}, stepText[u.step] || u.step), ` · ${timeFormat.format(new Date(u.time))}`, u.message ? ` · ${u.message}` : "",
+    u.messageDe ? el("div", { class: "muted", lang: "de" }, `DE: ${u.messageDe}`) : null)));
 
+  const hasGerman = Boolean(post.titleDe) || post.updates.some((u) => u.messageDe);
   const card = el("div", { class: `post${closed ? " closed" : ""}` },
-    el("div", { class: "post-head" }, el("b", {}, post.title), el("span", { class: "chip" }, stepText[step] || step)),
+    el("div", { class: "post-head" }, el("b", {}, post.title, el("span", { class: "muted" }, hasGerman ? " · EN · DE" : " · EN")), el("span", { class: "chip" }, stepText[step] || step)),
+    post.titleDe ? el("div", { class: "muted", lang: "de" }, post.titleDe) : null,
     el("div", { class: "meta" }, meta.join(" · ")),
-    updates);
+    updates,
+    germanEditor(post));
 
   if (!closed) {
     const select = el("select", { "aria-label": "Next step" },
       ...(postMeta.steps[post.kind] || []).filter((s) => s !== step).map((s) => el("option", { value: s }, stepText[s] || s)));
     const message = el("input", { placeholder: "Message (optional)", maxlength: "2000", "aria-label": "Message" });
+    const messageDe = el("input", { placeholder: "Auf Deutsch (optional)", lang: "de", maxlength: "2000", "aria-label": "Message in German" });
     const button = el("button", { type: "submit" }, "Add update");
     card.append(el("form", {
       onsubmit: async (event) => {
         event.preventDefault();
         button.disabled = true;
         try {
-          await api("POST", `posts/${post.id}/updates`, { step: select.value, message: message.value });
+          await api("POST", `posts/${post.id}/updates`, { step: select.value, message: message.value, messageDe: messageDe.value });
           await loadPosts();
           refresh();
         } catch (error) {
@@ -282,7 +309,7 @@ function postCard(post) {
           button.textContent = "Didn't work, try again";
         }
       },
-    }, select, message, button));
+    }, select, message, messageDe, button));
   }
 
   let confirming = false;
@@ -305,6 +332,32 @@ function postCard(post) {
   return card;
 }
 
+// German title and messages for a post that has them missing or wrong.
+function germanEditor(post) {
+  const title = el("input", { value: post.titleDe || "", lang: "de", maxlength: "120", placeholder: post.title });
+  const messages = post.updates.map((u) => el("textarea", { rows: "2", lang: "de", maxlength: "2000", placeholder: u.message || "" }, u.messageDe || ""));
+  const save = el("button", { type: "submit" }, "Save German text");
+  return el("details", {},
+    el("summary", {}, post.titleDe || post.updates.some((u) => u.messageDe) ? "Edit German text" : "Add German text"),
+    el("form", {
+      onsubmit: async (event) => {
+        event.preventDefault();
+        save.disabled = true;
+        try {
+          await api("PATCH", `posts/${post.id}`, { titleDe: title.value, messagesDe: messages.map((m) => m.value) });
+          await loadPosts();
+          refresh();
+        } catch (error) {
+          save.disabled = false;
+          save.textContent = "Didn't work, try again";
+        }
+      },
+    },
+    el("label", {}, "Title (Deutsch)", title),
+    ...post.updates.map((u, i) => el("label", {}, `${stepText[u.step] || u.step} (Deutsch)`, messages[i])),
+    save));
+}
+
 async function loadPosts() {
   try {
     const data = await api("GET", "posts");
@@ -322,14 +375,17 @@ async function loadPosts() {
 }
 
 $("p-kind").addEventListener("change", showFormFields);
+const newPostLanguages = setUpLanguageTabs($("p-lang"), [...document.querySelectorAll("#new-post .lang-pane")]);
 $("new-post").addEventListener("submit", async (event) => {
   event.preventDefault();
   const kind = $("p-kind").value;
   const body = {
     kind,
     title: $("p-title").value,
+    titleDe: $("p-title-de").value,
     impact: $("p-impact").value,
     message: $("p-message").value,
+    messageDe: $("p-message-de").value,
     components: [...document.querySelectorAll("#p-components input:checked")].map((box) => box.value),
   };
   if (kind === "maintenance") {
@@ -343,6 +399,7 @@ $("new-post").addEventListener("submit", async (event) => {
   try {
     await api("POST", "posts", body);
     event.target.reset();
+    newPostLanguages.reset();
     showFormFields();
     setText("p-result", "Published.");
     await loadPosts();
