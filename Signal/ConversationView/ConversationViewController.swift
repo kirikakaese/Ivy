@@ -353,6 +353,8 @@ public final class ConversationViewController: OWSViewController {
         // Ivy: the top bar blurs the messages behind it from the start,
         // not only after the list has scrolled.
         setContentScrollView(collectionView, for: .top)
+        // Ivy: and while the chat slides in, before the system's blur starts.
+        ivyCoverTopBarWhileOpening()
 
         ensureBannerState()
 
