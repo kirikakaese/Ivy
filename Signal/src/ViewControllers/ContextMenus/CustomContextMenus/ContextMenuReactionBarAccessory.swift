@@ -33,7 +33,7 @@ public class ContextMenuReactionBarAccessory: ContextMenuTargetedPreviewAccessor
         let horizontalEdgeAlignment: ContextMenuTargetedPreviewAccessory.AccessoryAlignment.Edge = isIncomingMessage ? (isRTL ? .trailing : .leading) : (isRTL ? .leading : .trailing)
         // Ivy: the bar sits under the message, above the actions, where a
         // thumb reaches it. In landscape it stays above the message.
-        let alignment = ContextMenuTargetedPreviewAccessory.AccessoryAlignment(alignments: [(.bottom, .exterior), (horizontalEdgeAlignment, .interior)], alignmentOffset: CGPoint(x: alignmentOffset, y: Self.gapBelowMessage))
+        let alignment = ContextMenuTargetedPreviewAccessory.AccessoryAlignment(alignments: [(.bottom, .exterior), (horizontalEdgeAlignment, .interior)], alignmentOffset: CGPoint(x: CGFloat(alignmentOffset), y: Self.gapBelowMessage))
         super.init(accessoryView: reactionPicker, accessoryAlignment: alignment)
         landscapeAccessoryAlignment = ContextMenuTargetedPreviewAccessory.AccessoryAlignment(alignments: [(.top, .exterior), (horizontalEdgeAlignment, .interior)], alignmentOffset: CGPoint(x: alignmentOffset, y: 12))
         reactionPicker.delegate = self
