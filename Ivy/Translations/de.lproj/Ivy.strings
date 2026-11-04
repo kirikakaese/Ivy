@@ -927,6 +927,57 @@
 /* Switch in the chat settings that underlines requests like “Can you…” in messages. */
 "MESSAGE_DETECTION_TASKS" = "Aufgaben erkennen";
 
+/* Row at the top of the message menu's More actions that goes back to the main actions. */
+"MESSAGE_MENU_BACK" = "Zurück";
+
+/* Message menu action in the list of actions that can go under More: add to the calendar. */
+"MESSAGE_MENU_ITEM_CALENDAR" = "Zum Kalender hinzufügen";
+
+/* Message menu action in the list of actions that can go under More: edit your message. */
+"MESSAGE_MENU_ITEM_EDIT" = "Bearbeiten";
+
+/* Message menu action in the list of actions that can go under More: details of the message. */
+"MESSAGE_MENU_ITEM_INFO" = "Info";
+
+/* Message menu action in the list of actions that can go under More: pin the message in the chat. */
+"MESSAGE_MENU_ITEM_PIN" = "Fixieren";
+
+/* Message menu action in the list of actions that can go under More: remind me about the message. */
+"MESSAGE_MENU_ITEM_REMIND" = "Erinnern";
+
+/* Message menu action in the list of actions that can go under More: save an attachment. */
+"MESSAGE_MENU_ITEM_SAVE" = "Sichern";
+
+/* Message menu action in the list of actions that can go under More: share an attachment. */
+"MESSAGE_MENU_ITEM_SHARE" = "Teilen";
+
+/* Message menu action in the list of actions that can go under More: read the message aloud. */
+"MESSAGE_MENU_ITEM_SPEAK" = "Vorlesen";
+
+/* Message menu action in the list of actions that can go under More: star the message. */
+"MESSAGE_MENU_ITEM_STAR" = "Mit Stern markieren";
+
+/* Message menu action in the list of actions that can go under More: add a task. */
+"MESSAGE_MENU_ITEM_TASK" = "Aufgabe hinzufügen";
+
+/* Message menu action in the list of actions that can go under More: transcribe a voice message. */
+"MESSAGE_MENU_ITEM_TRANSCRIBE" = "Transkribieren";
+
+/* Message menu action in the list of actions that can go under More: make a task from a voice message. */
+"MESSAGE_MENU_ITEM_VOICE_TASK" = "Aufgabe aus Sprachnachricht";
+
+/* Message menu row that opens the less used actions. */
+"MESSAGE_MENU_MORE" = "Mehr";
+
+/* Footer explaining which message menu actions are always there and where the others go. */
+"MESSAGE_MENU_SETTINGS_FOOTER" = "Antworten, Kopieren, Weiterleiten und Auswählen sind immer als Symbole da, Löschen ganz unten. Ausgeschaltete Aktionen liegen unter Mehr.";
+
+/* Header above the switches that show message menu actions directly. */
+"MESSAGE_MENU_SETTINGS_HEADER" = "Direkt anzeigen";
+
+/* Title of the settings that choose which message menu actions show directly. */
+"MESSAGE_MENU_SETTINGS_TITLE" = "Nachrichtenmenü";
+
 /* Item showing whether Background App Refresh is on; opens the system settings. */
 "NOTIFICATIONS_BACKGROUND_REFRESH" = "Hintergrundaktualisierung";
 

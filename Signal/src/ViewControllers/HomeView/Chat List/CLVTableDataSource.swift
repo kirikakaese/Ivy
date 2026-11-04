@@ -445,9 +445,8 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
                 actionProvider: { [weak chatListViewController] _ in
                     guard let chatListViewController else { return nil }
                     let actions = chatListViewController.contextMenuActions(threadViewModel: threadViewModel)
-                    // Ivy: chat folders and pinned chat order
-                    let ivyActions = chatListViewController.ivyContextMenuElements(threadViewModel: threadViewModel)
-                    return UIMenu(children: ivyActions + actions)
+                    // Ivy: icons on top, reminders, chat folders, pinned order and more under "More"
+                    return chatListViewController.ivyChatMenu(signalActions: actions, threadViewModel: threadViewModel)
                 },
             )
         case .backupExportProgressView:

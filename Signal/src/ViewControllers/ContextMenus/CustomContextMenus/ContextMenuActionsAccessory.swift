@@ -332,10 +332,65 @@ private class ContextMenuActionsView: UIView, UIGestureRecognizerDelegate, UIScr
         }
     }
 
+    // Ivy: an everyday action as an icon with a short title, in a row on top.
+    private final class IvyIconCell: UIView {
+        static let height: CGFloat = 62
+        let action: ContextMenuAction
+        private let iconView = UIImageView()
+        private let label = UILabel()
+        private let highlight = UIView()
+        var isHighlighted = false {
+            didSet { highlight.isHidden = !isHighlighted }
+        }
+
+        init(action: ContextMenuAction) {
+            self.action = action
+            super.init(frame: .zero)
+            highlight.backgroundColor = .Signal.secondaryFill
+            highlight.layer.cornerRadius = 14
+            highlight.layer.cornerCurve = .continuous
+            highlight.isHidden = true
+            addSubview(highlight)
+            iconView.image = action.image
+            iconView.contentMode = .scaleAspectFit
+            iconView.tintColor = .Signal.label
+            addSubview(iconView)
+            label.text = action.title
+            label.font = .dynamicTypeCaption2
+            label.textColor = .Signal.label
+            label.textAlignment = .center
+            label.adjustsFontSizeToFitWidth = true
+            label.minimumScaleFactor = 0.7
+            addSubview(label)
+            isAccessibilityElement = true
+            accessibilityLabel = action.title
+            accessibilityTraits = .button
+        }
+
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            highlight.frame = bounds.insetBy(dx: 4, dy: 3)
+            iconView.frame = CGRect(x: (bounds.width - 24) / 2, y: 10, width: 24, height: 24)
+            label.frame = CGRect(x: 2, y: 38, width: bounds.width - 4, height: 16)
+        }
+    }
+
     weak var delegate: ContextMenuActionsViewDelegate?
     let menu: ContextMenu
 
-    private let actionViews: [ContextMenuActionRow]
+    // Ivy: the rows can change when "More" opens, so they're kept with
+    // their actions.
+    private var actionViews: [ContextMenuActionRow]
+    private var rowActions: [ContextMenuAction]
+    private var ivyIconCells: [IvyIconCell]
+    private let ivyIconSeparator = UIView()
+    private let ivyHostBlurEffect: UIBlurEffect?
+    private var ivyBackAction: ContextMenuAction?
     private let scrollView: UIScrollView
     private let backdropView: UIVisualEffectView
 
@@ -381,18 +436,10 @@ private class ContextMenuActionsView: UIView, UIGestureRecognizerDelegate, UIScr
             backdropView = UIVisualEffectView(effect: blurEffect)
         }
 
-        var actionViews: [ContextMenuActionRow] = []
-        for action in menu.children {
-            let actionView = ContextMenuActionRow(
-                title: action.title,
-                icon: action.image,
-                attributes: action.attributes,
-                hostBlurEffect: blurEffect,
-            )
-            actionViews.append(actionView)
-        }
-
-        self.actionViews = actionViews
+        self.actionViews = Self.ivyRows(for: menu.children, hostBlurEffect: blurEffect)
+        self.rowActions = menu.children
+        self.ivyIconCells = menu.ivyIconRow.map { IvyIconCell(action: $0) }
+        self.ivyHostBlurEffect = blurEffect
         isScrolling = false
 
         super.init(frame: CGRect.zero)
@@ -425,6 +472,12 @@ private class ContextMenuActionsView: UIView, UIGestureRecognizerDelegate, UIScr
         for actionView in actionViews {
             scrollView.addSubview(actionView)
         }
+        for cell in ivyIconCells {
+            scrollView.addSubview(cell)
+        }
+        ivyIconSeparator.backgroundColor = .Signal.transparentSeparator
+        ivyIconSeparator.isHidden = ivyIconCells.isEmpty
+        scrollView.addSubview(ivyIconSeparator)
 
         scrollView.delegate = self
 
@@ -445,6 +498,19 @@ private class ContextMenuActionsView: UIView, UIGestureRecognizerDelegate, UIScr
         var yOffset: CGFloat = vMargin
         var maxY: CGFloat = 0
         var width: CGFloat = 0.0
+        // Ivy: the icon row first, across the menu's width.
+        if !ivyIconCells.isEmpty {
+            let rowWidth = actionViews.map { $0.sizeThatFits(.zero).width }.max() ?? Self.ivyIconRowWidth
+            let cellWidth = rowWidth / CGFloat(ivyIconCells.count)
+            let isRTL = CurrentAppContext().isRTL
+            for (index, cell) in ivyIconCells.enumerated() {
+                let position = isRTL ? ivyIconCells.count - 1 - index : index
+                cell.frame = CGRect(x: CGFloat(position) * cellWidth, y: yOffset, width: cellWidth, height: IvyIconCell.height)
+            }
+            yOffset += IvyIconCell.height
+            ivyIconSeparator.frame = CGRect(x: 0, y: yOffset - hairlineWidth, width: rowWidth, height: hairlineWidth)
+            maxY = yOffset
+        }
         for actionView in actionViews {
             let size = actionView.sizeThatFits(.zero)
             width = max(width, size.width)
@@ -461,12 +527,15 @@ private class ContextMenuActionsView: UIView, UIGestureRecognizerDelegate, UIScr
         _ size: CGSize,
     ) -> CGSize {
         // every entry may have a different height
-        var height = vMargin * 2
+        var height = vMargin * 2 + (ivyIconCells.isEmpty ? 0 : IvyIconCell.height) // Ivy: the icon row
         var width = 0.0
         for actionView in actionViews {
             let size = actionView.sizeThatFits(size)
             height += size.height
             width = max(width, size.width)
+        }
+        if !ivyIconCells.isEmpty {
+            width = max(width, Self.ivyIconRowWidth) // Ivy: room for the icons
         }
         return CGSize(width: width, height: height)
     }
@@ -500,6 +569,14 @@ private class ContextMenuActionsView: UIView, UIGestureRecognizerDelegate, UIScr
 
         // Add impact effect here
         var highlightStateChanged = false
+        // Ivy: the icon row reacts like the rows.
+        for cell in ivyIconCells {
+            let wasHighlighted = cell.isHighlighted
+            cell.isHighlighted = cell.frame.contains(locationInView) && !cell.action.attributes.contains(.disabled)
+            if wasHighlighted != cell.isHighlighted {
+                highlightStateChanged = true
+            }
+        }
         for actionRow in actionViews {
             let wasHighlighted = actionRow.isHighlighted
             let shouldHighlight = actionRow.frame.contains(locationInView) && !actionRow.attributes.contains(.disabled)
@@ -521,6 +598,13 @@ private class ContextMenuActionsView: UIView, UIGestureRecognizerDelegate, UIScr
             return false
         }
 
+        // Ivy: an icon in the row on top.
+        if let cell = ivyIconCells.first(where: { $0.isHighlighted }) {
+            ivyIconCells.forEach { $0.isHighlighted = false }
+            delegate?.contextMenuActionViewDidSelectAction(contextMenuAction: cell.action)
+            return true
+        }
+
         var index: Int = NSNotFound
         for (rowIndex, actionRow) in actionViews.enumerated() {
             if actionRow.isHighlighted, index == NSNotFound {
@@ -530,12 +614,77 @@ private class ContextMenuActionsView: UIView, UIGestureRecognizerDelegate, UIScr
         }
 
         if index != NSNotFound {
-            let action = menu.children[index]
+            let action = rowActions[index]
+            // Ivy: "More" opens its actions in place; "Back" returns.
+            if let submenu = action.ivySubmenu {
+                ivyShowRows(submenu, withBack: true)
+                return true
+            }
+            if action === ivyBackAction {
+                ivyShowRows(menu.children, withBack: false)
+                return true
+            }
             delegate?.contextMenuActionViewDidSelectAction(contextMenuAction: action)
             return true
         }
 
         return false
+    }
+
+    // MARK: Ivy
+
+    private static let ivyIconRowWidth: CGFloat = 250
+
+    private static func ivyRows(for actions: [ContextMenuAction], hostBlurEffect: UIBlurEffect?) -> [ContextMenuActionRow] {
+        let rows = actions.map { action in
+            ContextMenuActionRow(
+                title: action.title,
+                icon: action.image,
+                attributes: action.attributes,
+                hostBlurEffect: hostBlurEffect,
+            )
+        }
+        rows.last?.separatorView?.isHidden = true
+        return rows
+    }
+
+    /// Swaps the rows: the actions under "More" with a "Back" row on top,
+    /// or the menu's own rows again. The menu resizes in place.
+    private func ivyShowRows(_ actions: [ContextMenuAction], withBack: Bool) {
+        var shown = actions
+        if withBack {
+            let back = ContextMenuAction(
+                title: IvyLocalizedString("MESSAGE_MENU_BACK", comment: "Row at the top of the message menu's More actions that goes back to the main actions."),
+                image: UIImage(systemName: CurrentAppContext().isRTL ? "chevron.right" : "chevron.left"),
+                handler: { _ in },
+            )
+            ivyBackAction = back
+            shown.insert(back, at: 0)
+        } else {
+            ivyBackAction = nil
+        }
+        actionViews.forEach { $0.removeFromSuperview() }
+        actionViews = Self.ivyRows(for: shown, hostBlurEffect: ivyHostBlurEffect)
+        rowActions = shown
+        actionViews.forEach { scrollView.addSubview($0) }
+        ivyIconCells.forEach { $0.isHidden = withBack }
+        if withBack {
+            ivyIconCells.forEach { $0.removeFromSuperview() }
+        } else {
+            ivyIconCells = menu.ivyIconRow.map { IvyIconCell(action: $0) }
+            ivyIconCells.forEach { scrollView.addSubview($0) }
+        }
+        ivyIconSeparator.isHidden = ivyIconCells.isEmpty || withBack
+        if withBack {
+            ivyIconCells = []
+        }
+        ImpactHapticFeedback.impactOccurred(style: .light)
+        setNeedsLayout()
+        superview?.setNeedsLayout()
+        UIView.animate(withDuration: 0.25) {
+            self.superview?.layoutIfNeeded()
+            self.layoutIfNeeded()
+        }
     }
 
     // MARK: UIGestureRecognizerDelegate
