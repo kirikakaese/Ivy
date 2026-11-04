@@ -1287,6 +1287,21 @@
 /* Next to your own reaction in the row that adds a reaction; tapping it takes the reaction back. */
 "REACTIONS_QUICK_YOURS" = "Deine";
 
+/* Option that puts the reaction bar at the bottom of the screen. */
+"REACTION_BAR_POSITION_BOTTOM" = "Unten";
+
+/* Footer explaining the reaction bar position setting. */
+"REACTION_BAR_POSITION_FOOTER" = "Wo die Reaktionen erscheinen, wenn du eine Nachricht gedrückt hältst. Im Querformat auf dem iPhone bleiben sie über der Nachricht.";
+
+/* Option that puts the reaction bar upright to the left of the message's actions. */
+"REACTION_BAR_POSITION_LEFT" = "Links neben dem Menü";
+
+/* Option that puts the reaction bar upright to the right of the message's actions. */
+"REACTION_BAR_POSITION_RIGHT" = "Rechts neben dem Menü";
+
+/* Header of the setting that chooses where the reaction bar goes when a message is held. */
+"REACTION_BAR_POSITION_TITLE" = "Reaktionsleiste";
+
 /* Header of the reminders that are due. */
 "REMINDERS_DUE" = "Fällig";
 
