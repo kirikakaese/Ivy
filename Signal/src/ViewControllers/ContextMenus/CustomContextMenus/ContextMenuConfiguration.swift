@@ -28,6 +28,11 @@ public class ContextMenuAction {
 
     public let handler: ContextMenuActionHandler
 
+    // Ivy: which action this is, for arranging the message menu, and the
+    // actions a "More" row opens in place.
+    var ivyItem: IvyMessageMenuItem?
+    var ivySubmenu: [ContextMenuAction]?
+
     public init(
         title: String = "",
         image: UIImage? = nil,
@@ -45,6 +50,8 @@ public class ContextMenuAction {
 /// UIMenu analog, supports single depth menus only
 public class ContextMenu {
     public let children: [ContextMenuAction]
+    // Ivy: everyday actions shown as a row of icons above the others.
+    var ivyIconRow: [ContextMenuAction] = []
 
     public init(
         _ children: [ContextMenuAction],

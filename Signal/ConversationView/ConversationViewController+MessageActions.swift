@@ -122,14 +122,16 @@ extension ConversationViewController: ContextMenuInteractionDelegate {
                 for type in actionOrder {
                     let actionWithType = actions.first { $0.actionType == type }
                     if let messageAction = actionWithType {
-                        contextMenuActions.append(ContextMenuAction(
+                        let contextMenuAction = ContextMenuAction(
                             title: messageAction.contextMenuTitle,
                             image: messageAction.contextMenuIcon,
                             attributes: messageAction.contextMenuAttributes,
                             handler: { _ in
                                 messageAction.block(nil)
                             },
-                        ))
+                        )
+                        contextMenuAction.ivyItem = IvyMessageMenuItem(type) // Ivy
+                        contextMenuActions.append(contextMenuAction)
                     }
                 }
 
@@ -137,20 +139,25 @@ extension ConversationViewController: ContextMenuInteractionDelegate {
                 if let contextMenuInteraction = self.collectionViewActiveContextMenuInteraction {
                     let interaction = contextMenuInteraction.itemViewModel.interaction
                     let thread = contextMenuInteraction.thread
-                    let ivyActions = [
-                        self.ivyStarContextMenuAction(interaction: interaction, thread: thread),
-                        self.ivyTranscribeContextMenuAction(itemViewModel: contextMenuInteraction.itemViewModel),
-                        self.ivyVoiceNoteTaskContextMenuAction(itemViewModel: contextMenuInteraction.itemViewModel, thread: thread),
-                        self.ivyRemindMeContextMenuAction(interaction: interaction, thread: thread),
-                        self.ivyAddTaskContextMenuAction(interaction: interaction, thread: thread),
-                        self.ivyAddEventContextMenuAction(interaction: interaction, thread: thread),
-                    ].compactMap { $0 } + self.ivyPlanContextMenuActions(interaction: interaction, thread: thread)
+                    let tagged: [(ContextMenuAction?, IvyMessageMenuItem)] = [
+                        (self.ivyStarContextMenuAction(interaction: interaction, thread: thread), .star),
+                        (self.ivyTranscribeContextMenuAction(itemViewModel: contextMenuInteraction.itemViewModel), .transcribe),
+                        (self.ivyVoiceNoteTaskContextMenuAction(itemViewModel: contextMenuInteraction.itemViewModel, thread: thread), .voiceTask),
+                        (self.ivyRemindMeContextMenuAction(interaction: interaction, thread: thread), .remind),
+                        (self.ivyAddTaskContextMenuAction(interaction: interaction, thread: thread), .task),
+                        (self.ivyAddEventContextMenuAction(interaction: interaction, thread: thread), .calendar),
+                    ]
+                    let ivyActions = tagged.compactMap { action, item -> ContextMenuAction? in
+                        action?.ivyItem = item
+                        return action
+                    } + self.ivyPlanContextMenuActions(interaction: interaction, thread: thread)
                     let deleteIndex = contextMenuActions.count - (actions.contains { $0.actionType == .delete } ? 1 : 0)
                     contextMenuActions.insert(contentsOf: ivyActions, at: max(deleteIndex, 0))
                 }
             }
 
-            return ContextMenu(contextMenuActions)
+            // Ivy: icons on top, less used actions under "More", as chosen in Settings.
+            return IvyMessageMenu.arrange(contextMenuActions)
         })
     }
 
