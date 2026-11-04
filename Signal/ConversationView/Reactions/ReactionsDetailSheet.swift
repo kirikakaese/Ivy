@@ -44,6 +44,11 @@ class ReactionsDetailSheet: InteractiveSheetViewController {
         contentView.addSubview(stackView)
         stackView.autoPinEdgesToSuperviewEdges()
 
+        // Ivy: the first time, a hint about reacting from here and double-tapping.
+        if ivyQuickBar != nil, IvyFirstTimeTips.takeSheetHint() {
+            stackView.addArrangedSubview(IvyReactionsSheetHintView())
+        }
+
         // Prepare top view with emoji counts
         stackView.addArrangedSubview(emojiCountsCollectionView)
         buildEmojiCountItems()

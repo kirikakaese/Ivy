@@ -591,6 +591,18 @@
 /* Explains that a folder's disappearing messages timer is set on its chats and shown to the other people. */
 "FOLDER_TIMER_EXPLANATION" = "The timer is set on every chat in this folder and on chats you add later. The other people see the change, as with any timer change.";
 
+/* Footer explaining what the hand setting moves. */
+"HAND_FOOTER" = "Moves the reaction bar beside the menu and the scroll buttons in a chat to this side.";
+
+/* Option for using Ivy with the left hand. */
+"HAND_LEFT" = "Left";
+
+/* Option for using Ivy with the right hand. */
+"HAND_RIGHT" = "Right";
+
+/* Header of the setting that chooses which hand Ivy is used with. */
+"HAND_TITLE" = "Hand";
+
 /* Footer of the debug log section in Help, explaining that logs stay on the device. */
 "HELP_DEBUG_LOG_FOOTER" = "Debug logs stay on this device. Export them to look into a problem or to share them with someone you trust.";
 
@@ -1347,17 +1359,14 @@
 /* Next to your own reaction in the row that adds a reaction; tapping it takes the reaction back. */
 "REACTIONS_QUICK_YOURS" = "Yours";
 
+/* Option that puts the reaction bar upright beside the message's actions, on the side of the chosen hand. */
+"REACTION_BAR_POSITION_BESIDE" = "Next to the Menu";
+
 /* Option that puts the reaction bar at the bottom of the screen. */
 "REACTION_BAR_POSITION_BOTTOM" = "At the Bottom";
 
 /* Footer explaining the reaction bar position setting. */
-"REACTION_BAR_POSITION_FOOTER" = "Where the reactions appear when you hold a message. In landscape on iPhone they stay above the message.";
-
-/* Option that puts the reaction bar upright to the left of the message's actions. */
-"REACTION_BAR_POSITION_LEFT" = "Left of the Menu";
-
-/* Option that puts the reaction bar upright to the right of the message's actions. */
-"REACTION_BAR_POSITION_RIGHT" = "Right of the Menu";
+"REACTION_BAR_POSITION_FOOTER" = "Where the reactions appear when you hold a message. Next to the menu, they sit on the side of your hand. In landscape on iPhone they stay above the message.";
 
 /* Header of the setting that chooses where the reaction bar goes when a message is held. */
 "REACTION_BAR_POSITION_TITLE" = "Reaction Bar";
@@ -1922,6 +1931,39 @@
 
 /* Placeholder of a task's title. */
 "TASK_TITLE_PLACEHOLDER" = "Title";
+
+/* Text of the tip that points at the reaction bar. */
+"TIPS_BAR_BODY" = "The bar can also sit on the left or at the bottom: Settings › Chats.";
+
+/* Title of the tip that points at the reaction bar. */
+"TIPS_BAR_TITLE" = "New: Reactions Near Your Thumb";
+
+/* Button in the first-time sheet that opens the chat settings. */
+"TIPS_CUSTOMIZE" = "Customize…";
+
+/* Button that closes a first-time explanation. */
+"TIPS_GOT_IT" = "Got It";
+
+/* Hint at the top of a message's reactions the first time: the row at the bottom reacts, and double-tapping a message reacts too. */
+"TIPS_SHEET_HINT" = "Tip: React right from the row below. Double-tapping a message reacts with ❤️ too.";
+
+/* Item in chat settings that shows the first-time tips about reactions and the message menu again. */
+"TIPS_SHOW_AGAIN" = "Show Tips Again";
+
+/* Shown after choosing to see the first-time tips again. */
+"TIPS_SHOW_AGAIN_DONE" = "The tips will show again.";
+
+/* Point in the first-time sheet: the reaction bar can sit right, left or at the bottom. */
+"TIPS_WELCOME_BAR" = "The reaction bar sits right, left or at the bottom – wherever your thumb reaches it.";
+
+/* Point in the first-time sheet: double-tapping a message reacts. */
+"TIPS_WELCOME_DOUBLE_TAP" = "Double-tap a message to react with ❤️, or an emoji of your choice.";
+
+/* Point in the first-time sheet: less used actions are under More, and which ones show can be chosen. */
+"TIPS_WELCOME_MENU" = "Less used actions are under More. You decide what shows directly.";
+
+/* Title of the sheet that explains the reaction bar, double-tap and the shorter message menu the first time. */
+"TIPS_WELCOME_TITLE" = "React With One Hand";
 
 /* Action that turns a voice message into text, on the device. */
 "TRANSCRIBE" = "Transcribe";
