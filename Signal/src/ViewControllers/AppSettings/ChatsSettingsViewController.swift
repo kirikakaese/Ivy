@@ -49,6 +49,10 @@ class ChatsSettingsViewController: OWSTableViewController2 {
 
         // Ivy: underlined dates and tasks.
         ivyAddDetectionSection(to: contents)
+        // Ivy: where the reaction bar goes.
+        ivyAddReactionBarSection(to: contents)
+        // Ivy: reacting by double-tapping a message.
+        ivyAddDoubleTapSection(to: contents)
         // Ivy: which message menu actions show directly.
         ivyAddMessageMenuSection(to: contents)
 

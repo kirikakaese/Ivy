@@ -101,7 +101,34 @@ private class ContextMenuHostView: UIView {
     }
 
     private func ivyIsPinned(_ accessory: ContextMenuTargetedPreviewAccessory) -> Bool {
-        accessory.ivyPinnedToBottom && !ivyIsLandscape
+        switch accessory.ivyPlacement {
+        case .bottom: !ivyIsLandscape
+        case .right, .left: true
+        case nil: false
+        }
+    }
+
+    /// Places a bar beside the actions, its bottom level with theirs, and
+    /// moves the actions over when there isn't room for both.
+    private func ivyLayoutBesideActions(_ accessory: ContextMenuTargetedPreviewAccessory, onRight: Bool) {
+        guard let actions = accessoryViews?.first(where: { $0 is ContextMenuActionsAccessory }) else { return }
+        let contentRect = bounds.inset(by: contentAreaInsets)
+        accessory.accessoryView.sizeToFit()
+        var bar = accessory.accessoryView.frame
+        var menu = actions.accessoryView.frame
+        let room = bar.width + Self.ivyPinnedGap
+        if onRight, menu.maxX > contentRect.maxX - room {
+            menu.origin.x = max(contentRect.minX, contentRect.maxX - room - menu.width)
+        } else if !onRight, menu.minX < contentRect.minX + room {
+            menu.origin.x = min(contentRect.maxX - menu.width, contentRect.minX + room)
+        }
+        actions.accessoryView.frame = menu
+        bar.origin.x = onRight ? menu.maxX + Self.ivyPinnedGap : menu.minX - Self.ivyPinnedGap - bar.width
+        bar.origin.y = max(menu.minY, menu.maxY - bar.height)
+        if bar.maxY > contentRect.maxY {
+            bar.origin.y = contentRect.maxY - bar.height
+        }
+        accessory.accessoryView.frame = bar
     }
 
     private static let ivyPinnedGap: CGFloat = 12
@@ -110,7 +137,7 @@ private class ContextMenuHostView: UIView {
     /// bottom leaves room for the pinned ones.
     private var ivyContentRect: CGRect {
         var rect = bounds.inset(by: contentAreaInsets)
-        let pinned = (accessoryViews ?? []).filter { ivyIsPinned($0) }
+        let pinned = (accessoryViews ?? []).filter { ivyIsPinned($0) && $0.ivyPlacement == .bottom }
         for accessory in pinned {
             accessory.accessoryView.sizeToFit()
             rect.size.height -= accessory.accessoryView.frame.height + Self.ivyPinnedGap
@@ -147,6 +174,16 @@ private class ContextMenuHostView: UIView {
             }
         }
 
+        defer {
+            // Ivy: a bar beside the actions goes in once they have their place.
+            if
+                delegate?.contextMenuViewAnimationState(self) != .animateOut,
+                let side = accessoryViews?.first(where: { $0.ivyPlacement == .right || $0.ivyPlacement == .left })
+            {
+                ivyLayoutBesideActions(side, onRight: side.ivyPlacement == .right)
+            }
+        }
+
         if let accessories = accessoryViews {
             var accessoryFrames: [CGRect] = []
             for accessory in accessories {
@@ -161,7 +198,9 @@ private class ContextMenuHostView: UIView {
 
                 // Ivy: pinned accessories sit at the bottom, apart from the rest.
                 if ivyIsPinned(accessory) {
-                    ivyLayoutPinned(accessory)
+                    if accessory.ivyPlacement == .bottom {
+                        ivyLayoutPinned(accessory)
+                    }
                     continue
                 }
 

@@ -381,6 +381,18 @@
 /* Title of the confirmation before deleting all data from the decoy mode. */
 "DECOY_WIPE_CONFIRM_TITLE" = "Delete All Data?";
 
+/* Item that chooses the emoji a double tap reacts with. */
+"DOUBLE_TAP_REACTION_EMOJI" = "React With";
+
+/* Footer explaining double-tap reactions. */
+"DOUBLE_TAP_REACTION_FOOTER" = "Double-tap a message to react with this emoji; double-tap again to take it back. Your own messages that can still be edited open for editing instead.";
+
+/* Switch that turns reacting by double-tapping a message on or off. */
+"DOUBLE_TAP_REACTION_SWITCH" = "React by Double-Tapping";
+
+/* Header of the settings for reacting to a message by double-tapping it. */
+"DOUBLE_TAP_REACTION_TITLE" = "Double-Tap";
+
 /* Message of an error notification for testers. Embeds {{ error description }}. */
 "ERROR_NOTIFICATION_MESSAGE_FORMAT" = "Please help improve Ivy by reporting this error with a debug log at github.com/kirikakaese/Ivy/issues: %@";
 
@@ -1325,6 +1337,21 @@
 
 /* Next to your own reaction in the row that adds a reaction; tapping it takes the reaction back. */
 "REACTIONS_QUICK_YOURS" = "Yours";
+
+/* Option that puts the reaction bar at the bottom of the screen. */
+"REACTION_BAR_POSITION_BOTTOM" = "At the Bottom";
+
+/* Footer explaining the reaction bar position setting. */
+"REACTION_BAR_POSITION_FOOTER" = "Where the reactions appear when you hold a message. In landscape on iPhone they stay above the message.";
+
+/* Option that puts the reaction bar upright to the left of the message's actions. */
+"REACTION_BAR_POSITION_LEFT" = "Left of the Menu";
+
+/* Option that puts the reaction bar upright to the right of the message's actions. */
+"REACTION_BAR_POSITION_RIGHT" = "Right of the Menu";
+
+/* Header of the setting that chooses where the reaction bar goes when a message is held. */
+"REACTION_BAR_POSITION_TITLE" = "Reaction Bar";
 
 /* Header of the reminders that are due. */
 "REMINDERS_DUE" = "Due";

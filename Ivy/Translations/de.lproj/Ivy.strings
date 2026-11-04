@@ -381,6 +381,18 @@
 /* Title of the confirmation before deleting all data from the decoy mode. */
 "DECOY_WIPE_CONFIRM_TITLE" = "Alle Daten löschen?";
 
+/* Item that chooses the emoji a double tap reacts with. */
+"DOUBLE_TAP_REACTION_EMOJI" = "Reagieren mit";
+
+/* Footer explaining double-tap reactions. */
+"DOUBLE_TAP_REACTION_FOOTER" = "Tippe zweimal auf eine Nachricht, um mit diesem Emoji zu reagieren; nochmal zweimal tippen nimmt die Reaktion zurück. Deine eigenen Nachrichten, die du noch bearbeiten kannst, öffnen sich stattdessen zum Bearbeiten.";
+
+/* Switch that turns reacting by double-tapping a message on or off. */
+"DOUBLE_TAP_REACTION_SWITCH" = "Mit Doppeltippen reagieren";
+
+/* Header of the settings for reacting to a message by double-tapping it. */
+"DOUBLE_TAP_REACTION_TITLE" = "Doppeltippen";
+
 /* Message of an error notification for testers. Embeds {{ error description }}. */
 "ERROR_NOTIFICATION_MESSAGE_FORMAT" = "Bitte hilf, Ivy zu verbessern, und melde diesen Fehler mit einem Diagnoseprotokoll unter github.com/kirikakaese/Ivy/issues: %@";
 
@@ -1325,6 +1337,21 @@
 
 /* Next to your own reaction in the row that adds a reaction; tapping it takes the reaction back. */
 "REACTIONS_QUICK_YOURS" = "Deine";
+
+/* Option that puts the reaction bar at the bottom of the screen. */
+"REACTION_BAR_POSITION_BOTTOM" = "Unten";
+
+/* Footer explaining the reaction bar position setting. */
+"REACTION_BAR_POSITION_FOOTER" = "Wo die Reaktionen erscheinen, wenn du eine Nachricht gedrückt hältst. Im Querformat auf dem iPhone bleiben sie über der Nachricht.";
+
+/* Option that puts the reaction bar upright to the left of the message's actions. */
+"REACTION_BAR_POSITION_LEFT" = "Links neben dem Menü";
+
+/* Option that puts the reaction bar upright to the right of the message's actions. */
+"REACTION_BAR_POSITION_RIGHT" = "Rechts neben dem Menü";
+
+/* Header of the setting that chooses where the reaction bar goes when a message is held. */
+"REACTION_BAR_POSITION_TITLE" = "Reaktionsleiste";
 
 /* Header of the reminders that are due. */
 "REMINDERS_DUE" = "Fällig";

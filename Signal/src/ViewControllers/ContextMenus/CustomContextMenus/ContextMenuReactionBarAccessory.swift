@@ -22,10 +22,14 @@ public class ContextMenuReactionBarAccessory: ContextMenuTargetedPreviewAccessor
         self.thread = thread
         self.itemViewModel = itemViewModel
 
+        // Ivy: the bar goes where Settings > Chats says. Beside the actions it
+        // stands upright; in landscape it keeps Signal's place above the message.
+        let placement = IvyReactionBarPosition.placementForContextMenu()
         reactionPicker = MessageReactionPicker(
             selectedEmoji: itemViewModel?.reactionState?.localUserEmojiVariant,
             delegate: nil,
             style: .contextMenu(allowGlass: true),
+            ivyVerticalSide: placement?.verticalSide,
         )
         let isRTL = CurrentAppContext().isRTL
         let isIncomingMessage = itemViewModel?.interaction.interactionType == .incomingMessage
@@ -33,9 +37,7 @@ public class ContextMenuReactionBarAccessory: ContextMenuTargetedPreviewAccessor
         let horizontalEdgeAlignment: ContextMenuTargetedPreviewAccessory.AccessoryAlignment.Edge = isIncomingMessage ? (isRTL ? .trailing : .leading) : (isRTL ? .leading : .trailing)
         let alignment = ContextMenuTargetedPreviewAccessory.AccessoryAlignment(alignments: [(.top, .exterior), (horizontalEdgeAlignment, .interior)], alignmentOffset: CGPoint(x: alignmentOffset, y: 12))
         super.init(accessoryView: reactionPicker, accessoryAlignment: alignment)
-        // Ivy: in portrait the bar sits at the bottom of the screen, where a
-        // thumb reaches it; in landscape it stays above the message.
-        ivyPinnedToBottom = true
+        ivyPlacement = placement
         reactionPicker.delegate = self
         reactionPicker.isHidden = true
 
