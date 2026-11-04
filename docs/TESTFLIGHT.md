@@ -2,6 +2,8 @@
 
 The **TestFlight** workflow builds the iOS app (iPhone and iPad), signs it with the Ivy team's certificates and uploads it to App Store Connect. Run it by hand: Actions > TestFlight > Run workflow, on `main`.
 
+**Where it builds.** "Where to build" picks the Mac: `github` uses GitHub's free macOS runners. When GitHub has no Mac free and the job is cancelled with "not acquired by Runner", choose `namespace`: it builds on a paid Namespace Mac (profile `namespace-profile-ivy-macos`: macOS 26, 6 vCPU, the "Slim" Xcode package with Xcode 26.6), billed per minute to the Namespace account. The Namespace GitHub app must be installed for the repository. CI keeps using GitHub's free runners.
+
 The workflow creates the App IDs of the extensions, a distribution certificate and the provisioning profiles itself, through the App Store Connect API (`Scripts/ivy/asc-signing.rb`). Nothing has to be signed on a Mac.
 
 ## One-time setup
