@@ -55,6 +55,8 @@ class ChatsSettingsViewController: OWSTableViewController2 {
         ivyAddDoubleTapSection(to: contents)
         // Ivy: which message menu actions show directly.
         ivyAddMessageMenuSection(to: contents)
+        // Ivy: the first-time tips again.
+        ivyAddTipsSection(to: contents)
 
         let sharingSuggestionsSection = OWSTableSection()
         sharingSuggestionsSection.footerTitle = OWSLocalizedString(

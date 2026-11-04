@@ -81,6 +81,16 @@ private class ContextMenuHostView: UIView {
         }
     }
 
+    // Ivy: a first-time tip pointing at the reaction bar, above everything else.
+    var ivyTipView: IvyReactionBarTipView? {
+        didSet {
+            oldValue?.removeFromSuperview()
+            if let ivyTipView {
+                addSubview(ivyTipView)
+            }
+        }
+    }
+
     var dismissButton: UIButton? {
         didSet {
             oldValue?.removeFromSuperview()
@@ -181,6 +191,18 @@ private class ContextMenuHostView: UIView {
                 let side = accessoryViews?.first(where: { $0.ivyPlacement == .right || $0.ivyPlacement == .left })
             {
                 ivyLayoutBesideActions(side, onRight: side.ivyPlacement == .right)
+            }
+            // Ivy: the tip goes beside the bar once everything has its place,
+            // and leaves with the menu.
+            if delegate?.contextMenuViewAnimationState(self) == .animateOut {
+                ivyTipView?.alpha = 0
+            } else if
+                let tip = ivyTipView, tip.superview === self,
+                let bar = accessoryViews?.first(where: { $0 is ContextMenuReactionBarAccessory })
+            {
+                let menuTop = accessoryViews?.first(where: { $0 is ContextMenuActionsAccessory })?.accessoryView.frame.minY ?? bar.accessoryView.frame.minY
+                tip.place(barFrame: bar.accessoryView.frame, menuTop: menuTop, area: bounds.inset(by: contentAreaInsets))
+                bringSubviewToFront(tip)
             }
         }
 
@@ -513,6 +535,10 @@ class ContextMenuController: OWSViewController, ContextMenuViewDelegate, UIGestu
         contextMenuView.auxiliaryPreviewView = contextMenuPreview.auxiliarySnapshot
         contextMenuView.auxiliaryPreviewView?.isAccessibilityElement = false
         contextMenuView.accessoryViews = accessoryViews
+        // Ivy: the first few times, a tip points at the reaction bar.
+        if accessoryViews.contains(where: { $0 is ContextMenuReactionBarAccessory }), IvyFirstTimeTips.takeBarTip() {
+            contextMenuView.ivyTipView = IvyReactionBarTipView()
+        }
 
         self.previewView?.isUserInteractionEnabled = false
         self.previewView?.isHidden = true
