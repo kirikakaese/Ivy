@@ -3,8 +3,20 @@ name: TestFlight
 # Builds the iOS app, signs it with a certificate made for the run and
 # uploads it to TestFlight. Run it by hand from the Actions tab. Setup and
 # the secrets it needs: docs/TESTFLIGHT.md.
+#
+# The build runs on GitHub's free Macs, or, when those are all taken, on a
+# paid Namespace Mac (profile namespace-profile-ivy-macos, billed per
+# minute). Only people who can push to the repository can start it.
 on:
   workflow_dispatch:
+    inputs:
+      runner:
+        description: Where to build
+        type: choice
+        default: github
+        options:
+          - github
+          - namespace
 
 concurrency:
   group: ${{ github.workflow }}
@@ -19,7 +31,7 @@ env:
 jobs:
   upload:
     name: Build and upload to TestFlight
-    runs-on: macos-26
+    runs-on: ${{ inputs.runner == 'namespace' && 'namespace-profile-ivy-macos' || 'macos-26' }}
     timeout-minutes: 180
     steps:
       - name: Check secrets
@@ -39,7 +51,19 @@ jobs:
           fi
 
       - name: Select Xcode
-        run: echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+        # GitHub's and Namespace's Macs keep Xcode 26.6 under different names.
+        run: |
+          app="$XCODE_APP"
+          if [ ! -d "$app" ]; then
+            app=$(ls -d /Applications/Xcode*26.6*.app 2>/dev/null | head -n 1)
+          fi
+          if [ -z "$app" ] || [ ! -d "$app" ]; then
+            echo "::error::Xcode 26.6 not found. Installed:"
+            ls -d /Applications/Xcode*.app || true
+            exit 1
+          fi
+          echo "Using $app"
+          echo "DEVELOPER_DIR=$app/Contents/Developer" >> "$GITHUB_ENV"
 
       - uses: actions/checkout@v6
         with:
