@@ -49,6 +49,8 @@ class ChatsSettingsViewController: OWSTableViewController2 {
 
         // Ivy: underlined dates and tasks.
         ivyAddDetectionSection(to: contents)
+        // Ivy: where the reaction bar goes.
+        ivyAddReactionBarSection(to: contents)
 
         let sharingSuggestionsSection = OWSTableSection()
         sharingSuggestionsSection.footerTitle = OWSLocalizedString(
