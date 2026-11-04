@@ -582,6 +582,18 @@
 /* Explains that a folder's disappearing messages timer is set on its chats and shown to the other people. */
 "FOLDER_TIMER_EXPLANATION" = "The timer is set on every chat in this folder and on chats you add later. The other people see the change, as with any timer change.";
 
+/* Footer explaining what the hand setting moves. */
+"HAND_FOOTER" = "Moves the reaction bar beside the menu and the scroll buttons in a chat to this side.";
+
+/* Option for using Ivy with the left hand. */
+"HAND_LEFT" = "Left";
+
+/* Option for using Ivy with the right hand. */
+"HAND_RIGHT" = "Right";
+
+/* Header of the setting that chooses which hand Ivy is used with. */
+"HAND_TITLE" = "Hand";
+
 /* Footer of the debug log section in Help, explaining that logs stay on the device. */
 "HELP_DEBUG_LOG_FOOTER" = "Debug logs stay on this device. Export them to look into a problem or to share them with someone you trust.";
 
@@ -1338,17 +1350,14 @@
 /* Next to your own reaction in the row that adds a reaction; tapping it takes the reaction back. */
 "REACTIONS_QUICK_YOURS" = "Yours";
 
+/* Option that puts the reaction bar upright beside the message's actions, on the side of the chosen hand. */
+"REACTION_BAR_POSITION_BESIDE" = "Next to the Menu";
+
 /* Option that puts the reaction bar at the bottom of the screen. */
 "REACTION_BAR_POSITION_BOTTOM" = "At the Bottom";
 
 /* Footer explaining the reaction bar position setting. */
-"REACTION_BAR_POSITION_FOOTER" = "Where the reactions appear when you hold a message. In landscape on iPhone they stay above the message.";
-
-/* Option that puts the reaction bar upright to the left of the message's actions. */
-"REACTION_BAR_POSITION_LEFT" = "Left of the Menu";
-
-/* Option that puts the reaction bar upright to the right of the message's actions. */
-"REACTION_BAR_POSITION_RIGHT" = "Right of the Menu";
+"REACTION_BAR_POSITION_FOOTER" = "Where the reactions appear when you hold a message. Next to the menu, they sit on the side of your hand. In landscape on iPhone they stay above the message.";
 
 /* Header of the setting that chooses where the reaction bar goes when a message is held. */
 "REACTION_BAR_POSITION_TITLE" = "Reaction Bar";

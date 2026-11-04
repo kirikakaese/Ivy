@@ -582,6 +582,18 @@
 /* Explains that a folder's disappearing messages timer is set on its chats and shown to the other people. */
 "FOLDER_TIMER_EXPLANATION" = "Der Timer wird für jeden Chat in diesem Ordner gesetzt, auch für später hinzugefügte. Die anderen sehen die Änderung wie bei jeder Timer-Änderung.";
 
+/* Footer explaining what the hand setting moves. */
+"HAND_FOOTER" = "Rückt die Reaktionsleiste neben dem Menü und die Scroll-Knöpfe im Chat auf diese Seite.";
+
+/* Option for using Ivy with the left hand. */
+"HAND_LEFT" = "Links";
+
+/* Option for using Ivy with the right hand. */
+"HAND_RIGHT" = "Rechts";
+
+/* Header of the setting that chooses which hand Ivy is used with. */
+"HAND_TITLE" = "Hand";
+
 /* Footer of the debug log section in Help, explaining that logs stay on the device. */
 "HELP_DEBUG_LOG_FOOTER" = "Debug-Protokolle bleiben auf diesem Gerät. Exportiere sie, um einem Problem nachzugehen oder sie mit jemandem zu teilen, dem du vertraust.";
 
@@ -1338,17 +1350,14 @@
 /* Next to your own reaction in the row that adds a reaction; tapping it takes the reaction back. */
 "REACTIONS_QUICK_YOURS" = "Deine";
 
+/* Option that puts the reaction bar upright beside the message's actions, on the side of the chosen hand. */
+"REACTION_BAR_POSITION_BESIDE" = "Neben dem Menü";
+
 /* Option that puts the reaction bar at the bottom of the screen. */
 "REACTION_BAR_POSITION_BOTTOM" = "Unten";
 
 /* Footer explaining the reaction bar position setting. */
-"REACTION_BAR_POSITION_FOOTER" = "Wo die Reaktionen erscheinen, wenn du eine Nachricht gedrückt hältst. Im Querformat auf dem iPhone bleiben sie über der Nachricht.";
-
-/* Option that puts the reaction bar upright to the left of the message's actions. */
-"REACTION_BAR_POSITION_LEFT" = "Links neben dem Menü";
-
-/* Option that puts the reaction bar upright to the right of the message's actions. */
-"REACTION_BAR_POSITION_RIGHT" = "Rechts neben dem Menü";
+"REACTION_BAR_POSITION_FOOTER" = "Wo die Reaktionen erscheinen, wenn du eine Nachricht gedrückt hältst. Neben dem Menü sitzen sie auf der Seite deiner Hand. Im Querformat auf dem iPhone bleiben sie über der Nachricht.";
 
 /* Header of the setting that chooses where the reaction bar goes when a message is held. */
 "REACTION_BAR_POSITION_TITLE" = "Reaktionsleiste";
