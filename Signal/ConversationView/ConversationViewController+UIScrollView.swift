@@ -299,8 +299,12 @@ extension ConversationViewController {
 
         scrollDownButton.autoPinEdge(.bottom, to: .top, of: bottomBarContainer, withOffset: -24)
         // Ivy: on the side of the chosen hand.
-        let ivyEdge: ALEdge = IvyHand.current() == .left ? .leading : .trailing
-        scrollDownButton.autoPinEdge(toSuperviewSafeArea: ivyEdge, withInset: 15)
+        let ivyLeftHand = IvyHand.current() == .left
+        if ivyLeftHand {
+            scrollDownButton.autoPinEdge(toSuperviewSafeArea: .leading, withInset: 15)
+        } else {
+            scrollDownButton.autoPinEdge(toSuperviewSafeArea: .trailing, withInset: 15)
+        }
 
         scrollToNextMentionButton.addAction(
             UIAction { [weak self] _ in self?.scrollToNextMentionButtonTapped() },
@@ -312,6 +316,10 @@ extension ConversationViewController {
         scrollToNextMentionButton.accessibilityIdentifier = "scrollToNextMentionButton"
 
         scrollToNextMentionButton.autoPinEdge(.bottom, to: .top, of: scrollDownButton, withOffset: -30)
-        scrollToNextMentionButton.autoPinEdge(ivyEdge, to: ivyEdge, of: scrollDownButton) // Ivy
+        if ivyLeftHand { // Ivy
+            scrollToNextMentionButton.autoPinEdge(.leading, to: .leading, of: scrollDownButton)
+        } else {
+            scrollToNextMentionButton.autoPinEdge(.trailing, to: .trailing, of: scrollDownButton)
+        }
     }
 }
