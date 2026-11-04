@@ -12,10 +12,46 @@ extension ChatListViewController {
 
     /// Ivy's entries for a chat's context menu: "Remind Me", "Snooze", "Add
     /// to Folder" and, for pinned chats, "Move Up" and "Move Down".
+    /// The chat's menu, shortened: Mark Read, Mute and Pin as icons on
+    /// top, then Archive and Remind, Ivy's other actions under "More", and
+    /// Leave and Delete at the bottom.
+    func ivyChatMenu(signalActions: [UIAction], threadViewModel: ThreadViewModel) -> UIMenu {
+        var remind: UIMenuElement?
+        var more = [UIMenuElement]()
+        if let chat = IvyChatReference(thread: threadViewModel.threadRecord) {
+            remind = IvyReminderUI.menu(chat: chat, from: self)
+        }
+        more += ivyContextMenuElements(threadViewModel: threadViewModel)
+
+        let destructive = signalActions.filter { $0.attributes.contains(.destructive) }
+        var rows: [UIMenuElement] = signalActions.filter { !$0.attributes.contains(.destructive) }
+        var sections = [UIMenuElement]()
+        if #available(iOS 16, *), rows.count >= 3 {
+            sections.append(UIMenu(title: "", options: .displayInline, preferredElementSize: .medium, children: Array(rows.prefix(3))))
+            rows.removeFirst(3)
+        }
+        if let remind {
+            rows.append(remind)
+        }
+        if more.count >= 2 {
+            rows.append(UIMenu(
+                title: IvyLocalizedString("MESSAGE_MENU_MORE", comment: "Message menu row that opens the less used actions."),
+                image: UIImage(systemName: "ellipsis.circle"),
+                children: more,
+            ))
+        } else {
+            rows += more
+        }
+        sections.append(UIMenu(options: .displayInline, children: rows))
+        if !destructive.isEmpty {
+            sections.append(UIMenu(options: .displayInline, children: destructive))
+        }
+        return UIMenu(children: sections)
+    }
+
     func ivyContextMenuElements(threadViewModel: ThreadViewModel) -> [UIMenuElement] {
         var elements = [UIMenuElement]()
         if let chat = IvyChatReference(thread: threadViewModel.threadRecord) {
-            elements.append(IvyReminderUI.menu(chat: chat, from: self))
             elements.append(IvySnoozeUI.menu(chat: chat, from: self))
         }
         if let folderMenu = ivyAddToFolderMenu(threadViewModel: threadViewModel) {
