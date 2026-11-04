@@ -15,13 +15,23 @@ final class IvyReactionBarPositionTest: XCTestCase {
         return defaults
     }
 
-    func testRightUntilChosenAndKeptOnceChosen() throws {
+    func testBesideTheMenuOnTheSideOfTheHand() throws {
         let defaults = try freshDefaults()
+        XCTAssertEqual(IvyHand.current(defaults: defaults), .right)
         XCTAssertEqual(IvyReactionBarPosition.current(defaults: defaults), .right)
-        IvyReactionBarPosition.set(.left, defaults: defaults)
+        IvyHand.set(.left, defaults: defaults)
         XCTAssertEqual(IvyReactionBarPosition.current(defaults: defaults), .left)
-        defaults.set("sideways", forKey: IvyReactionBarPosition.defaultsKey)
-        XCTAssertEqual(IvyReactionBarPosition.current(defaults: defaults), .right)
+        IvyReactionBarPosition.setBesideMenu(false, defaults: defaults)
+        XCTAssertEqual(IvyReactionBarPosition.current(defaults: defaults), .bottom)
+        IvyReactionBarPosition.setBesideMenu(true, defaults: defaults)
+        XCTAssertEqual(IvyReactionBarPosition.current(defaults: defaults), .left)
+    }
+
+    func testAnEarlierLeftBarMeansTheLeftHand() throws {
+        let defaults = try freshDefaults()
+        defaults.set("left", forKey: IvyReactionBarPosition.defaultsKey)
+        XCTAssertEqual(IvyHand.current(defaults: defaults), .left)
+        XCTAssertEqual(IvyReactionBarPosition.current(defaults: defaults), .left)
     }
 
     func testUprightOnlyBesideTheActions() {
