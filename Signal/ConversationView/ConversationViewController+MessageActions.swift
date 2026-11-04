@@ -258,6 +258,11 @@ extension ConversationViewController: ContextMenuInteractionDelegate {
         }
 
         collectionViewActiveContextMenuInteraction = nil
+
+        // Ivy: the first time, explain the reaction bar, double-tap and the menu.
+        if interaction is ChatHistoryContextMenuInteraction {
+            ivyShowReactionsWelcomeIfDue()
+        }
     }
 
     public func shouldShowReactionPickerForInteraction(_ interaction: TSInteraction) -> Bool {

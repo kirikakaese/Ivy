@@ -1914,6 +1914,39 @@
 /* Placeholder of a task's title. */
 "TASK_TITLE_PLACEHOLDER" = "Titel";
 
+/* Text of the tip that points at the reaction bar. */
+"TIPS_BAR_BODY" = "Die Leiste kann auch links oder unten sitzen: Einstellungen › Chats.";
+
+/* Title of the tip that points at the reaction bar. */
+"TIPS_BAR_TITLE" = "Neu: Reaktionen am Daumen";
+
+/* Button in the first-time sheet that opens the chat settings. */
+"TIPS_CUSTOMIZE" = "Anpassen …";
+
+/* Button that closes a first-time explanation. */
+"TIPS_GOT_IT" = "Verstanden";
+
+/* Hint at the top of a message's reactions the first time: the row at the bottom reacts, and double-tapping a message reacts too. */
+"TIPS_SHEET_HINT" = "Tipp: Unten kannst du direkt mitreagieren. Und zweimal Tippen auf eine Nachricht reagiert mit ❤️.";
+
+/* Item in chat settings that shows the first-time tips about reactions and the message menu again. */
+"TIPS_SHOW_AGAIN" = "Tipps erneut zeigen";
+
+/* Shown after choosing to see the first-time tips again. */
+"TIPS_SHOW_AGAIN_DONE" = "Die Tipps erscheinen wieder.";
+
+/* Point in the first-time sheet: the reaction bar can sit right, left or at the bottom. */
+"TIPS_WELCOME_BAR" = "Die Reaktionsleiste sitzt rechts, links oder unten – wo dein Daumen hinkommt.";
+
+/* Point in the first-time sheet: double-tapping a message reacts. */
+"TIPS_WELCOME_DOUBLE_TAP" = "Tippe zweimal auf eine Nachricht, um mit ❤️ oder einem Emoji deiner Wahl zu reagieren.";
+
+/* Point in the first-time sheet: less used actions are under More, and which ones show can be chosen. */
+"TIPS_WELCOME_MENU" = "Selten Genutztes liegt unter „Mehr“. Du entscheidest, was direkt da ist.";
+
+/* Title of the sheet that explains the reaction bar, double-tap and the shorter message menu the first time. */
+"TIPS_WELCOME_TITLE" = "Reagieren mit einer Hand";
+
 /* Action that turns a voice message into text, on the device. */
 "TRANSCRIBE" = "Transkribieren";
 
