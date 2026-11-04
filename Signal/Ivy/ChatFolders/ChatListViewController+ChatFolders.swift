@@ -67,8 +67,14 @@ extension ChatListViewController {
             loadCoordinator.loadIfNecessary()
         }
 
-        let counts = ChatFolderChats.unreadCounts(folders: folders, chats: chats)
+        var counts = ChatFolderChats.unreadCounts(folders: folders, chats: chats)
         let extras = ChatFolderExtras.fetchAll(store: IvyData.shared?.store)
+        // "All chats" doesn't count the chats that show only in their folder.
+        let onlyThere = folders.filter { extras[$0.id]?.showsOnlyHere == true }
+        if !onlyThere.isEmpty, let allChats = folders.first(where: { $0.kind == .allChats }) {
+            let hidden = ChatFolderChats.hiddenFromAllChats(chats, folders: onlyThere)
+            counts[allChats.id] = chats.count(where: { $0.isUnread && !hidden.contains($0.threadId) })
+        }
         let items = folders.map { folder in
             ChatFolderBar.Item(folder: folder, unreadCount: counts[folder.id] ?? 0, extras: extras[folder.id] ?? ChatFolderExtras())
         }

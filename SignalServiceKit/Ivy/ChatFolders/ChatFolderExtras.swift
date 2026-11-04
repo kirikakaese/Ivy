@@ -19,6 +19,8 @@ public struct ChatFolderExtras: Equatable, Sendable {
     /// The disappearing messages timer the folder sets on its chats, in
     /// seconds; 0 is off. Nil: each chat keeps its own.
     public var disappearingSeconds: UInt32?
+    /// The folder's chats show only in the folder, not under "All chats".
+    public var showsOnlyHere: Bool
 
     public init(
         emoji: String? = nil,
@@ -26,12 +28,14 @@ public struct ChatFolderExtras: Equatable, Sendable {
         pinnedChats: [IvyChatReference] = [],
         notificationHours: IvyNotificationHours? = nil,
         disappearingSeconds: UInt32? = nil,
+        showsOnlyHere: Bool = false,
     ) {
         self.emoji = emoji
         self.color = color
         self.pinnedChats = pinnedChats
         self.notificationHours = notificationHours
         self.disappearingSeconds = disappearingSeconds
+        self.showsOnlyHere = showsOnlyHere
     }
 
     public static let maxPinnedChats = 4
@@ -46,6 +50,7 @@ public struct ChatFolderExtras: Equatable, Sendable {
         static let pinnedChats = "pins"
         static let notificationHours = "hours"
         static let disappearingSeconds = "disappear"
+        static let showsOnlyHere = "onlyHere"
     }
 
     public static func fetch(folderId: Data, store: IvyDataStore?) -> ChatFolderExtras {
@@ -58,6 +63,7 @@ public struct ChatFolderExtras: Equatable, Sendable {
             pinnedChats: IvyDataStore.decode([IvyChatReference].self, from: fields[Field.pinnedChats]) ?? [],
             notificationHours: IvyDataStore.decode(IvyNotificationHours.self, from: fields[Field.notificationHours]),
             disappearingSeconds: IvyDataStore.decode(UInt32.self, from: fields[Field.disappearingSeconds]),
+            showsOnlyHere: IvyDataStore.decode(Bool.self, from: fields[Field.showsOnlyHere]) ?? false,
         )
     }
 
@@ -92,6 +98,9 @@ public struct ChatFolderExtras: Equatable, Sendable {
         }
         if disappearingSeconds != old.disappearingSeconds {
             fields.updateValue(disappearingSeconds.map { IvyDataStore.encode($0) }, forKey: Field.disappearingSeconds)
+        }
+        if showsOnlyHere != old.showsOnlyHere {
+            fields.updateValue(showsOnlyHere ? IvyDataStore.encode(true) : nil, forKey: Field.showsOnlyHere)
         }
         guard !fields.isEmpty else {
             return

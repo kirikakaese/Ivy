@@ -123,6 +123,7 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
         if IvyData.shared != nil {
             contents.add(appearanceSection())
             contents.add(notificationsSection())
+            contents.add(displaySection())
         }
 
         let optionsSection = OWSTableSection()
@@ -152,6 +153,23 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
         }
 
         self.contents = contents
+    }
+
+    // MARK: - Display
+
+    /// Whether the folder keeps its chats out of "All chats".
+    private func displaySection() -> OWSTableSection {
+        let section = OWSTableSection()
+        section.headerTitle = IvyLocalizedString("CHAT_FOLDER_DISPLAY", comment: "Header of a chat folder's display options.")
+        section.footerTitle = IvyLocalizedString("CHAT_FOLDER_ONLY_HERE_FOOTER", comment: "Explains that a folder's chats then show only in the folder.")
+        section.add(.switch(
+            withText: IvyLocalizedString("CHAT_FOLDER_ONLY_HERE", comment: "Switch that shows a folder's chats only in that folder, not under All chats."),
+            isOn: { [weak self] in self?.extras.showsOnlyHere ?? false },
+            actionBlock: { [weak self] uiSwitch in
+                self?.extras.showsOnlyHere = uiSwitch.isOn
+            },
+        ))
+        return section
     }
 
     // MARK: - Notifications

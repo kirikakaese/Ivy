@@ -204,6 +204,9 @@
 /* Title of the confirmation before deleting a chat folder. */
 "CHAT_FOLDER_DELETE_CONFIRM_TITLE" = "Diesen Ordner löschen?";
 
+/* Header of a chat folder's display options. */
+"CHAT_FOLDER_DISPLAY" = "Anzeige";
+
 /* Action that opens the settings of one chat folder. */
 "CHAT_FOLDER_EDIT" = "Ordner bearbeiten";
 
@@ -242,6 +245,12 @@
 
 /* Item that sets when a chat folder's chats may notify. */
 "CHAT_FOLDER_NOTIFY" = "Mitteilungen erlauben";
+
+/* Switch that shows a folder's chats only in that folder, not under All chats. */
+"CHAT_FOLDER_ONLY_HERE" = "Nur in diesem Ordner zeigen";
+
+/* Explains that a folder's chats then show only in the folder. */
+"CHAT_FOLDER_ONLY_HERE_FOOTER" = "Diese Chats erscheinen nicht mehr unter „Alle“. Suche, Mitteilungen und andere Ordner bleiben gleich.";
 
 /* Chat folder option: the folder only shows chats with unread messages. */
 "CHAT_FOLDER_ONLY_UNREAD" = "Nur ungelesene Chats";

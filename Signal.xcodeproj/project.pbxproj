@@ -4332,6 +4332,7 @@
 		B592A6AB82AA09A0ECDA6CF4 /* IvyDoubleTapReactionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69FE9C14F763475691061B22 /* IvyDoubleTapReactionTest.swift */; };
 		6878C6EB71BB86C60B305EF0 /* IvyReactionBarPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D0C583F4B110ED52BBF35F /* IvyReactionBarPosition.swift */; };
 		AADD571A25CE39EA9870F8D5 /* IvyReactionBarPositionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A3F6266E490CF1BD036DE4 /* IvyReactionBarPositionTest.swift */; };
+		049EC2ABB2D351F35DBAEDED /* ChatFolderOnlyHereTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DA6C9923EA3EE16C4ADD9C /* ChatFolderOnlyHereTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8994,6 +8995,7 @@
 		69FE9C14F763475691061B22 /* IvyDoubleTapReactionTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDoubleTapReactionTest.swift; sourceTree = "<group>"; };
 		00D0C583F4B110ED52BBF35F /* IvyReactionBarPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyReactionBarPosition.swift; sourceTree = "<group>"; };
 		E7A3F6266E490CF1BD036DE4 /* IvyReactionBarPositionTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyReactionBarPositionTest.swift; sourceTree = "<group>"; };
+		62DA6C9923EA3EE16C4ADD9C /* ChatFolderOnlyHereTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderOnlyHereTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16614,6 +16616,7 @@
 				7190A714556E022D7A05A881 /* IvyServiceStatusTest.swift */,
 				CC489E36CAFA9E093D2C68E1 /* IvyStatusReportTest.swift */,
 				F14D65251D7791720F81CA0B /* IvyWakeStatsTest.swift */,
+				62DA6C9923EA3EE16C4ADD9C /* ChatFolderOnlyHereTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -22121,6 +22124,7 @@
 				1D8519ECC1B055EDE25CCF42 /* IvyServiceStatusTest.swift in Sources */,
 				AED2F797D7BF95624F8E64E3 /* IvyStatusReportTest.swift in Sources */,
 				DD47D61935DC095125CEEB98 /* IvyWakeStatsTest.swift in Sources */,
+				049EC2ABB2D351F35DBAEDED /* ChatFolderOnlyHereTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
