@@ -4326,6 +4326,8 @@
 		A8047B0DD35E991180F83C86 /* IvyQuickReactionsBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97EFA618A1444990A92AE6C /* IvyQuickReactionsBar.swift */; };
 		626BDFF62FEE97C769D6045F /* IvyQuickReactionsBarTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2641E188B0E4376862BD27 /* IvyQuickReactionsBarTest.swift */; };
 		FA935779ADC936807B351739 /* IvyChatTopBarCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7159EF4DBA598A1B3AD202AB /* IvyChatTopBarCover.swift */; };
+		DBAE4F5DB2A97C8ABB5EB46A /* IvyDoubleTapReaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320C9AE1C9F99FF3D4B23DC6 /* IvyDoubleTapReaction.swift */; };
+		B592A6AB82AA09A0ECDA6CF4 /* IvyDoubleTapReactionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69FE9C14F763475691061B22 /* IvyDoubleTapReactionTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -8982,6 +8984,8 @@
 		E97EFA618A1444990A92AE6C /* IvyQuickReactionsBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyQuickReactionsBar.swift; sourceTree = "<group>"; };
 		EF2641E188B0E4376862BD27 /* IvyQuickReactionsBarTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyQuickReactionsBarTest.swift; sourceTree = "<group>"; };
 		7159EF4DBA598A1B3AD202AB /* IvyChatTopBarCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatTopBarCover.swift; sourceTree = "<group>"; };
+		320C9AE1C9F99FF3D4B23DC6 /* IvyDoubleTapReaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDoubleTapReaction.swift; sourceTree = "<group>"; };
+		69FE9C14F763475691061B22 /* IvyDoubleTapReactionTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDoubleTapReactionTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16672,6 +16676,7 @@
 				D780AFE9BE1218FD97BEA166 /* IvyZoomTest.swift */,
 				BCF0636B6B0A829AB1104EB0 /* IvyStatusScreenTest.swift */,
 				EF2641E188B0E4376862BD27 /* IvyQuickReactionsBarTest.swift */,
+				69FE9C14F763475691061B22 /* IvyDoubleTapReactionTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16919,6 +16924,7 @@
 				C8563B9815CA4DABC5E55330 /* IvyDetectedItemsUI.swift */,
 				E97EFA618A1444990A92AE6C /* IvyQuickReactionsBar.swift */,
 				7159EF4DBA598A1B3AD202AB /* IvyChatTopBarCover.swift */,
+				320C9AE1C9F99FF3D4B23DC6 /* IvyDoubleTapReaction.swift */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -20393,6 +20399,7 @@
 				DF680DE6AC7F608591FC1E61 /* IvyStatusViewController.swift in Sources */,
 				A8047B0DD35E991180F83C86 /* IvyQuickReactionsBar.swift in Sources */,
 				FA935779ADC936807B351739 /* IvyChatTopBarCover.swift in Sources */,
+				DBAE4F5DB2A97C8ABB5EB46A /* IvyDoubleTapReaction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20492,6 +20499,7 @@
 				30436A6008B99465BB9225E1 /* IvyZoomTest.swift in Sources */,
 				695B591532B8CC95579AE214 /* IvyStatusScreenTest.swift in Sources */,
 				626BDFF62FEE97C769D6045F /* IvyQuickReactionsBarTest.swift in Sources */,
+				B592A6AB82AA09A0ECDA6CF4 /* IvyDoubleTapReactionTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

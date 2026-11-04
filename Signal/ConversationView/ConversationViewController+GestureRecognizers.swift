@@ -170,7 +170,8 @@ extension ConversationViewController: SingleOrDoubleTapGestureDelegate {
             return false
         }
         guard cell.canHandleDoubleTap(sender: sender, componentDelegate: self) else {
-            return false
+            // Ivy: messages that can't be edited react to a double tap instead.
+            return ivyHandleDoubleTapReaction(cell: cell, sender: sender)
         }
 
         return cell.handleDoubleTap(sender: sender, componentDelegate: self)
