@@ -103,9 +103,10 @@ public class ContextMenuTargetedPreviewAccessory {
     var accessoryAlignment: AccessoryAlignment
     var landscapeAccessoryAlignment: AccessoryAlignment?
 
-    // Ivy: an accessory pinned to the bottom of the screen, in thumb reach,
-    // in portrait. The preview and the other accessories stay above it.
-    var ivyPinnedToBottom: Bool = false
+    // Ivy: where the reaction bar goes, as chosen in Settings > Chats: at the
+    // bottom of the screen (in portrait), or beside the actions. nil keeps
+    // the accessory's own alignment.
+    var ivyPlacement: IvyReactionBarPosition?
 
     var animateAccessoryPresentationAlongsidePreview: Bool = false
     var targetAnimateOutFrame: CGRect?

@@ -85,11 +85,17 @@ class MessageReactionPicker: UIStackView {
         return buttonForEmoji.map(\.view)
     }
 
+    // Ivy: an upright bar beside the context menu's actions. -1 when it's on
+    // the left, 1 on the right, nil for Signal's horizontal bar.
+    private let ivyVerticalSide: CGFloat?
+
     init(
         selectedEmoji: String?,
         delegate: MessageReactionPickerDelegate?,
         style: Style,
+        ivyVerticalSide: CGFloat? = nil,
     ) {
+        self.ivyVerticalSide = ivyVerticalSide
         if let selectedEmoji {
             self.selectedEmoji = EmojiWithSkinTones(rawValue: selectedEmoji)
             owsAssertDebug(self.selectedEmoji != nil)
@@ -143,7 +149,13 @@ class MessageReactionPicker: UIStackView {
             backgroundContentView = backgroundView
         }
 
-        autoSetDimension(.height, toSize: LayoutConstants.pickerHeight)
+        if ivyVerticalSide != nil {
+            axis = .vertical
+            emojiStackView.axis = .vertical
+            autoSetDimension(.width, toSize: LayoutConstants.pickerHeight)
+        } else {
+            autoSetDimension(.height, toSize: LayoutConstants.pickerHeight)
+        }
 
         isLayoutMarginsRelativeArrangement = true
         // Inline picker's scroll view should go to the edge
@@ -423,7 +435,9 @@ class MessageReactionPicker: UIStackView {
 
         UIView.animate(withDuration: animated ? 0.15 : 0) {
             previouslyFocusedButton?.transform = .identity
-            focusedButton?.transform = CGAffineTransform.scale(1.5).translatedBy(x: 0, y: -24)
+            // Ivy: an upright bar lifts the emoji sideways, away from the edge.
+            let lift = self.ivyVerticalSide.map { CGPoint(x: -24 * $0, y: 0) } ?? CGPoint(x: 0, y: -24)
+            focusedButton?.transform = CGAffineTransform.scale(1.5).translatedBy(x: lift.x, y: lift.y)
         }
     }
 
@@ -437,6 +451,15 @@ class MessageReactionPicker: UIStackView {
             button.transform = .identity
             focusArea = button.frame
             button.transform = originalTransform
+        }
+
+        // Ivy: upright, each emoji takes its own row, reaching out sideways.
+        if let side = ivyVerticalSide {
+            focusArea.size.height = LayoutConstants.reactionHeight + LayoutConstants.pickerPadding
+            focusArea.origin.y -= LayoutConstants.pickerPadding / 2
+            focusArea.size.width = 136
+            if side > 0 { focusArea.origin.x -= 136 - LayoutConstants.reactionHeight }
+            return focusArea
         }
 
         // Always a fixed height
