@@ -292,10 +292,25 @@ public enum ChatFolderChats {
         tx: DBReadTransaction,
     ) -> [String] {
         guard let folder, folder.kind == .custom else {
-            return threadIds
+            // "All chats" leaves out the chats of folders that keep them to
+            // themselves.
+            let extras = ChatFolderExtras.fetchAll(store: IvyData.shared?.store)
+            let onlyThere = ChatFolderManager.shared.folders(tx: tx).filter { extras[$0.id]?.showsOnlyHere == true }
+            guard !onlyThere.isEmpty else {
+                return threadIds
+            }
+            let hidden = hiddenFromAllChats(inboxChats(tx: tx), folders: onlyThere)
+            return threadIds.filter { !hidden.contains($0) || required.contains($0) }
         }
         let members = Set(inboxChats(tx: tx).filter { folder.contains($0) }.map(\.threadId))
         return threadIds.filter { members.contains($0) || required.contains($0) }
+    }
+
+    /// The chats that belong to one of `folders` (those shown only there),
+    /// so "All chats" leaves them out.
+    public static func hiddenFromAllChats(_ chats: [ChatFolderChat], folders: [ChatFolder]) -> Set<String> {
+        let custom = folders.filter { $0.kind == .custom }
+        return Set(chats.filter { chat in custom.contains { $0.contains(chat) } }.map(\.threadId))
     }
 
     /// The chat list order with Ivy's additions: chats pinned in the folder
