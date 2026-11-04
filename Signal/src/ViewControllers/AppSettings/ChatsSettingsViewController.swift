@@ -51,6 +51,8 @@ class ChatsSettingsViewController: OWSTableViewController2 {
         ivyAddDetectionSection(to: contents)
         // Ivy: where the reaction bar goes.
         ivyAddReactionBarSection(to: contents)
+        // Ivy: reacting by double-tapping a message.
+        ivyAddDoubleTapSection(to: contents)
 
         let sharingSuggestionsSection = OWSTableSection()
         sharingSuggestionsSection.footerTitle = OWSLocalizedString(
