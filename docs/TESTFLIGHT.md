@@ -25,7 +25,7 @@ The workflow creates the App IDs of the extensions, a distribution certificate a
 
 The workflow also turns on Push Notifications for the app's App ID, which the optional push relay uses (docs/PUSH_RELAY.md).
 
-Each run creates its own distribution certificate and App Store profiles and removes them at the end, so they never pile up. Builds already uploaded stay valid.
+Each run creates its own distribution certificate and App Store profiles. After the upload it waits until Apple has processed the build (`Scripts/ivy/asc-wait.rb`, up to 45 minutes) and only then removes them, so they never pile up. Apple checks the signature while processing, and a certificate revoked before that makes the build fail with ITMS-90034 ("Missing or invalid signature"). The run fails when Apple rejects the build. If processing takes longer than the wait, the certificate stays; revoke it later on developer.apple.com > Certificates.
 
 ## Each build
 

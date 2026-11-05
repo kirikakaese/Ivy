@@ -5,7 +5,8 @@
 #
 # Archives the iOS app and uploads it to TestFlight. Signing goes through
 # the App Store Connect API (Scripts/ivy/asc-signing.rb): a certificate and
-# profiles only for this run, removed again at the end. Needs
+# profiles only for this run, removed again once Apple has processed the
+# build (Scripts/ivy/asc-wait.rb). Needs
 # APPLE_TEAM_ID, ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY (the .p8 file's text)
 # and IVY_BUILD.
 
@@ -165,4 +166,17 @@ if [ "$upload_status" -ne 0 ]; then
   exit 1
 fi
 
-echo "Uploaded build $IVY_BUILD to App Store Connect. It shows up in TestFlight after Apple has processed it."
+echo "Uploaded build $IVY_BUILD to App Store Connect."
+
+# Apple checks the signature while it processes the build; revoking the
+# certificate before that makes the build fail (ITMS-90034). So the run
+# waits, and keeps the certificate if processing takes too long.
+set +e
+ruby "$SCRIPTS/asc-wait.rb" "$IVY_BUILD"
+wait_status=$?
+set -e
+case "$wait_status" in
+  0) ;;
+  2) touch "$SIGNING/keep" ;;
+  *) exit 1 ;;
+esac
