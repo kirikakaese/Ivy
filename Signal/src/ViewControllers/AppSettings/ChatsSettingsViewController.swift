@@ -49,19 +49,6 @@ class ChatsSettingsViewController: OWSTableViewController2 {
 
         // Ivy: underlined dates and tasks.
         ivyAddDetectionSection(to: contents)
-        // Ivy: which hand, and where the reaction bar goes.
-        ivyAddHandSection(to: contents)
-        ivyAddReactionBarSection(to: contents)
-        // Ivy: reacting by double-tapping a message.
-        ivyAddDoubleTapSection(to: contents)
-        // Ivy: what swiping a message left does.
-        ivyAddSwipeLeftSection(to: contents)
-        // Ivy: search and folders at the bottom of the chat list.
-        ivyAddChatListLayoutSection(to: contents)
-        // Ivy: which message menu actions show directly.
-        ivyAddMessageMenuSection(to: contents)
-        // Ivy: the first-time tips again.
-        ivyAddTipsSection(to: contents)
 
         let sharingSuggestionsSection = OWSTableSection()
         sharingSuggestionsSection.footerTitle = OWSLocalizedString(

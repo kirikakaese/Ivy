@@ -35,6 +35,7 @@ class AppSettingsViewController: OWSTableViewController2 {
 
         updateHasExpiredGiftBadge()
         updateTableContents()
+        ivyInstallSettingsSearch() // Ivy: a search field above the settings
 
         if let registeredState = try? tsAccountManager.registeredStateWithMaybeSneakyTransaction() {
             Task {
@@ -198,8 +199,18 @@ class AppSettingsViewController: OWSTableViewController2 {
         }
         contents.add(section1)
 
+        // Ivy: the settings grouped by what they're for: the app, messages,
+        // organizing, and security and data.
+        let navigation = { [weak self] in self?.navigationController }
+        let appSection = OWSTableSection()
+        appSection.headerTitle = IvyLocalizedString("SETTINGS_GROUP_APP", comment: "Header of the settings group about the app itself: appearance, start and tabs, controls.")
+        let messagesSection = OWSTableSection()
+        messagesSection.headerTitle = IvyLocalizedString("SETTINGS_GROUP_MESSAGES", comment: "Header of the settings group about messages: chats, folders, notifications.")
+        let organizeSection = OWSTableSection()
+        organizeSection.headerTitle = IvyLocalizedString("SETTINGS_GROUP_ORGANIZE", comment: "Header of the settings group about organizing: calendar and tasks, reminders, snippets.")
         let section2 = OWSTableSection()
-        section2.add(.disclosureItem(
+        section2.headerTitle = IvyLocalizedString("SETTINGS_GROUP_SECURITY_DATA", comment: "Header of the settings group about privacy, backups, data and Ivy sync.")
+        appSection.add(.disclosureItem(
             icon: .settingsAppearance,
             withText: OWSLocalizedString("SETTINGS_APPEARANCE_TITLE", comment: "The title for the appearance settings."),
             actionBlock: { [weak self] in
@@ -207,7 +218,9 @@ class AppSettingsViewController: OWSTableViewController2 {
                 self?.navigationController?.pushViewController(vc, animated: true)
             },
         ))
-        section2.add(.disclosureItem(
+        appSection.add(IvySettingsPage.startAndTabs.item(in: navigation))
+        appSection.add(IvySettingsPage.controls.item(in: navigation))
+        messagesSection.add(.disclosureItem(
             icon: .settingsChats,
             withText: OWSLocalizedString("SETTINGS_CHATS", comment: "Title for the 'chats' link in settings."),
             actionBlock: { [weak self] in
@@ -215,17 +228,10 @@ class AppSettingsViewController: OWSTableViewController2 {
                 self?.navigationController?.pushViewController(vc, animated: true)
             },
         ))
-        // Ivy: folders, reminders and Ivy's own data
-        section2.add(.disclosureItem(
-            icon: .settingsChats,
-            withText: IvyLocalizedString("IVY_DATA_TITLE", comment: "Title of the settings for Ivy's own data: folders, reminders, sync and backup."),
-            actionBlock: { [weak self] in
-                self?.navigationController?.pushViewController(IvyDataSettingsViewController(), animated: true)
-            },
-        ))
+        messagesSection.add(IvySettingsPage.folders.item(in: navigation))
         // Ivy: Stories are hidden.
         if IvyConfiguration.showsStories {
-            section2.add(.disclosureItem(
+            messagesSection.add(.disclosureItem(
                 icon: .settingsStories,
                 withText: OWSLocalizedString(
                     "STORY_SETTINGS_TITLE",
@@ -237,7 +243,7 @@ class AppSettingsViewController: OWSTableViewController2 {
                 },
             ))
         }
-        section2.add(.disclosureItem(
+        messagesSection.add(.disclosureItem(
             icon: .settingsNotifications,
             withText: OWSLocalizedString("SETTINGS_NOTIFICATIONS", comment: "The title for the notification settings."),
             actionBlock: { [weak self] in
@@ -317,6 +323,13 @@ class AppSettingsViewController: OWSTableViewController2 {
                 self?.navigationController?.pushViewController(vc, animated: true)
             },
         ))
+        section2.add(IvySettingsPage.syncAndBackup.item(in: navigation))
+        organizeSection.add(IvySettingsPage.calendarAndTasks.item(in: navigation))
+        organizeSection.add(IvySettingsPage.reminders.item(in: navigation))
+        organizeSection.add(IvySettingsPage.snippets.item(in: navigation))
+        contents.add(appSection)
+        contents.add(messagesSection)
+        contents.add(organizeSection)
         contents.add(section2)
 
         if SUIEnvironment.shared.paymentsRef.shouldShowPaymentsUI {

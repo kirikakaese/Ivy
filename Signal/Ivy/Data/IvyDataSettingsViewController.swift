@@ -20,69 +20,6 @@ final class IvyDataSettingsViewController: OWSTableViewController2, UIDocumentPi
     private func updateTableContents() {
         let contents = OWSTableContents(title: title)
 
-        let organizeSection = OWSTableSection()
-        organizeSection.add(.disclosureItem(
-            withText: IvyLocalizedString("CHAT_FOLDERS_TITLE", comment: "Title of the chat folder settings."),
-            actionBlock: { [weak self] in
-                self?.navigationController?.pushViewController(ChatFoldersSettingsViewController(), animated: true)
-            },
-        ))
-        organizeSection.add(.disclosureItem(
-            withText: IvyLocalizedString("REMINDERS_TITLE", comment: "Title of the list of reminders."),
-            actionBlock: { [weak self] in
-                self?.navigationController?.pushViewController(IvyRemindersViewController(), animated: true)
-            },
-        ))
-        organizeSection.add(.disclosureItem(
-            withText: IvyTaskUI.tasksTitle,
-            actionBlock: { [weak self] in
-                self?.navigationController?.pushViewController(IvyTasksViewController(), animated: true)
-            },
-        ))
-        organizeSection.add(.disclosureItem(
-            withText: IvyCalendarUI.calendarTitle,
-            actionBlock: { [weak self] in
-                self?.navigationController?.pushViewController(IvyCalendarViewController(), animated: true)
-            },
-        ))
-        organizeSection.add(.disclosureItem(
-            withText: IvyWeeklyReviewViewController.title,
-            actionBlock: { [weak self] in
-                self?.navigationController?.pushViewController(IvyWeeklyReviewSettingsViewController(), animated: true)
-            },
-        ))
-        organizeSection.add(.disclosureItem(
-            withText: IvySnippetsViewController.title,
-            actionBlock: { [weak self] in
-                self?.navigationController?.pushViewController(IvySnippetsViewController(), animated: true)
-            },
-        ))
-        organizeSection.add(.disclosureItem(
-            withText: IvyLocalizedString("HOME_SETTINGS_TITLE", comment: "Title of the settings for Home and navigation."),
-            actionBlock: { [weak self] in
-                self?.navigationController?.pushViewController(IvyHomeSettingsViewController(), animated: true)
-            },
-        ))
-        organizeSection.add(.disclosureItem(
-            withText: IvyAppleSyncSettingsViewController.title,
-            actionBlock: { [weak self] in
-                self?.navigationController?.pushViewController(IvyAppleSyncSettingsViewController(), animated: true)
-            },
-        ))
-        contents.add(organizeSection)
-
-        #if targetEnvironment(macCatalyst)
-        let macSection = OWSTableSection()
-        macSection.add(.disclosureItem(
-            withText: IvyHotKeySettingsViewController.title,
-            accessoryText: IvyHotKey.current.title,
-            actionBlock: { [weak self] in
-                self?.navigationController?.pushViewController(IvyHotKeySettingsViewController(), animated: true)
-            },
-        ))
-        contents.add(macSection)
-        #endif
-
         let syncSection = OWSTableSection()
         syncSection.headerTitle = IvyLocalizedString("IVY_DATA_SYNC_HEADER", comment: "Header of the Ivy data sync section.")
         syncSection.footerTitle = IvyLocalizedString(

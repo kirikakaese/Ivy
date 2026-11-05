@@ -97,7 +97,7 @@ extension ConversationViewController {
     }
 }
 
-extension ChatsSettingsViewController {
+extension OWSTableViewController2 {
 
     /// "Double-Tap": react with an emoji by double-tapping a message.
     func ivyAddDoubleTapSection(to contents: OWSTableContents) {

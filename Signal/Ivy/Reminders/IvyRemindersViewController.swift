@@ -26,18 +26,7 @@ final class IvyRemindersViewController: OWSTableViewController2 {
 
     /// Explains how to add a reminder, in the words of the platform.
     private static func emptyStateView() -> UIView {
-        let iconView = UIImageView(image: UIImage(systemName: "bell"))
-        iconView.preferredSymbolConfiguration = UIImage.SymbolConfiguration(pointSize: 36, weight: .light)
-        iconView.tintColor = .Signal.tertiaryLabel
-        iconView.contentMode = .center
-
-        let titleLabel = UILabel()
-        titleLabel.text = IvyLocalizedString("REMINDERS_EMPTY_TITLE", comment: "Title shown in the list of reminders when there are none.")
-        titleLabel.font = .dynamicTypeHeadline
-        titleLabel.textColor = .Signal.label
-        titleLabel.textAlignment = .center
-        titleLabel.numberOfLines = 0
-
+        // The same empty state as every Ivy list.
 #if targetEnvironment(macCatalyst)
         let format = IvyLocalizedString(
             "REMINDERS_EMPTY_CLICK_FORMAT",
@@ -49,30 +38,11 @@ final class IvyRemindersViewController: OWSTableViewController2 {
             comment: "Shown in the list of reminders when there are none, on iPhone and iPad. Embeds {{ the name of the Remind Me action }}.",
         )
 #endif
-        let bodyLabel = UILabel()
-        bodyLabel.text = String(format: format, IvyReminderUI.remindMeTitle)
-        bodyLabel.font = .dynamicTypeSubheadline
-        bodyLabel.textColor = .Signal.secondaryLabel
-        bodyLabel.textAlignment = .center
-        bodyLabel.numberOfLines = 0
-
-        let stackView = UIStackView(arrangedSubviews: [iconView, titleLabel, bodyLabel])
-        stackView.axis = .vertical
-        stackView.alignment = .center
-        stackView.spacing = 8
-        stackView.setCustomSpacing(16, after: iconView)
-
-        let container = UIView()
-        container.addSubview(stackView)
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: container.topAnchor, constant: 48),
-            stackView.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -24),
-            stackView.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-            stackView.leadingAnchor.constraint(greaterThanOrEqualTo: container.layoutMarginsGuide.leadingAnchor, constant: 16),
-            stackView.widthAnchor.constraint(lessThanOrEqualToConstant: 360),
-        ])
-        return container
+        return IvyEmptyState.view(
+            symbol: "bell",
+            title: IvyLocalizedString("REMINDERS_EMPTY_TITLE", comment: "Title shown in the list of reminders when there are none."),
+            text: String(format: format, IvyReminderUI.remindMeTitle),
+        )
     }
 
     private struct Row {

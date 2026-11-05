@@ -113,6 +113,9 @@ final class IvyHomeSettingsViewController: OWSTableViewController2 {
         })
         contents.add(importantSection)
 
+        // Search and folders at the bottom of the chat list.
+        ivyAddChatListLayoutSection(to: contents)
+
         self.contents = contents
     }
 

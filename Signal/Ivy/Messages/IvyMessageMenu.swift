@@ -148,7 +148,7 @@ final class IvyMessageMenuSettingsViewController: OWSTableViewController2 {
     }
 }
 
-extension ChatsSettingsViewController {
+extension OWSTableViewController2 {
 
     /// "Message Menu": opens the choice of actions shown directly.
     func ivyAddMessageMenuSection(to contents: OWSTableContents) {
