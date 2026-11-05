@@ -103,6 +103,12 @@ class AccountEntropyPoolTextView: UIView, TextViewWithPlaceholderDelegate {
         return textView.becomeFirstResponder()
     }
 
+    // Ivy: fills in a pasted key, formatted and checked like typed text.
+    func ivyEnter(_ text: String) {
+        textView.reformatText(replacementText: text)
+        textViewDidUpdateText(textView)
+    }
+
     // MARK: -
 
     /// The number of rows the text view displays when the entire contents is

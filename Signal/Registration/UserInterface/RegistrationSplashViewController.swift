@@ -171,6 +171,18 @@ public class RegistrationSplashViewController: OWSViewController, OWSNavigationC
                     self?.presenter?.setHasOldDevice(hasOldDevice)
                 }
             },
+            // Ivy: Signal on this iPhone can't scan its own screen; a guide
+            // leads through Signal Backups and the recovery key instead.
+            sameIPhoneBlock: { [weak self] in
+                self?.dismiss(animated: true) {
+                    let guide = IvyMoveFromSignalViewController { [weak self] in
+                        self?.dismiss(animated: true) {
+                            self?.presenter?.setHasOldDevice(false)
+                        }
+                    }
+                    self?.present(guide, animated: true)
+                }
+            },
         )
         self.present(sheet, animated: true)
     }
@@ -181,8 +193,10 @@ private class RestoreOrTransferPickerController: StackSheetViewController {
     override var placeOnGlassIfAvailable: Bool { false }
 
     private let setHasOldDeviceBlock: (Bool) -> Void
-    init(setHasOldDeviceBlock: @escaping (Bool) -> Void) {
+    private let sameIPhoneBlock: () -> Void // Ivy
+    init(setHasOldDeviceBlock: @escaping (Bool) -> Void, sameIPhoneBlock: @escaping () -> Void) {
         self.setHasOldDeviceBlock = setHasOldDeviceBlock
+        self.sameIPhoneBlock = sameIPhoneBlock
         super.init()
     }
 
@@ -191,6 +205,17 @@ private class RestoreOrTransferPickerController: StackSheetViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         stackView.spacing = 16
+
+        // Ivy: moving from Signal on this iPhone comes first.
+        let sameIPhoneButton = UIButton.registrationChoiceButton(
+            title: IvyLocalizedString("MOVE_FROM_SIGNAL_CHOICE_TITLE", comment: "Choice at the start of setup: moving from Signal on this iPhone."),
+            subtitle: IvyLocalizedString("MOVE_FROM_SIGNAL_CHOICE_BODY", comment: "Explains the choice of moving from Signal on this iPhone: with the Signal backup, no QR code."),
+            iconName: "signal-backups-48",
+            primaryAction: UIAction { [weak self] _ in
+                self?.sameIPhoneBlock()
+            },
+        )
+        stackView.addArrangedSubview(sameIPhoneButton)
 
         let hasDeviceButton = UIButton.registrationChoiceButton(
             title: OWSLocalizedString(

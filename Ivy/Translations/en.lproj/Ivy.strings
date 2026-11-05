@@ -1035,6 +1035,42 @@
 /* Title of the settings that choose which message menu actions show directly. */
 "MESSAGE_MENU_SETTINGS_TITLE" = "Message Menu";
 
+/* Explains the choice of moving from Signal on this iPhone: with the Signal backup, no QR code. */
+"MOVE_FROM_SIGNAL_CHOICE_BODY" = "Move with your Signal backup, no QR code or second device needed.";
+
+/* Choice at the start of setup: moving from Signal on this iPhone. */
+"MOVE_FROM_SIGNAL_CHOICE_TITLE" = "Signal on This iPhone";
+
+/* Button in the guide for moving from Signal once the recovery key is copied. */
+"MOVE_FROM_SIGNAL_CONTINUE" = "I've Copied the Key";
+
+/* Note in the guide for moving from Signal: switch to Signal without closing Ivy. */
+"MOVE_FROM_SIGNAL_NOTE" = "Switch between Ivy and Signal with the app switcher; Ivy stays where you left it. Once Ivy is set up, Signal on this iPhone is signed out, so finish the backup first.";
+
+/* Step 1 of moving from Signal: where Signal Backups are in Signal. */
+"MOVE_FROM_SIGNAL_STEP1_TEXT" = "In Signal: Settings › Backups. Set them up and wait until the first backup is done.";
+
+/* Step 1 of moving from Signal: turn on Signal Backups. */
+"MOVE_FROM_SIGNAL_STEP1_TITLE" = "Turn on Signal Backups";
+
+/* Step 2 of moving from Signal: where the recovery key is in Signal. */
+"MOVE_FROM_SIGNAL_STEP2_TEXT" = "In Signal: Settings › Backups › View recovery key, then copy it.";
+
+/* Step 2 of moving from Signal: copy the recovery key. */
+"MOVE_FROM_SIGNAL_STEP2_TITLE" = "Copy the recovery key";
+
+/* Step 3 of moving from Signal: confirm the phone number, choose the backup and paste the key. */
+"MOVE_FROM_SIGNAL_STEP3_TEXT" = "Confirm your phone number, choose to restore from your backup, and tap Paste under the key field.";
+
+/* Step 3 of moving from Signal: come back to Ivy. */
+"MOVE_FROM_SIGNAL_STEP3_TITLE" = "Come back to Ivy";
+
+/* Subtitle of the guide for moving from Signal on the same iPhone. */
+"MOVE_FROM_SIGNAL_SUBTITLE" = "Three steps, all on this iPhone.";
+
+/* Title of the guide for moving from Signal on the same iPhone. */
+"MOVE_FROM_SIGNAL_TITLE" = "Moving from Signal";
+
 /* Item showing whether Background App Refresh is on; opens the system settings. */
 "NOTIFICATIONS_BACKGROUND_REFRESH" = "Background App Refresh";
 
