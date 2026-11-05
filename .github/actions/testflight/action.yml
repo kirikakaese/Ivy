@@ -1,0 +1,76 @@
+name: Build and upload to TestFlight
+description: >
+  Builds the iOS app, signs it with a certificate made for the run and
+  uploads it to TestFlight. Shared by both jobs of the TestFlight workflow.
+  Expects the repository checked out and APPLE_TEAM_ID, ASC_KEY_ID,
+  ASC_ISSUER_ID and ASC_KEY in the job's environment.
+
+runs:
+  using: composite
+  steps:
+    - name: Check secrets
+      shell: bash
+      run: |
+        missing=""
+        for name in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_KEY; do
+          [ -n "${!name}" ] || missing="$missing $name"
+        done
+        if [ -n "$missing" ]; then
+          echo "::error::Missing repository secrets:$missing (see docs/TESTFLIGHT.md)"
+          exit 1
+        fi
+
+    - name: Select Xcode
+      # GitHub's and Namespace's Macs keep Xcode 26.6 under different names.
+      shell: bash
+      run: |
+        app="$XCODE_APP"
+        if [ ! -d "$app" ]; then
+          app=$(ls -d /Applications/Xcode*26.6*.app 2>/dev/null | head -n 1)
+        fi
+        if [ -z "$app" ] || [ ! -d "$app" ]; then
+          echo "::error::Xcode 26.6 not found. Installed:"
+          ls -d /Applications/Xcode*.app || true
+          exit 1
+        fi
+        echo "Using $app"
+        echo "DEVELOPER_DIR=$app/Contents/Developer" >> "$GITHUB_ENV"
+
+    - name: Download Metal toolchain
+      shell: bash
+      run: xcodebuild -downloadComponent MetalToolchain
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+
+    - name: Check the API key and the app record
+      shell: bash
+      env:
+        IVY_BUNDLE_ID: io.github.kirikakaese.ivy
+      run: ruby Scripts/ivy/asc-check.rb
+
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/Library/Caches/CocoaPods
+          ~/Library/Caches/org.signal.libsignal
+          ~/Library/Caches/org.signal.ringrtc
+        key: deps-${{ hashFiles('Podfile.lock') }}
+
+    - name: Install dependencies
+      shell: bash
+      run: make dependencies
+
+    - name: Build, sign and upload
+      shell: bash
+      run: Scripts/ivy/testflight.sh
+
+    - name: Upload logs
+      if: failure() || cancelled()
+      uses: actions/upload-artifact@v6
+      with:
+        name: testflight-logs
+        path: ~/Library/Logs/Ivy-CI

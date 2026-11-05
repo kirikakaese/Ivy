@@ -128,6 +128,15 @@ jobs:
       - name: Check that dependency install left tracked files unchanged
         run: git diff --exit-code
 
+      # The checkout and pod install give every file a new modification
+      # time, which would make Xcode rebuild everything despite the cache.
+      # Give unchanged files their recorded times back, and let Xcode ignore
+      # the new inodes of restored files.
+      - name: Make the build cache usable
+        run: |
+          python3 Scripts/ivy/ci_mtimes.py restore ~/IvyDerivedData/ivy-mtimes.json
+          defaults write com.apple.dt.XCBuild IgnoreFileSystemDeviceInodeChanges -bool YES
+
       - name: Show prebuilt libraries
         run: |
           ls -la Pods/SignalRingRTC/out/release Pods/SignalRingRTC/out/release/libringrtc
@@ -137,6 +146,10 @@ jobs:
 
       - name: Build and test (${{ env.MODE }})
         run: Scripts/ivy/ci-build.sh ${{ matrix.platform }} "$MODE"
+
+      - name: Record file times for the next run
+        if: always()
+        run: python3 Scripts/ivy/ci_mtimes.py save ~/IvyDerivedData/ivy-mtimes.json
 
       - name: Upload logs
         if: failure() || cancelled()

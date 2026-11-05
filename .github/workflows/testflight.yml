@@ -2,19 +2,25 @@ name: TestFlight
 
 # Builds the iOS app, signs it with a certificate made for the run and
 # uploads it to TestFlight. Run it by hand from the Actions tab. Setup and
-# the secrets it needs: docs/TESTFLIGHT.md.
+# the secrets it needs: docs/TESTFLIGHT.md. The steps live in
+# .github/actions/testflight.
 #
-# The build runs on GitHub's free Macs, or, when those are all taken, on a
-# paid Namespace Mac (profile namespace-profile-ivy-macos, billed per
-# minute). Only people who can push to the repository can start it.
+# Where it builds:
+#   auto       GitHub's free Macs. When none is free, GitHub gives up after
+#              15 minutes and the build moves to a paid Namespace Mac
+#              (profile namespace-profile-ivy-macos, billed per minute).
+#   github     GitHub's free Macs only.
+#   namespace  A Namespace Mac right away.
+# Only people who can push to the repository can start it.
 on:
   workflow_dispatch:
     inputs:
       runner:
         description: Where to build
         type: choice
-        default: github
+        default: auto
         options:
+          - auto
           - github
           - namespace
 
@@ -27,89 +33,46 @@ permissions:
 
 env:
   XCODE_APP: /Applications/Xcode_26.6.app
+  APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+  ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+  ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+  ASC_KEY: ${{ secrets.ASC_KEY }}
+  IVY_BUILD: ${{ github.run_number }}
+  IVY_PUSH_RELAY_HOST: ${{ vars.IVY_PUSH_RELAY_HOST }}
 
 jobs:
-  upload:
+  github:
     name: Build and upload to TestFlight
-    runs-on: ${{ inputs.runner == 'namespace' && 'namespace-profile-ivy-macos' || 'macos-26' }}
+    if: inputs.runner != 'namespace'
+    runs-on: macos-26
     timeout-minutes: 180
+    outputs:
+      started: ${{ steps.started.outputs.started }}
     steps:
-      - name: Check secrets
-        env:
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          ASC_KEY: ${{ secrets.ASC_KEY }}
-        run: |
-          missing=""
-          for name in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_KEY; do
-            [ -n "${!name}" ] || missing="$missing $name"
-          done
-          if [ -n "$missing" ]; then
-            echo "::error::Missing repository secrets:$missing (see docs/TESTFLIGHT.md)"
-            exit 1
-          fi
-
-      - name: Select Xcode
-        # GitHub's and Namespace's Macs keep Xcode 26.6 under different names.
-        run: |
-          app="$XCODE_APP"
-          if [ ! -d "$app" ]; then
-            app=$(ls -d /Applications/Xcode*26.6*.app 2>/dev/null | head -n 1)
-          fi
-          if [ -z "$app" ] || [ ! -d "$app" ]; then
-            echo "::error::Xcode 26.6 not found. Installed:"
-            ls -d /Applications/Xcode*.app || true
-            exit 1
-          fi
-          echo "Using $app"
-          echo "DEVELOPER_DIR=$app/Contents/Developer" >> "$GITHUB_ENV"
+      # Lets the Namespace job tell "no Mac was free" from a failed build.
+      - id: started
+        run: echo "started=true" >> "$GITHUB_OUTPUT"
 
       - uses: actions/checkout@v6
         with:
           submodules: recursive
 
-      - name: Download Metal toolchain
-        run: xcodebuild -downloadComponent MetalToolchain
+      - uses: ./.github/actions/testflight
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+  namespace:
+    name: Build and upload to TestFlight (Namespace)
+    needs: github
+    # Runs when asked for, or in auto mode when GitHub had no Mac: the job
+    # then ends as cancelled without having started. A run cancelled by hand
+    # does not fall back.
+    if: >-
+      !cancelled() && (inputs.runner == 'namespace' ||
+      (inputs.runner == 'auto' && needs.github.result == 'cancelled' && needs.github.outputs.started != 'true'))
+    runs-on: namespace-profile-ivy-macos
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v6
         with:
-          bundler-cache: true
+          submodules: recursive
 
-      - name: Check the API key and the app record
-        env:
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          ASC_KEY: ${{ secrets.ASC_KEY }}
-          IVY_BUNDLE_ID: io.github.kirikakaese.ivy
-        run: ruby Scripts/ivy/asc-check.rb
-
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/Library/Caches/CocoaPods
-            ~/Library/Caches/org.signal.libsignal
-            ~/Library/Caches/org.signal.ringrtc
-          key: deps-${{ hashFiles('Podfile.lock') }}
-
-      - name: Install dependencies
-        run: make dependencies
-
-      - name: Build, sign and upload
-        env:
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          ASC_KEY: ${{ secrets.ASC_KEY }}
-          IVY_BUILD: ${{ github.run_number }}
-          IVY_PUSH_RELAY_HOST: ${{ vars.IVY_PUSH_RELAY_HOST }}
-        run: Scripts/ivy/testflight.sh
-
-      - name: Upload logs
-        if: failure() || cancelled()
-        uses: actions/upload-artifact@v6
-        with:
-          name: testflight-logs
-          path: ~/Library/Logs/Ivy-CI
+      - uses: ./.github/actions/testflight
