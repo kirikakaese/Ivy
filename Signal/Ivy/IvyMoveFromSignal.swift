@@ -111,7 +111,7 @@ final class IvyMoveFromSignalViewController: OWSViewController {
 /// A system paste button under the recovery key: it pastes without Apple's
 /// "Allow Paste" question, and the key is formatted as if typed.
 @available(iOS 16, *)
-final class IvyRecoveryKeyPasteButton: UIView, UIPasteConfigurationSupporting {
+final class IvyRecoveryKeyPasteButton: UIView {
 
     private let onPaste: (String) -> Void
 
