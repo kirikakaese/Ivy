@@ -144,7 +144,7 @@ extension ChatListViewController {
     }
 }
 
-extension ChatsSettingsViewController {
+extension OWSTableViewController2 {
 
     /// "Chat List": search and folders at the bottom.
     func ivyAddChatListLayoutSection(to contents: OWSTableContents) {

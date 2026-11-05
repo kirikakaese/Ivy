@@ -71,10 +71,12 @@ final class IvySnippetsViewController: OWSTableViewController2 {
             })
         }
         if snippets.isEmpty {
-            section.add(.label(
-                withText: IvyLocalizedString("SNIPPETS_EMPTY", comment: "Shown in the list of snippets when there are none."),
-                accessoryType: .none,
-            ))
+            // The same empty state as every Ivy list.
+            section.customHeaderView = IvyEmptyState.view(
+                symbol: "text.quote",
+                title: IvyLocalizedString("SNIPPETS_EMPTY", comment: "Shown in the list of snippets when there are none."),
+                text: nil,
+            )
         }
         contents.add(section)
         self.contents = contents

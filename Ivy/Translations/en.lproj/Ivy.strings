@@ -132,6 +132,12 @@
 /* Shown under a calendar event that repeats. */
 "CALENDAR_REPEATS" = "Repeats";
 
+/* Footer of the calendar and tasks settings: the calendar and tasks themselves are in their tabs. */
+"CALENDAR_TASKS_SETTINGS_FOOTER" = "Your calendar and tasks are in their tabs. Here you choose how they work.";
+
+/* Title of the settings for the calendar and tasks. */
+"CALENDAR_TASKS_SETTINGS_TITLE" = "Calendar and Tasks";
+
 /* Title of the calendar. */
 "CALENDAR_TITLE" = "Calendar";
 
@@ -157,7 +163,7 @@
 "CHAT_FOLDERS_SUGGESTED" = "Suggested Folders";
 
 /* Title of the chat folder settings. */
-"CHAT_FOLDERS_TITLE" = "Chat Folders";
+"CHAT_FOLDERS_TITLE" = "Folders";
 
 /* Context menu of a chat: submenu that adds the chat to a folder or removes it. */
 "CHAT_FOLDER_ADD_CHAT" = "Folders";
@@ -341,6 +347,9 @@
 
 /* Note below the explanation of Signal connections, which mentions stories. Ivy doesn't show stories. */
 "CONNECTIONS_NO_STORIES_NOTE" = "Ivy doesn't show stories. If you post stories from another Signal app, your connections can still see them.";
+
+/* Title of the settings for how Ivy is used by hand: reaction bar, gestures, message menu. */
+"CONTROLS_SETTINGS_TITLE" = "Controls";
 
 /* Button below the debug log preview that exports the log. */
 "DEBUG_LOG_EXPORT_BUTTON" = "Export";
@@ -721,7 +730,7 @@
 "HOME_SECTION_ALL" = "All";
 
 /* Title of the settings for Home and navigation. */
-"HOME_SETTINGS_TITLE" = "Home and Navigation";
+"HOME_SETTINGS_TITLE" = "Start and Tabs";
 
 /* Header of the setting that chooses which section the app opens with. */
 "HOME_START_SECTION" = "Open With";
@@ -856,7 +865,7 @@
 "IVY_DATA_SYNC_REQUESTED" = "Asked your other devices";
 
 /* Title of the settings for Ivy's own data: folders, reminders, sync and backup. */
-"IVY_DATA_TITLE" = "Folders, Tasks, Calendar and Sync";
+"IVY_DATA_TITLE" = "Ivy Sync and Backup";
 
 /* Shown when the passphrase of an Ivy data file is wrong. */
 "IVY_DATA_WRONG_PASSPHRASE" = "The passphrase is wrong.";
@@ -1544,6 +1553,21 @@
 
 /* Chat list banner title when Ivy can't reach its push relay. */
 "SERVICE_STATUS_UNREACHABLE_TITLE" = "Can't reach Ivy Push";
+
+/* Header of the settings group about the app itself: appearance, start and tabs, controls. */
+"SETTINGS_GROUP_APP" = "App";
+
+/* Header of the settings group about messages: chats, folders, notifications. */
+"SETTINGS_GROUP_MESSAGES" = "Messages";
+
+/* Header of the settings group about organizing: calendar and tasks, reminders, snippets. */
+"SETTINGS_GROUP_ORGANIZE" = "Organize";
+
+/* Header of the settings group about privacy, backups, data and Ivy sync. */
+"SETTINGS_GROUP_SECURITY_DATA" = "Security and Data";
+
+/* Placeholder of the search field in Settings. */
+"SETTINGS_SEARCH_PLACEHOLDER" = "Search Settings";
 
 /* Header of the chat folders in the sidebar. */
 "SIDEBAR_FOLDERS" = "Folders";

@@ -82,7 +82,7 @@ enum IvyReactionBarPosition: String, CaseIterable {
     }
 }
 
-extension ChatsSettingsViewController {
+extension OWSTableViewController2 {
 
     /// "Hand": which side edge controls go to.
     func ivyAddHandSection(to contents: OWSTableContents) {

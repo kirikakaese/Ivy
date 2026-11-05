@@ -250,7 +250,7 @@ final class IvyReactionsSheetHintView: UIView {
 
 // MARK: - Settings
 
-extension ChatsSettingsViewController {
+extension OWSTableViewController2 {
 
     /// "Show Tips Again" under the reaction settings.
     func ivyAddTipsSection(to contents: OWSTableContents) {

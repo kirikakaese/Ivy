@@ -67,7 +67,7 @@ extension ConversationViewController {
     }
 }
 
-extension ChatsSettingsViewController {
+extension OWSTableViewController2 {
 
     /// "Swipe Left": the action of swiping a message to the left.
     func ivyAddSwipeLeftSection(to contents: OWSTableContents) {

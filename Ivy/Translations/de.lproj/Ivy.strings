@@ -132,6 +132,12 @@
 /* Shown under a calendar event that repeats. */
 "CALENDAR_REPEATS" = "Wiederholt sich";
 
+/* Footer of the calendar and tasks settings: the calendar and tasks themselves are in their tabs. */
+"CALENDAR_TASKS_SETTINGS_FOOTER" = "Kalender und Aufgaben selbst findest du in ihren Tabs. Hier legst du fest, wie sie funktionieren.";
+
+/* Title of the settings for the calendar and tasks. */
+"CALENDAR_TASKS_SETTINGS_TITLE" = "Kalender und Aufgaben";
+
 /* Title of the calendar. */
 "CALENDAR_TITLE" = "Kalender";
 
@@ -157,7 +163,7 @@
 "CHAT_FOLDERS_SUGGESTED" = "Vorgeschlagene Ordner";
 
 /* Title of the chat folder settings. */
-"CHAT_FOLDERS_TITLE" = "Chat-Ordner";
+"CHAT_FOLDERS_TITLE" = "Ordner";
 
 /* Context menu of a chat: submenu that adds the chat to a folder or removes it. */
 "CHAT_FOLDER_ADD_CHAT" = "Ordner";
@@ -341,6 +347,9 @@
 
 /* Note below the explanation of Signal connections, which mentions stories. Ivy doesn't show stories. */
 "CONNECTIONS_NO_STORIES_NOTE" = "Ivy zeigt keine Storys an. Wenn du Storys in einer anderen Signal-App postest, können deine Kontakte sie weiterhin sehen.";
+
+/* Title of the settings for how Ivy is used by hand: reaction bar, gestures, message menu. */
+"CONTROLS_SETTINGS_TITLE" = "Bedienung";
 
 /* Button below the debug log preview that exports the log. */
 "DEBUG_LOG_EXPORT_BUTTON" = "Exportieren";
@@ -721,7 +730,7 @@
 "HOME_SECTION_ALL" = "Alle";
 
 /* Title of the settings for Home and navigation. */
-"HOME_SETTINGS_TITLE" = "Start und Navigation";
+"HOME_SETTINGS_TITLE" = "Start und Tabs";
 
 /* Header of the setting that chooses which section the app opens with. */
 "HOME_START_SECTION" = "Öffnen mit";
@@ -856,7 +865,7 @@
 "IVY_DATA_SYNC_REQUESTED" = "Deine anderen Geräte wurden gefragt";
 
 /* Title of the settings for Ivy's own data: folders, reminders, sync and backup. */
-"IVY_DATA_TITLE" = "Ordner, Aufgaben, Kalender und Sync";
+"IVY_DATA_TITLE" = "Ivy-Sync und Sicherung";
 
 /* Shown when the passphrase of an Ivy data file is wrong. */
 "IVY_DATA_WRONG_PASSPHRASE" = "Die Passphrase ist falsch.";
@@ -1544,6 +1553,21 @@
 
 /* Chat list banner title when Ivy can't reach its push relay. */
 "SERVICE_STATUS_UNREACHABLE_TITLE" = "Ivy Push nicht erreichbar";
+
+/* Header of the settings group about the app itself: appearance, start and tabs, controls. */
+"SETTINGS_GROUP_APP" = "App";
+
+/* Header of the settings group about messages: chats, folders, notifications. */
+"SETTINGS_GROUP_MESSAGES" = "Nachrichten";
+
+/* Header of the settings group about organizing: calendar and tasks, reminders, snippets. */
+"SETTINGS_GROUP_ORGANIZE" = "Organisieren";
+
+/* Header of the settings group about privacy, backups, data and Ivy sync. */
+"SETTINGS_GROUP_SECURITY_DATA" = "Sicherheit und Daten";
+
+/* Placeholder of the search field in Settings. */
+"SETTINGS_SEARCH_PLACEHOLDER" = "Einstellungen durchsuchen";
 
 /* Header of the chat folders in the sidebar. */
 "SIDEBAR_FOLDERS" = "Ordner";
