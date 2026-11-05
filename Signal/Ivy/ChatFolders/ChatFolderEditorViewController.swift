@@ -293,7 +293,7 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
 
     private func pickChats(excluded: Bool) {
         let selected = excluded ? folder.excludedThreadIds : folder.includedThreadIds
-        let picker = ChatFolderChatPickerViewController(selectedThreadIds: selected) { [weak self] threadIds in
+        let picker = ChatFolderChatPickerViewController(selectedThreadIds: selected, folderName: folder.name) { [weak self] threadIds in
             guard let self else { return }
             if excluded {
                 folder.excludedThreadIds = threadIds
@@ -353,20 +353,33 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
     }
 }
 
-/// Chooses chats for a folder.
-final class ChatFolderChatPickerViewController: UITableViewController {
+/// Chooses chats for a folder: a search field, suggestions from the names
+/// of the chats already chosen and of the folder, and every chat with its
+/// picture and a tick.
+final class ChatFolderChatPickerViewController: UITableViewController, UISearchResultsUpdating {
 
     private struct Chat {
         let threadId: String
         let name: String
     }
 
+    private enum Section {
+        case suggestions([IvyChatSuggestions.Suggestion])
+        case chats(title: String?, [Chat])
+    }
+
     private var chats: [Chat] = []
     private var selectedThreadIds: [String]
+    private let folderName: String
     private let onDone: ([String]) -> Void
+    private var sections: [Section] = []
+    private var query = ""
+    private let searchController = UISearchController(searchResultsController: nil)
+    private var avatars: [String: UIImage] = [:]
 
-    init(selectedThreadIds: [String], onDone: @escaping ([String]) -> Void) {
+    init(selectedThreadIds: [String], folderName: String = "", onDone: @escaping ([String]) -> Void) {
         self.selectedThreadIds = selectedThreadIds
+        self.folderName = folderName
         self.onDone = onDone
         super.init(style: .insetGrouped)
     }
@@ -384,7 +397,14 @@ final class ChatFolderChatPickerViewController: UITableViewController {
             onDone(selectedThreadIds)
             navigationController?.popViewController(animated: true)
         }
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = IvyLocalizedString("CHAT_FOLDER_SEARCH_CHATS", comment: "Placeholder of the search field in the list to choose chats for a folder.")
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = true
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "chat")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "suggestion")
         chats = SSKEnvironment.shared.databaseStorageRef.read { tx in
             let threadStore = DependenciesBridge.shared.threadStore
             return ThreadFinder().visibleInboxThreadUniqueIds(transaction: tx).compactMap { threadId in
@@ -393,30 +413,199 @@ final class ChatFolderChatPickerViewController: UITableViewController {
                 }
             }
         }
+        rebuild()
+    }
+
+    func updateSearchResults(for searchController: UISearchController) {
+        query = searchController.searchBar.text ?? ""
+        rebuild()
+    }
+
+    private func rebuild() {
+        let words = IvyChatSuggestions.fold(query).split(whereSeparator: \.isWhitespace).map(String.init)
+        if words.isEmpty {
+            let suggestions = IvyChatSuggestions.suggest(
+                chats: chats.map { ($0.threadId, $0.name) },
+                selected: Set(selectedThreadIds),
+                folderName: folderName,
+            )
+            sections = (suggestions.isEmpty ? [] : [.suggestions(suggestions)]) + [.chats(
+                title: suggestions.isEmpty ? nil : IvyLocalizedString("CHAT_FOLDER_ALL_CHATS", comment: "Header of all chats in the list to choose chats for a folder, below the suggestions."),
+                chats,
+            )]
+        } else {
+            let found = chats.filter { chat in
+                let name = IvyChatSuggestions.fold(chat.name)
+                return words.allSatisfy { name.contains($0) }
+            }
+            let foundIds = Set(found.map(\.threadId))
+            let chosenElsewhere = chats.filter { selectedThreadIds.contains($0.threadId) && !foundIds.contains($0.threadId) }
+            sections = [.chats(title: nil, found)]
+            if !chosenElsewhere.isEmpty {
+                let format = IvyLocalizedString("CHAT_FOLDER_CHOSEN_FORMAT", comment: "Header of the chosen chats while searching the list to choose chats for a folder. Embeds {{ the number of chosen chats }}.")
+                sections.append(.chats(title: String(format: format, selectedThreadIds.count), chosenElsewhere))
+            }
+        }
+        tableView.reloadData()
+    }
+
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        sections.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return chats.count
+        switch sections[section] {
+        case .suggestions(let suggestions): suggestions.count
+        case .chats(_, let chats): chats.count
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch sections[section] {
+        case .suggestions: IvyLocalizedString("CHAT_FOLDER_SUGGESTIONS", comment: "Header of suggested chats in the list to choose chats for a folder.")
+        case .chats(let title, _): title
+        }
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let chat = chats[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "chat", for: indexPath)
-        var configuration = cell.defaultContentConfiguration()
-        configuration.text = chat.name
+        let threadId: String
+        let name: String
+        var reason: String?
+        switch sections[indexPath.section] {
+        case .suggestions(let suggestions):
+            let suggestion = suggestions[indexPath.row]
+            threadId = suggestion.threadId
+            name = chats.first { $0.threadId == threadId }?.name ?? ""
+            reason = Self.reasonText(suggestion)
+        case .chats(_, let chats):
+            threadId = chats[indexPath.row].threadId
+            name = chats[indexPath.row].name
+        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: reason == nil ? "chat" : "suggestion", for: indexPath)
+        var configuration = reason == nil ? UIListContentConfiguration.cell() : UIListContentConfiguration.subtitleCell()
+        configuration.text = name
+        configuration.secondaryText = reason
+        configuration.secondaryTextProperties.color = .Signal.secondaryLabel
+        configuration.image = avatar(for: threadId)
+        configuration.imageProperties.maximumSize = CGSize(width: 32, height: 32)
+        configuration.imageProperties.cornerRadius = 16
         cell.contentConfiguration = configuration
-        cell.accessoryType = selectedThreadIds.contains(chat.threadId) ? .checkmark : .none
+        let isSelected = selectedThreadIds.contains(threadId)
+        let tick = UIImageView(image: UIImage(systemName: isSelected ? "checkmark.circle.fill" : "circle"))
+        tick.tintColor = isSelected ? .Signal.accent : .Signal.tertiaryLabel
+        tick.preferredSymbolConfiguration = UIImage.SymbolConfiguration(pointSize: 22)
+        cell.accessoryView = tick
+        cell.accessibilityTraits = isSelected ? [.button, .selected] : .button
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let threadId = chats[indexPath.row].threadId
+        let threadId: String
+        switch sections[indexPath.section] {
+        case .suggestions(let suggestions): threadId = suggestions[indexPath.row].threadId
+        case .chats(_, let chats): threadId = chats[indexPath.row].threadId
+        }
         if let index = selectedThreadIds.firstIndex(of: threadId) {
             selectedThreadIds.remove(at: index)
         } else {
             selectedThreadIds.append(threadId)
         }
-        tableView.reloadRows(at: [indexPath], with: .none)
+        rebuild()
+    }
+
+    private func avatar(for threadId: String) -> UIImage? {
+        if let cached = avatars[threadId] {
+            return cached
+        }
+        let image = SSKEnvironment.shared.databaseStorageRef.read { tx -> UIImage? in
+            guard let thread = DependenciesBridge.shared.threadStore.fetchThread(uniqueId: threadId, tx: tx) else { return nil }
+            return SSKEnvironment.shared.avatarBuilderRef.avatarImage(forThread: thread, diameterPoints: 32, localUserDisplayMode: .asUser, transaction: tx)
+        }
+        avatars[threadId] = image
+        return image
+    }
+
+    private static func reasonText(_ suggestion: IvyChatSuggestions.Suggestion) -> String {
+        switch suggestion.reason {
+        case .chosenChat(let name):
+            String(format: IvyLocalizedString("CHAT_FOLDER_SUGGESTION_LIKE_CHAT_FORMAT", comment: "Why a chat is suggested for a folder: it shares a word with one chosen chat. Embeds {{ the word }} and {{ the chosen chat's name }}."), suggestion.word, name)
+        case .chosenChats(let count):
+            String(format: IvyLocalizedString("CHAT_FOLDER_SUGGESTION_LIKE_CHATS_FORMAT", comment: "Why a chat is suggested for a folder: it shares a word with several chosen chats. Embeds {{ the word }} and {{ the number of chosen chats }}."), suggestion.word, count)
+        case .folderName:
+            String(format: IvyLocalizedString("CHAT_FOLDER_SUGGESTION_LIKE_FOLDER_FORMAT", comment: "Why a chat is suggested for a folder: it shares a word with the folder's name. Embeds {{ the word }}."), suggestion.word)
+        }
+    }
+}
+
+/// Suggests chats for a folder by the words of their names: chats that
+/// share a word with chats already chosen, or with the folder's name.
+/// Only names are compared, on the device.
+enum IvyChatSuggestions {
+
+    struct Suggestion: Equatable {
+        enum Reason: Equatable {
+            case chosenChat(String)
+            case chosenChats(Int)
+            case folderName
+        }
+
+        let threadId: String
+        /// The shared word, as written in the suggested chat's name.
+        let word: String
+        let reason: Reason
+    }
+
+    static let maxSuggestions = 5
+
+    static func fold(_ text: String) -> String {
+        text.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
+    }
+
+    /// Words worth comparing: three letters or more, not only digits, not
+    /// a common filler word.
+    static func words(_ name: String) -> [(folded: String, original: String)] {
+        let fillers: Set<String> = ["und", "der", "die", "das", "den", "dem", "fur", "aber", "mit", "von", "the", "and", "for", "with", "chat", "gruppe", "group"]
+        return name.split { !$0.isLetter && !$0.isNumber }.compactMap { part in
+            let original = String(part)
+            let folded = fold(original)
+            guard folded.count >= 3, !folded.allSatisfy(\.isNumber), !fillers.contains(folded) else { return nil }
+            return (folded, original)
+        }
+    }
+
+    static func suggest(chats: [(threadId: String, name: String)], selected: Set<String>, folderName: String) -> [Suggestion] {
+        let chosen = chats.filter { selected.contains($0.threadId) }
+        var chosenByWord: [String: [String]] = [:]
+        for chat in chosen {
+            for word in Set(words(chat.name).map(\.folded)) {
+                chosenByWord[word, default: []].append(chat.name)
+            }
+        }
+        let folderWords = Set(words(folderName).map(\.folded))
+
+        var scored: [(Suggestion, Int)] = []
+        for chat in chats where !selected.contains(chat.threadId) {
+            var best: (Suggestion, Int)?
+            for word in words(chat.name) {
+                if let names = chosenByWord[word.folded] {
+                    let reason: Suggestion.Reason = names.count == 1 ? .chosenChat(names[0]) : .chosenChats(names.count)
+                    let score = names.count + 1
+                    if best == nil || score > best!.1 {
+                        best = (Suggestion(threadId: chat.threadId, word: word.original, reason: reason), score)
+                    }
+                } else if folderWords.contains(word.folded), best == nil {
+                    best = (Suggestion(threadId: chat.threadId, word: word.original, reason: .folderName), 1)
+                }
+            }
+            if let best {
+                scored.append(best)
+            }
+        }
+        return scored
+            .enumerated()
+            .sorted { ($0.element.1, -$0.offset) > ($1.element.1, -$1.offset) }
+            .prefix(maxSuggestions)
+            .map(\.element.0)
     }
 }

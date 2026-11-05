@@ -4341,6 +4341,7 @@
 		2AB89368287B6DE297617E6A /* IvySettingsPages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3549E261B0780B5D859482 /* IvySettingsPages.swift */; };
 		DF423609999DB072BE36B8DB /* IvySettingsSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA9ACDE67F0098536162A52 /* IvySettingsSearch.swift */; };
 		2AAAA3663EF094A9F528BACB /* IvySettingsSearchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2CCF1009C151B4B7FB8E03 /* IvySettingsSearchTest.swift */; };
+		C47F0A78F2A8C5E9AA950695 /* IvyChatSuggestionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4EAFF18F982E35D4AF5F1F /* IvyChatSuggestionsTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -9012,6 +9013,7 @@
 		2F3549E261B0780B5D859482 /* IvySettingsPages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySettingsPages.swift; sourceTree = "<group>"; };
 		1DA9ACDE67F0098536162A52 /* IvySettingsSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySettingsSearch.swift; sourceTree = "<group>"; };
 		7E2CCF1009C151B4B7FB8E03 /* IvySettingsSearchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySettingsSearchTest.swift; sourceTree = "<group>"; };
+		2F4EAFF18F982E35D4AF5F1F /* IvyChatSuggestionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatSuggestionsTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16711,6 +16713,7 @@
 				12B1FADA690270BB01EB429D /* IvyFirstTimeTipsTest.swift */,
 				21220D6898CB76814EE90D38 /* IvyOneHandTest.swift */,
 				7E2CCF1009C151B4B7FB8E03 /* IvySettingsSearchTest.swift */,
+				2F4EAFF18F982E35D4AF5F1F /* IvyChatSuggestionsTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -20551,6 +20554,7 @@
 				78608F07B4D61FD630A8630F /* IvyFirstTimeTipsTest.swift in Sources */,
 				B93A61054FCCDDE20B1408A7 /* IvyOneHandTest.swift in Sources */,
 				2AAAA3663EF094A9F528BACB /* IvySettingsSearchTest.swift in Sources */,
+				C47F0A78F2A8C5E9AA950695 /* IvyChatSuggestionsTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
