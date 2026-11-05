@@ -21,10 +21,11 @@ public class ContextMenuActionsAccessory: ContextMenuTargetedPreviewAccessory, C
         menu: ContextMenu,
         accessoryAlignment: AccessoryAlignment,
         forceDarkTheme: Bool = false,
+        ivyFlipped: Bool = false,
     ) {
         self.menu = menu
 
-        menuView = ContextMenuActionsView(menu: menu)
+        menuView = ContextMenuActionsView(menu: menu, ivyFlipped: ivyFlipped)
         if forceDarkTheme {
             menuView.overrideUserInterfaceStyle = .dark
         }
@@ -419,7 +420,12 @@ private class ContextMenuActionsView: UIView, UIGestureRecognizerDelegate, UIScr
         0
     }
 
-    init(menu: ContextMenu) {
+    // Ivy: for a message low on the screen, the order is flipped so the
+    // everyday actions end up at the bottom, under the thumb.
+    private let ivyFlipped: Bool
+
+    init(menu: ContextMenu, ivyFlipped: Bool = false) {
+        self.ivyFlipped = ivyFlipped
         self.menu = menu
 
         scrollView = UIScrollView(frame: CGRect.zero)
@@ -436,8 +442,9 @@ private class ContextMenuActionsView: UIView, UIGestureRecognizerDelegate, UIScr
             backdropView = UIVisualEffectView(effect: blurEffect)
         }
 
-        self.actionViews = Self.ivyRows(for: menu.children, hostBlurEffect: blurEffect)
-        self.rowActions = menu.children
+        let rows = ivyFlipped ? Array(menu.children.reversed()) : menu.children
+        self.actionViews = Self.ivyRows(for: rows, hostBlurEffect: blurEffect)
+        self.rowActions = rows
         self.ivyIconCells = menu.ivyIconRow.map { IvyIconCell(action: $0) }
         self.ivyHostBlurEffect = blurEffect
         isScrolling = false
@@ -498,18 +505,25 @@ private class ContextMenuActionsView: UIView, UIGestureRecognizerDelegate, UIScr
         var yOffset: CGFloat = vMargin
         var maxY: CGFloat = 0
         var width: CGFloat = 0.0
-        // Ivy: the icon row first, across the menu's width.
-        if !ivyIconCells.isEmpty {
-            let rowWidth = actionViews.map { $0.sizeThatFits(.zero).width }.max() ?? Self.ivyIconRowWidth
-            let cellWidth = rowWidth / CGFloat(ivyIconCells.count)
+        // Ivy: the icon row across the menu's width, first, or last when the
+        // menu is flipped.
+        let layoutIconRow = {
+            guard !self.ivyIconCells.isEmpty else { return }
+            let rowWidth = self.actionViews.map { $0.sizeThatFits(.zero).width }.max() ?? Self.ivyIconRowWidth
+            let cellWidth = rowWidth / CGFloat(self.ivyIconCells.count)
             let isRTL = CurrentAppContext().isRTL
-            for (index, cell) in ivyIconCells.enumerated() {
-                let position = isRTL ? ivyIconCells.count - 1 - index : index
+            for (index, cell) in self.ivyIconCells.enumerated() {
+                let position = isRTL ? self.ivyIconCells.count - 1 - index : index
                 cell.frame = CGRect(x: CGFloat(position) * cellWidth, y: yOffset, width: cellWidth, height: IvyIconCell.height)
             }
+            let separatorY = self.ivyFlipped ? yOffset : yOffset + IvyIconCell.height - self.hairlineWidth
+            self.ivyIconSeparator.frame = CGRect(x: 0, y: separatorY, width: rowWidth, height: self.hairlineWidth)
             yOffset += IvyIconCell.height
-            ivyIconSeparator.frame = CGRect(x: 0, y: yOffset - hairlineWidth, width: rowWidth, height: hairlineWidth)
-            maxY = yOffset
+            maxY = max(maxY, yOffset)
+            width = max(width, rowWidth)
+        }
+        if !ivyFlipped {
+            layoutIconRow()
         }
         for actionView in actionViews {
             let size = actionView.sizeThatFits(.zero)
@@ -517,6 +531,9 @@ private class ContextMenuActionsView: UIView, UIGestureRecognizerDelegate, UIScr
             actionView.frame = CGRect(x: 0, y: yOffset, width: width, height: size.height)
             yOffset += size.height
             maxY = max(maxY, actionView.frame.maxY)
+        }
+        if ivyFlipped {
+            layoutIconRow()
         }
         maxY += vMargin
 
@@ -662,6 +679,9 @@ private class ContextMenuActionsView: UIView, UIGestureRecognizerDelegate, UIScr
             shown.insert(back, at: 0)
         } else {
             ivyBackAction = nil
+        }
+        if ivyFlipped {
+            shown.reverse() // Ivy: Back ends up at the bottom too
         }
         actionViews.forEach { $0.removeFromSuperview() }
         actionViews = Self.ivyRows(for: shown, hostBlurEffect: ivyHostBlurEffect)

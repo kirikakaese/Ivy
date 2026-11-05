@@ -54,6 +54,10 @@ class ChatsSettingsViewController: OWSTableViewController2 {
         ivyAddReactionBarSection(to: contents)
         // Ivy: reacting by double-tapping a message.
         ivyAddDoubleTapSection(to: contents)
+        // Ivy: what swiping a message left does.
+        ivyAddSwipeLeftSection(to: contents)
+        // Ivy: search and folders at the bottom of the chat list.
+        ivyAddChatListLayoutSection(to: contents)
         // Ivy: which message menu actions show directly.
         ivyAddMessageMenuSection(to: contents)
         // Ivy: the first-time tips again.
