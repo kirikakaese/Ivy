@@ -4342,6 +4342,7 @@
 		DF423609999DB072BE36B8DB /* IvySettingsSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA9ACDE67F0098536162A52 /* IvySettingsSearch.swift */; };
 		2AAAA3663EF094A9F528BACB /* IvySettingsSearchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2CCF1009C151B4B7FB8E03 /* IvySettingsSearchTest.swift */; };
 		C47F0A78F2A8C5E9AA950695 /* IvyChatSuggestionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4EAFF18F982E35D4AF5F1F /* IvyChatSuggestionsTest.swift */; };
+		FB0F55BD1EB8638416B84908 /* IvyMoveFromSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629E49815A9C4D03799F7C22 /* IvyMoveFromSignal.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -9014,6 +9015,7 @@
 		1DA9ACDE67F0098536162A52 /* IvySettingsSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySettingsSearch.swift; sourceTree = "<group>"; };
 		7E2CCF1009C151B4B7FB8E03 /* IvySettingsSearchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySettingsSearchTest.swift; sourceTree = "<group>"; };
 		2F4EAFF18F982E35D4AF5F1F /* IvyChatSuggestionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatSuggestionsTest.swift; sourceTree = "<group>"; };
+		629E49815A9C4D03799F7C22 /* IvyMoveFromSignal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMoveFromSignal.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16687,6 +16689,7 @@
 				5C776AACA4B28AD1042CD703 /* IvyDesign.swift */,
 				2F3549E261B0780B5D859482 /* IvySettingsPages.swift */,
 				1DA9ACDE67F0098536162A52 /* IvySettingsSearch.swift */,
+				629E49815A9C4D03799F7C22 /* IvyMoveFromSignal.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -20449,6 +20452,7 @@
 				07D5798953AC75141434E52A /* IvyChatListBottomBar.swift in Sources */,
 				2AB89368287B6DE297617E6A /* IvySettingsPages.swift in Sources */,
 				DF423609999DB072BE36B8DB /* IvySettingsSearch.swift in Sources */,
+				FB0F55BD1EB8638416B84908 /* IvyMoveFromSignal.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

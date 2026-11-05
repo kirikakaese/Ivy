@@ -83,11 +83,20 @@ class EnterAccountEntropyPoolViewController: OWSViewController {
             footerButton = nil
         }
 
+        // Ivy: a paste button under the key, without Apple's paste question.
+        var ivyPasteButton: UIView?
+        if #available(iOS 16, *) {
+            ivyPasteButton = IvyRecoveryKeyPasteButton { [weak self] text in
+                self?.aepTextView.ivyEnter(text)
+            }
+        }
+
         let stackView = addStaticContentStackView(
             arrangedSubviews: [
                 titleLabel,
                 subtitleLabel,
                 aepTextView,
+                ivyPasteButton,
                 aepIssueLabel,
                 footerButton?.enclosedInVerticalStackView(isFullWidthButton: false),
                 .vStretchingSpacer(),
