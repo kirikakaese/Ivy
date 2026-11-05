@@ -451,6 +451,26 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
         isEmptyDay(section) ? 2 : sections[section].items.count
     }
 
+    /// Each day's block is a rounded card like the month card above: its
+    /// first row rounds at the top, its last at the bottom. The list's own
+    /// margins keep the system from rounding it.
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let rows = tableView.numberOfRows(inSection: indexPath.section)
+        var corners: CACornerMask = []
+        if indexPath.row == 0 {
+            corners.formUnion([.layerMinXMinYCorner, .layerMaxXMinYCorner])
+        }
+        if indexPath.row == rows - 1 {
+            corners.formUnion([.layerMinXMaxYCorner, .layerMaxXMaxYCorner])
+        }
+        cell.layer.cornerRadius = corners.isEmpty ? 0 : Self.blockCornerRadius
+        cell.layer.maskedCorners = corners
+        cell.layer.cornerCurve = .continuous
+        cell.clipsToBounds = true
+    }
+
+    private static let blockCornerRadius: CGFloat = 20
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if isEmptyDay(indexPath.section) {
             let cell = tableView.dequeueReusableCell(withIdentifier: "empty", for: indexPath)

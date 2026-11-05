@@ -171,7 +171,7 @@
 /* Item that opens a list to choose the chats of a folder. */
 "CHAT_FOLDER_ADD_CHATS" = "Chats hinzufügen";
 
-/* Name of the chat folder that shows every chat. */
+/* Header of all chats in the list to choose chats for a folder, below the suggestions. */
 "CHAT_FOLDER_ALL_CHATS" = "Alle Chats";
 
 /* Chat folder option: the folder contains all group chats. */
@@ -191,6 +191,9 @@
 
 /* Title of the list to choose chats for a folder. */
 "CHAT_FOLDER_CHOOSE_CHATS" = "Chats auswählen";
+
+/* Header of the chosen chats while searching the list to choose chats for a folder. Embeds {{ the number of chosen chats }}. */
+"CHAT_FOLDER_CHOSEN_FORMAT" = "Gewählt · %d";
 
 /* Label of the color of a chat folder. */
 "CHAT_FOLDER_COLOR" = "Farbe";
@@ -270,6 +273,9 @@
 /* Shown when a folder already has the most pinned chats. Embeds {{ the maximum number }}. */
 "CHAT_FOLDER_PIN_LIMIT_FORMAT" = "Du kannst bis zu %d Chats in einem Ordner anheften.";
 
+/* Placeholder of the search field in the list to choose chats for a folder. */
+"CHAT_FOLDER_SEARCH_CHATS" = "Chats suchen";
+
 /* Chat folder option: the folder shows muted chats. */
 "CHAT_FOLDER_SHOW_MUTED" = "Stummgeschaltete Chats anzeigen";
 
@@ -281,6 +287,18 @@
 
 /* Name of the suggested chat folder with unread chats. */
 "CHAT_FOLDER_SUGGESTED_UNREAD" = "Ungelesen";
+
+/* Header of suggested chats in the list to choose chats for a folder. */
+"CHAT_FOLDER_SUGGESTIONS" = "Vorschläge";
+
+/* Why a chat is suggested for a folder: it shares a word with several chosen chats. Embeds {{ the word }} and {{ the number of chosen chats }}. */
+"CHAT_FOLDER_SUGGESTION_LIKE_CHATS_FORMAT" = "„%1$@“ wie %2$d gewählte Chats";
+
+/* Why a chat is suggested for a folder: it shares a word with one chosen chat. Embeds {{ the word }} and {{ the chosen chat's name }}. */
+"CHAT_FOLDER_SUGGESTION_LIKE_CHAT_FORMAT" = "„%1$@“ wie „%2$@“";
+
+/* Why a chat is suggested for a folder: it shares a word with the folder's name. Embeds {{ the word }}. */
+"CHAT_FOLDER_SUGGESTION_LIKE_FOLDER_FORMAT" = "„%@“ wie der Ordnername";
 
 /* Action that unmutes every chat in a folder. */
 "CHAT_FOLDER_UNMUTE" = "Stummschaltung für alle aufheben";
