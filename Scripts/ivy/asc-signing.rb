@@ -11,7 +11,8 @@
 #                                and an App Store profile per App ID
 #                                (DIR/profiles), named "Ivy CI <bundle ID>".
 #   asc-signing.rb cleanup DIR   Revokes that certificate and deletes the
-#                                profiles. Uploaded builds stay valid.
+#                                profiles, once Apple has processed the
+#                                build; DIR/keep leaves them in place.
 
 require_relative 'asc'
 require 'fileutils'
@@ -126,6 +127,11 @@ end
 def cleanup(dir)
   state_path = File.join(dir, 'signing.json')
   return unless File.exist?(state_path)
+
+  if File.exist?(File.join(dir, 'keep'))
+    puts "Kept the run's certificate: Apple is still processing the build."
+    return
+  end
 
   state = JSON.parse(File.read(state_path))
   state['profiles'].each { |id| ASC.request(:delete, "/v1/profiles/#{id}") }
