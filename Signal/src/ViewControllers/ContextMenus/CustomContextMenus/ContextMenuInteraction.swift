@@ -347,7 +347,15 @@ public class ChatHistoryContextMenuInteraction: ContextMenuInteraction {
         let isMessageType = itemViewModel.interaction.interactionType == .outgoingMessage || isIncomingMessage
         let horizontalEdgeAlignment: ContextMenuTargetedPreviewAccessory.AccessoryAlignment.Edge = isIncomingMessage ? (isRTL ? .trailing : .leading) : (isRTL ? .leading : .trailing)
         let alignment = ContextMenuTargetedPreviewAccessory.AccessoryAlignment(alignments: [(.bottom, .exterior), (horizontalEdgeAlignment, .interior)], alignmentOffset: CGPoint(x: 0, y: 12))
-        let accessory = ContextMenuActionsAccessory(menu: menu, accessoryAlignment: alignment)
+        // Ivy: a message in the lower part of the screen gets the menu in
+        // flipped order, the everyday actions nearest the thumb.
+        let ivyFlipped: Bool = {
+            let view = targetedPreview.view
+            guard let window = view.window else { return false }
+            let frame = view.convert(view.bounds, to: window)
+            return frame.midY > window.bounds.height * 0.55
+        }()
+        let accessory = ContextMenuActionsAccessory(menu: menu, accessoryAlignment: alignment, ivyFlipped: ivyFlipped)
         let landscapeAlignmentOffset = isMessageType ? CGPoint(x: 12, y: 0) : alignment.alignmentOffset
         let horizontalLandscapeEdgeAlignment: ContextMenuTargetedPreviewAccessory.AccessoryAlignment.Edge = isIncomingMessage ? (isRTL ? .leading : .trailing) : (isRTL ? .trailing : .leading)
         accessory.landscapeAccessoryAlignment = ContextMenuTargetedPreviewAccessory.AccessoryAlignment(alignments: [isMessageType ? (.top, .interior) : (.bottom, .exterior), (horizontalLandscapeEdgeAlignment, .exterior)], alignmentOffset: landscapeAlignmentOffset)

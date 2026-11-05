@@ -39,6 +39,13 @@ extension ChatListViewController {
             name: IvyHiddenChats.hiddenChatsDidChange,
             object: nil,
         )
+        // Search and folders moved to the bottom or back.
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ivyChatFoldersDidChange),
+            name: IvyChatListLayout.didChange,
+            object: nil,
+        )
         ivyUpdateChatFolderBar()
     }
 
@@ -85,13 +92,30 @@ extension ChatListViewController {
         )
 
         let showsSidebar = (tabBarController as? HomeTabBarController)?.ivyIsSidebarShown == true
+        // Search and folders at the bottom, when chosen and there's no sidebar.
+        let atBottom = IvyChatListLayout.searchAtBottom() && !showsSidebar
         guard !showsSidebar, folders.contains(where: { $0.kind == .custom }) else {
             ivyRemoveChatFolderBar()
+            if atBottom {
+                ivyShowBottomBar(folderBar: nil)
+            } else {
+                ivyHideBottomBar()
+            }
             return
         }
 
         let bar = ivyChatFolderBar()
         bar.update(items: items, selectedFolderId: viewState.ivyChatFolderId ?? folders.first { $0.kind == .allChats }?.id)
+        if atBottom {
+            if tableView.tableHeaderView === bar {
+                tableView.tableHeaderView = nil
+            }
+            ivyShowBottomBar(folderBar: bar)
+            return
+        }
+        if ivyBottomBar != nil {
+            ivyHideBottomBar()
+        }
         if tableView.tableHeaderView !== bar {
             bar.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: bar.intrinsicContentSize.height)
             bar.autoresizingMask = [.flexibleWidth]
@@ -105,7 +129,7 @@ extension ChatListViewController {
     }
 
     private var ivyExistingChatFolderBar: ChatFolderBar? {
-        return tableView.tableHeaderView as? ChatFolderBar
+        return (tableView.tableHeaderView as? ChatFolderBar) ?? ivyBottomBar?.folderBar
     }
 
     private func ivyChatFolderBar() -> ChatFolderBar {
@@ -129,6 +153,7 @@ extension ChatListViewController {
         if tableView.tableHeaderView is ChatFolderBar {
             tableView.tableHeaderView = nil
         }
+        ivyBottomBar?.setFolderBar(nil)
     }
 
     func ivySelectChatFolder(_ folder: ChatFolder) {

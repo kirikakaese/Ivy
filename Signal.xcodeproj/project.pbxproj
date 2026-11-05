@@ -4335,6 +4335,9 @@
 		049EC2ABB2D351F35DBAEDED /* ChatFolderOnlyHereTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DA6C9923EA3EE16C4ADD9C /* ChatFolderOnlyHereTest.swift */; };
 		79F5F61F55787918B0A48813 /* IvyFirstTimeTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703E32BF2F3658E97D17C226 /* IvyFirstTimeTips.swift */; };
 		78608F07B4D61FD630A8630F /* IvyFirstTimeTipsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B1FADA690270BB01EB429D /* IvyFirstTimeTipsTest.swift */; };
+		C47F56B4175161DCF2BFD2A8 /* IvySwipeLeft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E4A5121B417965245DAA561 /* IvySwipeLeft.swift */; };
+		07D5798953AC75141434E52A /* IvyChatListBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B2B5B417B04A6F253AF293 /* IvyChatListBottomBar.swift */; };
+		B93A61054FCCDDE20B1408A7 /* IvyOneHandTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21220D6898CB76814EE90D38 /* IvyOneHandTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -9000,6 +9003,9 @@
 		62DA6C9923EA3EE16C4ADD9C /* ChatFolderOnlyHereTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderOnlyHereTest.swift; sourceTree = "<group>"; };
 		703E32BF2F3658E97D17C226 /* IvyFirstTimeTips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyFirstTimeTips.swift; sourceTree = "<group>"; };
 		12B1FADA690270BB01EB429D /* IvyFirstTimeTipsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyFirstTimeTipsTest.swift; sourceTree = "<group>"; };
+		0E4A5121B417965245DAA561 /* IvySwipeLeft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySwipeLeft.swift; sourceTree = "<group>"; };
+		30B2B5B417B04A6F253AF293 /* IvyChatListBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatListBottomBar.swift; sourceTree = "<group>"; };
+		21220D6898CB76814EE90D38 /* IvyOneHandTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyOneHandTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16695,6 +16701,7 @@
 				69FE9C14F763475691061B22 /* IvyDoubleTapReactionTest.swift */,
 				E7A3F6266E490CF1BD036DE4 /* IvyReactionBarPositionTest.swift */,
 				12B1FADA690270BB01EB429D /* IvyFirstTimeTipsTest.swift */,
+				21220D6898CB76814EE90D38 /* IvyOneHandTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16719,6 +16726,7 @@
 				46BB62C0053FD933E3FFAF02 /* ChatListViewController+ChatFolders.swift */,
 				FE91F361622F1C29D797A7DF /* ChatFoldersSettingsViewController.swift */,
 				862127934C791B7BC2BE5F37 /* ChatFolderEditorViewController.swift */,
+				30B2B5B417B04A6F253AF293 /* IvyChatListBottomBar.swift */,
 			);
 			path = ChatFolders;
 			sourceTree = "<group>";
@@ -16946,6 +16954,7 @@
 				320C9AE1C9F99FF3D4B23DC6 /* IvyDoubleTapReaction.swift */,
 				00D0C583F4B110ED52BBF35F /* IvyReactionBarPosition.swift */,
 				703E32BF2F3658E97D17C226 /* IvyFirstTimeTips.swift */,
+				0E4A5121B417965245DAA561 /* IvySwipeLeft.swift */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -20424,6 +20433,8 @@
 				DBAE4F5DB2A97C8ABB5EB46A /* IvyDoubleTapReaction.swift in Sources */,
 				6878C6EB71BB86C60B305EF0 /* IvyReactionBarPosition.swift in Sources */,
 				79F5F61F55787918B0A48813 /* IvyFirstTimeTips.swift in Sources */,
+				C47F56B4175161DCF2BFD2A8 /* IvySwipeLeft.swift in Sources */,
+				07D5798953AC75141434E52A /* IvyChatListBottomBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20527,6 +20538,7 @@
 				B592A6AB82AA09A0ECDA6CF4 /* IvyDoubleTapReactionTest.swift in Sources */,
 				AADD571A25CE39EA9870F8D5 /* IvyReactionBarPositionTest.swift in Sources */,
 				78608F07B4D61FD630A8630F /* IvyFirstTimeTipsTest.swift in Sources */,
+				B93A61054FCCDDE20B1408A7 /* IvyOneHandTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

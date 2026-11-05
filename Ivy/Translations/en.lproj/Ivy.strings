@@ -288,6 +288,15 @@
 /* Switch in a chat's settings that turns link previews on or off for this chat. */
 "CHAT_LINK_PREVIEWS" = "Link Previews";
 
+/* Header of the chat list layout setting. */
+"CHAT_LIST_LAYOUT_TITLE" = "Chat List";
+
+/* Switch that moves the chat list's search and folders to the bottom, above the tab bar. */
+"CHAT_LIST_SEARCH_BOTTOM" = "Search and Folders at the Bottom";
+
+/* Footer explaining the setting that moves search and folders to the bottom of the chat list. */
+"CHAT_LIST_SEARCH_BOTTOM_FOOTER" = "Puts the folders and a search button right above the tab bar, where your thumb reaches them. Not used next to the sidebar on iPad and Mac.";
+
 /* Shown in an empty chat note. */
 "CHAT_NOTE_PLACEHOLDER" = "Only you see this note, on your Ivy devices.";
 
@@ -1778,6 +1787,33 @@
 
 /* Default title of a problem report on Ivy's issue page. */
 "SUPPORT_REQUEST_TITLE" = "Problem report";
+
+/* Shown after swiping a message left copied its text. */
+"SWIPE_LEFT_COPIED" = "Copied";
+
+/* Option: swiping a message left copies its text. */
+"SWIPE_LEFT_COPY" = "Copy";
+
+/* Footer of the swipe-left setting. */
+"SWIPE_LEFT_FOOTER" = "What swiping a message to the left does. Swiping right always replies.";
+
+/* Option: swiping a message left shows its details, as Signal does. */
+"SWIPE_LEFT_INFO" = "Info (as before)";
+
+/* Option: swiping a message left does nothing. */
+"SWIPE_LEFT_OFF" = "Off";
+
+/* Option: swiping a message left sets a reminder for it. */
+"SWIPE_LEFT_REMIND" = "Remind Me";
+
+/* Option: swiping a message left stars it. */
+"SWIPE_LEFT_STAR" = "Star";
+
+/* Option: swiping a message left makes a task from it. */
+"SWIPE_LEFT_TASK" = "Add Task";
+
+/* Header of the setting that chooses what swiping a message left does. */
+"SWIPE_LEFT_TITLE" = "Swipe Left";
 
 /* Shows the tasks of every list. */
 "TASKS_ALL" = "All Tasks";

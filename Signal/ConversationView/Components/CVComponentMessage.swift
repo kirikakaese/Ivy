@@ -2796,7 +2796,8 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
                 activeDirection = .none
             }
         case let x where x <= -swipeActionOffsetThreshold:
-            activeDirection = .left
+            // Ivy: swiping left can be turned off in Settings > Chats.
+            activeDirection = IvySwipeLeft.current() == .off ? .none : .left
         default:
             activeDirection = .none
         }
@@ -2814,8 +2815,11 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
                 panHandler.percentDrivenTransition = nil
             case .left:
                 ImpactHapticFeedback.impactOccurred(style: .light)
-                panHandler.percentDrivenTransition = UIPercentDrivenInteractiveTransition()
-                componentDelegate.didTapShowMessageDetail(CVItemViewModelImpl(renderItem: renderItem))
+                // Ivy: only Signal's own swipe-left pulls in the details.
+                if IvySwipeLeft.current() == .info {
+                    panHandler.percentDrivenTransition = UIPercentDrivenInteractiveTransition()
+                    componentDelegate.didTapShowMessageDetail(CVItemViewModelImpl(renderItem: renderItem))
+                }
             case .none:
                 panHandler.percentDrivenTransition?.cancel()
                 panHandler.percentDrivenTransition = nil
@@ -2863,6 +2867,14 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
         if hasFinished {
             switch activeDirection {
             case .left:
+                // Ivy: the chosen swipe-left action, unless it's Signal's details.
+                let ivyAction = IvySwipeLeft.current()
+                if ivyAction != .info {
+                    if xVelocity <= 0, let conversation = componentDelegate as? ConversationViewController {
+                        conversation.ivyPerformSwipeLeft(ivyAction, itemViewModel: CVItemViewModelImpl(renderItem: renderItem))
+                    }
+                    return
+                }
                 guard let percentDrivenTransition = panHandler.percentDrivenTransition else {
                     return owsFailDebug("Missing percentDrivenTransition")
                 }
@@ -2879,7 +2891,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
             case .none:
                 break
             }
-        } else if activeDirection == .left {
+        } else if activeDirection == .left, IvySwipeLeft.current() == .info { // Ivy
             guard let percentDrivenTransition = panHandler.percentDrivenTransition else {
                 return owsFailDebug("Missing percentDrivenTransition")
             }
