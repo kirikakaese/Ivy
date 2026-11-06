@@ -19,6 +19,8 @@ LOG_DIR="$HOME/Library/Logs/Ivy-CI"
 mkdir -p "$OUTPUT" "$LOG_DIR"
 
 set +e
+# -enableCodeCoverage NO: Swift packages built for Mac Catalyst can't link
+# with the scheme's code coverage (see Scripts/ivy/ci-build.sh).
 NSUnbufferedIO=YES xcodebuild \
   -workspace Signal.xcworkspace \
   -scheme Signal \
@@ -26,6 +28,7 @@ NSUnbufferedIO=YES xcodebuild \
   -destination "platform=macOS,variant=Mac Catalyst,arch=arm64" \
   -derivedDataPath "$DERIVED_DATA" \
   -disableAutomaticPackageResolution \
+  -enableCodeCoverage NO \
   COMPILATION_CACHE_ENABLE_CACHING=YES \
   ARCHS=arm64 \
   ONLY_ACTIVE_ARCH=YES \
