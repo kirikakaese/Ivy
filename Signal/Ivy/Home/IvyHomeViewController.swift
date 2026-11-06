@@ -6,9 +6,9 @@
 import SignalServiceKit
 import SignalUI
 
-/// Home: a greeting, quick actions and what's next, then important unread
-/// messages as chat rows, open tasks, the other lists, and unread chats by
-/// folder. Cards use Ivy's pastel tones, like the calendar.
+/// Home: a greeting, the state of Ivy's services, quick actions and what's
+/// next, then the rest of today, open tasks, important unread messages as
+/// chat rows, the other lists, and unread chats by folder. Cards use Ivy's pastel tones, like the calendar.
 final class IvyHomeViewController: UIViewController, HomeTabViewController, UITableViewDataSource, UITableViewDelegate {
 
     /// Open tasks shown at most.
@@ -39,6 +39,7 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
     }
 
     private enum Row {
+        case today(IvyCalendarItem, title: String)
         case task(IvyTask, listName: String?)
         case important(ImportantRow)
         case folders([FolderChip])
@@ -71,6 +72,10 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
         view.backgroundColor = .Signal.groupedBackground
 
         header.quickActions = quickActions()
+        header.onOpenStatus = { [weak self] in
+            guard let self else { return }
+            IvyStatusViewController.present(from: self)
+        }
         header.onOpenNextUp = { [weak self] item in
             guard let self else { return }
             if let item {
@@ -103,6 +108,7 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
             IvyHiddenChats.hiddenChatsDidChange,
             IvyDataStore.dataDidChange,
             UIApplication.significantTimeChangeNotification,
+            IvyServiceStatusMonitor.statusDidChange,
         ] {
             NotificationCenter.default.addObserver(self, selector: #selector(setNeedsReload), name: name, object: nil)
         }
@@ -193,10 +199,13 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
     private func reload() {
         updateHeader()
         var sections = [Section]()
+        if let today = todaySection() {
+            sections.append(today)
+        }
+        sections.append(tasksSection())
         if let important = importantSection() {
             sections.append(important)
         }
-        sections.append(tasksSection())
         if let scheduled = scheduledSection() {
             sections.append(scheduled)
         }
@@ -233,6 +242,67 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
         let chatNames = reminderChatNames()
         header.update(now: now, nextUp: Self.nextUp(items, now: now, calendar: calendar)) { [weak self] item in
             self?.title(for: item, chatNames: chatNames) ?? ""
+        }
+        header.updateStatus(Self.statusLine(
+            status: IvyServiceStatusMonitor.shared.status,
+            hasRelay: IvyPushRelay.shared.connection != nil,
+        ))
+    }
+
+    /// The line under the greeting: green while all is well, the problem
+    /// in its tone otherwise. Without a push relay there is nothing to show.
+    static func statusLine(status: IvyServiceStatus?, hasRelay: Bool) -> (title: String, tone: IvyTone)? {
+        guard hasRelay else {
+            return nil
+        }
+        guard let status, status.level != .notice else {
+            return (
+                IvyLocalizedString("HOME_SERVICES_OK", comment: "Line on Home when all of Ivy's services are running."),
+                .green,
+            )
+        }
+        return (status.bannerTitle, IvyServiceStatusBanner.tone(for: status.level))
+    }
+
+    /// The rest of today: events and reminders that haven't ended, all-day
+    /// ones first.
+    static func todayItems(_ items: [IvyCalendarItem], now: Date, calendar: Calendar = .current) -> [IvyCalendarItem] {
+        items
+            .filter { calendar.isDate($0.start, inSameDayAs: now) || ($0.start < now && $0.end > now) }
+            .filter { $0.isAllDay || max($0.start, $0.end) > now }
+            .sorted { lhs, rhs in
+                if lhs.isAllDay != rhs.isAllDay {
+                    return lhs.isAllDay
+                }
+                return lhs.start < rhs.start
+            }
+    }
+
+    private func todaySection() -> Section? {
+        let now = Date()
+        let calendar = Calendar.current
+        let start = calendar.startOfDay(for: now)
+        let end = calendar.date(byAdding: .day, value: 1, to: start) ?? now
+        let items = Self.todayItems(
+            IvyCalendar.items(
+                events: IvyEventManager.shared.allEvents(),
+                tasks: [],
+                reminders: IvyReminderManager.shared.openReminders(),
+                in: DateInterval(start: start, end: end),
+                calendar: calendar,
+            ),
+            now: now,
+            calendar: calendar,
+        )
+        guard !items.isEmpty else {
+            return nil
+        }
+        let chatNames = reminderChatNames()
+        return Section(
+            title: IvyLocalizedString("HOME_TODAY_SECTION", comment: "Heading on Home above the rest of today's events and reminders."),
+            rows: items.map { .today($0, title: title(for: $0, chatNames: chatNames)) },
+        ) { [weak self] in
+            self?.homeTabBarController?.selectedHomeTab = .calendar
         }
     }
 
@@ -514,6 +584,12 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
         cell.selectionStyle = .default
 
         switch sections[indexPath.section].rows[indexPath.row] {
+        case .today(let item, let title):
+            content.text = title
+            content.secondaryText = IvyCalendarUI.timeText(for: item)
+            content.image = UIImage(systemName: "circle.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 9))
+            content.imageProperties.tintColor = item.tone(now: Date()).strong
+            cell.accessoryType = .none
         case .task(let task, let listName):
             content.text = task.title
             content.secondaryText = IvyTaskUI.subtitle(for: task, listName: listName)
@@ -563,6 +639,8 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch sections[indexPath.section].rows[indexPath.row] {
+        case .today(let item, _):
+            open(item)
         case .task(let task, _):
             ivyPresentTaskEditor(task, isNew: false)
         case .important(let row):
@@ -595,6 +673,8 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
     /// Events, tasks and reminders can be marked done or deleted from here.
     private func calendarItem(at indexPath: IndexPath) -> IvyCalendarItem? {
         switch sections[indexPath.section].rows[indexPath.row] {
+        case .today(let item, _):
+            return item
         case .task(let task, _):
             let date = task.dueAt ?? Date()
             return IvyCalendarItem(kind: .task(task), start: date, end: date, isAllDay: task.isAllDay)

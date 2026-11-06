@@ -13,6 +13,7 @@ struct IvyWidgets: WidgetBundle {
         IvyTodayWidget()
         IvyTasksWidget()
         IvyUnreadWidget()
+        IvyDayWidget()
         if #available(iOS 18, *) {
             IvyNewTaskControl()
         }
@@ -119,6 +120,21 @@ struct IvyUnreadWidget: Widget {
         .configurationDisplayName(IvyLocalizedString("WIDGET_UNREAD_TITLE", comment: "Name of the widget that shows the number of unread messages."))
         .description(IvyLocalizedString("WIDGET_UNREAD_DESCRIPTION", comment: "Description of the Unread widget in the widget gallery."))
         .supportedFamilies([.systemSmall, .accessoryCircular, .accessoryInline])
+    }
+}
+
+/// The lock screen's version of Home: what's next today, and how many tasks
+/// are due and messages unread.
+struct IvyDayWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "IvyDay", provider: IvyGlanceProvider()) { entry in
+            IvyDayView(entry: entry)
+                .containerBackground(.background, for: .widget)
+                .widgetURL(IvyLink.home.url)
+        }
+        .configurationDisplayName(IvyLocalizedString("WIDGET_DAY_TITLE", comment: "Name of the lock screen widget with what's next today, due tasks and unread messages."))
+        .description(IvyLocalizedString("WIDGET_DAY_DESCRIPTION", comment: "Description of the My Day widget in the widget gallery."))
+        .supportedFamilies([.accessoryRectangular])
     }
 }
 

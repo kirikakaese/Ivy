@@ -75,6 +75,22 @@ public struct IvyGlance: Codable, Equatable, Sendable {
         }
     }
 
+    /// What's next today for the "My Day" widget: the next timed item that
+    /// hasn't ended, or else the first all-day one.
+    public func nextToday(at now: Date, calendar: Calendar = .current) -> Item? {
+        let remaining = todayRemaining(at: now, calendar: calendar)
+        return remaining.first { !$0.isAllDay } ?? remaining.first
+    }
+
+    /// Open tasks due by the end of today, overdue ones included.
+    public func dueTaskCount(at now: Date, calendar: Calendar = .current) -> Int {
+        let endOfToday = calendar.dateInterval(of: .day, for: now)?.end ?? now
+        return tasks.filter { task in
+            guard let start = task.start else { return false }
+            return start < endOfToday
+        }.count
+    }
+
     // MARK: - Storage
 
     public static let fileName = "IvyGlance.json"
