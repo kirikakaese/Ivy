@@ -79,5 +79,29 @@ class MarkerTests(unittest.TestCase):
         self.assertFalse(upstream.keeps_ours("Signal/AppDelegate.swift"))
 
 
+PODFILE = """pod 'LibSignalClient', git: 'x', tag: 'v0.105.0'
+ENV['LIBSIGNAL_FFI_PREBUILD_CHECKSUM'] = '%s'
+pod 'SignalRingRTC', git: 'y', tag: 'v2.73.0'
+  pod 'LibMobileCoin/CoreHTTP', git: 'z', tag: 'signal/6.0.2'
+""" % ("a" * 64)
+
+
+class AutomationTests(unittest.TestCase):
+    def test_lock_gets_the_podfile_checksum(self):
+        import hashlib
+        lock = "PODS:\n  - A (1)\n\nPODFILE CHECKSUM: 0000\n\nCOCOAPODS: 1.15.2\n"
+        updated = upstream.lock_with_podfile_checksum(lock, PODFILE)
+        self.assertIn("PODFILE CHECKSUM: " + hashlib.sha1(PODFILE.encode()).hexdigest() + "\n", updated)
+        self.assertIn("COCOAPODS: 1.15.2", updated)
+
+    def test_dependency_changes(self):
+        newer = PODFILE.replace("v0.105.0", "v0.106.0").replace("v2.73.0", "v2.74.1")
+        self.assertEqual(
+            upstream.dependency_changes(PODFILE, newer),
+            {"libsignal": ("0.105.0", "0.106.0"), "ringrtc": ("2.73.0", "2.74.1")},
+        )
+        self.assertEqual(upstream.dependency_changes(PODFILE, PODFILE), {})
+
+
 if __name__ == "__main__":
     unittest.main()

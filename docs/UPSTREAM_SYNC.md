@@ -4,7 +4,9 @@ Ivy tracks stable releases of [Signal-iOS](https://github.com/signalapp/Signal-i
 
 Merge every upstream stable release, at least once a month. Signal-iOS builds expire about 90 days after release and the server stops accepting old client versions, so falling behind breaks the app.
 
-A weekly workflow (`.github/workflows/upstream-watch.yml`) checks for new stable releases and opens an issue named "Merge Signal-iOS <tag>" for each one. To check by hand:
+A weekly workflow (`.github/workflows/upstream-watch.yml`) checks for new stable releases. When it finds one, it starts the merge by itself (`upstream.py merge <tag> --commit`) on a branch named after the release, opens a draft pull request that lists the files left to resolve, and starts CI and, if libsignal, RingRTC or MobileCoin changed, the Mac Catalyst builds. Finish the merge in that pull request with the steps below. If the merge can't be started, the workflow opens an issue named "Merge Signal-iOS <tag>" instead. The workflow needs "Allow GitHub Actions to create and approve pull requests" under Settings › Actions › General.
+
+To check by hand:
 
 ```
 python3 Scripts/ivy/upstream.py status
