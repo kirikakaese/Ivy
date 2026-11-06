@@ -21,6 +21,9 @@ public struct ChatFolderExtras: Equatable, Sendable {
     public var disappearingSeconds: UInt32?
     /// The folder's chats show only in the folder, not under "All chats".
     public var showsOnlyHere: Bool
+    /// Set for a smart folder, which holds the chats that meet these rules
+    /// instead of chosen ones.
+    public var rules: ChatFolderRules?
 
     public init(
         emoji: String? = nil,
@@ -29,6 +32,7 @@ public struct ChatFolderExtras: Equatable, Sendable {
         notificationHours: IvyNotificationHours? = nil,
         disappearingSeconds: UInt32? = nil,
         showsOnlyHere: Bool = false,
+        rules: ChatFolderRules? = nil,
     ) {
         self.emoji = emoji
         self.color = color
@@ -36,6 +40,7 @@ public struct ChatFolderExtras: Equatable, Sendable {
         self.notificationHours = notificationHours
         self.disappearingSeconds = disappearingSeconds
         self.showsOnlyHere = showsOnlyHere
+        self.rules = rules
     }
 
     public static let maxPinnedChats = 4
@@ -51,6 +56,7 @@ public struct ChatFolderExtras: Equatable, Sendable {
         static let notificationHours = "hours"
         static let disappearingSeconds = "disappear"
         static let showsOnlyHere = "onlyHere"
+        static let rules = "rules"
     }
 
     public static func fetch(folderId: Data, store: IvyDataStore?) -> ChatFolderExtras {
@@ -64,6 +70,7 @@ public struct ChatFolderExtras: Equatable, Sendable {
             notificationHours: IvyDataStore.decode(IvyNotificationHours.self, from: fields[Field.notificationHours]),
             disappearingSeconds: IvyDataStore.decode(UInt32.self, from: fields[Field.disappearingSeconds]),
             showsOnlyHere: IvyDataStore.decode(Bool.self, from: fields[Field.showsOnlyHere]) ?? false,
+            rules: IvyDataStore.decode(ChatFolderRules.self, from: fields[Field.rules]),
         )
     }
 
@@ -101,6 +108,9 @@ public struct ChatFolderExtras: Equatable, Sendable {
         }
         if showsOnlyHere != old.showsOnlyHere {
             fields.updateValue(showsOnlyHere ? IvyDataStore.encode(true) : nil, forKey: Field.showsOnlyHere)
+        }
+        if rules != old.rules {
+            fields.updateValue(rules.map { IvyDataStore.encode($0) }, forKey: Field.rules)
         }
         guard !fields.isEmpty else {
             return

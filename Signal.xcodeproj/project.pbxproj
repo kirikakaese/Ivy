@@ -4435,6 +4435,8 @@
 		697D54D3C8CB49364A5A5832 /* IvyDateRepliesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3608FA477A421B630684868 /* IvyDateRepliesTest.swift */; };
 		E945EE11457ABE7575363773 /* IvyProblemReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6534BCD42D5AA3D88CFB491F /* IvyProblemReport.swift */; };
 		D0854ACE19FF79B63B60069E /* IvyProblemReportTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E743847FC1561D1A8CEF286F /* IvyProblemReportTest.swift */; };
+		7A337D46BF41D66731C51FE0 /* ChatFolderRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3BC3D45D1A2AA81E8EA6F1C /* ChatFolderRules.swift */; };
+		35BE8C6EB85AB7D7725C13BD /* ChatFolderRulesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7001E5E64BA1B27B4A29432B /* ChatFolderRulesTest.swift */; };
 		FE1C19D9B9E1DEC2315F4C17 /* IvyNotificationActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787B37365B010F665A22EA47 /* IvyNotificationActions.swift */; };
 		383DB03342BA0A0C04E69215 /* IvyNotificationActionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0BFA41388727FE6D614740 /* IvyNotificationActionsTest.swift */; };
 		D3EBBE0C2B051ECA5F34434F /* IvyNotificationActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F238BAA1E584445A19217B5 /* IvyNotificationActionHandler.swift */; };
@@ -9174,6 +9176,8 @@
 		A3608FA477A421B630684868 /* IvyDateRepliesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyDateRepliesTest.swift; sourceTree = "<group>"; };
 		6534BCD42D5AA3D88CFB491F /* IvyProblemReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyProblemReport.swift; sourceTree = "<group>"; };
 		E743847FC1561D1A8CEF286F /* IvyProblemReportTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyProblemReportTest.swift; sourceTree = "<group>"; };
+		E3BC3D45D1A2AA81E8EA6F1C /* ChatFolderRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderRules.swift; sourceTree = "<group>"; };
+		7001E5E64BA1B27B4A29432B /* ChatFolderRulesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderRulesTest.swift; sourceTree = "<group>"; };
 		787B37365B010F665A22EA47 /* IvyNotificationActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyNotificationActions.swift; sourceTree = "<group>"; };
 		AE0BFA41388727FE6D614740 /* IvyNotificationActionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyNotificationActionsTest.swift; sourceTree = "<group>"; };
 		3F238BAA1E584445A19217B5 /* IvyNotificationActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyNotificationActionHandler.swift; sourceTree = "<group>"; };
@@ -16910,6 +16914,7 @@
 				F14D65251D7791720F81CA0B /* IvyWakeStatsTest.swift */,
 				62DA6C9923EA3EE16C4ADD9C /* ChatFolderOnlyHereTest.swift */,
 				A3608FA477A421B630684868 /* IvyDateRepliesTest.swift */,
+				7001E5E64BA1B27B4A29432B /* ChatFolderRulesTest.swift */,
 				AE0BFA41388727FE6D614740 /* IvyNotificationActionsTest.swift */,
 			);
 			path = Ivy;
@@ -17006,6 +17011,7 @@
 				263F4C1A28E6E76741351712 /* StorageServiceChatFolderRecordUpdater.swift */,
 				91D07DD224A4A1AE759C551F /* IvyStorageService.proto */,
 				5FF3D8BFD8EEE35D589850D0 /* ChatFolderExtras.swift */,
+				E3BC3D45D1A2AA81E8EA6F1C /* ChatFolderRules.swift */,
 			);
 			path = ChatFolders;
 			sourceTree = "<group>";
@@ -22182,6 +22188,7 @@
 				E92110F7975EB1E557853C01 /* IvyStatusReport.swift in Sources */,
 				195810D75BE50E39613B5DFD /* IvyWakeStats.swift in Sources */,
 				6BA235D5FCB0675B099E8905 /* IvyDateReplies.swift in Sources */,
+				7A337D46BF41D66731C51FE0 /* ChatFolderRules.swift in Sources */,
 				FE1C19D9B9E1DEC2315F4C17 /* IvyNotificationActions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -22493,6 +22500,7 @@
 				DD47D61935DC095125CEEB98 /* IvyWakeStatsTest.swift in Sources */,
 				049EC2ABB2D351F35DBAEDED /* ChatFolderOnlyHereTest.swift in Sources */,
 				697D54D3C8CB49364A5A5832 /* IvyDateRepliesTest.swift in Sources */,
+				35BE8C6EB85AB7D7725C13BD /* ChatFolderRulesTest.swift in Sources */,
 				383DB03342BA0A0C04E69215 /* IvyNotificationActionsTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

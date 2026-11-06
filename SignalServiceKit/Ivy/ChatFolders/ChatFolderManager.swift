@@ -299,18 +299,26 @@ public enum ChatFolderChats {
             guard !onlyThere.isEmpty else {
                 return threadIds
             }
-            let hidden = hiddenFromAllChats(inboxChats(tx: tx), folders: onlyThere)
+            let chats = inboxChats(tx: tx)
+            let membership = ChatFolderMembership.load(folders: onlyThere, chats: chats, tx: tx)
+            let hidden = hiddenFromAllChats(chats, folders: onlyThere, membership: membership)
             return threadIds.filter { !hidden.contains($0) || required.contains($0) }
         }
-        let members = Set(inboxChats(tx: tx).filter { folder.contains($0) }.map(\.threadId))
+        let chats = inboxChats(tx: tx)
+        let membership = ChatFolderMembership.load(folders: [folder], chats: chats, tx: tx)
+        let members = Set(chats.filter { membership.contains($0, in: folder) }.map(\.threadId))
         return threadIds.filter { members.contains($0) || required.contains($0) }
     }
 
     /// The chats that belong to one of `folders` (those shown only there),
     /// so "All chats" leaves them out.
-    public static func hiddenFromAllChats(_ chats: [ChatFolderChat], folders: [ChatFolder]) -> Set<String> {
+    public static func hiddenFromAllChats(
+        _ chats: [ChatFolderChat],
+        folders: [ChatFolder],
+        membership: ChatFolderMembership = .plain,
+    ) -> Set<String> {
         let custom = folders.filter { $0.kind == .custom }
-        return Set(chats.filter { chat in custom.contains { $0.contains(chat) } }.map(\.threadId))
+        return Set(chats.filter { chat in custom.contains { membership.contains(chat, in: $0) } }.map(\.threadId))
     }
 
     /// The chat list order with Ivy's additions: chats pinned in the folder
@@ -330,12 +338,64 @@ public enum ChatFolderChats {
     }
 
     /// The number of chats with unread messages in each folder.
-    public static func unreadCounts(folders: [ChatFolder], chats: [ChatFolderChat]) -> [Data: Int] {
+    public static func unreadCounts(
+        folders: [ChatFolder],
+        chats: [ChatFolderChat],
+        membership: ChatFolderMembership = .plain,
+    ) -> [Data: Int] {
         let unreadChats = chats.filter(\.isUnread)
         var result = [Data: Int]()
         for folder in folders {
-            result[folder.id] = unreadChats.count(where: { folder.contains($0) })
+            result[folder.id] = unreadChats.count(where: { membership.contains($0, in: folder) })
         }
         return result
+    }
+}
+
+/// Which chats belong in which folders, with smart folders deciding by
+/// their rules instead of the chosen chats.
+public struct ChatFolderMembership: Sendable {
+    let rules: [Data: ChatFolderRules]
+    let facts: ChatFolderFacts
+
+    public init(rules: [Data: ChatFolderRules], facts: ChatFolderFacts) {
+        self.rules = rules
+        self.facts = facts
+    }
+
+    /// Only chosen chats, as if no folder were smart.
+    public static let plain = ChatFolderMembership(rules: [:], facts: .none)
+
+    /// Reads the rules of `folders` and gathers what they need.
+    public static func load(folders: [ChatFolder], chats: [ChatFolderChat], tx: DBReadTransaction) -> ChatFolderMembership {
+        let extras = ChatFolderExtras.fetchAll(store: IvyData.shared?.store)
+        var rules = [Data: ChatFolderRules]()
+        for folder in folders where folder.kind == .custom {
+            if let folderRules = extras[folder.id]?.rules {
+                rules[folder.id] = folderRules
+            }
+        }
+        guard !rules.isEmpty else {
+            return .plain
+        }
+        return ChatFolderMembership(rules: rules, facts: .load(for: Array(rules.values), chats: chats, tx: tx))
+    }
+
+    /// Whether a chat belongs in a folder, after its unread and muted
+    /// filters.
+    public func contains(_ chat: ChatFolderChat, in folder: ChatFolder) -> Bool {
+        guard folder.kind == .custom, let folderRules = rules[folder.id] else {
+            return folder.contains(chat)
+        }
+        guard folderRules.matches(chat, facts: facts) else {
+            return false
+        }
+        if folder.showOnlyUnread, !chat.isUnread {
+            return false
+        }
+        if !folder.showMutedChats, chat.isMuted {
+            return false
+        }
+        return true
     }
 }
