@@ -123,6 +123,7 @@ extension ChatsSettingsViewController {
                 IvyMessageDetection.detectsDates = uiSwitch.isOn
             },
         ))
+        section.add(ivyDateReplyButtonsItem())
         section.add(.switch(
             withText: IvyDetectedItemsUI.detectTasksTitle,
             isOn: { IvyMessageDetection.detectsTasks },

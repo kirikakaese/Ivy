@@ -23,10 +23,30 @@ final class IvyHelpViewController: OWSTableViewController2 {
         let supportSection = OWSTableSection()
         supportSection.add(.disclosureItem(
             withText: IvyLocalizedString("HELP_REPORT_PROBLEM", comment: "Help item that opens Ivy's issue tracker."),
+            actionBlock: {
+                IvyProblemReport.present(capturing: nil)
+            },
+        ))
+        supportSection.add(.disclosureItem(
+            withText: IvyLocalizedString("HELP_OPEN_ISSUES", comment: "Help item that opens the list of known problems on Ivy's issue page."),
             actionBlock: { [weak self] in
                 self?.present(SFSafariViewController(url: IvyConfiguration.issuesURL), animated: true)
             },
         ))
+        #if !targetEnvironment(macCatalyst)
+        supportSection.add(.switch(
+            withText: IvyLocalizedString(
+                "REPORT_PROBLEM_SHAKE_SETTING",
+                comment: "Switch in Help: shaking the iPhone opens Report a Problem.",
+            ),
+            isOn: { IvyProblemReport.opensOnShake },
+            actionBlock: { sender in IvyProblemReport.opensOnShake = sender.isOn },
+        ))
+        supportSection.footerTitle = IvyLocalizedString(
+            "REPORT_PROBLEM_SHAKE_FOOTER",
+            comment: "Footer under the shake switch in Help.",
+        )
+        #endif
         contents.add(supportSection)
 
         let loggingSection = OWSTableSection()

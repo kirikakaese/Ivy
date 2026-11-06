@@ -185,7 +185,7 @@ final class IvyServiceStatusBanner: UIView {
     private lazy var statusButton = Self.button { [weak self] in self?.openStatusPage() }
 
     /// The status page's colour for the problem, as a pastel tone.
-    private static func tone(for level: IvyServiceStatus.Level) -> IvyTone {
+    static func tone(for level: IvyServiceStatus.Level) -> IvyTone {
         switch level {
         case .down: return .red
         case .degraded, .unreachable: return .brown

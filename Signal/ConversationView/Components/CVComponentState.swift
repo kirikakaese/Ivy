@@ -1281,6 +1281,18 @@ private extension CVComponentState.Builder {
 
         try buildBodyText(message: message)
 
+        // Ivy: Zusagen / Absagen / Kalender under messages that name a date.
+        if
+            bottomButtonsActions.isEmpty,
+            let ivyActions = IvyDateReplyButtons.actions(
+                for: message,
+                hasPendingMessageRequest: threadViewModel.hasPendingMessageRequest,
+                tx: transaction,
+            )
+        {
+            bottomButtonsActions = ivyActions
+        }
+
         if let outgoingMessage = message as? TSOutgoingMessage {
             let messageStatus: MessageReceiptStatus
             if

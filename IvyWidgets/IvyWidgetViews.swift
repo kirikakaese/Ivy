@@ -161,6 +161,35 @@ struct IvyUnreadView: View {
     }
 }
 
+// MARK: - My Day
+
+struct IvyDayView: View {
+    let entry: IvyGlanceEntry
+
+    var body: some View {
+        let next = entry.glance?.nextToday(at: entry.date)
+        let due = entry.glance?.dueTaskCount(at: entry.date) ?? 0
+        let unread = entry.glance?.unreadCount ?? 0
+        VStack(alignment: .leading, spacing: 1) {
+            if let next {
+                Text(next.title.isEmpty ? " " : next.title).font(.headline).lineLimit(1).widgetAccentable()
+                Text(IvyItemTime(item: next).text).font(.caption).lineLimit(1)
+            } else {
+                Text(IvyStrings.nothingToday).font(.headline).lineLimit(1).widgetAccentable()
+            }
+            Text(String(
+                format: IvyLocalizedString("WIDGET_DAY_SUMMARY_FORMAT", comment: "Line in the My Day widget. Embeds {{ number of tasks due today }} and {{ number of unread messages }}."),
+                due,
+                unread,
+            ))
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .lineLimit(1)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
 // MARK: - Parts
 
 private struct IvyWidgetHeader: View {
