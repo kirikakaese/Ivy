@@ -1,0 +1,51 @@
+name: Upstream watch
+
+# Checks every Monday whether Signal-iOS has a newer stable release than the
+# one Ivy is built on, and opens an issue for it (one per release). Signal
+# builds expire about 90 days after release, so each one needs merging soon
+# (docs/UPSTREAM_SYNC.md).
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  watch:
+    name: Look for a new Signal-iOS release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Compare with the latest release
+        id: status
+        run: python3 Scripts/ivy/upstream.py status --github-output
+
+      - name: Open an issue for the new release
+        if: steps.status.outputs.behind == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CURRENT: ${{ steps.status.outputs.current }}
+          LATEST: ${{ steps.status.outputs.latest }}
+        run: |
+          title="Merge Signal-iOS $LATEST"
+          existing=$(gh issue list --state all --search "\"$title\" in:title" --json title --jq ".[] | select(.title == \"$title\") | .title")
+          if [ -n "$existing" ]; then
+            echo "An issue for $LATEST exists already."
+            exit 0
+          fi
+          body=$(printf '%s\n' \
+            "Signal-iOS $LATEST is out; Ivy is built on $CURRENT." \
+            "" \
+            "Signal builds expire about 90 days after their release, so this needs merging soon. Start with:" \
+            "" \
+            '```' \
+            "python3 Scripts/ivy/upstream.py merge $LATEST" \
+            '```' \
+            "" \
+            "and follow docs/UPSTREAM_SYNC.md.")
+          gh issue create --title "$title" --body "$body"
