@@ -4343,6 +4343,8 @@
 		2AAAA3663EF094A9F528BACB /* IvySettingsSearchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2CCF1009C151B4B7FB8E03 /* IvySettingsSearchTest.swift */; };
 		C47F0A78F2A8C5E9AA950695 /* IvyChatSuggestionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4EAFF18F982E35D4AF5F1F /* IvyChatSuggestionsTest.swift */; };
 		FB0F55BD1EB8638416B84908 /* IvyMoveFromSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629E49815A9C4D03799F7C22 /* IvyMoveFromSignal.swift */; };
+		E945EE11457ABE7575363773 /* IvyProblemReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6534BCD42D5AA3D88CFB491F /* IvyProblemReport.swift */; };
+		D0854ACE19FF79B63B60069E /* IvyProblemReportTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E743847FC1561D1A8CEF286F /* IvyProblemReportTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -9016,6 +9018,8 @@
 		7E2CCF1009C151B4B7FB8E03 /* IvySettingsSearchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySettingsSearchTest.swift; sourceTree = "<group>"; };
 		2F4EAFF18F982E35D4AF5F1F /* IvyChatSuggestionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyChatSuggestionsTest.swift; sourceTree = "<group>"; };
 		629E49815A9C4D03799F7C22 /* IvyMoveFromSignal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMoveFromSignal.swift; sourceTree = "<group>"; };
+		6534BCD42D5AA3D88CFB491F /* IvyProblemReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyProblemReport.swift; sourceTree = "<group>"; };
+		E743847FC1561D1A8CEF286F /* IvyProblemReportTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyProblemReportTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16690,6 +16694,7 @@
 				2F3549E261B0780B5D859482 /* IvySettingsPages.swift */,
 				1DA9ACDE67F0098536162A52 /* IvySettingsSearch.swift */,
 				629E49815A9C4D03799F7C22 /* IvyMoveFromSignal.swift */,
+				6534BCD42D5AA3D88CFB491F /* IvyProblemReport.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16717,6 +16722,7 @@
 				21220D6898CB76814EE90D38 /* IvyOneHandTest.swift */,
 				7E2CCF1009C151B4B7FB8E03 /* IvySettingsSearchTest.swift */,
 				2F4EAFF18F982E35D4AF5F1F /* IvyChatSuggestionsTest.swift */,
+				E743847FC1561D1A8CEF286F /* IvyProblemReportTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -20453,6 +20459,7 @@
 				2AB89368287B6DE297617E6A /* IvySettingsPages.swift in Sources */,
 				DF423609999DB072BE36B8DB /* IvySettingsSearch.swift in Sources */,
 				FB0F55BD1EB8638416B84908 /* IvyMoveFromSignal.swift in Sources */,
+				E945EE11457ABE7575363773 /* IvyProblemReport.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20559,6 +20566,7 @@
 				B93A61054FCCDDE20B1408A7 /* IvyOneHandTest.swift in Sources */,
 				2AAAA3663EF094A9F528BACB /* IvySettingsSearchTest.swift in Sources */,
 				C47F0A78F2A8C5E9AA950695 /* IvyChatSuggestionsTest.swift in Sources */,
+				D0854ACE19FF79B63B60069E /* IvyProblemReportTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -645,6 +645,9 @@
 /* Help item that previews and exports the debug log. */
 "HELP_EXPORT_DEBUG_LOG" = "Export Debug Log";
 
+/* Help item that opens the list of known problems on Ivy's issue page. */
+"HELP_OPEN_ISSUES" = "Known Problems";
+
 /* Help item that opens Ivy's issue tracker. */
 "HELP_REPORT_PROBLEM" = "Report a Problem";
 
@@ -1532,6 +1535,39 @@
 
 /* Notification action that reminds the user again tomorrow morning. */
 "REMINDER_TOMORROW" = "Tomorrow";
+
+/* Switch in Report a Problem that includes the debug log, which contains no message contents. */
+"REPORT_PROBLEM_ATTACH_LOG" = "Attach Debug Log (no message contents)";
+
+/* Switch in Report a Problem that includes the screenshot. */
+"REPORT_PROBLEM_ATTACH_SCREENSHOT" = "Attach Screenshot";
+
+/* Line in a new issue where the user attaches the saved debug log. */
+"REPORT_PROBLEM_BODY_LOG" = "Debug log: attach the saved file here.";
+
+/* Line in a new issue where the user pastes the copied screenshot. */
+"REPORT_PROBLEM_BODY_SCREENSHOT" = "Screenshot: paste it here.";
+
+/* Title of a new issue when the user wrote nothing. */
+"REPORT_PROBLEM_DEFAULT_TITLE" = "Problem report";
+
+/* Explanation under the button in Report a Problem: what happens with the text, screenshot and debug log. */
+"REPORT_PROBLEM_FOOTER" = "Opens a new issue on GitHub with your text and the app and iOS version. The screenshot is copied so you can paste it there, and the debug log is saved first (for example to Files) so you can attach it. Ivy sends nothing by itself.";
+
+/* Placeholder of the text field in Report a Problem. */
+"REPORT_PROBLEM_PLACEHOLDER" = "What happened?";
+
+/* Accessibility label of the screenshot preview in Report a Problem. */
+"REPORT_PROBLEM_SCREENSHOT_A11Y" = "Screenshot of the screen you were on";
+
+/* Footer under the shake switch in Help. */
+"REPORT_PROBLEM_SHAKE_FOOTER" = "Shake your iPhone anywhere in Ivy to report a problem with a screenshot of that screen.";
+
+/* Switch in Help: shaking the iPhone opens Report a Problem. */
+"REPORT_PROBLEM_SHAKE_SETTING" = "Shake to Report a Problem";
+
+/* Button in Report a Problem that opens a new issue on GitHub. */
+"REPORT_PROBLEM_SUBMIT" = "Report on GitHub";
 
 /* Below the scheduled message bubbles in a chat: how many more there are. Embeds {{ number }}. */
 "SCHEDULED_BUBBLES_MORE_FORMAT" = "%@ more scheduled";

@@ -645,6 +645,9 @@
 /* Help item that previews and exports the debug log. */
 "HELP_EXPORT_DEBUG_LOG" = "Debug-Protokoll exportieren";
 
+/* Help item that opens the list of known problems on Ivy's issue page. */
+"HELP_OPEN_ISSUES" = "Bekannte Probleme";
+
 /* Help item that opens Ivy's issue tracker. */
 "HELP_REPORT_PROBLEM" = "Problem melden";
 
@@ -1532,6 +1535,39 @@
 
 /* Notification action that reminds the user again tomorrow morning. */
 "REMINDER_TOMORROW" = "Morgen";
+
+/* Switch in Report a Problem that includes the debug log, which contains no message contents. */
+"REPORT_PROBLEM_ATTACH_LOG" = "Debug-Protokoll anhängen (ohne Nachrichteninhalte)";
+
+/* Switch in Report a Problem that includes the screenshot. */
+"REPORT_PROBLEM_ATTACH_SCREENSHOT" = "Screenshot anhängen";
+
+/* Line in a new issue where the user attaches the saved debug log. */
+"REPORT_PROBLEM_BODY_LOG" = "Debug-Protokoll: gesicherte Datei hier anhängen.";
+
+/* Line in a new issue where the user pastes the copied screenshot. */
+"REPORT_PROBLEM_BODY_SCREENSHOT" = "Screenshot: hier einfügen.";
+
+/* Title of a new issue when the user wrote nothing. */
+"REPORT_PROBLEM_DEFAULT_TITLE" = "Problemmeldung";
+
+/* Explanation under the button in Report a Problem: what happens with the text, screenshot and debug log. */
+"REPORT_PROBLEM_FOOTER" = "Öffnet ein neues Issue auf GitHub mit deinem Text sowie der App- und iOS-Version. Der Screenshot wird kopiert, damit du ihn dort einfügen kannst, und das Debug-Protokoll wird vorher gesichert (zum Beispiel in Dateien), damit du es anhängen kannst. Ivy selbst sendet nichts.";
+
+/* Placeholder of the text field in Report a Problem. */
+"REPORT_PROBLEM_PLACEHOLDER" = "Was ist passiert?";
+
+/* Accessibility label of the screenshot preview in Report a Problem. */
+"REPORT_PROBLEM_SCREENSHOT_A11Y" = "Screenshot des Bildschirms, auf dem du warst";
+
+/* Footer under the shake switch in Help. */
+"REPORT_PROBLEM_SHAKE_FOOTER" = "Schüttle dein iPhone irgendwo in Ivy, um ein Problem mit einem Screenshot dieses Bildschirms zu melden.";
+
+/* Switch in Help: shaking the iPhone opens Report a Problem. */
+"REPORT_PROBLEM_SHAKE_SETTING" = "Schütteln, um ein Problem zu melden";
+
+/* Button in Report a Problem that opens a new issue on GitHub. */
+"REPORT_PROBLEM_SUBMIT" = "Auf GitHub melden";
 
 /* Below the scheduled message bubbles in a chat: how many more there are. Embeds {{ number }}. */
 "SCHEDULED_BUBBLES_MORE_FORMAT" = "%@ weitere geplant";
