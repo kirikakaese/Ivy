@@ -174,6 +174,38 @@ class DeviceTransferStatusViewController: HostingController<TransferWrapperView>
             }),
         )
 
+        // Ivy: Wi-Fi Aware pairing is not available on the Mac.
+        #if canImport(DeviceDiscoveryUI) && canImport(WiFiAware)
+        let pairNewDeviceElement: HeroSheetViewController.Element? = .custom({ heroSheetVC in
+            let hostingController = HostingController(
+                wrappedView: DevicePairingView(
+                    .wifiAware(
+                        .connecting(
+                            to: .deviceTransferService,
+                            from: .allPairedDevices,
+                        ),
+                    ),
+                    label: {
+                        Button(OWSLocalizedString(
+                            "INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_PAIR_NEW_ACTION",
+                            comment: "Title of action allowing user to pair a new device transfer peer.",
+                        )) {}
+                            .buttonStyle(Registration.UI.LargeSecondaryHeroButtonStyle())
+                            .allowsHitTesting(false) // necessary to let touches pass to DevicePairingView
+                    },
+                    fallback: {},
+                ),
+            )
+            hostingController.view.backgroundColor = .clear
+            heroSheetVC.addChild(hostingController)
+            hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+            hostingController.didMove(toParent: self)
+            return hostingController.view
+        })
+        #else
+        let pairNewDeviceElement: HeroSheetViewController.Element? = nil
+        #endif
+
         let sheet = HeroSheetViewController(
             hero: .image(UIImage(resource: .transferConfirm)),
             title: OWSLocalizedString(
@@ -185,32 +217,7 @@ class DeviceTransferStatusViewController: HostingController<TransferWrapperView>
                 comment: "Body of prompt asking user to select device transfer target.",
             )))]),
             primary: .button(primaryButton),
-            secondary: .custom({ heroSheetVC in
-                let hostingController = HostingController(
-                    wrappedView: DevicePairingView(
-                        .wifiAware(
-                            .connecting(
-                                to: .deviceTransferService,
-                                from: .allPairedDevices,
-                            ),
-                        ),
-                        label: {
-                            Button(OWSLocalizedString(
-                                "INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_PAIR_NEW_ACTION",
-                                comment: "Title of action allowing user to pair a new device transfer peer.",
-                            )) {}
-                                .buttonStyle(Registration.UI.LargeSecondaryHeroButtonStyle())
-                                .allowsHitTesting(false) // necessary to let touches pass to DevicePairingView
-                        },
-                        fallback: {},
-                    ),
-                )
-                hostingController.view.backgroundColor = .clear
-                heroSheetVC.addChild(hostingController)
-                hostingController.view.translatesAutoresizingMaskIntoConstraints = false
-                hostingController.didMove(toParent: self)
-                return hostingController.view
-            }),
+            secondary: pairNewDeviceElement,
         )
         present(sheet, animated: true)
     }
