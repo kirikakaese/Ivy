@@ -68,7 +68,7 @@ public class CVComponentBottomButtons: CVComponentBase, CVComponent {
 
     private var stackConfig: CVStackViewConfig {
         CVStackViewConfig(
-            axis: .vertical,
+            axis: bottomButtonsState.ivyIsRow ? .horizontal : .vertical, // Ivy: date reply buttons side by side
             alignment: .fill,
             spacing: Self.buttonSpacing,
             layoutMargins: .init(top: 6, leading: 12, bottom: 12, trailing: 12),
@@ -83,7 +83,12 @@ public class CVComponentBottomButtons: CVComponentBase, CVComponent {
     public func measure(maxWidth: CGFloat, measurementBuilder: CVCellMeasurement.Builder) -> CGSize {
         owsAssertDebug(maxWidth > 0)
 
-        let subviewSize = CGSize(width: maxWidth - stackConfig.layoutMargins.totalWidth, height: Self.buttonHeight)
+        var subviewSize = CGSize(width: maxWidth - stackConfig.layoutMargins.totalWidth, height: Self.buttonHeight)
+        // Ivy: buttons in a row share the width.
+        if bottomButtonsState.ivyIsRow, actions.count > 1 {
+            let spacing = Self.buttonSpacing * CGFloat(actions.count - 1)
+            subviewSize.width = floor((subviewSize.width - spacing) / CGFloat(actions.count))
+        }
         var subviewInfos = [ManualStackSubviewInfo]()
         for _ in 0..<actions.count {
             subviewInfos.append(subviewSize.asManualSubviewInfo)
