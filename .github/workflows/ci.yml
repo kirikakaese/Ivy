@@ -111,7 +111,7 @@ jobs:
             ~/Library/Caches/CocoaPods
             ~/Library/Caches/org.signal.libsignal
             ~/Library/Caches/org.signal.ringrtc
-          key: deps-${{ hashFiles('Podfile.lock') }}
+          key: deps-${{ hashFiles('Podfile.lock', 'Scripts/ivy/catalyst-dependencies.json') }}
 
       # Build products from another runner image (another macOS version)
       # are rebuilt anyway, so each image keeps its own cache. GitHub rolls
