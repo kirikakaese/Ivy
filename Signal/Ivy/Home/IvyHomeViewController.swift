@@ -501,10 +501,12 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
     }
 
     private func foldersSection() -> Section? {
-        let (folders, chats) = SSKEnvironment.shared.databaseStorageRef.read { tx in
-            (ChatFolderManager.shared.folders(tx: tx), ChatFolderChats.inboxChats(tx: tx))
+        let (folders, chats, membership) = SSKEnvironment.shared.databaseStorageRef.read { tx in
+            let folders = ChatFolderManager.shared.folders(tx: tx)
+            let chats = ChatFolderChats.inboxChats(tx: tx)
+            return (folders, chats, ChatFolderMembership.load(folders: folders, chats: chats, tx: tx))
         }
-        let counts = ChatFolderChats.unreadCounts(folders: folders, chats: chats)
+        let counts = ChatFolderChats.unreadCounts(folders: folders, chats: chats, membership: membership)
         let extras = ChatFolderExtras.fetchAll(store: IvyData.shared?.store)
         let chips: [FolderChip] = folders.compactMap { folder in
             guard let count = counts[folder.id], count > 0 else { return nil }

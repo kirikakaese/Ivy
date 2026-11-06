@@ -63,23 +63,23 @@ extension ChatListViewController {
             return
         }
 
-        let (folders, chats) = SSKEnvironment.shared.databaseStorageRef.read { tx in
+        let (folders, chats, membership) = SSKEnvironment.shared.databaseStorageRef.read { tx in
             let folders = chatFolderManager.folders(tx: tx)
             // Counting unread chats is only needed with custom folders.
             let chats = folders.contains { $0.kind == .custom } ? ChatFolderChats.inboxChats(tx: tx) : []
-            return (folders, chats)
+            return (folders, chats, ChatFolderMembership.load(folders: folders, chats: chats, tx: tx))
         }
         if let selectedId = viewState.ivyChatFolderId, !folders.contains(where: { $0.id == selectedId && $0.kind == .custom }) {
             viewState.ivyChatFolderId = nil
             loadCoordinator.loadIfNecessary()
         }
 
-        var counts = ChatFolderChats.unreadCounts(folders: folders, chats: chats)
+        var counts = ChatFolderChats.unreadCounts(folders: folders, chats: chats, membership: membership)
         let extras = ChatFolderExtras.fetchAll(store: IvyData.shared?.store)
         // "All chats" doesn't count the chats that show only in their folder.
         let onlyThere = folders.filter { extras[$0.id]?.showsOnlyHere == true }
         if !onlyThere.isEmpty, let allChats = folders.first(where: { $0.kind == .allChats }) {
-            let hidden = ChatFolderChats.hiddenFromAllChats(chats, folders: onlyThere)
+            let hidden = ChatFolderChats.hiddenFromAllChats(chats, folders: onlyThere, membership: membership)
             counts[allChats.id] = chats.count(where: { $0.isUnread && !hidden.contains($0.threadId) })
         }
         let items = folders.map { folder in
@@ -212,14 +212,18 @@ extension ChatListViewController {
     }
 
     private func ivyThreadViewModels(in folder: ChatFolder, tx: DBReadTransaction) -> [ThreadViewModel] {
-        return ChatFolderChats.inboxChats(tx: tx)
-            .filter { folder.contains($0) }
+        let chats = ChatFolderChats.inboxChats(tx: tx)
+        let membership = ChatFolderMembership.load(folders: [folder], chats: chats, tx: tx)
+        return chats
+            .filter { membership.contains($0, in: folder) }
             .map { ThreadViewModel(threadUniqueId: $0.threadId, forChatList: true, transaction: tx) }
     }
 
     private func ivyMarkRead(_ folder: ChatFolder) {
         SSKEnvironment.shared.databaseStorageRef.write { tx in
-            for chat in ChatFolderChats.inboxChats(tx: tx) where chat.isUnread && folder.contains(chat) {
+            let chats = ChatFolderChats.inboxChats(tx: tx)
+            let membership = ChatFolderMembership.load(folders: [folder], chats: chats, tx: tx)
+            for chat in chats where chat.isUnread && membership.contains(chat, in: folder) {
                 DependenciesBridge.shared.threadStore.fetchThread(uniqueId: chat.threadId, tx: tx)?
                     .markAllAsRead(updateStorageService: true, transaction: tx)
             }

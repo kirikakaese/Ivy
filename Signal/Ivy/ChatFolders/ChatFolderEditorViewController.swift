@@ -13,6 +13,8 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
     private let isNew: Bool
     private let nameField = UITextField()
     private let emojiField = UITextField()
+    /// The "name contains" rule of a smart folder.
+    private let ruleNameField = UITextField()
 
     /// Ivy's additions, saved in the Ivy data store.
     private var extras: ChatFolderExtras
@@ -44,6 +46,20 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
         nameField.returnKeyType = .done
         nameField.addAction(UIAction { [weak self] _ in self?.nameDidChange() }, for: .editingChanged)
         nameField.addAction(UIAction { [weak self] _ in self?.nameField.resignFirstResponder() }, for: .editingDidEndOnExit)
+        ruleNameField.text = extras.rules?.nameContains
+        ruleNameField.placeholder = IvyLocalizedString("CHAT_FOLDER_RULE_NAME_PLACEHOLDER", comment: "Placeholder of the smart folder rule: chats whose name contains this text.")
+        ruleNameField.font = .dynamicTypeBody
+        ruleNameField.clearButtonMode = .whileEditing
+        ruleNameField.returnKeyType = .done
+        ruleNameField.autocorrectionType = .no
+        ruleNameField.addAction(UIAction { [weak self] _ in
+            guard let self, extras.rules != nil else { return }
+            extras.rules?.nameContains = ruleNameField.text ?? ""
+        }, for: .editingChanged)
+        ruleNameField.addAction(UIAction { [weak self] _ in
+            self?.ruleNameField.resignFirstResponder()
+            self?.updateTableContents()
+        }, for: .editingDidEndOnExit)
 
         if navigationController?.viewControllers.first === self {
             navigationItem.leftBarButtonItem = .cancelButton(dismissingFrom: self)
@@ -72,6 +88,14 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
         nameSection.headerTitle = IvyLocalizedString("CHAT_FOLDER_NAME", comment: "Header of the name field of a chat folder.")
         nameSection.add(.textFieldItem(nameField))
         contents.add(nameSection)
+
+        if IvyData.shared != nil, folder.kind == .custom {
+            contents.add(smartSection())
+            if extras.rules != nil {
+                contents.add(rulesSection())
+                contents.add(previewSection())
+            }
+        }
 
         let includedSection = OWSTableSection()
         includedSection.headerTitle = IvyLocalizedString("CHAT_FOLDER_INCLUDED", comment: "Header of the chats that a folder contains.")
@@ -102,9 +126,11 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
         for name in chatNames(folder.includedThreadIds) {
             includedSection.add(.label(withText: name, accessoryType: .none))
         }
-        contents.add(includedSection)
+        if extras.rules == nil {
+            contents.add(includedSection)
+        }
 
-        if folder.includeAllIndividualChats || folder.includeAllGroupChats {
+        if extras.rules == nil, folder.includeAllIndividualChats || folder.includeAllGroupChats {
             let excludedSection = OWSTableSection()
             excludedSection.headerTitle = IvyLocalizedString("CHAT_FOLDER_EXCLUDED", comment: "Header of the chats that a folder leaves out.")
             excludedSection.add(.item(
@@ -154,6 +180,79 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
 
         self.contents = contents
     }
+
+    // MARK: - Smart folder
+
+    private func smartSection() -> OWSTableSection {
+        let section = OWSTableSection()
+        section.footerTitle = IvyLocalizedString("CHAT_FOLDER_SMART_FOOTER", comment: "Explains a smart folder: it fills itself with the chats that meet all rules that are on.")
+        section.add(.switch(
+            withText: IvyLocalizedString("CHAT_FOLDER_SMART", comment: "Switch that makes a chat folder fill itself by rules instead of chosen chats."),
+            isOn: { [weak self] in self?.extras.rules != nil },
+            actionBlock: { [weak self] uiSwitch in
+                guard let self else { return }
+                extras.rules = uiSwitch.isOn ? (originalExtras.rules ?? ChatFolderRules(mentionsMe: true)) : nil
+                ruleNameField.text = extras.rules?.nameContains
+                updateTableContents()
+            },
+        ))
+        return section
+    }
+
+    private func rulesSection() -> OWSTableSection {
+        let section = OWSTableSection()
+        section.headerTitle = IvyLocalizedString("CHAT_FOLDER_RULES", comment: "Header of the rules of a smart folder, read as the start of a sentence: Chats that …")
+        func rule(_ title: String, _ keyPath: WritableKeyPath<ChatFolderRules, Bool>) -> OWSTableItem {
+            .switch(
+                withText: title,
+                isOn: { [weak self] in self?.extras.rules?[keyPath: keyPath] ?? false },
+                actionBlock: { [weak self] uiSwitch in
+                    self?.extras.rules?[keyPath: keyPath] = uiSwitch.isOn
+                    self?.updateTableContents()
+                },
+            )
+        }
+        section.add(rule(IvyLocalizedString("CHAT_FOLDER_RULE_MENTIONS", comment: "Smart folder rule: chats with an unread message that mentions me."), \.mentionsMe))
+        section.add(rule(IvyLocalizedString("CHAT_FOLDER_RULE_TASKS", comment: "Smart folder rule: chats with open tasks made from their messages."), \.hasOpenTasks))
+        section.add(rule(IvyLocalizedString("CHAT_FOLDER_RULE_REMINDERS", comment: "Smart folder rule: chats with a reminder that is due."), \.hasDueReminder))
+        section.add(rule(IvyLocalizedString("CHAT_FOLDER_RULE_GROUPS", comment: "Smart folder rule: group chats only."), \.groupsOnly))
+        section.add(.textFieldItem(ruleNameField))
+        return section
+    }
+
+    /// The chats the folder would hold now.
+    private func previewSection() -> OWSTableSection {
+        let section = OWSTableSection()
+        guard let rules = extras.rules else {
+            return section
+        }
+        let names: [String] = SSKEnvironment.shared.databaseStorageRef.read { tx in
+            let chats = ChatFolderChats.inboxChats(tx: tx)
+            let facts = ChatFolderFacts.load(for: [rules], chats: chats, tx: tx)
+            let membership = ChatFolderMembership(rules: [folder.id: rules], facts: facts)
+            return chats.filter { membership.contains($0, in: folder) }.prefix(Self.maxPreviewChats + 1).compactMap { chat in
+                TSThread.fetchViaCache(uniqueId: chat.threadId, transaction: tx).map {
+                    SSKEnvironment.shared.contactManagerRef.displayName(for: $0, transaction: tx)
+                }
+            }
+        }
+        section.headerTitle = names.count > Self.maxPreviewChats
+            ? IvyLocalizedString("CHAT_FOLDER_PREVIEW_MANY", comment: "Header of the chats a smart folder holds now, when there are many.")
+            : String(
+                format: IvyLocalizedString("CHAT_FOLDER_PREVIEW_FORMAT", comment: "Header of the chats a smart folder holds now. Embeds {{ number of chats }}."),
+                names.count,
+            )
+        section.footerTitle = IvyLocalizedString("CHAT_FOLDER_PREVIEW_FOOTER", comment: "Footer of a smart folder's preview: it changes as soon as chats meet the rules or no longer do.")
+        if names.isEmpty {
+            section.add(.label(withText: IvyLocalizedString("CHAT_FOLDER_PREVIEW_EMPTY", comment: "Shown when no chat meets a smart folder's rules right now."), accessoryType: .none))
+        }
+        for name in names.prefix(Self.maxPreviewChats) {
+            section.add(.label(withText: name, accessoryType: .none))
+        }
+        return section
+    }
+
+    private static let maxPreviewChats = 8
 
     // MARK: - Display
 
@@ -309,6 +408,9 @@ final class ChatFolderEditorViewController: OWSTableViewController2 {
 
     private func save() {
         nameDidChange()
+        if extras.rules != nil {
+            extras.rules?.nameContains = ruleNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        }
         guard !folder.name.isEmpty else {
             return
         }

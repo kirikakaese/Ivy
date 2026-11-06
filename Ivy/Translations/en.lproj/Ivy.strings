@@ -273,11 +273,47 @@
 /* Shown when a folder already has the most pinned chats. Embeds {{ the maximum number }}. */
 "CHAT_FOLDER_PIN_LIMIT_FORMAT" = "You can pin up to %d chats in a folder.";
 
+/* Shown when no chat meets a smart folder's rules right now. */
+"CHAT_FOLDER_PREVIEW_EMPTY" = "No chat meets the rules right now.";
+
+/* Footer of a smart folder's preview: it changes as soon as chats meet the rules or no longer do. */
+"CHAT_FOLDER_PREVIEW_FOOTER" = "What the folder holds right now.";
+
+/* Header of the chats a smart folder holds now. Embeds {{ number of chats }}. */
+"CHAT_FOLDER_PREVIEW_FORMAT" = "Preview · %d chats";
+
+/* Header of the chats a smart folder holds now, when there are many. */
+"CHAT_FOLDER_PREVIEW_MANY" = "Preview · many chats";
+
+/* Header of the rules of a smart folder, read as the start of a sentence: Chats that … */
+"CHAT_FOLDER_RULES" = "Chats that …";
+
+/* Smart folder rule: group chats only. */
+"CHAT_FOLDER_RULE_GROUPS" = "are groups";
+
+/* Smart folder rule: chats with an unread message that mentions me. */
+"CHAT_FOLDER_RULE_MENTIONS" = "mention me (unread)";
+
+/* Placeholder of the smart folder rule: chats whose name contains this text. */
+"CHAT_FOLDER_RULE_NAME_PLACEHOLDER" = "have this in their name …";
+
+/* Smart folder rule: chats with a reminder that is due. */
+"CHAT_FOLDER_RULE_REMINDERS" = "have a due reminder";
+
+/* Smart folder rule: chats with open tasks made from their messages. */
+"CHAT_FOLDER_RULE_TASKS" = "have open tasks";
+
 /* Placeholder of the search field in the list to choose chats for a folder. */
 "CHAT_FOLDER_SEARCH_CHATS" = "Search Chats";
 
 /* Chat folder option: the folder shows muted chats. */
 "CHAT_FOLDER_SHOW_MUTED" = "Show Muted Chats";
+
+/* Switch that makes a chat folder fill itself by rules instead of chosen chats. */
+"CHAT_FOLDER_SMART" = "Fill Automatically";
+
+/* Explains a smart folder: it fills itself with the chats that meet all rules that are on. */
+"CHAT_FOLDER_SMART_FOOTER" = "The folder holds every chat that meets all rules that are on, and changes as chats meet them or no longer do. Smart folders only exist in Ivy.";
 
 /* Name of the suggested chat folder with all group chats. */
 "CHAT_FOLDER_SUGGESTED_GROUPS" = "Groups";

@@ -273,11 +273,47 @@
 /* Shown when a folder already has the most pinned chats. Embeds {{ the maximum number }}. */
 "CHAT_FOLDER_PIN_LIMIT_FORMAT" = "Du kannst bis zu %d Chats in einem Ordner anheften.";
 
+/* Shown when no chat meets a smart folder's rules right now. */
+"CHAT_FOLDER_PREVIEW_EMPTY" = "Gerade erfüllt kein Chat die Regeln.";
+
+/* Footer of a smart folder's preview: it changes as soon as chats meet the rules or no longer do. */
+"CHAT_FOLDER_PREVIEW_FOOTER" = "Was der Ordner gerade enthält.";
+
+/* Header of the chats a smart folder holds now. Embeds {{ number of chats }}. */
+"CHAT_FOLDER_PREVIEW_FORMAT" = "Vorschau · %d Chats";
+
+/* Header of the chats a smart folder holds now, when there are many. */
+"CHAT_FOLDER_PREVIEW_MANY" = "Vorschau · viele Chats";
+
+/* Header of the rules of a smart folder, read as the start of a sentence: Chats that … */
+"CHAT_FOLDER_RULES" = "Chats, die …";
+
+/* Smart folder rule: group chats only. */
+"CHAT_FOLDER_RULE_GROUPS" = "Gruppen sind";
+
+/* Smart folder rule: chats with an unread message that mentions me. */
+"CHAT_FOLDER_RULE_MENTIONS" = "mich erwähnen (ungelesen)";
+
+/* Placeholder of the smart folder rule: chats whose name contains this text. */
+"CHAT_FOLDER_RULE_NAME_PLACEHOLDER" = "das im Namen haben …";
+
+/* Smart folder rule: chats with a reminder that is due. */
+"CHAT_FOLDER_RULE_REMINDERS" = "eine fällige Erinnerung haben";
+
+/* Smart folder rule: chats with open tasks made from their messages. */
+"CHAT_FOLDER_RULE_TASKS" = "offene Aufgaben haben";
+
 /* Placeholder of the search field in the list to choose chats for a folder. */
 "CHAT_FOLDER_SEARCH_CHATS" = "Chats suchen";
 
 /* Chat folder option: the folder shows muted chats. */
 "CHAT_FOLDER_SHOW_MUTED" = "Stummgeschaltete Chats anzeigen";
+
+/* Switch that makes a chat folder fill itself by rules instead of chosen chats. */
+"CHAT_FOLDER_SMART" = "Automatisch füllen";
+
+/* Explains a smart folder: it fills itself with the chats that meet all rules that are on. */
+"CHAT_FOLDER_SMART_FOOTER" = "Der Ordner enthält alle Chats, die alle eingeschalteten Regeln erfüllen, und ändert sich, sobald Chats sie erfüllen oder nicht mehr. Intelligente Ordner gibt es nur in Ivy.";
 
 /* Name of the suggested chat folder with all group chats. */
 "CHAT_FOLDER_SUGGESTED_GROUPS" = "Gruppen";
