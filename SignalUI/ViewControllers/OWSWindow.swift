@@ -50,6 +50,14 @@ public class OWSWindow: UIWindow {
         }
     }
 
+    // Ivy: a shake opens Report a Problem (Signal/Ivy/IvyProblemReport.swift).
+    override public func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        super.motionEnded(motion, with: event)
+        if motion == .motionShake {
+            NotificationCenter.default.post(name: .ivyDeviceShaken, object: self)
+        }
+    }
+
     override public func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
@@ -57,4 +65,9 @@ public class OWSWindow: UIWindow {
             Theme.systemThemeChanged()
         }
     }
+}
+
+extension Notification.Name {
+    /// Ivy: posted when the device is shaken; the object is the window.
+    public static let ivyDeviceShaken = Notification.Name("IvyDeviceShaken")
 }
