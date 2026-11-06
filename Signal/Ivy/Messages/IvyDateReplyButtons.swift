@@ -80,46 +80,50 @@ enum IvyDateReplyButtons {
         IvyLocalizedString("DATE_REPLY_DECLINED", comment: "Shown under a message with a date after declining it, and in the reply that is sent.")
     }
 
+    static var addedToast: String {
+        IvyLocalizedString("DATE_REPLY_ADDED_TOAST", comment: "Toast after accepting a date: the event is now in the calendar.")
+    }
+
     static var buttonsSettingTitle: String {
         IvyLocalizedString("DATE_REPLY_SETTING", comment: "Switch in the chat settings that shows accept and decline buttons under messages with a date.")
     }
 }
 
-extension ConversationViewController {
+extension IvyDateReplyButtons {
 
-    func ivyDidTapDateReply(messageUniqueId: String, choice: IvyDateReplyButtons.Choice) {
-        let databaseStorage = SSKEnvironment.shared.databaseStorageRef
+    /// The event a message's date stands for, or nil when it names none (any
+    /// more).
+    static func event(for message: TSMessage, in thread: TSThread) -> (event: IvyEvent, date: IvyDetectedDate)? {
         guard
-            let message = databaseStorage.read(block: { tx in
-                TSMessage.fetchMessageViaCache(uniqueId: messageUniqueId, transaction: tx)
-            }),
             let text = message.body?.nilIfEmpty,
             let detected = IvyDateReplies.date(in: text, messageDate: Date(millisecondsSince1970: message.receivedAtTimestamp))
         else {
-            return
+            return nil
         }
         let source = IvyMessageReference(message: message, thread: thread).map {
             IvyTask.Source(message: $0, quote: IvyTask.quote(fromMessageText: text))
         }
         let title = IvyTaskPhrases.phrases(in: text, avoiding: []).first?.title ?? IvyTask.title(fromMessageText: text)
-        let event = IvyEvent.draft(from: detected, title: title, source: source)
+        return (IvyEvent.draft(from: detected, title: title, source: source), detected)
+    }
 
-        let reply: IvyDateReply
-        let replyText: String
-        switch choice {
-        case .calendar:
-            ivyPresentEventEditor(event, isNew: true)
-            return
-        case .accept:
-            reply = .accept
-            replyText = "✓ " + IvyDateReplyButtons.acceptedTitle + " · " + IvyDateReplyButtons.shortDateText(detected)
-            IvyEventManager.shared.save(event)
-            presentToast(text: IvyLocalizedString("DATE_REPLY_ADDED_TOAST", comment: "Toast after accepting a date: the event is now in the calendar."))
-        case .decline:
-            reply = .decline
-            replyText = "✕ " + IvyDateReplyButtons.declinedTitle + " · " + IvyDateReplyButtons.shortDateText(detected)
+    /// Accepts (the event goes into the calendar) or declines a message's
+    /// date with a short quoted reply, and remembers the answer. Returns
+    /// false when the message names no date.
+    @discardableResult
+    static func answer(_ reply: IvyDateReply, to message: TSMessage, in thread: TSThread) -> Bool {
+        guard let (event, detected) = event(for: message, in: thread) else {
+            return false
         }
-
+        let replyText: String
+        switch reply {
+        case .accept:
+            replyText = "✓ " + acceptedTitle + " · " + shortDateText(detected)
+            IvyEventManager.shared.save(event)
+        case .decline:
+            replyText = "✕ " + declinedTitle + " · " + shortDateText(detected)
+        }
+        let databaseStorage = SSKEnvironment.shared.databaseStorageRef
         let quote = databaseStorage.read { tx in
             DependenciesBridge.shared.quotedReplyManager.buildDraftQuotedReply(
                 originalMessage: message,
@@ -132,10 +136,34 @@ extension ConversationViewController {
             thread: thread,
             quotedReplyDraft: quote,
         )
-        IvyDateReplies.record(reply, forMessage: messageUniqueId)
+        IvyDateReplies.record(reply, forMessage: message.uniqueId)
         // Redraw the message with the answer instead of the buttons.
         databaseStorage.asyncWrite { tx in
             databaseStorage.touch(interaction: message, shouldReindex: false, tx: tx)
+        }
+        return true
+    }
+}
+
+extension ConversationViewController {
+
+    func ivyDidTapDateReply(messageUniqueId: String, choice: IvyDateReplyButtons.Choice) {
+        guard let message = SSKEnvironment.shared.databaseStorageRef.read(block: { tx in
+            TSMessage.fetchMessageViaCache(uniqueId: messageUniqueId, transaction: tx)
+        }) else {
+            return
+        }
+        switch choice {
+        case .calendar:
+            if let (event, _) = IvyDateReplyButtons.event(for: message, in: thread) {
+                ivyPresentEventEditor(event, isNew: true)
+            }
+        case .accept:
+            if IvyDateReplyButtons.answer(.accept, to: message, in: thread) {
+                presentToast(text: IvyDateReplyButtons.addedToast)
+            }
+        case .decline:
+            IvyDateReplyButtons.answer(.decline, to: message, in: thread)
         }
     }
 }
