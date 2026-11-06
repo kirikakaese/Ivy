@@ -65,6 +65,9 @@ public class BlockingManager {
         setChangeToken(fetchChangeToken(tx: tx) + 1, tx: tx)
         tx.addSyncCompletion {
             self.syncQueue.enqueue { [self] in
+                // Ivy: in tests this can run after the test that blocked
+                // someone has torn down the environment.
+                guard SSKEnvironment.hasShared else { return }
                 do {
                     try await syncBlockListIfNecessary(force: false)
                 } catch {
