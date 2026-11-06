@@ -6,6 +6,8 @@
 import Foundation
 public import LibSignalClient
 
+public enum BackupArchive {}
+
 public enum BackupRestoreState: Int, Codable {
     /// Has never restored from a backup in this database's history
     case none = 0
@@ -59,6 +61,21 @@ public protocol BackupArchiveManager {
         progress: OWSProgressSink?,
         logger: PrefixedLogger,
     ) async throws -> Upload.EncryptedBackupUploadMetadata
+
+    /// Export a plaintext Backup file for a user-initiated takeout, at the
+    /// returned file URL.
+    ///
+    /// - Important
+    /// The resulting Backup file is in JSONL format.
+    ///
+    /// - Parameter attachmentCollector
+    /// Collects attachments referenced by the Backup file. If `nil`,
+    /// attachments are not collected.
+    func exportPlaintextBackupForTakeout(
+        localIdentifiers: LocalIdentifiers,
+        attachmentCollector: LocalFileBackupAttachmentCollector?,
+        progress: OWSProgressSink?,
+    ) async throws -> URL
 
 #if TESTABLE_BUILD
     /// Export a plaintext backup binary at the returned file URL, for use in

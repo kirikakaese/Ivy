@@ -6,14 +6,14 @@
 import SignalRingRTC
 
 extension BackupArchive {
-    public struct CallLinkRecordId: Hashable {
+    struct CallLinkRecordId: Hashable {
         let rowId: Int64
 
-        public init(_ callLinkRecord: CallLinkRecord) {
+        init(_ callLinkRecord: CallLinkRecord) {
             self.rowId = callLinkRecord.id
         }
 
-        public init?(callRecordConversationId: CallRecord.ConversationID) {
+        init?(callRecordConversationId: CallRecord.ConversationID) {
             switch callRecordConversationId {
             case .thread:
                 return nil
@@ -24,7 +24,7 @@ extension BackupArchive {
     }
 }
 
-public class BackupArchiveCallLinkRecipientArchiver: BackupArchiveProtoStreamWriter {
+class BackupArchiveCallLinkRecipientArchiver {
     typealias CallLinkRecordId = BackupArchive.CallLinkRecordId
     typealias RecipientAppId = BackupArchive.RecipientArchivingContext.Address
     typealias ArchiveMultiFrameResult = BackupArchive.ArchiveMultiFrameResult
@@ -47,8 +47,7 @@ public class BackupArchiveCallLinkRecipientArchiver: BackupArchiveProtoStreamWri
     ) throws(CancellationError) -> ArchiveMultiFrameResult {
         var errors = [ArchiveFrameError]()
 
-        try context.bencher.wrapEnumeration(
-            tx: context.tx,
+        try context.wrapEnumeration(
             enumerationBlock: { tx, block throws(CancellationError) in
                 try callLinkStore.enumerateAll(tx: tx, block: block)
             },
@@ -94,8 +93,9 @@ public class BackupArchiveCallLinkRecipientArchiver: BackupArchiveProtoStreamWri
                 owsAssertDebug(record.revoked != true, "call links should be deleted, not revoked")
 
                 let recipientId = context.assignRecipientId(to: callLinkAppId)
-                let maybeError: ArchiveFrameError? = Self.writeFrameToStream(
-                    stream,
+                let maybeError: ArchiveFrameError? = context.writeFrame(
+                    toStream: stream,
+                    flush: .afterWrite,
                     frameBencher: frameBencher,
                 ) {
                     var recipient = BackupProto_Recipient()

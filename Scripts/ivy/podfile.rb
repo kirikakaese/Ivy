@@ -12,10 +12,21 @@ IVY_CATALYST_DEPENDENCIES = File.join(__dir__, 'catalyst-dependencies.json')
 # The libsignal archive Ivy uses contains the upstream iOS builds plus a Mac
 # Catalyst build, so it has its own checksum. Only switch to it once it has
 # been published.
-def ivy_configure_environment
+# A pin for another version than the Podfile's (right after an upstream merge,
+# before the new Mac build is published) is ignored, so the iOS build keeps
+# working with Signal's archive.
+def ivy_configure_environment(podfile = File.join(__dir__, '..', '..', 'Podfile'))
   pins = JSON.parse(File.read(IVY_CATALYST_DEPENDENCIES))
   libsignal = pins['libsignal']
-  ENV['LIBSIGNAL_FFI_PREBUILD_CHECKSUM'] = libsignal['sha256'] if libsignal
+  return unless libsignal
+  return unless libsignal['version'] == ivy_podfile_libsignal_version(File.read(podfile))
+
+  ENV['LIBSIGNAL_FFI_PREBUILD_CHECKSUM'] = libsignal['sha256']
+end
+
+# The libsignal version the Podfile pins, for example "0.105.0".
+def ivy_podfile_libsignal_version(podfile_text)
+  podfile_text[/pod 'LibSignalClient',.*?tag: 'v([^']+)'/, 1]
 end
 
 # Lets every pod build for Mac Catalyst and points the prebuilt Rust libraries

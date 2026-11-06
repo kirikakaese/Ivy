@@ -892,7 +892,122 @@ public nonisolated struct BackupProto_AccountData: @unchecked Sendable {
       set {_uniqueStorage()._hasSeenAdminDeleteEducationDialog_p = newValue}
     }
 
+    public var unreadBadgeType: BackupProto_AccountData.AccountSettings.UnreadBadgeType {
+      get {_storage._unreadBadgeType}
+      set {_uniqueStorage()._unreadBadgeType = newValue}
+    }
+
+    /// If unset, consider this disabled
+    public var includeMutedChatsInBadge: Bool {
+      get {_storage._includeMutedChatsInBadge ?? false}
+      set {_uniqueStorage()._includeMutedChatsInBadge = newValue}
+    }
+    /// Returns true if `includeMutedChatsInBadge` has been explicitly set.
+    public var hasIncludeMutedChatsInBadge: Bool {_storage._includeMutedChatsInBadge != nil}
+    /// Clears the value of `includeMutedChatsInBadge`. Subsequent reads from it will return its default value.
+    public mutating func clearIncludeMutedChatsInBadge() {_uniqueStorage()._includeMutedChatsInBadge = nil}
+
+    /// If unset, consider this enabled
+    public var reactionNotifications: Bool {
+      get {_storage._reactionNotifications ?? false}
+      set {_uniqueStorage()._reactionNotifications = newValue}
+    }
+    /// Returns true if `reactionNotifications` has been explicitly set.
+    public var hasReactionNotifications: Bool {_storage._reactionNotifications != nil}
+    /// Clears the value of `reactionNotifications`. Subsequent reads from it will return its default value.
+    public mutating func clearReactionNotifications() {_uniqueStorage()._reactionNotifications = nil}
+
+    /// If unset, consider this disabled
+    public var notifyForCallsIfMuted: Bool {
+      get {_storage._notifyForCallsIfMuted ?? false}
+      set {_uniqueStorage()._notifyForCallsIfMuted = newValue}
+    }
+    /// Returns true if `notifyForCallsIfMuted` has been explicitly set.
+    public var hasNotifyForCallsIfMuted: Bool {_storage._notifyForCallsIfMuted != nil}
+    /// Clears the value of `notifyForCallsIfMuted`. Subsequent reads from it will return its default value.
+    public mutating func clearNotifyForCallsIfMuted() {_uniqueStorage()._notifyForCallsIfMuted = nil}
+
+    /// If unset, consider this enabled
+    public var notifyForMentionsIfMuted: Bool {
+      get {_storage._notifyForMentionsIfMuted ?? false}
+      set {_uniqueStorage()._notifyForMentionsIfMuted = newValue}
+    }
+    /// Returns true if `notifyForMentionsIfMuted` has been explicitly set.
+    public var hasNotifyForMentionsIfMuted: Bool {_storage._notifyForMentionsIfMuted != nil}
+    /// Clears the value of `notifyForMentionsIfMuted`. Subsequent reads from it will return its default value.
+    public mutating func clearNotifyForMentionsIfMuted() {_uniqueStorage()._notifyForMentionsIfMuted = nil}
+
+    /// If unset, consider this enabled
+    public var notifyForRepliesIfMuted: Bool {
+      get {_storage._notifyForRepliesIfMuted ?? false}
+      set {_uniqueStorage()._notifyForRepliesIfMuted = newValue}
+    }
+    /// Returns true if `notifyForRepliesIfMuted` has been explicitly set.
+    public var hasNotifyForRepliesIfMuted: Bool {_storage._notifyForRepliesIfMuted != nil}
+    /// Clears the value of `notifyForRepliesIfMuted`. Subsequent reads from it will return its default value.
+    public mutating func clearNotifyForRepliesIfMuted() {_uniqueStorage()._notifyForRepliesIfMuted = nil}
+
+    /// If unset, consider this enabled
+    public var showUnreadReminders: Bool {
+      get {_storage._showUnreadReminders ?? false}
+      set {_uniqueStorage()._showUnreadReminders = newValue}
+    }
+    /// Returns true if `showUnreadReminders` has been explicitly set.
+    public var hasShowUnreadReminders: Bool {_storage._showUnreadReminders != nil}
+    /// Clears the value of `showUnreadReminders`. Subsequent reads from it will return its default value.
+    public mutating func clearShowUnreadReminders() {_uniqueStorage()._showUnreadReminders = nil}
+
+    /// If unset, consider this disabled
+    public var notifyWhenContactJoins: Bool {
+      get {_storage._notifyWhenContactJoins ?? false}
+      set {_uniqueStorage()._notifyWhenContactJoins = newValue}
+    }
+    /// Returns true if `notifyWhenContactJoins` has been explicitly set.
+    public var hasNotifyWhenContactJoins: Bool {_storage._notifyWhenContactJoins != nil}
+    /// Clears the value of `notifyWhenContactJoins`. Subsequent reads from it will return its default value.
+    public mutating func clearNotifyWhenContactJoins() {_uniqueStorage()._notifyWhenContactJoins = nil}
+
     public var unknownFields = SwiftProtobuf.UnknownStorage()
+
+    public nonisolated enum UnreadBadgeType: SwiftProtobuf.Enum, Swift.CaseIterable {
+      public typealias RawValue = Int
+
+      /// Interpret as "Unread messages"
+      case unknownBadgeType // = 0
+      case unreadMessages // = 1
+      case unreadChats // = 2
+      case UNRECOGNIZED(Int)
+
+      public init() {
+        self = .unknownBadgeType
+      }
+
+      public init?(rawValue: Int) {
+        switch rawValue {
+        case 0: self = .unknownBadgeType
+        case 1: self = .unreadMessages
+        case 2: self = .unreadChats
+        default: self = .UNRECOGNIZED(rawValue)
+        }
+      }
+
+      public var rawValue: Int {
+        switch self {
+        case .unknownBadgeType: return 0
+        case .unreadMessages: return 1
+        case .unreadChats: return 2
+        case .UNRECOGNIZED(let i): return i
+        }
+      }
+
+      // The compiler won't synthesize support with the UNRECOGNIZED case.
+      public static let allCases: [BackupProto_AccountData.AccountSettings.UnreadBadgeType] = [
+        .unknownBadgeType,
+        .unreadMessages,
+        .unreadChats,
+      ]
+
+    }
 
     public init() {}
 
@@ -1281,6 +1396,12 @@ public nonisolated struct BackupProto_Contact: @unchecked Sendable {
   /// Clears the value of `keyTransparencyData`. Subsequent reads from it will return its default value.
   public mutating func clearKeyTransparencyData() {_uniqueStorage()._keyTransparencyData = nil}
 
+  /// if `blocked` is true, 0 means unknown block time
+  public var blockedAtTimestamp: UInt64 {
+    get {_storage._blockedAtTimestamp}
+    set {_uniqueStorage()._blockedAtTimestamp = newValue}
+  }
+
   /// absent iff both `given` and `family` are empty, name provided by third party
   public var sharedName: BackupProto_Contact.Name {
     get {_storage._sharedName ?? BackupProto_Contact.Name()}
@@ -1470,6 +1591,12 @@ public nonisolated struct BackupProto_Group: @unchecked Sendable {
   public var hasAvatarColor: Bool {_storage._avatarColor != nil}
   /// Clears the value of `avatarColor`. Subsequent reads from it will return its default value.
   public mutating func clearAvatarColor() {_uniqueStorage()._avatarColor = nil}
+
+  /// if `blocked` is true, 0 means unknown block time
+  public var blockedAtTimestamp: UInt64 {
+    get {_storage._blockedAtTimestamp}
+    set {_uniqueStorage()._blockedAtTimestamp = newValue}
+  }
 
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -1899,6 +2026,7 @@ public nonisolated struct BackupProto_Chat: Sendable {
 
   public var markedUnread: Bool = false
 
+  /// will be deprecated in favor of [notifyForMentionsIfMuted]
   public var dontNotifyForMentionsIfMuted: Bool = false
 
   public var style: BackupProto_ChatStyle {
@@ -1912,6 +2040,46 @@ public nonisolated struct BackupProto_Chat: Sendable {
 
   public var expireTimerVersion: UInt32 = 0
 
+  /// If unset, use default global settings
+  public var notifyForCallsIfMuted: Bool {
+    get {_notifyForCallsIfMuted ?? false}
+    set {_notifyForCallsIfMuted = newValue}
+  }
+  /// Returns true if `notifyForCallsIfMuted` has been explicitly set.
+  public var hasNotifyForCallsIfMuted: Bool {self._notifyForCallsIfMuted != nil}
+  /// Clears the value of `notifyForCallsIfMuted`. Subsequent reads from it will return its default value.
+  public mutating func clearNotifyForCallsIfMuted() {self._notifyForCallsIfMuted = nil}
+
+  /// If unset, use default global settings. Only for groups. If [dontNotifyForMentionsIfMuted] is true, this should be initialized to false.
+  public var notifyForMentionsIfMuted: Bool {
+    get {_notifyForMentionsIfMuted ?? false}
+    set {_notifyForMentionsIfMuted = newValue}
+  }
+  /// Returns true if `notifyForMentionsIfMuted` has been explicitly set.
+  public var hasNotifyForMentionsIfMuted: Bool {self._notifyForMentionsIfMuted != nil}
+  /// Clears the value of `notifyForMentionsIfMuted`. Subsequent reads from it will return its default value.
+  public mutating func clearNotifyForMentionsIfMuted() {self._notifyForMentionsIfMuted = nil}
+
+  /// If unset, use default global settings. Only for groups.
+  public var notifyForRepliesIfMuted: Bool {
+    get {_notifyForRepliesIfMuted ?? false}
+    set {_notifyForRepliesIfMuted = newValue}
+  }
+  /// Returns true if `notifyForRepliesIfMuted` has been explicitly set.
+  public var hasNotifyForRepliesIfMuted: Bool {self._notifyForRepliesIfMuted != nil}
+  /// Clears the value of `notifyForRepliesIfMuted`. Subsequent reads from it will return its default value.
+  public mutating func clearNotifyForRepliesIfMuted() {self._notifyForRepliesIfMuted = nil}
+
+  /// If unset, use default global settings
+  public var showUnreadReminders: Bool {
+    get {_showUnreadReminders ?? false}
+    set {_showUnreadReminders = newValue}
+  }
+  /// Returns true if `showUnreadReminders` has been explicitly set.
+  public var hasShowUnreadReminders: Bool {self._showUnreadReminders != nil}
+  /// Clears the value of `showUnreadReminders`. Subsequent reads from it will return its default value.
+  public mutating func clearShowUnreadReminders() {self._showUnreadReminders = nil}
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
@@ -1920,6 +2088,10 @@ public nonisolated struct BackupProto_Chat: Sendable {
   fileprivate var _expirationTimerMs: UInt64? = nil
   fileprivate var _muteUntilMs: UInt64? = nil
   fileprivate var _style: BackupProto_ChatStyle? = nil
+  fileprivate var _notifyForCallsIfMuted: Bool? = nil
+  fileprivate var _notifyForMentionsIfMuted: Bool? = nil
+  fileprivate var _notifyForRepliesIfMuted: Bool? = nil
+  fileprivate var _showUnreadReminders: Bool? = nil
 }
 
 ///*
@@ -7137,7 +7309,7 @@ nonisolated extension BackupProto_AccountData.AutoDownloadSettings.AutoDownloadO
 
 nonisolated extension BackupProto_AccountData.AccountSettings: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = BackupProto_AccountData.protoMessageName + ".AccountSettings"
-  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}readReceipts\0\u{1}sealedSenderIndicators\0\u{1}typingIndicators\0\u{1}linkPreviews\0\u{1}notDiscoverableByPhoneNumber\0\u{1}preferContactAvatars\0\u{1}universalExpireTimerSeconds\0\u{1}preferredReactionEmoji\0\u{1}displayBadgesOnProfile\0\u{1}keepMutedChatsArchived\0\u{1}hasSetMyStoriesPrivacy\0\u{1}hasViewedOnboardingStory\0\u{1}storiesDisabled\0\u{1}storyViewReceiptsEnabled\0\u{1}hasSeenGroupStoryEducationSheet\0\u{1}hasCompletedUsernameOnboarding\0\u{1}phoneNumberSharingMode\0\u{1}defaultChatStyle\0\u{1}customChatColors\0\u{1}optimizeOnDeviceStorage\0\u{1}backupTier\0\u{2}\u{2}defaultSentMediaQuality\0\u{1}autoDownloadSettings\0\u{2}\u{2}screenLockTimeoutMinutes\0\u{1}pinReminders\0\u{1}appTheme\0\u{1}callsUseLessDataSetting\0\u{1}allowSealedSenderFromAnyone\0\u{1}allowAutomaticKeyVerification\0\u{1}hasSeenAdminDeleteEducationDialog\0\u{c}\u{16}\u{1}\u{c}\u{19}\u{1}")
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}readReceipts\0\u{1}sealedSenderIndicators\0\u{1}typingIndicators\0\u{1}linkPreviews\0\u{1}notDiscoverableByPhoneNumber\0\u{1}preferContactAvatars\0\u{1}universalExpireTimerSeconds\0\u{1}preferredReactionEmoji\0\u{1}displayBadgesOnProfile\0\u{1}keepMutedChatsArchived\0\u{1}hasSetMyStoriesPrivacy\0\u{1}hasViewedOnboardingStory\0\u{1}storiesDisabled\0\u{1}storyViewReceiptsEnabled\0\u{1}hasSeenGroupStoryEducationSheet\0\u{1}hasCompletedUsernameOnboarding\0\u{1}phoneNumberSharingMode\0\u{1}defaultChatStyle\0\u{1}customChatColors\0\u{1}optimizeOnDeviceStorage\0\u{1}backupTier\0\u{2}\u{2}defaultSentMediaQuality\0\u{1}autoDownloadSettings\0\u{2}\u{2}screenLockTimeoutMinutes\0\u{1}pinReminders\0\u{1}appTheme\0\u{1}callsUseLessDataSetting\0\u{1}allowSealedSenderFromAnyone\0\u{1}allowAutomaticKeyVerification\0\u{1}hasSeenAdminDeleteEducationDialog\0\u{1}unreadBadgeType\0\u{1}includeMutedChatsInBadge\0\u{1}reactionNotifications\0\u{1}notifyForCallsIfMuted\0\u{1}notifyForMentionsIfMuted\0\u{1}notifyForRepliesIfMuted\0\u{1}showUnreadReminders\0\u{1}notifyWhenContactJoins\0\u{c}\u{16}\u{1}\u{c}\u{19}\u{1}")
 
   fileprivate class _StorageClass {
     var _readReceipts: Bool = false
@@ -7170,6 +7342,14 @@ nonisolated extension BackupProto_AccountData.AccountSettings: SwiftProtobuf.Mes
     var _allowSealedSenderFromAnyone: Bool = false
     var _allowAutomaticKeyVerification: Bool = false
     var _hasSeenAdminDeleteEducationDialog_p: Bool = false
+    var _unreadBadgeType: BackupProto_AccountData.AccountSettings.UnreadBadgeType = .unknownBadgeType
+    var _includeMutedChatsInBadge: Bool? = nil
+    var _reactionNotifications: Bool? = nil
+    var _notifyForCallsIfMuted: Bool? = nil
+    var _notifyForMentionsIfMuted: Bool? = nil
+    var _notifyForRepliesIfMuted: Bool? = nil
+    var _showUnreadReminders: Bool? = nil
+    var _notifyWhenContactJoins: Bool? = nil
 
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
@@ -7210,6 +7390,14 @@ nonisolated extension BackupProto_AccountData.AccountSettings: SwiftProtobuf.Mes
       _allowSealedSenderFromAnyone = source._allowSealedSenderFromAnyone
       _allowAutomaticKeyVerification = source._allowAutomaticKeyVerification
       _hasSeenAdminDeleteEducationDialog_p = source._hasSeenAdminDeleteEducationDialog_p
+      _unreadBadgeType = source._unreadBadgeType
+      _includeMutedChatsInBadge = source._includeMutedChatsInBadge
+      _reactionNotifications = source._reactionNotifications
+      _notifyForCallsIfMuted = source._notifyForCallsIfMuted
+      _notifyForMentionsIfMuted = source._notifyForMentionsIfMuted
+      _notifyForRepliesIfMuted = source._notifyForRepliesIfMuted
+      _showUnreadReminders = source._showUnreadReminders
+      _notifyWhenContactJoins = source._notifyWhenContactJoins
     }
   }
 
@@ -7258,6 +7446,14 @@ nonisolated extension BackupProto_AccountData.AccountSettings: SwiftProtobuf.Mes
         case 30: try { try decoder.decodeSingularBoolField(value: &_storage._allowSealedSenderFromAnyone) }()
         case 31: try { try decoder.decodeSingularBoolField(value: &_storage._allowAutomaticKeyVerification) }()
         case 32: try { try decoder.decodeSingularBoolField(value: &_storage._hasSeenAdminDeleteEducationDialog_p) }()
+        case 33: try { try decoder.decodeSingularEnumField(value: &_storage._unreadBadgeType) }()
+        case 34: try { try decoder.decodeSingularBoolField(value: &_storage._includeMutedChatsInBadge) }()
+        case 35: try { try decoder.decodeSingularBoolField(value: &_storage._reactionNotifications) }()
+        case 36: try { try decoder.decodeSingularBoolField(value: &_storage._notifyForCallsIfMuted) }()
+        case 37: try { try decoder.decodeSingularBoolField(value: &_storage._notifyForMentionsIfMuted) }()
+        case 38: try { try decoder.decodeSingularBoolField(value: &_storage._notifyForRepliesIfMuted) }()
+        case 39: try { try decoder.decodeSingularBoolField(value: &_storage._showUnreadReminders) }()
+        case 40: try { try decoder.decodeSingularBoolField(value: &_storage._notifyWhenContactJoins) }()
         default: break
         }
       }
@@ -7360,6 +7556,30 @@ nonisolated extension BackupProto_AccountData.AccountSettings: SwiftProtobuf.Mes
       if _storage._hasSeenAdminDeleteEducationDialog_p != false {
         try visitor.visitSingularBoolField(value: _storage._hasSeenAdminDeleteEducationDialog_p, fieldNumber: 32)
       }
+      if _storage._unreadBadgeType != .unknownBadgeType {
+        try visitor.visitSingularEnumField(value: _storage._unreadBadgeType, fieldNumber: 33)
+      }
+      try { if let v = _storage._includeMutedChatsInBadge {
+        try visitor.visitSingularBoolField(value: v, fieldNumber: 34)
+      } }()
+      try { if let v = _storage._reactionNotifications {
+        try visitor.visitSingularBoolField(value: v, fieldNumber: 35)
+      } }()
+      try { if let v = _storage._notifyForCallsIfMuted {
+        try visitor.visitSingularBoolField(value: v, fieldNumber: 36)
+      } }()
+      try { if let v = _storage._notifyForMentionsIfMuted {
+        try visitor.visitSingularBoolField(value: v, fieldNumber: 37)
+      } }()
+      try { if let v = _storage._notifyForRepliesIfMuted {
+        try visitor.visitSingularBoolField(value: v, fieldNumber: 38)
+      } }()
+      try { if let v = _storage._showUnreadReminders {
+        try visitor.visitSingularBoolField(value: v, fieldNumber: 39)
+      } }()
+      try { if let v = _storage._notifyWhenContactJoins {
+        try visitor.visitSingularBoolField(value: v, fieldNumber: 40)
+      } }()
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -7399,6 +7619,14 @@ nonisolated extension BackupProto_AccountData.AccountSettings: SwiftProtobuf.Mes
         if _storage._allowSealedSenderFromAnyone != rhs_storage._allowSealedSenderFromAnyone {return false}
         if _storage._allowAutomaticKeyVerification != rhs_storage._allowAutomaticKeyVerification {return false}
         if _storage._hasSeenAdminDeleteEducationDialog_p != rhs_storage._hasSeenAdminDeleteEducationDialog_p {return false}
+        if _storage._unreadBadgeType != rhs_storage._unreadBadgeType {return false}
+        if _storage._includeMutedChatsInBadge != rhs_storage._includeMutedChatsInBadge {return false}
+        if _storage._reactionNotifications != rhs_storage._reactionNotifications {return false}
+        if _storage._notifyForCallsIfMuted != rhs_storage._notifyForCallsIfMuted {return false}
+        if _storage._notifyForMentionsIfMuted != rhs_storage._notifyForMentionsIfMuted {return false}
+        if _storage._notifyForRepliesIfMuted != rhs_storage._notifyForRepliesIfMuted {return false}
+        if _storage._showUnreadReminders != rhs_storage._showUnreadReminders {return false}
+        if _storage._notifyWhenContactJoins != rhs_storage._notifyWhenContactJoins {return false}
         return true
       }
       if !storagesAreEqual {return false}
@@ -7406,6 +7634,10 @@ nonisolated extension BackupProto_AccountData.AccountSettings: SwiftProtobuf.Mes
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
+}
+
+nonisolated extension BackupProto_AccountData.AccountSettings.UnreadBadgeType: SwiftProtobuf._ProtoNameProviding {
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0UNKNOWN_BADGE_TYPE\0\u{1}UNREAD_MESSAGES\0\u{1}UNREAD_CHATS\0")
 }
 
 nonisolated extension BackupProto_AccountData.SubscriberData: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
@@ -7726,7 +7958,7 @@ nonisolated extension BackupProto_Recipient: SwiftProtobuf.Message, SwiftProtobu
 
 nonisolated extension BackupProto_Contact: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".Contact"
-  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}aci\0\u{1}pni\0\u{1}username\0\u{1}e164\0\u{1}blocked\0\u{1}visibility\0\u{1}registered\0\u{1}notRegistered\0\u{1}profileKey\0\u{1}profileSharing\0\u{1}profileGivenName\0\u{1}profileFamilyName\0\u{1}hideStory\0\u{1}identityKey\0\u{1}identityState\0\u{1}nickname\0\u{1}note\0\u{1}systemGivenName\0\u{1}systemFamilyName\0\u{1}systemNickname\0\u{1}avatarColor\0\u{1}keyTransparencyData\0\u{2}\u{2}sharedName\0")
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}aci\0\u{1}pni\0\u{1}username\0\u{1}e164\0\u{1}blocked\0\u{1}visibility\0\u{1}registered\0\u{1}notRegistered\0\u{1}profileKey\0\u{1}profileSharing\0\u{1}profileGivenName\0\u{1}profileFamilyName\0\u{1}hideStory\0\u{1}identityKey\0\u{1}identityState\0\u{1}nickname\0\u{1}note\0\u{1}systemGivenName\0\u{1}systemFamilyName\0\u{1}systemNickname\0\u{1}avatarColor\0\u{1}keyTransparencyData\0\u{1}blockedAtTimestamp\0\u{1}sharedName\0")
 
   fileprivate class _StorageClass {
     var _aci: Data? = nil
@@ -7750,6 +7982,7 @@ nonisolated extension BackupProto_Contact: SwiftProtobuf.Message, SwiftProtobuf.
     var _systemNickname: String = String()
     var _avatarColor: BackupProto_AvatarColor? = nil
     var _keyTransparencyData: Data? = nil
+    var _blockedAtTimestamp: UInt64 = 0
     var _sharedName: BackupProto_Contact.Name? = nil
 
       // This property is used as the initial default value for new instances of the type.
@@ -7782,6 +8015,7 @@ nonisolated extension BackupProto_Contact: SwiftProtobuf.Message, SwiftProtobuf.
       _systemNickname = source._systemNickname
       _avatarColor = source._avatarColor
       _keyTransparencyData = source._keyTransparencyData
+      _blockedAtTimestamp = source._blockedAtTimestamp
       _sharedName = source._sharedName
     }
   }
@@ -7847,6 +8081,7 @@ nonisolated extension BackupProto_Contact: SwiftProtobuf.Message, SwiftProtobuf.
         case 20: try { try decoder.decodeSingularStringField(value: &_storage._systemNickname) }()
         case 21: try { try decoder.decodeSingularEnumField(value: &_storage._avatarColor) }()
         case 22: try { try decoder.decodeSingularBytesField(value: &_storage._keyTransparencyData) }()
+        case 23: try { try decoder.decodeSingularUInt64Field(value: &_storage._blockedAtTimestamp) }()
         case 24: try { try decoder.decodeSingularMessageField(value: &_storage._sharedName) }()
         default: break
         }
@@ -7931,6 +8166,9 @@ nonisolated extension BackupProto_Contact: SwiftProtobuf.Message, SwiftProtobuf.
       try { if let v = _storage._keyTransparencyData {
         try visitor.visitSingularBytesField(value: v, fieldNumber: 22)
       } }()
+      if _storage._blockedAtTimestamp != 0 {
+        try visitor.visitSingularUInt64Field(value: _storage._blockedAtTimestamp, fieldNumber: 23)
+      }
       try { if let v = _storage._sharedName {
         try visitor.visitSingularMessageField(value: v, fieldNumber: 24)
       } }()
@@ -7964,6 +8202,7 @@ nonisolated extension BackupProto_Contact: SwiftProtobuf.Message, SwiftProtobuf.
         if _storage._systemNickname != rhs_storage._systemNickname {return false}
         if _storage._avatarColor != rhs_storage._avatarColor {return false}
         if _storage._keyTransparencyData != rhs_storage._keyTransparencyData {return false}
+        if _storage._blockedAtTimestamp != rhs_storage._blockedAtTimestamp {return false}
         if _storage._sharedName != rhs_storage._sharedName {return false}
         return true
       }
@@ -8068,7 +8307,7 @@ nonisolated extension BackupProto_Contact.Name: SwiftProtobuf.Message, SwiftProt
 
 nonisolated extension BackupProto_Group: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".Group"
-  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}masterKey\0\u{1}whitelisted\0\u{1}hideStory\0\u{1}storySendMode\0\u{1}snapshot\0\u{1}blocked\0\u{1}avatarColor\0")
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}masterKey\0\u{1}whitelisted\0\u{1}hideStory\0\u{1}storySendMode\0\u{1}snapshot\0\u{1}blocked\0\u{1}avatarColor\0\u{1}blockedAtTimestamp\0")
 
   fileprivate class _StorageClass {
     var _masterKey: Data = Data()
@@ -8078,6 +8317,7 @@ nonisolated extension BackupProto_Group: SwiftProtobuf.Message, SwiftProtobuf._M
     var _snapshot: BackupProto_Group.GroupSnapshot? = nil
     var _blocked: Bool = false
     var _avatarColor: BackupProto_AvatarColor? = nil
+    var _blockedAtTimestamp: UInt64 = 0
 
       // This property is used as the initial default value for new instances of the type.
       // The type itself is protecting the reference to its storage via CoW semantics.
@@ -8095,6 +8335,7 @@ nonisolated extension BackupProto_Group: SwiftProtobuf.Message, SwiftProtobuf._M
       _snapshot = source._snapshot
       _blocked = source._blocked
       _avatarColor = source._avatarColor
+      _blockedAtTimestamp = source._blockedAtTimestamp
     }
   }
 
@@ -8120,6 +8361,7 @@ nonisolated extension BackupProto_Group: SwiftProtobuf.Message, SwiftProtobuf._M
         case 5: try { try decoder.decodeSingularMessageField(value: &_storage._snapshot) }()
         case 6: try { try decoder.decodeSingularBoolField(value: &_storage._blocked) }()
         case 7: try { try decoder.decodeSingularEnumField(value: &_storage._avatarColor) }()
+        case 8: try { try decoder.decodeSingularUInt64Field(value: &_storage._blockedAtTimestamp) }()
         default: break
         }
       }
@@ -8153,6 +8395,9 @@ nonisolated extension BackupProto_Group: SwiftProtobuf.Message, SwiftProtobuf._M
       try { if let v = _storage._avatarColor {
         try visitor.visitSingularEnumField(value: v, fieldNumber: 7)
       } }()
+      if _storage._blockedAtTimestamp != 0 {
+        try visitor.visitSingularUInt64Field(value: _storage._blockedAtTimestamp, fieldNumber: 8)
+      }
     }
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -8169,6 +8414,7 @@ nonisolated extension BackupProto_Group: SwiftProtobuf.Message, SwiftProtobuf._M
         if _storage._snapshot != rhs_storage._snapshot {return false}
         if _storage._blocked != rhs_storage._blocked {return false}
         if _storage._avatarColor != rhs_storage._avatarColor {return false}
+        if _storage._blockedAtTimestamp != rhs_storage._blockedAtTimestamp {return false}
         return true
       }
       if !storagesAreEqual {return false}
@@ -8629,7 +8875,7 @@ nonisolated extension BackupProto_ReleaseNotes: SwiftProtobuf.Message, SwiftProt
 
 nonisolated extension BackupProto_Chat: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".Chat"
-  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0\u{1}recipientId\0\u{1}archived\0\u{1}pinnedOrder\0\u{1}expirationTimerMs\0\u{1}muteUntilMs\0\u{1}markedUnread\0\u{1}dontNotifyForMentionsIfMuted\0\u{1}style\0\u{1}expireTimerVersion\0")
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0\u{1}recipientId\0\u{1}archived\0\u{1}pinnedOrder\0\u{1}expirationTimerMs\0\u{1}muteUntilMs\0\u{1}markedUnread\0\u{1}dontNotifyForMentionsIfMuted\0\u{1}style\0\u{1}expireTimerVersion\0\u{1}notifyForCallsIfMuted\0\u{1}notifyForMentionsIfMuted\0\u{1}notifyForRepliesIfMuted\0\u{1}showUnreadReminders\0")
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -8647,6 +8893,10 @@ nonisolated extension BackupProto_Chat: SwiftProtobuf.Message, SwiftProtobuf._Me
       case 8: try { try decoder.decodeSingularBoolField(value: &self.dontNotifyForMentionsIfMuted) }()
       case 9: try { try decoder.decodeSingularMessageField(value: &self._style) }()
       case 10: try { try decoder.decodeSingularUInt32Field(value: &self.expireTimerVersion) }()
+      case 11: try { try decoder.decodeSingularBoolField(value: &self._notifyForCallsIfMuted) }()
+      case 12: try { try decoder.decodeSingularBoolField(value: &self._notifyForMentionsIfMuted) }()
+      case 13: try { try decoder.decodeSingularBoolField(value: &self._notifyForRepliesIfMuted) }()
+      case 14: try { try decoder.decodeSingularBoolField(value: &self._showUnreadReminders) }()
       default: break
       }
     }
@@ -8687,6 +8937,18 @@ nonisolated extension BackupProto_Chat: SwiftProtobuf.Message, SwiftProtobuf._Me
     if self.expireTimerVersion != 0 {
       try visitor.visitSingularUInt32Field(value: self.expireTimerVersion, fieldNumber: 10)
     }
+    try { if let v = self._notifyForCallsIfMuted {
+      try visitor.visitSingularBoolField(value: v, fieldNumber: 11)
+    } }()
+    try { if let v = self._notifyForMentionsIfMuted {
+      try visitor.visitSingularBoolField(value: v, fieldNumber: 12)
+    } }()
+    try { if let v = self._notifyForRepliesIfMuted {
+      try visitor.visitSingularBoolField(value: v, fieldNumber: 13)
+    } }()
+    try { if let v = self._showUnreadReminders {
+      try visitor.visitSingularBoolField(value: v, fieldNumber: 14)
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -8701,6 +8963,10 @@ nonisolated extension BackupProto_Chat: SwiftProtobuf.Message, SwiftProtobuf._Me
     if lhs.dontNotifyForMentionsIfMuted != rhs.dontNotifyForMentionsIfMuted {return false}
     if lhs._style != rhs._style {return false}
     if lhs.expireTimerVersion != rhs.expireTimerVersion {return false}
+    if lhs._notifyForCallsIfMuted != rhs._notifyForCallsIfMuted {return false}
+    if lhs._notifyForMentionsIfMuted != rhs._notifyForMentionsIfMuted {return false}
+    if lhs._notifyForRepliesIfMuted != rhs._notifyForRepliesIfMuted {return false}
+    if lhs._showUnreadReminders != rhs._showUnreadReminders {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

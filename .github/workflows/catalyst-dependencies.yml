@@ -197,7 +197,7 @@ jobs:
         if: steps.existing.outputs.exists != 'true'
         run: |
           NAME="libsignal-client-ios-build-v${VERSION}.tar.gz"
-          gh release create "$TAG" "$NAME" "$NAME.sha256" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+          gh release create "$TAG" "$NAME" "$NAME.sha256" --repo "$GITHUB_REPOSITORY" \
             --title "libsignal ${VERSION} with Mac Catalyst" --prerelease \
             --notes "Upstream libsignal ${VERSION} iOS archive with an added aarch64-apple-ios-macabi build from tag v${VERSION}."
 
@@ -276,7 +276,10 @@ jobs:
           WEBRTC_SRC_DIR="$PWD/src/webrtc/src"
           # Chromium's lld rejects some macOS SDK library stubs for Catalyst;
           # Apple's linker, which Xcode uses for Catalyst apps, accepts them.
-          EXTRA_GN_ARGS="rtc_build_examples=false rtc_build_tools=false rtc_include_tests=false rtc_enable_protobuf=false rtc_enable_sctp=false rtc_libvpx_build_vp9=true rtc_disable_metrics=true rtc_disable_trace_events=true rtc_opus_support_dred=true use_lld=false"
+          EXTRA_GN_ARGS="rtc_build_examples=false rtc_build_tools=false rtc_include_tests=false rtc_enable_protobuf=false rtc_enable_sctp=false rtc_libvpx_build_vp9=true rtc_disable_metrics=true rtc_disable_trace_events=true rtc_opus_support_dred=true rtc_video_psnr=false use_lld=false"
+          # Since RingRTC 2.73, WebRTC includes headers that live in RingRTC's
+          # Rust sources; RingRTC's bin/env.sh links them in like this.
+          ln -sfn "$PWD/src/rust/src/webrtc_include" "${WEBRTC_SRC_DIR}/ringrtc/rffi/api"
           cd "${WEBRTC_SRC_DIR}"
           ./tools_webrtc/ios/build_ios_libs.py -o out/catalyst --build_config release --arch catalyst:arm64 --deployment-target 14.0 --extra-gn-args "${EXTRA_GN_ARGS}"
           ls out/catalyst
@@ -307,7 +310,7 @@ jobs:
         if: steps.existing.outputs.exists != 'true'
         run: |
           NAME="ringrtc-catalyst-v${VERSION}.tar.gz"
-          gh release create "$TAG" "$NAME" "$NAME.sha256" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+          gh release create "$TAG" "$NAME" "$NAME.sha256" --repo "$GITHUB_REPOSITORY" \
             --title "RingRTC ${VERSION} for Mac Catalyst" --prerelease \
             --notes "libringrtc and WebRTC.framework for aarch64 Mac Catalyst, built from RingRTC v${VERSION} and its pinned WebRTC version."
 
@@ -394,6 +397,6 @@ jobs:
         if: steps.existing.outputs.exists != 'true'
         run: |
           NAME="libmobilecoin-catalyst-${VERSION}.tar.gz"
-          gh release create "$TAG" "$NAME" "$NAME.sha256" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+          gh release create "$TAG" "$NAME" "$NAME.sha256" --repo "$GITHUB_REPOSITORY" \
             --title "LibMobileCoin ${VERSION} for Mac Catalyst" --prerelease \
             --notes "libmobilecoin for aarch64 Mac Catalyst, built from signalapp/libmobilecoin-ios-artifacts signal/${VERSION}."

@@ -1,1 +1,1 @@
-• Uuden mukautetun mykistysvaihtoehdon avulla voit määrittää tarkan päivämäärän ja kellonajan, ilmoitusten vastaanottaminen keskustelussa jatkuu.
+• Signal on nyt optimoitu iPhone Duolle.

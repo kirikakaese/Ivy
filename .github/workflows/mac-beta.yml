@@ -54,7 +54,7 @@ jobs:
             ~/Library/Caches/CocoaPods
             ~/Library/Caches/org.signal.libsignal
             ~/Library/Caches/org.signal.ringrtc
-          key: deps-${{ hashFiles('Podfile.lock') }}
+          key: deps-${{ hashFiles('Podfile.lock', 'Scripts/ivy/catalyst-dependencies.json') }}
 
       - name: Cache build products
         uses: actions/cache@v4

@@ -415,31 +415,29 @@ public final class IvyPushRelay {
 
         let password = Randomness.generateRandomBytes(18).base64EncodedString()
         let name = try OWSDeviceNames.encryptDeviceName(plaintext: Self.deviceName, identityKeyPair: account.aciKeys)
-        let attributes = AccountAttributes(
-            isManualMessageFetchEnabled: true,
+        let attributes = LinkDeviceAttributes(
+            fetchesMessages: true,
             registrationId: RegistrationIdGenerator.generate(),
             pniRegistrationId: account.pniRegistrationId,
-            unidentifiedAccessKey: nil,
-            unrestrictedUnidentifiedAccess: account.unrestrictedAccess,
-            reglockToken: nil,
-            registrationRecoveryPassword: nil,
-            encryptedDeviceName: name.base64EncodedString(),
-            discoverableByPhoneNumber: account.discoverability,
+            name: name,
             capabilities: AccountAttributes.Capabilities(hasSVRBackups: false),
         )
-        let request = ProvisioningRequestFactory.verifySecondaryDeviceRequest(
+        let aciKeys = Self.throwawayKeys(.aci, signedBy: account.aciKeys)
+        let pniKeys = account.pniKeys.map { Self.throwawayKeys(.pni, signedBy: $0) }
+        let body = LinkDeviceRequest(
             verificationCode: code.verificationCode,
-            aci: account.aci,
-            aciPreKeyBundle: Self.throwawayKeys(.aci, signedBy: account.aciKeys),
-            pniPreKeyBundle: account.pniKeys.map { Self.throwawayKeys(.pni, signedBy: $0) },
-            authPassword: password,
-            attributes: attributes,
-            apnRegistrationId: nil,
+            accountAttributes: attributes,
+            aciSignedPreKey: OWSRequestFactory.SignedPreKey(aciKeys.signedPreKey),
+            aciPqLastResortPreKey: OWSRequestFactory.KyberPreKey(aciKeys.lastResortPreKey),
+            pniSignedPreKey: pniKeys.map { OWSRequestFactory.SignedPreKey($0.signedPreKey) },
+            pniPqLastResortPreKey: pniKeys.map { OWSRequestFactory.KyberPreKey($0.lastResortPreKey) },
         )
-        // Like linking a real device, this goes over HTTPS instead of the chat
-        // connection, which can't send requests authenticated this way.
+        var request = TSRequest(url: URL(string: "v1/devices/link")!, method: "PUT", body: .encodable(body))
+        // Linking authenticates with the new device's own name and password,
+        // as when linking a real device.
+        request.auth = .registration((username: account.aci.serviceIdString, password: password))
         let response = try await Self.step("Signal device link") {
-            try await SSKEnvironment.shared.signalServiceRef.urlSessionForMainSignalService().performRequest(request)
+            try await SSKEnvironment.shared.networkManagerRef.asyncRequest(request)
         }
         guard
             let body = response.responseBodyData,
@@ -449,6 +447,25 @@ public final class IvyPushRelay {
         }
         Logger.info("Linked the push device \(linked.deviceId).")
         return (linked.deviceId, password)
+    }
+
+    /// What Signal's link request sends for the new device (as in
+    /// Signal/Provisioning/DeviceAttributes.swift, which this module can't use).
+    private struct LinkDeviceAttributes: Encodable {
+        var fetchesMessages: Bool
+        var registrationId: UInt32
+        var pniRegistrationId: UInt32?
+        var name: Data
+        var capabilities: AccountAttributes.Capabilities
+    }
+
+    private struct LinkDeviceRequest: Encodable {
+        var verificationCode: String
+        var accountAttributes: LinkDeviceAttributes
+        var aciSignedPreKey: OWSRequestFactory.SignedPreKey
+        var aciPqLastResortPreKey: OWSRequestFactory.KyberPreKey
+        var pniSignedPreKey: OWSRequestFactory.SignedPreKey?
+        var pniPqLastResortPreKey: OWSRequestFactory.KyberPreKey?
     }
 
     static func throwawayKeys(_ identity: OWSIdentity, signedBy identityKeys: IdentityKeyPair) -> RegistrationPreKeyUploadBundle {

@@ -658,7 +658,7 @@ extension ConversationViewController: CVComponentDelegate {
             return
         }
 
-        if let usernameLink = Usernames.UsernameLink(usernameLinkUrl: url) {
+        if let usernameLink = try? Usernames.UsernameLink(usernameLinkUrl: url) {
             didTapUsernameLink(usernameLink: usernameLink)
             return
         }
@@ -690,6 +690,16 @@ extension ConversationViewController: CVComponentDelegate {
         contactShareViewHelper.sendMessage(toAci: aci, sharedName: sharedName)
     }
 
+    public func didTapAddToGroup(aci: Aci, sharedName: OWSContactName) {
+        AssertIsOnMainThread()
+
+        guard let groupThread = thread as? TSGroupThread else {
+            owsFailDebug("Not a group thread.")
+            return
+        }
+        contactShareViewHelper.addToGroup(aci: aci, sharedName: sharedName, groupThread: groupThread, fromViewController: self)
+    }
+
     public func didTapSendInvite(toContactShare contactShare: ContactShareViewModel) {
         AssertIsOnMainThread()
 
@@ -707,6 +717,46 @@ extension ConversationViewController: CVComponentDelegate {
 
         let packView = StickerPackViewController(stickerPackInfo: stickerPackInfo)
         packView.present(from: self, animated: true)
+    }
+
+    public func didTapSticker(_ stickerMetadata: any StickerMetadata) {
+        AssertIsOnMainThread()
+
+        let db = DependenciesBridge.shared.db
+
+        // TODO: [KC] add "Favorites" action once implemented
+        let stickerDetailsSheet = StickerDetailSheet(
+            db: db,
+            stickerMetadata: stickerMetadata,
+            actions: [
+                StickerDetailSheet.Action(
+                    icon: .buttonForward,
+                    title: OWSLocalizedString(
+                        "SEND_STICKER_BUTTON_TITLE",
+                        comment: "Label for the button to send a sticker message",
+                    ),
+                    handler: { [weak self] in
+                        guard let self else { return }
+
+                        self.sendStickerFlow = SendStickerFlow(stickerMetadata: stickerMetadata, db: db)
+                        self.sendStickerFlow?.present(from: self)
+                    },
+                ),
+                .init(
+                    icon: .stickerPack,
+                    title: OWSLocalizedString(
+                        "STICKER_BUTTON_VIEW_PACK",
+                        comment: "Title for a button to view a sticker pack",
+                    ),
+                    handler: { [weak self] in
+                        guard let self else { return }
+                        let vc = StickerPackViewController(stickerPackInfo: stickerMetadata.packInfo)
+                        vc.present(from: self, animated: true)
+                    },
+                ),
+            ],
+        )
+        present(stickerDetailsSheet, animated: true)
     }
 
     public func didTapPayment(_ payment: PaymentsHistoryItem) {
@@ -982,8 +1032,15 @@ extension ConversationViewController: CVComponentDelegate {
                 guard self != nil else { return }
                 let blockingManager = SSKEnvironment.shared.blockingManagerRef
                 let databaseStorage = SSKEnvironment.shared.databaseStorageRef
+                let recipientFetcher = DependenciesBridge.shared.recipientFetcher
                 databaseStorage.write { tx in
-                    blockingManager.addBlockedAddress(address, blockMode: .localUser, transaction: tx)
+                    if address.isLocalAddress {
+                        owsFailDebug("can't block local address")
+                    } else if var recipient = recipientFetcher.fetchOrCreate(address: address, tx: tx) {
+                        blockingManager.addBlockedRecipient(&recipient, blockedAt: .now(), blockMode: .localUser, tx: tx)
+                    } else {
+                        owsFailDebug("can't block invalid address")
+                    }
                 }
             },
         )
@@ -1490,6 +1547,8 @@ extension ConversationViewController: CVComponentDelegate {
                 actionSheet.addAction(.ok)
                 present(actionSheet, animated: true)
             }
+        case .donate:
+            DonationViewsUtil.presentOneTimeDonationView(fromViewController: self, completion: nil)
         case .unrecognized(let actionId):
             owsFailDebug("Ignoring unrecognized actionId \(actionId)")
         }

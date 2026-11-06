@@ -31,7 +31,6 @@ public class ProvisioningCoordinatorTest: XCTestCase {
     private var syncManagerMock: OWSMockSyncManager!
     private var threadStoreMock: MockThreadStore!
     private var tsAccountManagerMock: MockTSAccountManager!
-    private var udManagerMock: OWSMockUDManager!
 
     override public func setUp() async throws {
 
@@ -64,7 +63,6 @@ public class ProvisioningCoordinatorTest: XCTestCase {
         self.syncManagerMock = .init()
         self.threadStoreMock = .init()
         self.tsAccountManagerMock = .init()
-        self.udManagerMock = .init()
         let preKeyStore = PreKeyStore()
         let sessionStore = SignalServiceKit.SessionStore()
 
@@ -94,7 +92,6 @@ public class ProvisioningCoordinatorTest: XCTestCase {
             syncManager: syncManagerMock,
             threadStore: threadStoreMock,
             tsAccountManager: tsAccountManagerMock,
-            udManager: udManagerMock,
         )
 
         tsAccountManagerMock.registrationStateMock = { .unregistered }
@@ -122,36 +119,21 @@ public class ProvisioningCoordinatorTest: XCTestCase {
         let deviceName = "test device"
         let deviceId = DeviceId(validating: UInt32.random(in: 2...3))!
 
-        let mockSession = UrlSessionMock()
-
         let verificationResponse = ProvisioningServiceResponses.VerifySecondaryDeviceResponse(
             pni: PniUuid(wrappedValue: pni),
             deviceId: deviceId,
         )
 
-        mockSession.responder = { request in
-            if request.url.absoluteString.hasSuffix("v1/devices/link") {
-                return try! JSONEncoder().encode(verificationResponse)
-            } else {
-                XCTFail("Unexpected request!")
-                return Data()
-            }
-        }
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { $0.url.relativeString == "v1/devices/link" },
+            statusCode: 200,
+            bodyJson: verificationResponse,
+        ))
 
-        signalServiceMock.mockUrlSessionBuilder = { signalServiceInfo, _, _ in
-            XCTAssertEqual(
-                signalServiceInfo.baseUrl,
-                SignalServiceType.mainSignalService.signalServiceInfo().baseUrl,
-            )
-            return mockSession
-        }
-
-        networkManagerMock.asyncRequestHandlers.append({ request, _ in
-            if request.url.absoluteString.hasSuffix("v1/devices/capabilities") {
-                return HTTPResponse(requestUrl: request.url, status: 200, headers: HttpHeaders(), bodyData: Data())
-            }
-            throw OWSAssertionError("")
-        })
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { $0.url.relativeString == "v1/devices/capabilities" },
+            statusCode: 200,
+        ))
 
         pushRegistrationManagerMock.mockRegistrationId = .init(apnsToken: "apn")
 

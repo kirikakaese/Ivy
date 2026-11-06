@@ -8,16 +8,15 @@ use_frameworks!
 
 source 'https://cdn.cocoapods.org/'
 
-pod 'blurhash', podspec: './ThirdParty/blurhash.podspec'
 pod 'SwiftProtobuf', "1.38.1"
 
-ENV['LIBSIGNAL_FFI_PREBUILD_CHECKSUM'] = 'db25764598c9171a2c8eac3199a0d881611e493bbae3ab1355e5fb88927271cf'
-pod 'LibSignalClient', git: 'https://github.com/signalapp/libsignal.git', tag: 'v0.103.1', testspecs: ["Tests"]
+ENV['LIBSIGNAL_FFI_PREBUILD_CHECKSUM'] = '556a82414b545490085a0e21d94990788bdcbee4d769043f7889397872443faf'
+pod 'LibSignalClient', git: 'https://github.com/signalapp/libsignal.git', tag: 'v0.105.0', testspecs: ["Tests"]
 # pod 'LibSignalClient', path: '../libsignal', testspecs: ["Tests"]
 
-ENV['RINGRTC_PREBUILD_CHECKSUM'] = 'dc1826c6d1f0faf3dbdc380ff7b57f4858f245bc731fd876d023ed66e9f628e4'
+ENV['RINGRTC_PREBUILD_CHECKSUM'] = 'eb2579b7507ad206bec3b582e6d289793c77cdf2393722c96e1f61123040f88a'
 # ENV['RINGRTC_USE_FILE_BASED_CAMERA'] = '1'
-pod 'SignalRingRTC', git: 'https://github.com/signalapp/ringrtc', tag: 'v2.72.0', inhibit_warnings: true
+pod 'SignalRingRTC', git: 'https://github.com/signalapp/ringrtc', tag: 'v2.73.0', inhibit_warnings: true
 # pod 'SignalRingRTC', path: '../ringrtc', testspecs: ["Tests"]
 
 # Ivy: Mac Catalyst builds of the prebuilt libraries (see Scripts/ivy/podfile.rb)
@@ -31,25 +30,10 @@ pod 'SQLCipher', git: 'https://github.com/signalapp/sqlcipher.git', tag: 'v4.6.1
 # pod 'SQLCipher', path: '../sqlcipher'
 
 ###
-# forked third party pods
-###
-
-pod 'libPhoneNumber-iOS', git: 'https://github.com/signalapp/libPhoneNumber-iOS', branch: 'signal-master'
-# pod 'libPhoneNumber-iOS', path: '../libPhoneNumber-iOS'
-
-pod 'SDWebImage'
-pod 'SDWebImageWebPCoder'
-pod 'libwebp' 
-
-###
 # third party pods
 ####
 
 def ui_pods
-  pod 'BonMot', inhibit_warnings: true
-  pod 'PureLayout', :inhibit_warnings => true
-  pod 'lottie-ios', :inhibit_warnings => true
-
   pod 'LibMobileCoin/CoreHTTP', git: 'https://github.com/signalapp/libmobilecoin-ios-artifacts', tag: 'signal/6.0.2', submodules: true
   pod 'MobileCoin/CoreHTTP', git: 'https://github.com/mobilecoinofficial/MobileCoin-Swift', tag: 'v6.0.3'
 end
@@ -253,128 +237,5 @@ def fetch_ringrtc
 end
 
 def copy_acknowledgements
-  targets = [
-    'Signal',
-    'SignalNSE',
-    'SignalServiceKit',
-    'SignalServiceKitTests',
-    'SignalShareExtension',
-    'SignalTests',
-    'SignalUI',
-    'SignalUITests'
-  ]
-  acknowledgements_files = targets.map do |target|
-    "Pods/Target Support Files/Pods-#{target}/Pods-#{target}-acknowledgements.plist"
-  end
-  acknowledgements_files << "Pods/LibSignalClient/acknowledgments/acknowledgments-ios.plist"
-  acknowledgements_files << "Pods/SignalRingRTC/acknowledgments/acknowledgments.plist"
-  acknowledgements_files << "Pods/SignalRingRTC/out/release/acknowledgments-webrtc-ios.plist"
-
-  def get_specifier_groups(acknowledgements_files)
-    acknowledgements_files.map do |file|
-      extract_cmd = ['plutil', '-extract', 'PreferenceSpecifiers', 'json', '-o', '-', file]
-
-      io = IO.popen(extract_cmd, unsetenv_others: true, exception: true)
-      result = JSON.parse(io.read)
-      io.close
-      status = $?
-      raise status unless status.exitstatus == 0
-
-      result
-    end
-  end
-
-  def get_acknowledgements_specifiers(group)
-    group[1...-1]
-  end
-
-  def write_output_file(specifiers)
-    output_file = 'Signal/Settings.bundle/Acknowledgements.plist'
-    output_json = JSON.dump(specifiers)
-    system('plutil', '-create', 'xml1', output_file, exception: true)
-    system('plutil', '-insert', 'PreferenceSpecifiers', '-json', output_json, '-append', output_file, exception: true)
-  end
-
-  def add_in_repo_third_party_code_licenses(specifiers)
-#    specifiers << {
-#      "Type" => "PSGroupSpecifier",
-#      "Title" => "",
-#      "FooterText" => "",
-#      "License" => "",
-#    }
-     specifiers << {
-       "Type" => "PSGroupSpecifier",
-       "Title" => "UIImage-Resize",
-       "FooterText" => <<~'LICENSE',
-         Without any further information, all the sources provided here are under the MIT License
-         quoted below.
-
-         Anyway, please contact me by email (olivier.halligon+ae@gmail.com) if you plan to use my work and the provided classes
-         in your own software. Thanks.
-
-
-         /***********************************************************************************
-          *
-          * Copyright (c) 2010 Olivier Halligon
-          *
-          * Permission is hereby granted, free of charge, to any person obtaining a copy
-          * of this software and associated documentation files (the "Software"), to deal
-          * in the Software without restriction, including without limitation the rights
-          * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-          * copies of the Software, and to permit persons to whom the Software is
-          * furnished to do so, subject to the following conditions:
-          *
-          * The above copyright notice and this permission notice shall be included in
-          * all copies or substantial portions of the Software.
-          *
-          * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-          * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-          * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-          * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-          * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-          * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-          * THE SOFTWARE.
-          *
-          ***********************************************************************************
-          *
-          * Any comment or suggestion welcome. Referencing this project in your AboutBox is appreciated.
-          * Please tell me if you use this class so we can cross-reference our projects.
-          *
-          ***********************************************************************************/
-       LICENSE
-       "License" => "MIT",
-     }
-  end
-
-  specifier_groups = get_specifier_groups(acknowledgements_files)
-
-  header_specifier = specifier_groups.first.first
-  footer_specifier = specifier_groups.first.last
-  all_acknowledgements_specifiers = specifier_groups.flat_map {|g| get_acknowledgements_specifiers(g)}
-
-  add_in_repo_third_party_code_licenses(all_acknowledgements_specifiers)
-
-  libraries_by_license = Hash.new { |h, k| h[k] = [] }
-  all_acknowledgements_specifiers.each do |v|
-    v["Title"].split(", ").each do |title|
-      libraries_by_license[[v["FooterText"], v["License"]]] << title
-    end
-  end
-
-  grouped_acknowledgements_specifiers = []
-  libraries_by_license.each do |key, value|
-    titles = value.uniq.sort_by { |s| s.downcase }.join(", ")
-    acknowledgement = {
-      "Type" => "PSGroupSpecifier",
-      "Title" => titles,
-      "FooterText" => key[0],
-    }
-    acknowledgement["License"] = key[1] if key[1]
-    grouped_acknowledgements_specifiers << acknowledgement
-  end
-
-  cleaned_acknowledgements_specifiers = grouped_acknowledgements_specifiers.sort_by {|s| s["Title"].downcase}
-  final_specifiers = [header_specifier] + cleaned_acknowledgements_specifiers + [footer_specifier]
-
-  write_output_file(final_specifiers)
+  system('Scripts/generate_acknowledgements.py', exception: true)
 end

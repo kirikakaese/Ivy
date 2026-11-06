@@ -27,21 +27,6 @@ class MessageReactionPicker: UIStackView {
 
     weak var delegate: MessageReactionPickerDelegate?
 
-    private enum LayoutConstants {
-        /// Total height of the picker control.
-        static let pickerHeight: CGFloat = UIDevice.current.isNarrowerThanIPhone6 ? 50 : 56
-
-        /// Along top and bottom edges - always.
-        /// Along leading and trailing edges when style is not `.inline`.
-        static let pickerPadding: CGFloat = 6
-
-        /// Size of the tapable emoji control.
-        static let reactionHeight = pickerHeight - (pickerPadding * 2)
-
-        /// Diameter of the circular background that indicates currently selected reaction.
-        static let selectedBackgroundHeight = pickerHeight - 4
-    }
-
     enum Emoji: Equatable {
         case emoji(String)
         case more
@@ -80,6 +65,22 @@ class MessageReactionPicker: UIStackView {
 
     private let style: Style
 
+    @available(iOS, deprecated: 16, message: "iOS 16 and later do not run on 4.0\" screen devices.")
+    private let isCompactLayout: Bool
+
+    /// Total height of the picker control.
+    private var preferredHeight: CGFloat { isCompactLayout ? 50 : 56 }
+
+    /// Along top and bottom edges - always.
+    /// Along leading and trailing edges when style is not `.inline`.
+    static let pickerPadding: CGFloat = 6
+
+    /// Size of the tapable emoji control.
+    private var reactionSize: CGFloat { preferredHeight - (Self.pickerPadding * 2) }
+
+    /// Diameter of the circular background that indicates currently selected reaction.
+    private var selectedBackgroundSize: CGFloat { preferredHeight - 4 }
+
     /// The individual emoji buttons and the Any button from `buttonForEmoji`
     private var buttonViews: [UIView] {
         return buttonForEmoji.map(\.view)
@@ -105,6 +106,13 @@ class MessageReactionPicker: UIStackView {
         self.delegate = delegate
         self.style = style
 
+        var isCompactLayout = false
+        if let mainWindow = CurrentAppContext().mainWindow {
+            // Compare against iPhone 6 screen width.
+            isCompactLayout = mainWindow.frame.size.width < 375
+        }
+        self.isCompactLayout = isCompactLayout
+
         super.init(frame: .zero)
 
         let liquidGlassIsAvailable: Bool = if #available(iOS 26, *) {
@@ -129,7 +137,7 @@ class MessageReactionPicker: UIStackView {
         case (.configure, false), (.contextMenu(allowGlass: _), _):
             backgroundView = addBackgroundView(
                 withBackgroundColor: .Signal.secondaryGroupedBackground,
-                cornerRadius: LayoutConstants.pickerHeight / 2,
+                cornerRadius: preferredHeight / 2,
             )
             backgroundView?.layer.cornerCurve = .continuous
             backgroundView?.layer.shadowColor = UIColor.black.cgColor
@@ -139,7 +147,7 @@ class MessageReactionPicker: UIStackView {
 
             let shadowView = UIView()
             shadowView.backgroundColor = .Signal.secondaryGroupedBackground
-            shadowView.layer.cornerRadius = LayoutConstants.pickerHeight / 2
+            shadowView.layer.cornerRadius = preferredHeight / 2
             shadowView.layer.shadowColor = UIColor.black.cgColor
             shadowView.layer.shadowRadius = 12
             shadowView.layer.shadowOpacity = 0.3
@@ -152,18 +160,18 @@ class MessageReactionPicker: UIStackView {
         if ivyVerticalSide != nil {
             axis = .vertical
             emojiStackView.axis = .vertical
-            autoSetDimension(.width, toSize: LayoutConstants.pickerHeight)
+            autoSetDimension(.width, toSize: preferredHeight)
         } else {
-            autoSetDimension(.height, toSize: LayoutConstants.pickerHeight)
+            autoSetDimension(.height, toSize: preferredHeight)
         }
 
         isLayoutMarginsRelativeArrangement = true
         // Inline picker's scroll view should go to the edge
         layoutMargins = .init(
-            top: LayoutConstants.pickerPadding,
-            leading: style.isInline ? 0 : LayoutConstants.pickerPadding,
-            bottom: LayoutConstants.pickerPadding,
-            trailing: style.isInline ? 4 : LayoutConstants.pickerPadding,
+            top: Self.pickerPadding,
+            leading: style.isInline ? 0 : Self.pickerPadding,
+            bottom: Self.pickerPadding,
+            trailing: style.isInline ? 4 : Self.pickerPadding,
         )
 
         let emojiSet = currentEmojiSetOnDisk(style: style)
@@ -190,7 +198,7 @@ class MessageReactionPicker: UIStackView {
         }
 
         for (index, emoji) in emojiSet.enumerated() {
-            let button = EmojiButton(emoji: emoji.rawValue)
+            let button = EmojiButton(emoji: emoji.rawValue, isCompactLayout: isCompactLayout)
             button.addAction(
                 UIAction { [weak self] action in
                     guard
@@ -209,6 +217,7 @@ class MessageReactionPicker: UIStackView {
                 },
                 for: .primaryActionTriggered,
             )
+            button.autoSetDimensions(to: .square(reactionSize))
             buttonForEmoji.append(.emoji(emoji: emoji.rawValue, button: button))
             emojiStackView.addArrangedSubview(button)
 
@@ -217,16 +226,16 @@ class MessageReactionPicker: UIStackView {
                 let selectedBackgroundView = UIView()
                 selectedBackgroundView.backgroundColor = .Signal.secondaryFill
                 selectedBackgroundView.clipsToBounds = true
-                selectedBackgroundView.layer.cornerRadius = LayoutConstants.selectedBackgroundHeight / 2
+                selectedBackgroundView.layer.cornerRadius = selectedBackgroundSize / 2
                 backgroundContentView.addSubview(selectedBackgroundView)
-                selectedBackgroundView.autoSetDimensions(to: CGSize(square: LayoutConstants.selectedBackgroundHeight))
+                selectedBackgroundView.autoSetDimensions(to: CGSize(square: selectedBackgroundSize))
                 selectedBackgroundView.autoAlignAxis(.horizontal, toSameAxisOf: button)
                 selectedBackgroundView.autoAlignAxis(.vertical, toSameAxisOf: button)
             }
         }
 
         if addShowAllEmojiButton {
-            let buttonSize = LayoutConstants.reactionHeight
+            let buttonSize = reactionSize
             let visibleButtonSize: CGFloat = 32
             let buttonImage = UIImage(resource: .more)
 
@@ -455,10 +464,10 @@ class MessageReactionPicker: UIStackView {
 
         // Ivy: upright, each emoji takes its own row, reaching out sideways.
         if let side = ivyVerticalSide {
-            focusArea.size.height = LayoutConstants.reactionHeight + LayoutConstants.pickerPadding
-            focusArea.origin.y -= LayoutConstants.pickerPadding / 2
+            focusArea.size.height = reactionSize + Self.pickerPadding
+            focusArea.origin.y -= Self.pickerPadding / 2
             focusArea.size.width = 136
-            if side > 0 { focusArea.origin.x -= 136 - LayoutConstants.reactionHeight }
+            if side > 0 { focusArea.origin.x -= 136 - reactionSize }
             return focusArea
         }
 
@@ -469,8 +478,8 @@ class MessageReactionPicker: UIStackView {
         focusArea.origin.y -= 20
 
         // Encompasses the width of the reaction, plus half of the padding on either side
-        focusArea.size.width = LayoutConstants.reactionHeight + LayoutConstants.pickerPadding
-        focusArea.origin.x -= LayoutConstants.pickerPadding / 2
+        focusArea.size.width = reactionSize + Self.pickerPadding
+        focusArea.origin.x -= Self.pickerPadding / 2
 
         return focusArea
     }
@@ -506,30 +515,24 @@ class MessageReactionPicker: UIStackView {
     // Built-in UIButton configurations have margins around title label built in.
     // Since we only want a one symbol text label inside, it's simpler to do custom class like this.
     private class EmojiButton: UIButton {
-
-        private static let font: UIFont = {
-            let fontSize: CGFloat = UIDevice.current.isNarrowerThanIPhone6 ? 30 : 32
-            return .systemFont(ofSize: fontSize)
-        }()
-
         var emoji: String {
             didSet {
                 label.text = emoji
             }
         }
 
-        init(emoji: String) {
+        init(emoji: String, isCompactLayout: Bool) {
             self.emoji = emoji
 
             super.init(frame: .zero)
 
-            label.font = EmojiButton.font
+            label.font = UIFont.systemFont(ofSize: isCompactLayout ? 30 : 32)
             label.textColor = .Signal.label
             label.textAlignment = .center
             label.text = emoji
             addSubview(label)
 
-            self.accessibilityLabel = emoji
+            accessibilityLabel = emoji
         }
 
         required init?(coder: NSCoder) {
@@ -539,10 +542,6 @@ class MessageReactionPicker: UIStackView {
         override func layoutSubviews() {
             super.layoutSubviews()
             label.frame = bounds
-        }
-
-        override var intrinsicContentSize: CGSize {
-            CGSize(square: LayoutConstants.reactionHeight)
         }
 
         override var isHighlighted: Bool {

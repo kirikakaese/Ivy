@@ -114,6 +114,7 @@ open class HeroSheetViewController: StackSheetViewController {
     public enum Element {
         case button(Button)
         case hero(Hero)
+        case custom((HeroSheetViewController) -> UIView)
     }
 
     public struct Button {
@@ -152,7 +153,9 @@ open class HeroSheetViewController: StackSheetViewController {
                 return .largePrimary(title: title)
 
             case .secondary:
-                return .largeSecondary(title: title)
+                var config: UIButton.Configuration = .largeSecondary(title: title)
+                config.baseBackgroundColor = .Signal.secondaryFill
+                return config
 
             case .secondaryDestructive:
                 var config: UIButton.Configuration = .largeSecondary(title: title)
@@ -620,6 +623,8 @@ open class HeroSheetViewController: StackSheetViewController {
             return buttonView
         case .hero(let hero):
             return viewForHero(hero)
+        case .custom(let viewGenerator):
+            return viewGenerator(self)
         }
     }
 

@@ -42,7 +42,7 @@ public class AppEnvironment: NSObject {
     private(set) var experienceUpgradeManager: ExperienceUpgradeManager!
     private(set) var groupSendEndorsementExpirationJob: GroupSendEndorsementExpirationJob!
     private(set) var lowDiskSpaceManager: LowDiskSpaceManager!
-    private var lowDiskSpaceMonitoringManager: LowDiskSpaceMonitoringManager!
+    private(set) var lowDiskSpaceMonitoringManager: LowDiskSpaceMonitoringManager!
     private(set) var outgoingDeviceRestorePresenter: OutgoingDeviceRestorePresenter!
     private(set) var passwordManagerManager: PasswordManagerManager!
     private(set) var provisioningManager: ProvisioningManager!
@@ -63,6 +63,7 @@ public class AppEnvironment: NSObject {
 
     }
 
+    @MainActor
     func setUp(appReadiness: AppReadiness, callService: CallService) {
 
         // MARK: Set up singletons
@@ -223,6 +224,7 @@ public class AppEnvironment: NSObject {
         )
 
         self.screenshotBlockingManager = ScreenshotBlockingManager(
+            dateProvider: Date.provider,
             db: DependenciesBridge.shared.db,
             windowManager: windowManagerRef,
         )
@@ -248,13 +250,13 @@ public class AppEnvironment: NSObject {
             operation: { _ = try await usernameValidationManager.validateUsername() },
         )
 
-        let inactiveLinkedDeviceFinder = DependenciesBridge.shared.inactiveLinkedDeviceFinder
+        let deviceService = DependenciesBridge.shared.deviceService
         cron.schedulePeriodically(
             uniqueKey: .fetchDevices,
             approximateInterval: .day,
             mustBeRegistered: true,
             mustBeConnected: true,
-            operation: { try await inactiveLinkedDeviceFinder.refreshLinkedDeviceStateIfNecessary() },
+            operation: { _ = try await deviceService.refreshDevices() },
         )
 
         cron.schedulePeriodically(

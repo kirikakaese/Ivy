@@ -340,8 +340,6 @@ class BackupArchiveIntegrationTests: XCTestCase {
         switch stream.readHeader() {
         case .success(let _backupInfo, _):
             backupInfo = _backupInfo
-        case .invalidByteLengthDelimiter:
-            throw TestError.failure("Invalid byte length delimiter!")
         case .emptyFinalFrame:
             throw TestError.failure("Invalid empty header frame!")
         case .protoDeserializationError(let error):
@@ -457,6 +455,8 @@ private enum CrashyMocks {
         func notifyForGroupCallSafetyNumberChange(callTitle: String, threadUniqueId: String?, roomId: Data?, presentAtJoin: Bool) { failTest(Self.self) }
         func notifyUserOfPollEnd(forMessage message: TSIncomingMessage, thread: TSThread, transaction: DBWriteTransaction) { failTest(Self.self) }
         func notifyUserOfPollVote(forMessage message: TSOutgoingMessage, voteAuthor: Aci, thread: TSThread, transaction: DBWriteTransaction) { failTest(Self.self) }
+        func scheduleUnreadReminder(threadUniqueId: String, threadIdentifier: String?, title: String?, body: String, initialDelay: TimeInterval, latestFireDate: Date, tx: DBWriteTransaction) { failTest(Self.self) }
+        func cancelUnreadReminder(threadUniqueId: String, tx: DBReadTransaction) { failTest(Self.self) }
         func scheduleNotifyForNewLinkedDevice(deviceLinkTimestamp: Date) { failTest(Self.self) }
         func scheduleNotifyForBackupsEnabled(backupsTimestamp: Date) { failTest(Self.self) }
         func notifyUserOfBackupsMediaError() { failTest(Self.self) }

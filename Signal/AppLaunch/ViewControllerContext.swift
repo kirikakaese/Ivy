@@ -23,9 +23,7 @@ public class ViewControllerContext {
     public let svr: SecureValueRecovery
     public let accountKeyStore: AccountKeyStore
 
-    public let usernameApiClient: UsernameApiClient
     public let usernameEducationManager: UsernameEducationManager
-    public let usernameLinkManager: UsernameLinkManager
     public let usernameLookupManager: UsernameLookupManager
     public let localUsernameManager: LocalUsernameManager
 
@@ -36,9 +34,7 @@ public class ViewControllerContext {
         editManager: EditManager,
         accountKeyStore: AccountKeyStore,
         svr: SecureValueRecovery,
-        usernameApiClient: UsernameApiClient,
         usernameEducationManager: UsernameEducationManager,
-        usernameLinkManager: UsernameLinkManager,
         usernameLookupManager: UsernameLookupManager,
         localUsernameManager: LocalUsernameManager,
         provisioningManager: ProvisioningManager,
@@ -47,9 +43,7 @@ public class ViewControllerContext {
         self.editManager = editManager
         self.accountKeyStore = accountKeyStore
         self.svr = svr
-        self.usernameApiClient = usernameApiClient
         self.usernameEducationManager = usernameEducationManager
-        self.usernameLinkManager = usernameLinkManager
         self.usernameLookupManager = usernameLookupManager
         self.localUsernameManager = localUsernameManager
         self.provisioningManager = provisioningManager
@@ -69,9 +63,7 @@ public class ViewControllerContext {
             editManager: bridge.editManager,
             accountKeyStore: bridge.accountKeyStore,
             svr: bridge.svr,
-            usernameApiClient: bridge.usernameApiClient,
             usernameEducationManager: bridge.usernameEducationManager,
-            usernameLinkManager: bridge.usernameLinkManager,
             usernameLookupManager: bridge.usernameLookupManager,
             localUsernameManager: bridge.localUsernameManager,
             provisioningManager: AppEnvironment.shared.provisioningManager,
