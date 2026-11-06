@@ -11,10 +11,14 @@ Commands:
                             stable upstream release. With --github-output,
                             also write current, latest and behind to the file
                             named by $GITHUB_OUTPUT.
-  merge [TAG]               Create a branch from the current commit, fetch
+  merge [TAG] [--commit] [--summary FILE]
+                            Create a branch from the current commit, fetch
                             the release (default: the latest) and merge it.
                             Resolves the cases that always go Ivy's way,
                             sets the client version and lists what is left.
+                            --commit commits the merge, conflict markers
+                            included, for a pull request that resolves the
+                            rest; --summary writes what happened as JSON.
   set-version TAG           Write the release into Config/Ivy.xcconfig and
                             the README.
   markers [BASE]            Compare the "// Ivy:" markers with BASE (default
@@ -23,10 +27,15 @@ Commands:
                             Ivy's changes.
 """
 
+import hashlib
+import json
 import os
 import re
 import subprocess
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import catalyst_dependencies  # noqa: E402
 
 UPSTREAM_URL = "https://github.com/signalapp/Signal-iOS.git"
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -36,6 +45,7 @@ MARKER = "// Ivy:"
 
 # Paths whose conflicts are always resolved with Ivy's side.
 KEEP_OURS = (".github/", "Pods")
+PODFILE_LOCK = "Podfile.lock"
 
 STABLE_TAG = re.compile(r"^(\d+)\.(\d+)\.(\d+)\.(\d+)$")
 
@@ -132,6 +142,28 @@ def keeps_ours(path):
     return any(path == prefix or path.startswith(prefix) for prefix in KEEP_OURS)
 
 
+def lock_with_podfile_checksum(lock_text, podfile_text):
+    """Podfile.lock with the checksum of Ivy's Podfile. CocoaPods records the
+    SHA-1 of the Podfile's contents."""
+    checksum = hashlib.sha1(podfile_text.encode("utf-8")).hexdigest()
+    return re.sub(r"^PODFILE CHECKSUM: \S+", f"PODFILE CHECKSUM: {checksum}", lock_text, flags=re.M)
+
+
+def dependency_changes(before_podfile, after_podfile):
+    """Returns {name: (old, new)} for the prebuilt libraries whose version
+    changed; those need new Mac Catalyst builds."""
+    changes = {}
+    try:
+        before = catalyst_dependencies.podfile_versions(before_podfile)
+        after = catalyst_dependencies.podfile_versions(after_podfile)
+    except SystemExit:
+        return changes
+    for name in ("libsignal", "ringrtc", "mobilecoin"):
+        if before[name] != after[name]:
+            changes[name] = (before[name], after[name])
+    return changes
+
+
 # Commands.
 
 def git(*args, check=True, capture=True):
@@ -189,7 +221,12 @@ def command_set_version(args):
 def command_merge(args):
     if git("status", "--porcelain").strip():
         sys.exit("The working tree has changes; commit or stash them first.")
-    tag = args[0] if args else fetch_latest()
+    commit = "--commit" in args
+    summary_path = None
+    if "--summary" in args:
+        summary_path = args[args.index("--summary") + 1]
+    positional = [a for i, a in enumerate(args) if not a.startswith("--") and (i == 0 or args[i - 1] != "--summary")]
+    tag = positional[0] if positional else fetch_latest()
     if not parse_tag(tag):
         sys.exit(f"{tag} is not a stable release tag.")
     current = current_release(read(XCCONFIG))
@@ -197,6 +234,7 @@ def command_merge(args):
         sys.exit(f"Ivy is already on {current}.")
 
     branch = branch_name(tag)
+    podfile_before = read("Podfile")
     git("checkout", "-b", branch)
     print(f"Fetching {tag}…")
     git("fetch", "--no-tags", UPSTREAM_URL, f"refs/tags/{tag}:refs/tags/upstream/{tag}")
@@ -206,11 +244,22 @@ def command_merge(args):
     )
     print(merge.stdout.strip())
 
-    conflicts = git("diff", "--name-only", "--diff-filter=U").split()
+    conflicts = git("diff", "--name-only", "-z", "--diff-filter=U").split("\0")
     left = []
-    for path in conflicts:
+    for path in filter(None, conflicts):
         if keeps_ours(path):
-            git("checkout", "--ours", "--", path, check=False)
+            in_ours = subprocess.run(["git", "cat-file", "-e", f"HEAD:{path}"], cwd=ROOT).returncode == 0
+            if in_ours:
+                git("checkout", "--ours", "--", path, check=False)
+                git("add", "--", path)
+            else:
+                # Ivy removed it (upstream's workflows, the Pods pointer).
+                git("rm", "-r", "--quiet", "--force", "--", path, check=False)
+        elif path == PODFILE_LOCK:
+            # Upstream's pods with the checksum of Ivy's Podfile. CI shows any
+            # spec checksums that Ivy's Mac pins change.
+            git("checkout", "--theirs", "--", path, check=False)
+            write(path, lock_with_podfile_checksum(read(path), read("Podfile")))
             git("add", "--", path)
         else:
             left.append(path)
@@ -219,6 +268,26 @@ def command_merge(args):
 
     command_set_version([tag])
     git("add", XCCONFIG, README)
+    changes = dependency_changes(podfile_before, read("Podfile"))
+
+    if commit:
+        git("add", "--all")
+        message = f"Merge Signal-iOS {tag}"
+        if left:
+            message += "\n\nConflicts left to resolve:\n" + "\n".join(f"  {path}" for path in left)
+        git("commit", "--no-verify", "-m", message)
+    if summary_path:
+        with open(summary_path, "w", encoding="utf-8") as out:
+            json.dump({
+                "tag": tag,
+                "current": current,
+                "branch": branch,
+                "conflicts": left,
+                "dependencies": {name: list(versions) for name, versions in changes.items()},
+                "committed": commit,
+            }, out, indent=2)
+        if commit:
+            return 0
 
     print()
     print(f"Branch {branch} has the merge of {tag}, not committed yet.")

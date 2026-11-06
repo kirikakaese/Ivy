@@ -1,34 +1,110 @@
 name: Upstream watch
 
 # Checks every Monday whether Signal-iOS has a newer stable release than the
-# one Ivy is built on, and opens an issue for it (one per release). Signal
-# builds expire about 90 days after release, so each one needs merging soon
-# (docs/UPSTREAM_SYNC.md).
+# one Ivy is built on. If so, it starts the merge on a branch named after the
+# release (Scripts/ivy/upstream.py merge), opens a draft pull request listing
+# what is left to resolve, and starts CI and, when libsignal, RingRTC or
+# MobileCoin changed, the Mac Catalyst builds. Signal builds expire about 90
+# days after release, so each release needs merging soon
+# (docs/UPSTREAM_SYNC.md). If the merge can't even be started, it opens an
+# issue instead.
 on:
   schedule:
     - cron: "17 6 * * 1"
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
   issues: write
+  actions: write
 
 jobs:
   watch:
     name: Look for a new Signal-iOS release
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          # The merge needs the history shared with upstream.
+          fetch-depth: 0
 
       - name: Compare with the latest release
         id: status
         run: python3 Scripts/ivy/upstream.py status --github-output
 
-      - name: Open an issue for the new release
+      - name: Check for an existing merge
+        id: existing
         if: steps.status.outputs.behind == 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
+          LATEST: ${{ steps.status.outputs.latest }}
+        run: |
+          branch=$(python3 -c "import sys; sys.path.insert(0, 'Scripts/ivy'); import upstream; print(upstream.branch_name('$LATEST'))")
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
+            echo "Branch $branch exists already."
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Start the merge
+        id: merge
+        if: steps.status.outputs.behind == 'true' && steps.existing.outputs.exists != 'true'
+        env:
+          LATEST: ${{ steps.status.outputs.latest }}
+        run: |
+          git config user.name kiri
+          git config user.email 252577764+kirikakaese@users.noreply.github.com
+          python3 Scripts/ivy/upstream.py merge "$LATEST" --commit --summary "$RUNNER_TEMP/merge.json"
+          cat "$RUNNER_TEMP/merge.json"
+          git push -u origin "${{ steps.existing.outputs.branch }}"
+
+      - name: Open the pull request and start the builds
+        if: steps.merge.outcome == 'success'
+        env:
+          BRANCH: ${{ steps.existing.outputs.branch }}
+        run: |
+          python3 - "$RUNNER_TEMP/merge.json" > "$RUNNER_TEMP/body.md" <<'PY'
+          import json, sys
+          summary = json.load(open(sys.argv[1]))
+          lines = [
+              f"Merges Signal-iOS {summary['tag']} (Ivy is on {summary['current']}). Started by the weekly upstream check.",
+              "",
+              "## Left to do",
+          ]
+          if summary["conflicts"]:
+              lines.append("These files have conflict markers; Ivy's changes are marked with `// Ivy:`:")
+              lines += [f"- [ ] `{path}`" for path in summary["conflicts"]]
+          else:
+              lines.append("- [x] No conflicts left")
+          deps = summary["dependencies"]
+          if deps:
+              lines.append("- [ ] New prebuilt libraries; the Mac Catalyst builds were started. Pin them in `Scripts/ivy/catalyst-dependencies.json` once published:")
+              lines += [f"  - {name}: {old} → {new}" for name, (old, new) in deps.items()]
+          lines += [
+              "- [ ] `python3 Scripts/ivy/upstream.py markers` shows no lost Ivy change",
+              "- [ ] App name rules for new strings (`python3 Scripts/ivy/app_name.py check …`)",
+              "- [ ] Spec checksums in `Podfile.lock` that CI reports",
+              "- [ ] CI green on iOS and macOS, then a TestFlight build",
+              "",
+              "See docs/UPSTREAM_SYNC.md.",
+          ]
+          print("\n".join(lines))
+          PY
+          tag=$(python3 -c "import json; print(json.load(open('$RUNNER_TEMP/merge.json'))['tag'])")
+          gh pr create --draft --base main --head "$BRANCH" --title "Merge Signal-iOS $tag" --body-file "$RUNNER_TEMP/body.md"
+          # Pull requests opened by this workflow don't start other workflows
+          # by themselves.
+          gh workflow run ci.yml --ref "$BRANCH"
+          if python3 -c "import json, sys; sys.exit(0 if json.load(open('$RUNNER_TEMP/merge.json'))['dependencies'] else 1)"; then
+            gh workflow run catalyst-dependencies.yml --ref "$BRANCH"
+          fi
+
+      - name: Open an issue if the merge couldn't start
+        if: failure() && steps.status.outputs.behind == 'true'
+        env:
           CURRENT: ${{ steps.status.outputs.current }}
           LATEST: ${{ steps.status.outputs.latest }}
         run: |
@@ -39,9 +115,9 @@ jobs:
             exit 0
           fi
           body=$(printf '%s\n' \
-            "Signal-iOS $LATEST is out; Ivy is built on $CURRENT." \
+            "Signal-iOS $LATEST is out; Ivy is built on $CURRENT. The weekly check couldn't start the merge by itself (see the workflow run)." \
             "" \
-            "Signal builds expire about 90 days after their release, so this needs merging soon. Start with:" \
+            "Start it with:" \
             "" \
             '```' \
             "python3 Scripts/ivy/upstream.py merge $LATEST" \
