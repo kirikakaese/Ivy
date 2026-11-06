@@ -4,6 +4,7 @@
 //
 
 import BonMot
+import LibSignalClient
 import SignalServiceKit
 import SignalUI
 
@@ -56,23 +57,18 @@ class UsernameSelectionViewController: OWSViewController, OWSNavigationChildCont
         /// The user's existing username is unchanged.
         case noChangesToExisting
         /// The user's existing username has changed, but only in letter casing.
-        case caseOnlyChange(newUsername: ParsedUsername)
+        case caseOnlyChange(LibSignalClient.Username)
         /// Username state is pending. Stores an ID, to disambiguate multiple
         /// potentially-overlapping state updates.
         case pending(id: UUID)
         /// The username has been successfully reserved.
-        case reservationSuccessful(
-            username: ParsedUsername,
-            hashedUsername: Usernames.HashedUsername,
-        )
+        case reservationSuccessful(LibSignalClient.Username)
         /// The username was rejected by the server during reservation.
         case reservationRejected
         /// The reservation was rejected by the server due to rate limiting.
         case reservationRateLimited
-        /// The reservation failed due to a network error.
-        case reservationFailedNetworkError
-        /// The reservation failed, for an unknown reason.
-        case reservationFailed
+        /// The reservation failed.
+        case reservationFailed(localizedDescription: String)
         /// The username is too short.
         case tooShort
         /// The username is too long.
@@ -96,14 +92,12 @@ class UsernameSelectionViewController: OWSViewController, OWSNavigationChildCont
                 return "caseOnlyChange"
             case .pending(id: _):
                 return "pending"
-            case .reservationSuccessful(username: _, hashedUsername: _):
+            case .reservationSuccessful:
                 return "reservationSuccessful"
             case .reservationRejected:
                 return "reservationRejected"
             case .reservationRateLimited:
                 return "reservationRateLimited"
-            case .reservationFailedNetworkError:
-                return "reservationFailedNetworkError"
             case .reservationFailed:
                 return "reservationFailed"
             case .tooShort:
@@ -123,8 +117,6 @@ class UsernameSelectionViewController: OWSViewController, OWSNavigationChildCont
             }
         }
     }
-
-    typealias ParsedUsername = Usernames.ParsedUsername
 
     // MARK: Private members
 
@@ -153,7 +145,7 @@ class UsernameSelectionViewController: OWSViewController, OWSNavigationChildCont
     }
 
     /// A pre-existing username this controller was seeded with.
-    private let existingUsername: ParsedUsername?
+    private let existingUsername: UsernameComponents?
 
     /// If the user is attempting to recover a corrupted username.
     private var isAttemptingRecovery: Bool
@@ -169,11 +161,11 @@ class UsernameSelectionViewController: OWSViewController, OWSNavigationChildCont
     // MARK: Init
 
     init(
-        existingUsername: ParsedUsername?,
+        existingUsername: LibSignalClient.Username?,
         isAttemptingRecovery: Bool,
         context: Context,
     ) {
-        self.existingUsername = existingUsername
+        self.existingUsername = existingUsername?.components()
         self.isAttemptingRecovery = isAttemptingRecovery
         self.context = context
 
@@ -399,7 +391,6 @@ private extension UsernameSelectionViewController {
                 .pending,
                 .reservationRejected,
                 .reservationRateLimited,
-                .reservationFailedNetworkError,
                 .reservationFailed,
                 .tooShort,
                 .tooLong,
@@ -422,22 +413,20 @@ private extension UsernameSelectionViewController {
             switch self.currentUsernameState {
             case .noChangesToExisting:
                 if let existingUsername = self.existingUsername {
-                    return existingUsername.reassembled
+                    return existingUsername.originalValue.value
                 }
-
                 return OWSLocalizedString(
                     "USERNAME_SELECTION_HEADER_TEXT_FOR_PLACEHOLDER",
                     comment: "When the user has entered text into a text field for setting their username, a header displays the username text. This string is shown in the header when the text field is empty.",
                 )
-            case let .caseOnlyChange(newUsername):
-                return newUsername.reassembled
-            case let .reservationSuccessful(username, _):
-                return username.reassembled
+            case let .caseOnlyChange(username):
+                return username.value
+            case let .reservationSuccessful(username):
+                return username.value
             case
                 .pending,
                 .reservationRejected,
                 .reservationRateLimited,
-                .reservationFailedNetworkError,
                 .reservationFailed,
                 .tooShort,
                 .tooLong,
@@ -461,16 +450,15 @@ private extension UsernameSelectionViewController {
         switch self.currentUsernameState {
         case .noChangesToExisting:
             self.usernameTextFieldWrapper.textField.configure(forConfirmedUsername: self.existingUsername)
-        case let .caseOnlyChange(newUsername):
-            self.usernameTextFieldWrapper.textField.configure(forConfirmedUsername: newUsername)
+        case let .caseOnlyChange(username):
+            self.usernameTextFieldWrapper.textField.configure(forConfirmedUsername: username.components())
         case .pending:
             self.usernameTextFieldWrapper.textField.configureForSomethingPending()
-        case let .reservationSuccessful(username, _):
-            self.usernameTextFieldWrapper.textField.configure(forConfirmedUsername: username)
+        case let .reservationSuccessful(username):
+            self.usernameTextFieldWrapper.textField.configure(forConfirmedUsername: username.components())
         case
             .reservationRejected,
             .reservationRateLimited,
-            .reservationFailedNetworkError,
             .reservationFailed,
             .tooShort,
             .tooLong,
@@ -504,10 +492,8 @@ private extension UsernameSelectionViewController {
                     "USERNAME_SELECTION_RESERVATION_RATE_LIMITED_ERROR_MESSAGE",
                     comment: "An error message shown when the user has attempted too many username reservations.",
                 )
-            case .reservationFailedNetworkError:
-                return Usernames.RemoteMutationError.networkError.localizedDescription
-            case .reservationFailed:
-                return CommonStrings.somethingWentWrongTryAgainLaterError
+            case .reservationFailed(let localizedDescription):
+                return localizedDescription
             case .tooShort:
                 return String.localizedStringWithFormat(
                     OWSLocalizedString(
@@ -613,18 +599,15 @@ private extension UsernameSelectionViewController {
         let usernameState = self.currentUsernameState
 
         switch usernameState {
-        case let .caseOnlyChange(newUsername):
-            changeUsernameCaseBehindModalActivityIndicator(
-                newUsername: newUsername,
-            )
-        case let .reservationSuccessful(_, hashedUsername):
-            confirmNewUsername(reservedUsername: hashedUsername)
+        case let .caseOnlyChange(username):
+            changeUsernameCaseBehindModalActivityIndicator(newUsername: username)
+        case let .reservationSuccessful(username):
+            confirmNewUsername(reservedUsername: username)
         case
             .noChangesToExisting,
             .pending,
             .reservationRejected,
             .reservationRateLimited,
-            .reservationFailedNetworkError,
             .reservationFailed,
             .tooShort,
             .tooLong,
@@ -638,44 +621,41 @@ private extension UsernameSelectionViewController {
     }
 
     private func changeUsernameCaseBehindModalActivityIndicator(
-        newUsername: ParsedUsername,
+        newUsername: LibSignalClient.Username,
     ) {
         ModalActivityIndicatorViewController.present(
             fromViewController: self,
             title: CommonStrings.updatingModal,
             canCancel: false,
-        ) { modal in
-            UsernameLogger.shared.info("Changing username case.")
+            asyncBlock: { modal in
+                UsernameLogger.shared.info("Changing username case.")
 
-            Guarantee.wrapAsync {
-                await self.context.localUsernameManager.updateVisibleCaseOfExistingUsername(newUsername: newUsername.reassembled)
-            }.map(on: DispatchQueue.main) { remoteMutationResult -> Usernames.RemoteMutationResult<Void> in
+                let result = await Result(catching: {
+                    _ = try await self.context.localUsernameManager.updateVisibleCaseOfExistingUsername(newUsername: newUsername)
+                })
                 let newState = self.context.databaseStorage.read { tx in
                     return self.context.localUsernameManager.usernameState(tx: tx)
                 }
-
                 self.usernameChangeDelegate?.usernameStateDidChange(newState: newState)
+                do {
+                    try result.get()
 
-                return remoteMutationResult
-            }.done(on: DispatchQueue.main) { remoteMutationResult -> Void in
-                switch remoteMutationResult {
-                case .success:
                     UsernameLogger.shared.info("Changed username case!")
 
                     modal.dismiss {
                         self.dismiss(animated: true)
                     }
-                case .failure(let remoteMutationError):
+                } catch {
                     self.dismiss(
                         modalActivityIndicator: modal,
-                        andPresentErrorMessage: remoteMutationError.localizedDescription,
+                        andPresentErrorMessage: Usernames.localizedDescription(forError: error),
                     )
                 }
-            }
-        }
+            },
+        )
     }
 
-    private func confirmNewUsername(reservedUsername: Usernames.HashedUsername) {
+    private func confirmNewUsername(reservedUsername: LibSignalClient.Username) {
         if existingUsername == nil, !isAttemptingRecovery {
             self.confirmReservationBehindModalActivityIndicator(
                 reservedUsername: reservedUsername,
@@ -699,57 +679,57 @@ private extension UsernameSelectionViewController {
     /// Confirm the given reservation, with an activity indicator blocking the
     /// UI.
     private func confirmReservationBehindModalActivityIndicator(
-        reservedUsername: Usernames.HashedUsername,
+        reservedUsername: LibSignalClient.Username,
     ) {
         ModalActivityIndicatorViewController.present(
             fromViewController: self,
             title: CommonStrings.updatingModal,
             canCancel: false,
-        ) { modal in
-            UsernameLogger.shared.info("Confirming username.")
+            asyncBlock: { modal in
+                UsernameLogger.shared.info("Confirming username.")
 
-            Guarantee.wrapAsync {
-                await self.context.localUsernameManager.confirmUsername(reservedUsername: reservedUsername)
-            }.map(on: DispatchQueue.main) { remoteMutationResult -> Usernames.RemoteMutationResult<Usernames.ConfirmationResult> in
+                let result = await Result(catching: {
+                    try await self.context.localUsernameManager.confirmUsername(reservedUsername: reservedUsername)
+                })
+
                 let newState = self.context.databaseStorage.read { tx in
                     return self.context.localUsernameManager.usernameState(tx: tx)
                 }
 
                 self.usernameChangeDelegate?.usernameStateDidChange(newState: newState)
 
-                return remoteMutationResult
-            }.done(on: DispatchQueue.main) { remoteMutationResult -> Void in
-                switch remoteMutationResult {
-                case .success(.success):
+                do {
+                    try result.get()
+
                     UsernameLogger.shared.info("Confirmed username!")
 
                     modal.dismiss {
                         self.dismiss(animated: true) {
-                            self.usernameSelectionDelegate?.usernameSelectionDidDismissAfterConfirmation(username: reservedUsername.usernameString)
+                            self.usernameSelectionDelegate?.usernameSelectionDidDismissAfterConfirmation(username: reservedUsername.value)
                         }
                     }
-                case .success(.rejected):
+                } catch SignalError.usernameNotAvailable, SignalError.usernameReservationNotFound {
                     UsernameLogger.shared.error("Failed to confirm the username, server rejected.")
 
                     self.dismiss(
                         modalActivityIndicator: modal,
                         andPresentErrorMessage: CommonStrings.somethingWentWrongError,
                     )
-                case .success(.rateLimited):
+                } catch SignalError.rateLimitedError(retryAfter: _, message: _) {
                     UsernameLogger.shared.error("Failed to confirm the username, rate-limited.")
 
                     self.dismiss(
                         modalActivityIndicator: modal,
                         andPresentErrorMessage: CommonStrings.somethingWentWrongTryAgainLaterError,
                     )
-                case .failure(let remoteMutationError):
+                } catch {
                     self.dismiss(
                         modalActivityIndicator: modal,
-                        andPresentErrorMessage: remoteMutationError.localizedDescription,
+                        andPresentErrorMessage: Usernames.localizedDescription(forError: error),
                     )
                 }
-            }
-        }
+            },
+        )
     }
 
     /// Dismiss the given activity indicator and then present an error message
@@ -800,11 +780,9 @@ private extension UsernameSelectionViewController {
             !hasEnteredNewCustomDiscriminator,
             let existingUsername,
             let nicknameFromTextField,
-            existingUsername.nickname.lowercased() == nicknameFromTextField.lowercased()
+            let caseAdjustedUsername = existingUsername.adjustingCase(nicknameFromTextField)
         {
-            currentUsernameState = .caseOnlyChange(
-                newUsername: existingUsername.updatingNickame(newNickname: nicknameFromTextField),
-            )
+            currentUsernameState = .caseOnlyChange(caseAdjustedUsername)
         } else if desiredDiscriminator == "00" {
             currentUsernameState = .customDiscriminatorIs00
         } else if let desiredNickname = nicknameFromTextField {
@@ -831,10 +809,10 @@ private extension UsernameSelectionViewController {
                 }
             }
 
-            typealias CandidateError = Usernames.HashedUsername.CandidateGenerationError
+            typealias CandidateError = Usernames.CandidateGenerationError
 
             do {
-                let usernameCandidates = try Usernames.HashedUsername.generateCandidates(
+                let usernameCandidates = try Usernames.generateCandidates(
                     forNickname: desiredNickname,
                     minNicknameLength: Constants.minNicknameCodepointLength,
                     maxNicknameLength: Constants.maxNicknameCodepointLength,
@@ -870,7 +848,7 @@ private extension UsernameSelectionViewController {
                 owsFail("We should never get here with an empty username string. Did something upstream break?")
             } catch let error {
                 owsFailBeta("Unexpected error while generating candidate usernames! Did something upstream change? \(error)")
-                currentUsernameState = .reservationFailed
+                currentUsernameState = .reservationFailed(localizedDescription: Usernames.localizedDescription(forError: error))
             }
         } else {
             // We have an existing username, but no entered nickname.
@@ -888,83 +866,50 @@ private extension UsernameSelectionViewController {
     /// not match the ID with which the reservation was initiated, we discard
     /// the result (as we have moved on to another desired nickname).
     private func attemptReservationAndUpdateValidationState(
-        forUsernameCandidates usernameCandidates: Usernames.HashedUsername.GeneratedCandidates,
+        forUsernameCandidates usernameCandidates: [LibSignalClient.Username],
     ) {
         AssertIsOnMainThread()
-
-        enum ReservationResult {
-            case notAttempted
-            case success(Usernames.ReservationResult)
-            case networkError
-            case unknownError
-        }
 
         let thisAttemptId = UUID()
         let logger = UsernameLogger.shared.suffixed(with: "Attempt ID: \(thisAttemptId)")
 
         self.currentUsernameState = .pending(id: thisAttemptId)
         // Delay to detect multiple rapid consecutive edits.
-        Guarantee.after(wallInterval: Constants.reservationDebounceTimeInternal).then(on: DispatchQueue.main) { () -> Guarantee<ReservationResult> in
+        Task { () async -> Void in
+            try? await Task.sleep(nanoseconds: Constants.reservationDebounceTimeInternal.clampedNanoseconds)
+
             // If this attempt is no longer current after debounce, we should
             // bail out without firing a reservation.
-            guard
-                case let .pending(id) = self.currentUsernameState,
-                thisAttemptId == id
-            else {
-                return .value(.notAttempted)
+            guard case .pending(thisAttemptId) = self.currentUsernameState else {
+                return
             }
 
             logger.info("Attempting to reserve username.")
 
-            return Guarantee.wrapAsync {
-                await self.context.localUsernameManager.reserveUsername(usernameCandidates: usernameCandidates)
-            }.map(on: SyncScheduler()) { remoteMutationResult -> ReservationResult in
-                switch remoteMutationResult {
-                case .success(let reservationResult):
-                    return .success(reservationResult)
-                case .failure(.networkError):
-                    return .networkError
-                case .failure(.otherError):
-                    return .unknownError
-                }
-            }
-        }.done(on: DispatchQueue.main) { (reservationResult: ReservationResult) -> Void in
+            let result = await Result(catching: {
+                return try await self.context.localUsernameManager.reserveUsername(usernameCandidates: usernameCandidates)
+            })
+
             // If the reservation we just attempted is not current, we should
             // drop it and bail out.
-            guard
-                case let .pending(id) = self.currentUsernameState,
-                thisAttemptId == id
-            else {
+            guard case .pending(thisAttemptId) = self.currentUsernameState else {
                 logger.info("Dropping reservation result, attempt is outdated.")
                 return
             }
 
-            switch reservationResult {
-            case .notAttempted:
-                return
-            case let .success(.successful(username, hashedUsername)):
+            switch result {
+            case .success(let username):
                 logger.info("Successfully reserved nickname!")
-
-                self.currentUsernameState = .reservationSuccessful(
-                    username: username,
-                    hashedUsername: hashedUsername,
-                )
-            case .success(.rejected):
+                self.currentUsernameState = .reservationSuccessful(username)
+            case .failure(SignalError.usernameNotAvailable(_)):
                 logger.warn("Reservation rejected.")
-
                 self.currentUsernameState = .reservationRejected
-            case .success(.rateLimited):
+            case .failure(SignalError.rateLimitedError(retryAfter: _, message: _)):
                 logger.error("Reservation rate-limited.")
-
                 self.currentUsernameState = .reservationRateLimited
-            case .networkError:
-                logger.error("Reservation failed due to a network error.")
-
-                self.currentUsernameState = .reservationFailedNetworkError
-            case .unknownError:
-                logger.error("Reservation failed due to an unknown error.")
-
-                self.currentUsernameState = .reservationFailed
+            case .failure(let error):
+                logger.error("Reservation failed.")
+                self.currentUsernameState = .reservationFailed(localizedDescription: Usernames.localizedDescription(forError: error))
             }
         }
     }

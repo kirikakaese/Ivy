@@ -12,7 +12,7 @@ import LibSignalClient
 /// ``BackupProto_Chat``, and there will in fact _also_ be a chat for the group
 /// thread. Its just that our group thread contains all the metadata
 /// corresponding to both the Chat and Recipient parts of the Backup proto.
-public class BackupArchiveGroupRecipientArchiver: BackupArchiveProtoStreamWriter {
+class BackupArchiveGroupRecipientArchiver {
     typealias GroupId = BackupArchive.GroupId
     typealias RecipientId = BackupArchive.RecipientId
     typealias RecipientAppId = BackupArchive.RecipientArchivingContext.Address
@@ -32,7 +32,7 @@ public class BackupArchiveGroupRecipientArchiver: BackupArchiveProtoStreamWriter
     private let storyStore: BackupArchiveStoryStore
     private let threadStore: BackupArchiveThreadStore
 
-    public init(
+    init(
         avatarDefaultColorManager: AvatarDefaultColorManager,
         avatarFetcher: BackupArchiveAvatarFetcher,
         blockingManager: BackupArchive.Shims.BlockingManager,
@@ -58,18 +58,14 @@ public class BackupArchiveGroupRecipientArchiver: BackupArchiveProtoStreamWriter
     ) throws(CancellationError) -> ArchiveMultiFrameResult {
         var errors = [ArchiveFrameError]()
 
-        let blockedGroupIds = Set(blockingManager.blockedGroupIds(tx: context.tx))
-
         do {
-            try context.bencher.wrapEnumeration(
-                tx: context.tx,
+            try context.wrapEnumeration(
                 enumerationBlock: { tx, block throws(CancellationError) in
                     try enumerateGroups(tx: tx, block: block)
                 },
                 perEnumerantBlock: { [self] groupRecord, frameBencher -> Bool in
                     archiveGroupThread(
                         groupRecord,
-                        blockedGroupIds: blockedGroupIds,
                         stream: stream,
                         frameBencher: frameBencher,
                         context: context,
@@ -131,7 +127,6 @@ public class BackupArchiveGroupRecipientArchiver: BackupArchiveProtoStreamWriter
 
     private func archiveGroupThread(
         _ groupRecord: GroupRecord,
-        blockedGroupIds: Set<Data>,
         stream: BackupArchiveOutputStream,
         frameBencher: BackupArchive.Bencher.FrameBencher,
         context: BackupArchive.RecipientArchivingContext,
@@ -142,6 +137,7 @@ public class BackupArchiveGroupRecipientArchiver: BackupArchiveProtoStreamWriter
             return
         }
 
+        let masterKey: GroupMasterKey
         let groupPair: (thread: TSGroupThread, model: TSGroupModelV2)?
         if let groupThread = threadStore.fetchThread(forGroupId: groupId, tx: context.tx) {
             guard let groupModel = groupThread.groupModel as? TSGroupModelV2 else {
@@ -149,18 +145,25 @@ public class BackupArchiveGroupRecipientArchiver: BackupArchiveProtoStreamWriter
                 return
             }
             groupPair = (groupThread, groupModel)
+            guard let _masterKey = groupRecord.masterKey else {
+                // If we have a V2 thread, we expect to have a master key.
+                errors.append(.archiveFrameError(.groupMasterKeyError(OWSGenericError("missing master key for group with thread"))))
+                return
+            }
+            masterKey = _masterKey
         } else {
             groupPair = nil
-        }
-
-        guard let masterKey = groupRecord.masterKey else {
-            errors.append(.archiveFrameError(.groupMasterKeyError(OWSGenericError("missing master key"))))
-            return
+            guard let _masterKey = groupRecord.masterKey else {
+                errors.append(.archiveFrameError(.groupMasterKeyWarning(OWSGenericError("missing master key for group without thread"))))
+                return
+            }
+            masterKey = _masterKey
         }
 
         var group = BackupProto_Group()
         group.masterKey = masterKey.serialize()
-        group.blocked = blockedGroupIds.contains(groupId.serialize())
+        group.blocked = groupRecord.isBlocked
+        group.blockedAtTimestamp = groupRecord.blockedAt.asMilliseconds
         if let groupPair {
             group.whitelisted = profileManager.isGroupId(
                 inProfileWhitelist: groupId.serialize(),
@@ -274,8 +277,9 @@ public class BackupArchiveGroupRecipientArchiver: BackupArchiveProtoStreamWriter
             return
         }
 
-        let maybeError: ArchiveFrameError? = Self.writeFrameToStream(
-            stream,
+        let maybeError: ArchiveFrameError? = context.writeFrame(
+            toStream: stream,
+            flush: .afterWrite,
             frameBencher: frameBencher,
             frameBuilder: {
                 var recipient = BackupProto_Recipient()
@@ -467,7 +471,7 @@ public class BackupArchiveGroupRecipientArchiver: BackupArchiveProtoStreamWriter
             }
 
             if groupProto.whitelisted {
-                profileManager.addToWhitelist(groupThread, tx: context.tx)
+                profileManager.addGroupToWhitelist(&groupRecord, tx: context.tx)
             }
 
             if
@@ -510,7 +514,11 @@ public class BackupArchiveGroupRecipientArchiver: BackupArchiveProtoStreamWriter
         }
 
         if groupProto.blocked {
-            blockingManager.addBlockedGroupId(groupId.serialize(), tx: context.tx)
+            blockingManager.addBlockedGroup(
+                &groupRecord,
+                blockedAt: BlockedTimestamp(clamping: groupProto.blockedAtTimestamp),
+                tx: context.tx,
+            )
         }
 
         // MARK: Return successfully!

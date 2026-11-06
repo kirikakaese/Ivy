@@ -1780,6 +1780,24 @@
  Încearcă din nou în %1$d de ore.</string>
 		</dict>
 	</dict>
+	<key>STICKER_PACK_STICKER_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d autocolant</string>
+			<key>few</key>
+			<string>%1$d autocolante</string>
+			<key>other</key>
+			<string>%1$d de autocolante</string>
+		</dict>
+	</dict>
 	<key>STORY_REPLIES_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1886,6 +1904,24 @@
 			<string>&lt;bold&gt;%1$d&lt;/bold&gt; vizualizări</string>
 			<key>other</key>
 			<string>&lt;bold&gt;%1$d&lt;/bold&gt; de vizualizări</string>
+		</dict>
+	</dict>
+	<key>THREAD_DETAILS_MEMBERS_AND_INVITED_%ld</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>ld</string>
+			<key>one</key>
+			<string>%2$@ (+%1$ld invitat)</string>
+			<key>few</key>
+			<string>%2$@ (+%1$ld invitați)</string>
+			<key>other</key>
+			<string>%2$@ (+%1$ld de invitați)</string>
 		</dict>
 	</dict>
 	<key>THREAD_DETAILS_MORE_MUTUAL_GROUP_%3$ld</key>
@@ -2012,6 +2048,96 @@
 			<string>Numele de utilizator trebuie să înceapă cu cel puțin %1$d caractere</string>
 			<key>other</key>
 			<string>Numele de utilizator trebuie să înceapă cu cel puțin %1$d de caractere</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__mentions_many</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%2$@ și alte persoane te-au menționat o dată</string>
+			<key>few</key>
+			<string>%2$@ și alte persoane te-au menționat de %1$d ori</string>
+			<key>other</key>
+			<string>%2$@ și alte persoane te-au menționat de %1$d de ori</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__mentions_two</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%2$@ și %3$@ te-au menționat o dată</string>
+			<key>few</key>
+			<string>%2$@ și %3$@ te-au menționat de %1$d ori</string>
+			<key>other</key>
+			<string>%2$@ și %3$@ te-au menționat de %1$d de ori</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__messages</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d mesaj necitit</string>
+			<key>few</key>
+			<string>%1$d mesaje necitite</string>
+			<key>other</key>
+			<string>%1$d de mesaje necitite</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__replies_many</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d răspuns de la %2$@ și alte persoane</string>
+			<key>few</key>
+			<string>%1$d răspunsuri de la %2$@ și alte persoane</string>
+			<key>other</key>
+			<string>%1$d de răspunsuri de la %2$@ și alte persoane</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__replies_two</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d răspuns de la %2$@ și %3$@</string>
+			<key>few</key>
+			<string>%1$d răspunsuri de la %2$@ și %3$@</string>
+			<key>other</key>
+			<string>%1$d de răspunsuri de la %2$@ și %3$@</string>
 		</dict>
 	</dict>
 </dict>

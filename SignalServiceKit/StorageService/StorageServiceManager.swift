@@ -886,6 +886,12 @@ class StorageServiceOperation {
         return { await SSKEnvironment.shared.databaseStorageRef.awaitableWrite { recordPendingMutations(pendingMutations, transaction: $0) } }
     }
 
+    static func recordPendingUpdates(updatedGroupV2MasterKeys: [GroupMasterKey], tx: DBWriteTransaction) {
+        var pendingMutations = PendingMutations()
+        pendingMutations.updatedGroupV2MasterKeys.formUnion(updatedGroupV2MasterKeys.lazy.map { $0.serialize() })
+        recordPendingMutations(pendingMutations, transaction: tx)
+    }
+
     private static func recordPendingMutations(
         _ pendingMutations: PendingMutations,
         transaction: DBWriteTransaction,
@@ -1160,12 +1166,14 @@ class StorageServiceOperation {
         Logger.info("Successfully updated to manifest version: \(state.manifestVersion)")
 
         // Successfully updated, store our changes.
-        await SSKEnvironment.shared.databaseStorageRef.awaitableWrite { transaction in
-            state.save(clearConsecutiveConflicts: true, transaction: transaction)
-        }
+        let db = DependenciesBridge.shared.db
+        let syncManager = SSKEnvironment.shared.syncManagerRef
+        await db.awaitableWrite { tx in
+            state.save(clearConsecutiveConflicts: true, transaction: tx)
 
-        // Notify our other devices that the storage manifest has changed.
-        await SSKEnvironment.shared.syncManagerRef.sendFetchLatestStorageManifestSyncMessage()
+            // Notify our other devices that the storage manifest has changed.
+            syncManager.sendFetchLatestStorageManifestSyncMessage(tx: tx)
+        }
     }
 
     private func buildManifestRecord(
@@ -1463,13 +1471,15 @@ class StorageServiceOperation {
                 masterKey: masterKey,
                 chatServiceAuth: authedAccount.chatServiceAuth,
             )
-            /// We created a new manifest, so let's tell our other devices to go
-            /// fetch it.
-            await SSKEnvironment.shared.syncManagerRef.sendFetchLatestStorageManifestSyncMessage()
 
-            /// Store our changes.
-            await SSKEnvironment.shared.databaseStorageRef.awaitableWrite { transaction in
-                state.save(clearConsecutiveConflicts: true, transaction: transaction)
+            let db = DependenciesBridge.shared.db
+            let syncManager = SSKEnvironment.shared.syncManagerRef
+            await db.awaitableWrite { tx in
+                state.save(clearConsecutiveConflicts: true, transaction: tx)
+
+                // We created a new manifest, so let's tell our other devices to
+                // go fetch it.
+                syncManager.sendFetchLatestStorageManifestSyncMessage(tx: tx)
             }
 
             return nil
@@ -2138,6 +2148,7 @@ class StorageServiceOperation {
                 dmConfigurationStore: DependenciesBridge.shared.disappearingMessagesConfigurationStore,
                 linkPreviewSettingStore: DependenciesBridge.shared.linkPreviewSettingStore,
                 localUsernameManager: DependenciesBridge.shared.localUsernameManager,
+                notificationPreferencesManager: DependenciesBridge.shared.notificationPreferencesManager,
                 keyTransparencyManager: DependenciesBridge.shared.keyTransparencyManager,
                 paymentsHelper: SSKEnvironment.shared.paymentsHelperRef,
                 phoneNumberDiscoverabilityManager: DependenciesBridge.shared.phoneNumberDiscoverabilityManager,
@@ -2157,7 +2168,9 @@ class StorageServiceOperation {
                 usernameEducationManager: DependenciesBridge.shared.usernameEducationManager,
                 adminDeleteManager: DependenciesBridge.shared.adminDeleteManager,
                 blockingManager: SSKEnvironment.shared.blockingManagerRef,
+                threadMuteManager: DependenciesBridge.shared.threadMuteManager,
                 threadStore: DependenciesBridge.shared.threadStore,
+                unreadReminderManager: DependenciesBridge.shared.unreadReminderManager,
             ),
             changeState: \.localAccountChangeState,
             storageIdentifier: \.localAccountIdentifier,
@@ -2185,7 +2198,9 @@ class StorageServiceOperation {
                 recipientHidingManager: DependenciesBridge.shared.recipientHidingManager,
                 remoteConfigProvider: SSKEnvironment.shared.remoteConfigManagerRef,
                 signalServiceAddressCache: SSKEnvironment.shared.signalServiceAddressCacheRef,
+                threadMuteManager: DependenciesBridge.shared.threadMuteManager,
                 tsAccountManager: DependenciesBridge.shared.tsAccountManager,
+                unreadReminderManager: DependenciesBridge.shared.unreadReminderManager,
                 usernameLookupManager: DependenciesBridge.shared.usernameLookupManager,
             ),
             changeState: \.accountIdChangeMap,
@@ -2212,6 +2227,8 @@ class StorageServiceOperation {
                 blockingManager: SSKEnvironment.shared.blockingManagerRef,
                 groupsV2: SSKEnvironment.shared.groupsV2Ref,
                 profileManager: SSKEnvironment.shared.profileManagerRef,
+                threadMuteManager: DependenciesBridge.shared.threadMuteManager,
+                unreadReminderManager: DependenciesBridge.shared.unreadReminderManager,
             ),
             changeState: \.groupV2ChangeMap,
             storageIdentifier: \.groupV2MasterKeyToIdentifierMap,

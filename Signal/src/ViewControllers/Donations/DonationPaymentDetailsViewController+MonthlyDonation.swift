@@ -72,11 +72,16 @@ extension DonationPaymentDetailsViewController {
                                     amount: self.donationAmount,
                                 )
                                 await db.awaitableWrite { tx in
-                                    do {
-                                        try idealStore.setPendingSubscription(donation: confirmedDonation, tx: tx)
-                                    } catch {
-                                        owsFailDebug("[Donations] Failed to persist pending iDEAL subscription.")
-                                    }
+                                    // Set the unclaimed iDEAL paymentID
+                                    idealStore.setDonationNeedsHandling(
+                                        isOneTime: false,
+                                        intentId: confirmedIntent.setupIntentId,
+                                        tx: tx,
+                                    )
+                                    idealStore.setPendingSubscription(
+                                        donation: confirmedDonation,
+                                        tx: tx,
+                                    )
                                 }
                             } else {
                                 Logger.info("[Donations] Subscription requires 3DS authentication. Presenting...")
@@ -92,6 +97,21 @@ extension DonationPaymentDetailsViewController {
                             paymentType = .sepa(paymentMethodId: confirmedIntent.paymentMethodId)
                         case .ideal:
                             paymentType = .ideal(setupIntentId: confirmedIntent.setupIntentId)
+                        }
+
+                        if case .ideal(let intentId) = paymentType {
+                            let hasDonationToClaim = await db.awaitableWrite { tx in
+                                idealStore.claimDonationHandling(
+                                    isOneTime: false,
+                                    intentId: intentId,
+                                    tx: tx,
+                                )
+                            }
+
+                            if !hasDonationToClaim {
+                                Logger.info("[Donations] Monthly iDEAL donation already handled. Continuing")
+                                return
+                            }
                         }
 
                         try await DonationViewsUtil.finalizeAndRedeemMonthlyDonation(

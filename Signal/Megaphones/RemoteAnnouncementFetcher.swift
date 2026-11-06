@@ -83,17 +83,33 @@ public class RemoteAnnouncementFetcher: RemoteReleaseNotesFetcher<RemoteAnnounce
 
             var pendingAttachment: PendingAttachment?
             if translation.hasImage {
-                guard let mediaFileUrl: URL = .mediaFilePath(dirUrl: RemoteAnnouncementModel.mediaDirectory, mediaLocalRelativePath: translation.id) else {
+                let mimeType = translation.mediaMimeType ?? "image/webp"
+
+                guard
+                    let mediaFileUrl: URL = .mediaFilePath(
+                        dirUrl: RemoteAnnouncementModel.mediaDirectory,
+                        mediaLocalRelativePath: translation.id,
+                        mimeType: mimeType,
+                    )
+                else {
                     throw OWSAssertionError("Failed to get image file path for translation with ID \(translation.id)")
                 }
 
                 // Now that its moved to the attachment_files dir, we can remove it from its temporary download location, so .owned is safe.
                 let dataSourcePath = DataSourcePath(fileUrl: mediaFileUrl, ownership: .owned)
-                let mimeType = translation.mediaMimeType ?? "image/webp"
+
+                let renderingFlag: AttachmentReference.RenderingFlag = {
+                    if MimeTypeUtil.isSupportedVideoMimeType(mimeType) {
+                        return .shouldLoop
+                    } else {
+                        return .default
+                    }
+                }()
+
                 pendingAttachment = try await attachmentContentValidator.validateDataSourceContents(
                     dataSourcePath,
                     mimeType: mimeType,
-                    renderingFlag: .default,
+                    renderingFlag: renderingFlag,
                     sourceFilename: nil,
                 )
             }
@@ -223,6 +239,7 @@ public class RemoteAnnouncementFetcher: RemoteReleaseNotesFetcher<RemoteAnnounce
                     mediaRemoteUrlPath: translation.mediaRemoteUrlPath,
                     mediaFileDirectory: RemoteAnnouncementModel.mediaDirectory,
                     translationId: translation.id,
+                    mimeType: translation.mediaMimeType ?? "image/webp",
                 )
                 translation.hasImage = hasImage
 

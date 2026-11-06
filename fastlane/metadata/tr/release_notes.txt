@@ -1,1 +1,1 @@
-• Yeni sessize alma seçeneği, sohbette bildirim almaya devam etmek istediğin tam tarihi ve saati belirtmeni sağlar.
+• Signal artık iPhone Duo için de optimize edilmiştir. İleride ek iyileştirmeleri de açıklayacağız.

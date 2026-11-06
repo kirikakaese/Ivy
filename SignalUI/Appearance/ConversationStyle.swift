@@ -81,6 +81,9 @@ public struct ConversationStyle {
 
     public let textInsetTop: CGFloat
     public let textInsetBottom: CGFloat
+    // The bottom inset to use when body text is the last component of the
+    // message bubble.
+    public let textInsetBottomBelowBodyText: CGFloat
     public let textInsetHorizontal: CGFloat
     public var textInsets: UIEdgeInsets {
         UIEdgeInsets(
@@ -156,6 +159,10 @@ public struct ConversationStyle {
         // (e.g. the descender) in the top margin. Note that UIFont.descender is a
         // negative value.
         textInsetBottom = max(0, round(baseFontOffset - abs(messageTextFont.descender)))
+        // The body text label also extends below the descender by the font's
+        // leading, which TextKit adds to each line fragment. Don't include that
+        // in the bottom margin either.
+        textInsetBottomBelowBodyText = max(0, round(baseFontOffset - abs(messageTextFont.descender) - messageTextFont.leading))
 
         textInsetHorizontal = 12
 
@@ -235,7 +242,7 @@ public struct ConversationStyle {
         isDarkThemeEnabled: Bool,
     ) -> ColorOrGradientValue {
         if UIAccessibility.isReduceTransparencyEnabled, hasWallpaper {
-            return .solidColor(color: Theme.backgroundColor)
+            return .solidColor(color: UIColor.Signal.background)
         }
         if
             let blurEffect = bubbleBackgroundBlurEffect(
@@ -246,7 +253,18 @@ public struct ConversationStyle {
         {
             return .blur(blurEffect: blurEffect)
         }
-        let color = isDarkThemeEnabled ? UIColor(rgbHex: 0x2C2C2E) : UIColor(rgbHex: 0xE9E9E9)
+        let color = UIColor { traitCollection in
+            switch (traitCollection.userInterfaceStyle, traitCollection.userInterfaceLevel) {
+            case (.dark, .elevated):
+                UIColor(rgbHex: 0x3D3D3F)
+            case (.dark, _):
+                UIColor(rgbHex: 0x2C2C2E)
+            case (_, .elevated):
+                UIColor(rgbHex: 0xEBEBEB)
+            case (_, _):
+                UIColor(rgbHex: 0xE9E9E9)
+            }
+        }
         return .solidColor(color: color)
     }
 
@@ -427,6 +445,7 @@ extension ConversationStyle: Equatable {
             lhs.fullWidthGutterLeading == rhs.fullWidthGutterLeading &&
             lhs.fullWidthGutterTrailing == rhs.fullWidthGutterTrailing &&
             lhs.textInsets == rhs.textInsets &&
+            lhs.textInsetBottomBelowBodyText == rhs.textInsetBottomBelowBodyText &&
             lhs.lastTextLineAxis == rhs.lastTextLineAxis &&
             lhs.chatColorSetting == rhs.chatColorSetting
     }
@@ -448,6 +467,7 @@ extension ConversationStyle: CustomDebugStringConvertible {
             "fullWidthGutterLeading: \(fullWidthGutterLeading), " +
             "fullWidthGutterTrailing: \(fullWidthGutterTrailing), " +
             "textInsets: \(textInsets), " +
+            "textInsetBottomBelowBodyText: \(textInsetBottomBelowBodyText), " +
             "lastTextLineAxis: \(lastTextLineAxis), " +
             "chatColor: \(chatColorSetting), " +
             "]"

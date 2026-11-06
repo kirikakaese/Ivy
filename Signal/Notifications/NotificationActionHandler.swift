@@ -214,7 +214,7 @@ public class NotificationActionHandler {
                 continuation.resume()
             }
         }
-        SignalApp.shared.showMyStories(animated: UIApplication.shared.applicationState == .active)
+        SignalApp.shared.showMyStories(animated: CurrentAppContext().isMainAppAndActiveIsolated)
     }
 
     @MainActor
@@ -226,7 +226,7 @@ public class NotificationActionHandler {
         SignalApp.shared.presentConversationForThread(
             threadUniqueId: threadId,
             focusMessageId: userInfo.messageId,
-            animated: UIApplication.shared.applicationState == .active,
+            animated: CurrentAppContext().isMainAppAndActiveIsolated,
         )
     }
 
@@ -237,7 +237,7 @@ public class NotificationActionHandler {
         // it animate in from the homescreen.
         SignalApp.shared.presentConversationAndScrollToFirstUnreadMessage(
             threadUniqueId: uniqueId,
-            animated: UIApplication.shared.applicationState == .active,
+            animated: CurrentAppContext().isMainAppAndActiveIsolated,
         )
     }
 

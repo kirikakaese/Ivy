@@ -15,6 +15,7 @@ import UIKit
 @MainActor
 struct ContactSharingPickerViewModelTests {
 
+    private let contactManager = FakeContactsManager()
     private let db = InMemoryDB()
     private let nicknameRecordStore = NicknameRecordStoreImpl()
     private let notificationCenter = NotificationCenter()
@@ -78,8 +79,7 @@ struct ContactSharingPickerViewModelTests {
     @Test
     func testBlockedRecipientsAreExcluded() async throws {
         addContact(named: "Alice")
-        let blocked = addContact(named: "Bob")
-        providers.blockedRecipientIds.insert(blocked.id)
+        addContact(named: "Bob", isBlocked: true)
 
         let viewModel = makeViewModel()
         viewModel.loadData()
@@ -100,14 +100,26 @@ struct ContactSharingPickerViewModelTests {
     }
 
     @Test
-    func testARegisteredRecipientShowsTheContactIcon() async throws {
+    func testACardMatchedToARegisteredRecipientShowsTheContactIcon() async throws {
+        addContact(named: "Alice", phoneNumber: "+16505550101")
+        providers.systemContacts = [makeSystemContact(givenName: "Alice", phoneNumber: "+16505550101")]
+
+        let viewModel = makeViewModel()
+        viewModel.loadData()
+
+        let row = try #require(try await displayedRows(of: viewModel).rows.first)
+        #expect(row.shouldShowContactIcon, "An address book entry with an ACI to share, so the row is marked.")
+    }
+
+    @Test
+    func testASignalOnlyRowShowsNoContactIcon() async throws {
         addContact(named: "Alice")
 
         let viewModel = makeViewModel()
         viewModel.loadData()
 
         let row = try #require(try await displayedRows(of: viewModel).rows.first)
-        #expect(row.shouldShowContactIcon, "There's an ACI to share, so the row is marked.")
+        #expect(!row.shouldShowContactIcon, "There's an ACI to share, but no address book entry.")
     }
 
     @Test
@@ -285,8 +297,7 @@ struct ContactSharingPickerViewModelTests {
     @Test
     func testABlockedRecipientsCardIsExcludedToo() async throws {
         addContact(named: "Alice")
-        let blocked = addContact(named: "Bob", phoneNumber: "+16505550101")
-        providers.blockedRecipientIds.insert(blocked.id)
+        addContact(named: "Bob", phoneNumber: "+16505550101", isBlocked: true)
         providers.systemContacts = [
             makeSystemContact(givenName: "Bobby", phoneNumber: "+16505550101"),
         ]
@@ -317,8 +328,7 @@ struct ContactSharingPickerViewModelTests {
 
     @Test
     func testAnUnrelatedCardSurvivesAnExclusion() async throws {
-        let blocked = addContact(named: "Bob", phoneNumber: "+16505550101")
-        providers.blockedRecipientIds.insert(blocked.id)
+        addContact(named: "Bob", phoneNumber: "+16505550101", isBlocked: true)
         providers.systemContacts = [
             makeSystemContact(givenName: "Bobby", phoneNumber: "+16505550101"),
             makeSystemContact(givenName: "Dave", phoneNumber: "+16505550199"),
@@ -511,7 +521,7 @@ struct ContactSharingPickerViewModelTests {
         viewModel.loadData()
         providers.contactsAuthorizationStatus = .authorized
         providers.systemContacts = [makeSystemContact(givenName: "Dave", phoneNumber: "+16505550199")]
-        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.post(name: .OWSApplicationDidBecomeActive, object: nil)
 
         let displayedRows = try await displayedRows(of: viewModel)
         #expect(displayedRows.contactsAccessPrompt == nil)
@@ -522,7 +532,7 @@ struct ContactSharingPickerViewModelTests {
     func testBecomingActiveDoesNotReloadWhenContactsAuthorizationIsUnchanged() {
         let viewModel = makeViewModel()
         viewModel.loadData()
-        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.post(name: .OWSApplicationDidBecomeActive, object: nil)
 
         #expect(providers.fetchSystemContactsCount == 1)
     }
@@ -563,7 +573,7 @@ struct ContactSharingPickerViewModelTests {
 
         let notificationCenter = notificationCenter
         providers.onRequestContactsAccess = {
-            notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+            notificationCenter.post(name: .OWSApplicationDidBecomeActive, object: nil)
         }
 
         let viewModel = makeViewModel()
@@ -698,6 +708,46 @@ struct ContactSharingPickerViewModelTests {
 
         #expect(providers.fetchSystemContactsCount == 1)
         #expect(try await names(of: viewModel) == ["Alice", "Dave"])
+    }
+
+    // MARK: - Avatars
+
+    @Test
+    func testAMergedRowShowsTheCardsPhoto() async throws {
+        let cardImageData = makeImageData(color: .red)
+        addContact(named: "Alice", phoneNumber: "+16505550101")
+        providers.systemContacts = [
+            makeSystemContact(
+                givenName: "Alicia",
+                phoneNumber: "+16505550101",
+                isInAddressBook: true,
+                imageData: cardImageData,
+            ),
+        ]
+
+        let viewModel = makeViewModel()
+        viewModel.loadData()
+
+        let row = try #require(try await displayedRows(of: viewModel).rows.first)
+        let avatarImage = try #require(viewModel.avatarImage(forRow: row, diameterPoints: 36))
+        #expect(avatarImage.pngData() == UIImage(data: cardImageData)?.pngData())
+    }
+
+    @Test
+    func testAMergedRowOffersTheRecipientsSignalPhoto() async throws {
+        let signalImageData = makeImageData(color: .blue)
+        let recipient = addContact(named: "Alice", phoneNumber: "+16505550101")
+        let userProfile = makeUserProfile(givenName: "Alice", familyName: "Adams")
+        providers.userProfiles[recipient.id] = userProfile
+        providers.signalAvatarData[userProfile.uniqueId] = signalImageData
+        providers.systemContacts = [
+            makeSystemContact(givenName: "Alicia", phoneNumber: "+16505550101"),
+        ]
+
+        let viewModel = makeViewModel()
+        viewModel.loadData()
+
+        #expect(try await contactShareDraft(forFirstRowOf: viewModel).signalAvatarImageData == signalImageData)
     }
 
     // MARK: - Sharing
@@ -915,9 +965,8 @@ struct ContactSharingPickerViewModelTests {
         let comparableValueConfig = comparableValueConfig
         return ContactSharingPickerViewModel(
             avatarBuilder: AvatarBuilder(appReadiness: AppReadinessMock()),
-            blockedRecipientIdentifiersProvider: { _ in providers.blockedRecipientIds },
             comparableValueConfigProvider: { comparableValueConfig },
-            contactManager: FakeContactsManager(),
+            contactManager: contactManager,
             contactsAccessRequester: { providers.requestContactsAccess() },
             contactsAuthorizationStatusProvider: { providers.contactsAuthorizationStatus },
             db: db,
@@ -929,12 +978,8 @@ struct ContactSharingPickerViewModelTests {
             profileManager: OWSFakeProfileManager(),
             recipientDatabaseTable: recipientDatabaseTable,
             recipientHidingManager: recipientHidingManager,
-            recipientManager: SignalRecipientManagerImpl(
-                phoneNumberVisibilityFetcher: MockPhoneNumberVisibilityFetcher(),
-                recipientDatabaseTable: RecipientDatabaseTable(),
-                storageServiceManager: FakeStorageServiceManager(),
-            ),
             searchDebounceInterval: .zero,
+            signalAvatarDataProvider: { providers.signalAvatarData[$0.uniqueId] },
             systemContactsProvider: { _ in providers.fetchSystemContacts() },
             systemContactsRefresher: { providers.refreshSystemContacts() },
             tsAccountManager: MockTSAccountManager(),
@@ -970,13 +1015,14 @@ struct ContactSharingPickerViewModelTests {
         phoneNumber: String? = nil,
         isRegistered: Bool = true,
         isWhitelisted: Bool = true,
+        isBlocked: Bool = false,
     ) -> SignalRecipient {
         let recipient = db.write { tx in
             try! SignalRecipient.insertRecord(
                 aci: aci,
                 phoneNumber: phoneNumber.flatMap { E164($0) },
                 deviceIds: isRegistered ? [DeviceId(validating: 1)!] : [],
-                status: isWhitelisted ? .whitelisted : .unspecified,
+                status: isBlocked ? .blocked : isWhitelisted ? .whitelisted : .unspecified,
                 tx: tx,
             )
         }
@@ -1000,6 +1046,13 @@ struct ContactSharingPickerViewModelTests {
                 NicknameRecord(recipient: recipient, givenName: "Ali", familyName: "Cat", note: note),
                 tx: tx,
             )
+        }
+    }
+
+    private func makeImageData(color: UIColor) -> Data {
+        UIGraphicsImageRenderer(size: .square(4)).pngData { context in
+            color.setFill()
+            context.fill(CGRect(origin: .zero, size: .square(4)))
         }
     }
 
@@ -1039,6 +1092,8 @@ struct ContactSharingPickerViewModelTests {
         phoneNumber: String? = nil,
         phoneNumbers: [String] = [],
         emailAddresses: [String] = [],
+        isInAddressBook: Bool = false,
+        imageData: Data? = nil,
     ) -> SystemContact {
         let cnContact = CNMutableContact()
         cnContact.givenName = givenName
@@ -1051,6 +1106,10 @@ struct ContactSharingPickerViewModelTests {
         cnContact.emailAddresses = emailAddresses.map {
             CNLabeledValue(label: CNLabelHome, value: $0 as NSString)
         }
+        cnContact.imageData = imageData
+        if isInAddressBook {
+            contactManager.mockCNContacts[cnContact.identifier] = cnContact
+        }
         return SystemContact(cnContact: cnContact)
     }
 }
@@ -1059,7 +1118,6 @@ struct ContactSharingPickerViewModelTests {
 
 private final class StubbedProviders {
 
-    var blockedRecipientIds: Set<SignalRecipient.RowId> = []
     var contactsAuthorizationStatus: RawContactAuthorizationStatus = .authorized
     var contactsAuthorizationStatusAfterAccessRequest: RawContactAuthorizationStatus?
     var onRequestContactsAccess: (() -> Void)?
@@ -1069,6 +1127,9 @@ private final class StubbedProviders {
     var displayNames: [SignalRecipient.RowId: DisplayName] = [:]
 
     var userProfiles: [SignalRecipient.RowId: OWSUserProfile] = [:]
+
+    /// Keyed by `OWSUserProfile.uniqueId`.
+    var signalAvatarData: [String: Data] = [:]
 
     private(set) var displayNamesFetchCount = 0
     private(set) var fetchSystemContactsCount = 0

@@ -118,7 +118,7 @@ public struct IvyImportantMessage: Sendable {
             }
         }
 
-        let pinnedThreadIds = Set(DependenciesBridge.shared.pinnedThreadManager.pinnedThreads(tx: tx).map(\.uniqueId))
+        let pinnedThreadIds = Set(DependenciesBridge.shared.pinnedThreadManager.pinnedThreads(filterToVisible: true, tx: tx).map(\.uniqueId))
         let importantThreadIds = Set(importantChats.compactMap { $0.thread(tx: tx)?.uniqueId })
         var chatsLookedAt = 0
         ThreadFinder().enumerateVisibleThreads(isArchived: false, transaction: tx) { thread in

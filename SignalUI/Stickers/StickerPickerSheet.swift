@@ -93,13 +93,13 @@ extension StickerPickerSheet: StickerPickerViewDelegate {
         return false
     }
 
-    func presentManageStickersView(for stickerPickerView: StickerPickerView) {
+    public func presentManageStickersView(for stickerPickerView: StickerPickerView) {
         guard let sheetDelegate else { return }
         let manageStickersViewController = sheetDelegate.makeManageStickersViewController(for: self)
         presentFormSheet(manageStickersViewController, animated: true)
     }
 
-    public func didSelectSticker(_ stickerInfo: StickerInfo) {
-        pickerDelegate?.didSelectSticker(stickerInfo)
+    public func didSelectSticker(_ stickerMetadata: any StickerMetadata) {
+        pickerDelegate?.didSelectSticker(stickerMetadata)
     }
 }

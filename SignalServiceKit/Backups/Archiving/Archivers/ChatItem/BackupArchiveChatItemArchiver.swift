@@ -6,17 +6,17 @@
 import Foundation
 import LibSignalClient
 
-public extension BackupArchive {
+extension BackupArchive {
 
     /// An identifier for a ``BackupProto_ChatItem`` backup frame.
     struct ChatItemId: Hashable {
         let value: UInt64
 
-        public init(backupProtoChatItem: BackupProto_ChatItem) {
+        init(backupProtoChatItem: BackupProto_ChatItem) {
             self.value = backupProtoChatItem.dateSent
         }
 
-        public init(interaction: TSInteraction) {
+        init(interaction: TSInteraction) {
             self.value = interaction.timestamp
         }
     }
@@ -24,7 +24,7 @@ public extension BackupArchive {
 
 // MARK: -
 
-public class BackupArchiveChatItemArchiver: BackupArchiveProtoStreamWriter {
+class BackupArchiveChatItemArchiver {
     typealias ChatItemId = BackupArchive.ChatItemId
     typealias ArchiveMultiFrameResult = BackupArchive.ArchiveMultiFrameResult
     typealias RestoreFrameResult = BackupArchive.RestoreFrameResult
@@ -136,8 +136,7 @@ public class BackupArchiveChatItemArchiver: BackupArchiveProtoStreamWriter {
         var completeFailureError: BackupArchive.FatalArchivingError?
         var partialFailures = [ArchiveFrameError]()
 
-        try context.bencher.wrapEnumeration(
-            tx: context.tx,
+        try context.wrapEnumeration(
             enumerationBlock: { tx, block throws(CancellationError) in
                 var cursor = FailIfThrowsRecordCursor {
                     try InteractionRecord.fetchCursor(tx.database)
@@ -313,8 +312,9 @@ public class BackupArchiveChatItemArchiver: BackupArchiveProtoStreamWriter {
         // writing that disallowed content to the stream.
         sanitizeVoiceNotesWithText(details: &details)
 
-        let error: ArchiveFrameError? = Self.writeFrameToStream(
-            stream,
+        let error: ArchiveFrameError? = context.writeFrame(
+            toStream: stream,
+            flush: .afterInterval,
             frameBencher: frameBencher,
         ) {
             let chatItem = buildChatItem(

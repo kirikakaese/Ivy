@@ -5,7 +5,7 @@
 
 import GRDB
 
-public extension BackupArchive {
+extension BackupArchive {
     /// An identifier for a ``BackupProto_StickerPack`` backup frame.
     struct StickerPackId {
         let value: Data
@@ -18,7 +18,7 @@ public extension BackupArchive {
 
 // MARK: -
 
-public class BackupArchiveStickerPackArchiver: BackupArchiveProtoStreamWriter {
+class BackupArchiveStickerPackArchiver {
     typealias StickerPackId = BackupArchive.StickerPackId
     typealias ArchiveMultiFrameResult = BackupArchive.ArchiveMultiFrameResult
     typealias ArchiveFrameError = BackupArchive.ArchiveFrameError
@@ -50,8 +50,7 @@ public class BackupArchiveStickerPackArchiver: BackupArchiveProtoStreamWriter {
         var handledPacks = Set<Data>()
 
         // Iterate over installed sticker packs...
-        try context.bencher.wrapEnumeration(
-            tx: context.tx,
+        try context.wrapEnumeration(
             enumerationBlock: { tx, block throws(CancellationError) in
                 var cursor = FailIfThrowsRecordCursor {
                     try StickerPackRecord
@@ -66,8 +65,9 @@ public class BackupArchiveStickerPackArchiver: BackupArchiveProtoStreamWriter {
                     return true
                 }
 
-                let maybeError: ArchiveFrameError? = Self.writeFrameToStream(
-                    stream,
+                let maybeError: ArchiveFrameError? = context.writeFrame(
+                    toStream: stream,
+                    flush: nil,
                     frameBencher: frameBencher,
                 ) {
                     var stickerPack = BackupProto_StickerPack()
@@ -91,8 +91,7 @@ public class BackupArchiveStickerPackArchiver: BackupArchiveProtoStreamWriter {
         )
 
         // Iterate over any restored sticker packs that have yet to be downloaded via StickerManager.
-        try context.bencher.wrapEnumeration(
-            tx: context.tx,
+        try context.wrapEnumeration(
             enumerationBlock: { tx, block throws(CancellationError) in
                 try backupStickerPackDownloadStore.iterateAllEnqueued(tx: tx, block: block)
             },
@@ -101,8 +100,9 @@ public class BackupArchiveStickerPackArchiver: BackupArchiveProtoStreamWriter {
                     return true
                 }
 
-                let maybeError: ArchiveFrameError? = Self.writeFrameToStream(
-                    stream,
+                let maybeError: ArchiveFrameError? = context.writeFrame(
+                    toStream: stream,
+                    flush: nil,
                     frameBencher: frameBencher,
                 ) {
                     var stickerPack = BackupProto_StickerPack()

@@ -5,9 +5,9 @@
 
 // The upstream Signal-iOS release Ivy is built on. Ivy reports exactly this
 // version to Signal's servers, in the same form as the official client
-// (8.32.0.1910). Update both values with every upstream merge.
-IVY_UPSTREAM_MARKETING_VERSION = 8.32
-IVY_UPSTREAM_BUILD_NUMBER = 1910
+// (8.35.1.1964). Update both values with every upstream merge.
+IVY_UPSTREAM_MARKETING_VERSION = 8.35.1
+IVY_UPSTREAM_BUILD_NUMBER = 1964
 
 // Counts Ivy's builds of that release, after the upstream build number
 // (1910.42). TestFlight needs a new number for every upload; CI sets it to

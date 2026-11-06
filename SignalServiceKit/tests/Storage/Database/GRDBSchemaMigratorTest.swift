@@ -1414,52 +1414,6 @@ struct GRDBSchemaMigratorTest {
         }
     }
 
-    @Test(arguments: [
-        (#"["A"]"#, keyedArchiverData(rootObject: "B"), Set(["A", "B"])),
-        (#"["A", "A"]"#, keyedArchiverData(rootObject: "A"), Set(["A"])),
-        (#"GARBAGE"#, keyedArchiverData(rootObject: "A"), Set(["A"])),
-        (#"["A"]"#, Data("GARBAGE".utf8), Set(["A"])),
-    ])
-    func testMigrateSecureValueRecovery(testCase: (oldEnclaves: String?, currentEnclave: Data?, finalEnclaves: Set<String>)) throws {
-        let databaseQueue = DatabaseQueue()
-        try databaseQueue.write { db in
-            try db.execute(
-                sql: "CREATE TABLE keyvalue (KEY TEXT NOT NULL, collection TEXT NOT NULL, VALUE BLOB NOT NULL, PRIMARY KEY (KEY, collection))",
-            )
-            try db.execute(
-                sql: "INSERT INTO keyvalue (collection, key, value) VALUES (?, ?, ?)",
-                arguments: ["SecureValueRecovery2Impl", "ArbitraryKey", #"["C"]"#],
-            )
-            if let oldEnclaves = testCase.oldEnclaves {
-                try db.execute(
-                    sql: "INSERT INTO keyvalue (collection, key, value) VALUES (?, ?, ?)",
-                    arguments: ["SecureValueRecovery2Impl", "OldEnclavesToDeleteFrom", Data(oldEnclaves.utf8)],
-                )
-            }
-            try db.execute(
-                sql: "INSERT INTO keyvalue (collection, key, value) VALUES (?, ?, ?)",
-                arguments: ["kOWSKeyBackupService_Keys", "ArbitraryKey", Self.keyedArchiverData(rootObject: "C")],
-            )
-            if let currentEnclave = testCase.currentEnclave {
-                try db.execute(
-                    sql: "INSERT INTO keyvalue (collection, key, value) VALUES (?, ?, ?)",
-                    arguments: ["kOWSKeyBackupService_Keys", "svr2_mrenclaveStringValue", currentEnclave],
-                )
-            }
-        }
-
-        try databaseQueue.write { db in
-            let tx = DBWriteTransaction(database: db)
-            defer { tx.finalizeTransaction() }
-            try GRDBSchemaMigrator.migrateSecureValueRecovery(tx: tx)
-        }
-
-        let potentialEnclaves = try databaseQueue.read { db in
-            return try String.fetchAll(db, sql: "SELECT key FROM keyvalue WHERE collection = ?", arguments: ["SVR.Potential"])
-        }
-        #expect(Set(potentialEnclaves) == testCase.finalEnclaves)
-    }
-
     @Test
     func testAddMimeTypeToMessageAttachmentReference() throws {
         let databaseQueue = DatabaseQueue()
@@ -2862,6 +2816,299 @@ struct GRDBSchemaMigratorTest {
                 "OWSContactsManager.skipGroupAvatarBlurByGroupIdStore.\(groupId1.serialize().hexadecimalString)",
             ]
             #expect(remainingValues == expectedValues)
+        }
+    }
+
+    @Test
+    func testMigrateLegacyMentionNotificationMode() throws {
+        let databaseQueue = DatabaseQueue()
+        try databaseQueue.write { db in
+            try db.execute(sql: """
+            CREATE TABLE "model_TSThread" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+              "mentionNotificationMode" INTEGER,
+              "shouldNotifyForMentionsWhenMuted" BOOLEAN,
+              "shouldNotifyForRepliesWhenMuted" BOOLEAN
+            );
+            """)
+
+            let rows: [(mentionNotificationMode: Int?, mentions: Bool?, replies: Bool?)] = [
+                (nil, nil, nil),
+                (0, nil, nil),
+                (1, nil, nil),
+                (2, nil, nil),
+                (2, true, nil),
+                (2, nil, true),
+            ]
+            for (index, row) in rows.enumerated() {
+                try db.execute(
+                    sql: """
+                    INSERT INTO "model_TSThread" (
+                        "id", "mentionNotificationMode", "shouldNotifyForMentionsWhenMuted", "shouldNotifyForRepliesWhenMuted"
+                    ) VALUES (?, ?, ?, ?)
+                    """,
+                    arguments: [index + 1, row.mentionNotificationMode, row.mentions, row.replies],
+                )
+            }
+
+            do {
+                let tx = DBWriteTransaction(database: db)
+                defer { tx.finalizeTransaction() }
+                try GRDBSchemaMigrator.migrateLegacyMentionNotificationMode(tx: tx)
+            }
+
+            let results = try Row.fetchAll(
+                db,
+                sql: """
+                SELECT "shouldNotifyForMentionsWhenMuted", "shouldNotifyForRepliesWhenMuted" FROM "model_TSThread" ORDER BY "id"
+                """,
+            ).map { row -> [Bool?] in
+                [row["shouldNotifyForMentionsWhenMuted"], row["shouldNotifyForRepliesWhenMuted"]]
+            }
+            let expectedResults: [[Bool?]] = [
+                [nil, nil],
+                [nil, nil],
+                [nil, nil],
+                [false, false],
+                [true, false],
+                [false, true],
+            ]
+            #expect(results == expectedResults)
+        }
+    }
+
+    @Test(arguments: [
+        (isRecipientBlockedAndWhitelisted: false, isGroupBlockedAndWhitelisted: false, shouldRotate: false),
+        (isRecipientBlockedAndWhitelisted: true, isGroupBlockedAndWhitelisted: false, shouldRotate: true),
+        (isRecipientBlockedAndWhitelisted: false, isGroupBlockedAndWhitelisted: true, shouldRotate: true),
+    ])
+    func testMigrateBlocked(testCase: (
+        isRecipientBlockedAndWhitelisted: Bool,
+        isGroupBlockedAndWhitelisted: Bool,
+        shouldRotate: Bool,
+    )) throws {
+        let groupId1 = try GroupIdentifier(contents: Data(repeating: 1, count: 32))
+        let groupId2 = Data(repeating: 2, count: 16)
+        let groupId3 = try GroupIdentifier(contents: Data(repeating: 3, count: 32))
+        let groupId4 = try GroupIdentifier(contents: Data(repeating: 4, count: 32))
+        let groupId5 = Data(repeating: 5, count: 16)
+
+        let databaseQueue = DatabaseQueue()
+        try databaseQueue.write { db in
+            try db.execute(sql: """
+            CREATE TABLE "keyvalue" (
+              "collection" TEXT NOT NULL,
+              "key" TEXT NOT NULL,
+              "value" BLOB NOT NULL,
+              PRIMARY KEY ("collection", "key")
+            );
+
+            CREATE TABLE "model_SignalRecipient" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+              "status" INTEGER NOT NULL DEFAULT 0
+            );
+
+            CREATE TABLE "GroupRecord" (
+              "rowId" INTEGER PRIMARY KEY NOT NULL,
+              "groupId" BLOB NOT NULL UNIQUE,
+              "masterKey" BLOB
+            );
+
+            CREATE TABLE "BlockedGroup" (
+              "groupId" BLOB PRIMARY KEY NOT NULL
+            ) WITHOUT ROWID;
+
+            CREATE TABLE "BlockedRecipient" (
+              "recipientId" INTEGER PRIMARY KEY REFERENCES "model_SignalRecipient" (
+                "id"
+              ) ON DELETE CASCADE ON UPDATE CASCADE
+            );
+            """)
+
+            try db.execute(
+                sql: """
+                INSERT INTO "model_SignalRecipient" (
+                    "id", "status"
+                ) VALUES (?, ?)
+                """,
+                arguments: [1, 0],
+            )
+
+            try db.execute(
+                sql: """
+                INSERT INTO "model_SignalRecipient" (
+                    "id", "status"
+                ) VALUES (?, ?)
+                """,
+                arguments: [2, testCase.isRecipientBlockedAndWhitelisted ? 1 : 0],
+            )
+
+            try db.execute(
+                sql: """
+                INSERT INTO "model_SignalRecipient" (
+                    "id", "status"
+                ) VALUES (?, ?)
+                """,
+                arguments: [3, 1],
+            )
+
+            try db.execute(
+                sql: """
+                INSERT INTO "BlockedRecipient" (
+                    "recipientId"
+                ) VALUES (?)
+                """,
+                arguments: [2],
+            )
+
+            try db.execute(
+                sql: """
+                INSERT INTO "GroupRecord" (
+                    "rowId", "groupId"
+                ) VALUES (?, ?)
+                """,
+                arguments: [1, groupId1.serialize()],
+            )
+
+            try db.execute(
+                sql: """
+                INSERT INTO "GroupRecord" (
+                    "rowId", "groupId"
+                ) VALUES (?, ?)
+                """,
+                arguments: [2, groupId2],
+            )
+
+            try db.execute(
+                sql: """
+                INSERT INTO "GroupRecord" (
+                    "rowId", "groupId"
+                ) VALUES (?, ?)
+                """,
+                arguments: [3, groupId3.serialize()],
+            )
+
+            try db.execute(
+                sql: """
+                INSERT INTO "keyvalue" (
+                    "collection", "key", "value"
+                ) VALUES (?, ?, ?)
+                """,
+                arguments: ["kOWSProfileManager_GroupWhitelistCollection", groupId2.hexadecimalString, 0],
+            )
+
+            try db.execute(
+                sql: """
+                INSERT INTO "keyvalue" (
+                    "collection", "key", "value"
+                ) VALUES (?, ?, ?)
+                """,
+                arguments: ["kOWSProfileManager_GroupWhitelistCollection", groupId4.serialize().hexadecimalString, 0],
+            )
+
+            if testCase.isGroupBlockedAndWhitelisted {
+                try db.execute(
+                    sql: """
+                    INSERT INTO "keyvalue" (
+                        "collection", "key", "value"
+                    ) VALUES (?, ?, ?)
+                    """,
+                    arguments: ["kOWSProfileManager_GroupWhitelistCollection", groupId3.serialize().hexadecimalString, 1],
+                )
+
+                try db.execute(
+                    sql: """
+                    INSERT INTO "keyvalue" (
+                        "collection", "key", "value"
+                    ) VALUES (?, ?, ?)
+                    """,
+                    arguments: ["kOWSProfileManager_GroupWhitelistCollection", groupId5.hexadecimalString, 1],
+                )
+            }
+
+            try db.execute(
+                sql: """
+                INSERT INTO "BlockedGroup" (
+                    "groupId"
+                ) VALUES (?)
+                """,
+                arguments: [groupId3.serialize()],
+            )
+
+            try db.execute(
+                sql: """
+                INSERT INTO "BlockedGroup" (
+                    "groupId"
+                ) VALUES (?)
+                """,
+                arguments: [groupId5],
+            )
+
+            do {
+                let tx = DBWriteTransaction(database: db)
+                defer { tx.finalizeTransaction() }
+                try GRDBSchemaMigrator.addGroupStatus(tx: tx)
+                try GRDBSchemaMigrator.migrateBlocked(tx: tx)
+            }
+
+            let newTriggerData = try Data.fetchOne(
+                db,
+                sql: """
+                SELECT "value" FROM "keyvalue" WHERE "collection" = 'kOWSProfileManager_Metadata' AND "key" = 'leaveGroupTriggerTimestampKey'
+                """,
+            )
+            #expect((newTriggerData != nil) == testCase.shouldRotate)
+
+            var recipientRecords = try Row.fetchAll(db, sql: "SELECT * FROM model_SignalRecipient ORDER BY id")[...]
+            do {
+                let recipientRecord = recipientRecords.removeFirst()
+                #expect(recipientRecord["id"] as Int64 == 1)
+                #expect(recipientRecord["status"] as Int64 == 0)
+            }
+            do {
+                let recipientRecord = recipientRecords.removeFirst()
+                #expect(recipientRecord["id"] as Int64 == 2)
+                #expect(recipientRecord["status"] as Int64 == 2)
+            }
+            do {
+                let recipientRecord = recipientRecords.removeFirst()
+                #expect(recipientRecord["id"] as Int64 == 3)
+                #expect(recipientRecord["status"] as Int64 == 1)
+            }
+            #expect(recipientRecords.isEmpty)
+
+            var groupRecords = try Row.fetchAll(db, sql: "SELECT * FROM GroupRecord ORDER BY rowId")[...]
+            do {
+                let groupRecord = groupRecords.removeFirst()
+                #expect(groupRecord["rowId"] as Int64 == 1)
+                #expect(groupRecord["groupId"] as Data? == groupId1.serialize())
+                #expect(groupRecord["status"] as Int64 == 0)
+            }
+            do {
+                let groupRecord = groupRecords.removeFirst()
+                #expect(groupRecord["rowId"] as Int64 == 2)
+                #expect(groupRecord["groupId"] as Data? == groupId2)
+                #expect(groupRecord["status"] as Int64 == 1)
+            }
+            do {
+                let groupRecord = groupRecords.removeFirst()
+                #expect(groupRecord["rowId"] as Int64 == 3)
+                #expect(groupRecord["groupId"] as Data? == groupId3.serialize())
+                #expect(groupRecord["status"] as Int64 == 2)
+            }
+            do {
+                let groupRecord = groupRecords.removeFirst()
+                #expect(groupRecord["rowId"] as Int64 == 4)
+                #expect(groupRecord["groupId"] as Data? == groupId4.serialize())
+                #expect(groupRecord["status"] as Int64 == 1)
+            }
+            do {
+                let groupRecord = groupRecords.removeFirst()
+                #expect(groupRecord["rowId"] as Int64 == 5)
+                #expect(groupRecord["groupId"] as Data? == groupId5)
+                #expect(groupRecord["status"] as Int64 == 2)
+            }
+            #expect(groupRecords.isEmpty)
         }
     }
 }

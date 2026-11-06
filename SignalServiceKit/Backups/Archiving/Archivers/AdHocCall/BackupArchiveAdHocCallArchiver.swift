@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-public extension BackupArchive {
+extension BackupArchive {
 
     /// The ringRTC-provided call id for a call, shared across participating clients
     /// and persisted to the backup.
@@ -30,7 +30,7 @@ public extension BackupArchive {
 
 // MARK: -
 
-public class BackupArchiveAdHocCallArchiver: BackupArchiveProtoStreamWriter {
+class BackupArchiveAdHocCallArchiver {
     typealias AdHocCallAppId = BackupArchive.AdHocCallAppId
     typealias AdHocCallId = BackupArchive.AdHocCallId
     typealias ArchiveMultiFrameResult = BackupArchive.ArchiveMultiFrameResult
@@ -68,8 +68,7 @@ public class BackupArchiveAdHocCallArchiver: BackupArchiveProtoStreamWriter {
     ) throws(CancellationError) -> ArchiveMultiFrameResult {
         var partialErrors = [ArchiveFrameError]()
 
-        try context.bencher.wrapEnumeration(
-            tx: context.tx,
+        try context.wrapEnumeration(
             enumerationBlock: { tx, block throws(CancellationError) in
                 try callRecordStore.enumerateAdHocCallRecords(tx: tx, block: block)
             },
@@ -103,8 +102,9 @@ public class BackupArchiveAdHocCallArchiver: BackupArchiveProtoStreamWriter {
                 }
                 adHocCallProto.recipientID = recipientId.value
 
-                let error: ArchiveFrameError? = Self.writeFrameToStream(
-                    stream,
+                let error: ArchiveFrameError? = context.writeFrame(
+                    toStream: stream,
+                    flush: nil,
                     frameBencher: frameBencher,
                 ) {
                     var frame = BackupProto_Frame()

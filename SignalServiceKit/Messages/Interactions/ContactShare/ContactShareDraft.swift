@@ -5,7 +5,6 @@
 
 public import Contacts
 public import LibSignalClient
-public import UIKit
 
 public class ContactShareDraft {
     public var name: OWSContactName
@@ -15,49 +14,53 @@ public class ContactShareDraft {
     public var aci: Aci?
     public var signalNickname: PersonNameComponents?
     public var signalNote: String?
+    public var systemContactAvatarImageData: Data?
+    public var signalAvatarImageData: Data?
+
+    /// The avatar attachment of a forwarded contact share. Reused when sending.
     public var existingAvatarAttachment: ReferencedAttachment?
 
-    private var cachedAvatarImage: UIImage?
-    public var avatarImageData: Data? {
+    /// The avatar sent with the contact, or `nil` to send none.
+    public var selectedAvatarImageData: Data? {
         didSet {
-            self.cachedAvatarImage = nil
             existingAvatarAttachment = nil
         }
     }
 
-    public var avatarImage: UIImage? {
-        if self.cachedAvatarImage != nil {
-            return self.cachedAvatarImage
-        }
-
-        guard let avatarImageData = self.avatarImageData else {
-            return nil
-        }
-
-        self.cachedAvatarImage = UIImage(data: avatarImageData)
-        return cachedAvatarImage
-    }
-
-    public static func load(
+    /// Loads a contact share draft, also offering the Signal profile photo of a Signal contact
+    /// matching one of its phone numbers.
+    public static func loadWithMatchingSignalAvatar(
         cnContact: CNContact,
-        signalContact: @autoclosure () -> SystemContact,
+        signalContact: SystemContact,
         contactManager: any ContactManager,
         phoneNumberUtil: PhoneNumberUtil,
         profileManager: any ProfileManager,
+        recipientHidingManager: any RecipientHidingManager,
         recipientManager: any SignalRecipientManager,
         tsAccountManager: any TSAccountManager,
         tx: DBReadTransaction,
     ) -> ContactShareDraft {
-        let avatarData = loadAvatarData(
+        return load(
             cnContact: cnContact,
-            signalContact: signalContact(),
             contactManager: contactManager,
-            phoneNumberUtil: phoneNumberUtil,
-            profileManager: profileManager,
-            recipientManager: recipientManager,
-            tsAccountManager: tsAccountManager,
-            tx: tx,
+            signalAvatarData: loadSignalAvatarData(
+                signalContact: signalContact,
+                phoneNumberUtil: phoneNumberUtil,
+                profileManager: profileManager,
+                recipientHidingManager: recipientHidingManager,
+                recipientManager: recipientManager,
+                tsAccountManager: tsAccountManager,
+                tx: tx,
+            ),
         )
+    }
+
+    public static func load(
+        cnContact: CNContact,
+        contactManager: any ContactManager,
+        signalAvatarData: Data?,
+    ) -> ContactShareDraft {
+        let systemContactAvatarData = contactManager.avatarData(for: cnContact)
         return ContactShareDraft(
             name: OWSContactName(cnContact: cnContact),
             addresses: cnContact.postalAddresses.map(OWSContactAddress.init(cnLabeledValue:)),
@@ -67,37 +70,39 @@ public class ContactShareDraft {
             signalNickname: nil,
             signalNote: nil,
             existingAvatarAttachment: nil,
-            avatarImageData: avatarData,
+            systemContactAvatarImageData: systemContactAvatarData,
+            signalAvatarImageData: signalAvatarData,
+            selectedAvatarImageData: systemContactAvatarData ?? signalAvatarData,
         )
     }
 
-    private static func loadAvatarData(
-        cnContact: CNContact,
-        signalContact: @autoclosure () -> SystemContact,
-        contactManager: any ContactManager,
+    private static func loadSignalAvatarData(
+        signalContact: SystemContact,
         phoneNumberUtil: PhoneNumberUtil,
         profileManager: any ProfileManager,
+        recipientHidingManager: any RecipientHidingManager,
         recipientManager: any SignalRecipientManager,
         tsAccountManager: any TSAccountManager,
         tx: DBReadTransaction,
     ) -> Data? {
-        if let systemAvatarImageData = contactManager.avatarData(for: cnContact) {
-            return systemAvatarImageData
-        }
-
         guard let localIdentifiers = tsAccountManager.localIdentifiers(tx: tx) else {
             owsFailDebug("can't fetch profile avatar unless registered at some point")
             return nil
         }
         let canonicalPhoneNumbers = FetchedSystemContacts.parsePhoneNumbers(
-            for: signalContact(),
+            for: signalContact,
             phoneNumberUtil: phoneNumberUtil,
             localPhoneNumber: E164(localIdentifiers.phoneNumber).map(CanonicalPhoneNumber.init(nonCanonicalPhoneNumber:)),
         )
         for canonicalPhoneNumber in canonicalPhoneNumbers {
             for phoneNumber in [canonicalPhoneNumber.rawValue] + canonicalPhoneNumber.alternatePhoneNumbers() {
                 let recipient = recipientManager.fetchRecipientIfPhoneNumberVisible(phoneNumber.stringValue, tx: tx)
-                guard let recipient else {
+                guard
+                    let recipient,
+                    recipient.isWhitelisted,
+                    recipient.isRegistered,
+                    !recipientHidingManager.isHiddenRecipient(recipientId: recipient.id, tx: tx)
+                else {
                     continue
                 }
                 if let avatarData = profileManager.userProfile(for: recipient.address, tx: tx)?.loadAvatarData() {
@@ -118,17 +123,21 @@ public class ContactShareDraft {
         signalNickname: PersonNameComponents?,
         signalNote: String?,
         existingAvatarAttachment: ReferencedAttachment?,
-        avatarImageData: Data?,
+        systemContactAvatarImageData: Data?,
+        signalAvatarImageData: Data?,
+        selectedAvatarImageData: Data?,
     ) {
         self.name = name
-        self.addresses = addresses
-        self.emails = emails
-        self.phoneNumbers = phoneNumbers
+        self.addresses = addresses.filter(\.isValid)
+        self.emails = emails.filter(\.isValid)
+        self.phoneNumbers = phoneNumbers.filter(\.isValid)
         self.aci = aci
         self.signalNickname = signalNickname
         self.signalNote = signalNote
         self.existingAvatarAttachment = existingAvatarAttachment
-        self.avatarImageData = avatarImageData
+        self.systemContactAvatarImageData = systemContactAvatarImageData
+        self.signalAvatarImageData = signalAvatarImageData
+        self.selectedAvatarImageData = selectedAvatarImageData
     }
 
     public func newContact(withName name: OWSContactName) -> ContactShareDraft {
@@ -142,7 +151,9 @@ public class ContactShareDraft {
             signalNickname: nil,
             signalNote: nil,
             existingAvatarAttachment: nil,
-            avatarImageData: nil,
+            systemContactAvatarImageData: nil,
+            signalAvatarImageData: nil,
+            selectedAvatarImageData: nil,
         )
     }
 
@@ -153,13 +164,7 @@ public class ContactShareDraft {
     }
 
     public var ows_isValid: Bool {
-        return OWSContact.isValid(
-            name: name,
-            phoneNumbers: phoneNumbers,
-            emails: emails,
-            addresses: addresses,
-            aci: BuildFlags.accountIdentifierSharing ? aci : nil,
-        )
+        return OWSContact.isValid(name: name)
     }
 
     public struct ForSending {

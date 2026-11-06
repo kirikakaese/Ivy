@@ -1,1 +1,1 @@
-• Esta actualización introduce una nueva opción personalizada para silenciar la aplicación. Puedes configurar fácilmente la fecha y hora exactas en las que quieres volver a recibir notificaciones de un chat concreto.
+• Ahora Signal está optimizado para iPhone Duo, así que ya puedes instalar la actualización y prepararte para la vida con dos pantallas. Además, seguiremos implementando mejoras.

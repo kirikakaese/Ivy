@@ -5,7 +5,7 @@
 
 import Contacts
 import Foundation
-import LibSignalClient
+public import LibSignalClient
 public import SignalServiceKit
 
 extension RegistrationCoordinatorImpl {
@@ -24,7 +24,6 @@ extension RegistrationCoordinatorImpl {
         public typealias StorageServiceManager = _RegistrationCoordinator_StorageServiceManagerShim
         public typealias TimeoutProvider = _RegistrationCoordinator_TimeoutProviderShim
         public typealias UDManager = _RegistrationCoordinator_UDManagerShim
-        public typealias UsernameApiClient = _RegistrationCoordinator_UsernameApiClientShim
     }
 
     public enum Wrappers {
@@ -41,7 +40,6 @@ extension RegistrationCoordinatorImpl {
         public typealias StorageServiceManager = _RegistrationCoordinator_StorageServiceManagerWrapper
         public typealias TimeoutProvider = _RegistrationCoordinator_TimeoutProviderWrapper
         public typealias UDManager = _RegistrationCoordinator_UDManagerWrapper
-        public typealias UsernameApiClient = _RegistrationCoordinator_UsernameApiClientWrapper
     }
 }
 
@@ -449,21 +447,5 @@ public class _RegistrationCoordinator_UDManagerWrapper: _RegistrationCoordinator
 
     public func shouldAllowUnrestrictedAccessLocal(transaction: DBReadTransaction) -> Bool {
         return manager.shouldAllowUnrestrictedAccessLocal(transaction: transaction)
-    }
-}
-
-// MARK: - UsernameApiClient
-
-public protocol _RegistrationCoordinator_UsernameApiClientShim {
-    func confirmReservedUsername(reservedUsername: Usernames.HashedUsername, encryptedUsernameForLink: Data, chatServiceAuth: ChatServiceAuth) async throws -> Usernames.ApiClientConfirmationResult
-}
-
-public class _RegistrationCoordinator_UsernameApiClientWrapper: _RegistrationCoordinator_UsernameApiClientShim {
-
-    private let usernameApiClient: any UsernameApiClient
-    public init(_ usernameApiClient: any UsernameApiClient) { self.usernameApiClient = usernameApiClient }
-
-    public func confirmReservedUsername(reservedUsername: Usernames.HashedUsername, encryptedUsernameForLink: Data, chatServiceAuth: ChatServiceAuth) async throws -> Usernames.ApiClientConfirmationResult {
-        return try await self.usernameApiClient.confirmReservedUsername(reservedUsername: reservedUsername, encryptedUsernameForLink: encryptedUsernameForLink, chatServiceAuth: chatServiceAuth)
     }
 }

@@ -68,7 +68,7 @@ extension AppSetup.SchemaMigrationContinuation {
     }
 
     private func shouldTruncateGrdbWal() -> Bool {
-        appContext.isMainApp && appContext.mainApplicationStateOnLaunch() != .background
+        appContext.isMainApp && !appContext.isInBackground()
     }
 }
 
@@ -102,7 +102,7 @@ extension AppSetup {
         let remoteConfigManager: (any RemoteConfigManager)?
         let signalService: (any OWSSignalServiceProtocol)?
         let storageServiceManager: (any StorageServiceManager)?
-        let syncManager: (any SyncManagerProtocol)?
+        let syncManager: (any SyncManager)?
         let systemStoryManager: (any SystemStoryManagerProtocol)?
         let versionedProfiles: (any VersionedProfiles)?
         let webSocketFactory: (any WebSocketFactory)?
@@ -123,7 +123,7 @@ extension AppSetup {
             remoteConfigManager: (any RemoteConfigManager)? = nil,
             signalService: (any OWSSignalServiceProtocol)? = nil,
             storageServiceManager: (any StorageServiceManager)? = nil,
-            syncManager: (any SyncManagerProtocol)? = nil,
+            syncManager: (any SyncManager)? = nil,
             systemStoryManager: (any SystemStoryManagerProtocol)? = nil,
             versionedProfiles: (any VersionedProfiles)? = nil,
             webSocketFactory: (any WebSocketFactory)? = nil,
@@ -287,10 +287,7 @@ extension AppSetup.GlobalsContinuation {
             recipientIdFinder: recipientIdFinder,
             sessionStore: sessionStore,
         )
-        let blockedRecipientStore = BlockedRecipientStore()
         let blockingManager = BlockingManager(
-            blockedGroupStore: BlockedGroupStore(),
-            blockedRecipientStore: blockedRecipientStore,
             blockedReleaseNotesStore: BlockedReleaseNotesStore(),
         )
         let earlyMessageManager = EarlyMessageManager(appReadiness: appReadiness)
@@ -320,7 +317,6 @@ extension AppSetup.GlobalsContinuation {
             appReadiness: appReadiness,
         )
 
-        let receiptManager = OWSReceiptManager(appReadiness: appReadiness, databaseStorage: databaseStorage, messageSenderJobQueue: messageSenderJobQueue, notificationPresenter: notificationPresenter)
         let signalProtocolStoreManager = SignalProtocolStoreManager(
             aciProtocolStore: aciProtocolStore,
             pniProtocolStore: pniProtocolStore,
@@ -332,7 +328,7 @@ extension AppSetup.GlobalsContinuation {
         let storageServiceManager = testDependencies.storageServiceManager ?? StorageServiceManagerImpl(
             appReadiness: appReadiness,
         )
-        let syncManager = testDependencies.syncManager ?? OWSSyncManager(appReadiness: appReadiness)
+        let syncManager = testDependencies.syncManager ?? SyncManagerImpl(appReadiness: appReadiness)
         let udManager = OWSUDManagerImpl(
             cron: cron,
             db: databaseStorage,
@@ -351,7 +347,9 @@ extension AppSetup.GlobalsContinuation {
             searchableNameIndexer: searchableNameIndexer,
             storageServiceManager: storageServiceManager,
         )
-        let notificationPreferencesManager = NotificationPreferencesManager()
+        let notificationPreferencesManager = NotificationPreferencesManager(
+            storageServiceManager: storageServiceManager,
+        )
 
         let aciContactShareNameManager = AciContactShareNameManagerImpl(
             aciContactShareNameStore: aciContactShareNameStore,
@@ -366,6 +364,21 @@ extension AppSetup.GlobalsContinuation {
             notificationPreferencesManager: notificationPreferencesManager,
             recipientDatabaseTable: recipientDatabaseTable,
             usernameLookupManager: usernameLookupManager,
+        )
+
+        let unreadReminderManager = UnreadReminderManager(
+            contactManager: contactManager,
+            notificationPreferencesManager: notificationPreferencesManager,
+            notificationPresenter: notificationPresenter,
+            tsAccountManager: tsAccountManager,
+        )
+        let threadMuteManager = ThreadMuteManager(unreadReminderManager: unreadReminderManager)
+        let receiptManager = OWSReceiptManager(
+            appReadiness: appReadiness,
+            databaseStorage: databaseStorage,
+            messageSenderJobQueue: messageSenderJobQueue,
+            notificationPresenter: notificationPresenter,
+            unreadReminderManager: unreadReminderManager,
         )
 
         let authCredentialStore = AuthCredentialStore()
@@ -638,6 +651,7 @@ extension AppSetup.GlobalsContinuation {
             tsAccountManager: tsAccountManager,
         )
 
+        let localFileBackupAttachmentMetadataStore = LocalFileBackupAttachmentMetadataStore()
         let localFileBackupStore = LocalFileBackupStore()
 
         let backupListMediaStore = BackupListMediaStore()
@@ -657,6 +671,7 @@ extension AppSetup.GlobalsContinuation {
             backupSettingsStore: backupSettingsStore,
             dateProvider: dateProvider,
             db: db,
+            localFileBackupAttachmentMetadataStore: localFileBackupAttachmentMetadataStore,
             notificationPresenter: notificationPresenter,
             orphanedBackupAttachmentStore: orphanedBackupAttachmentStore,
             remoteConfigManager: remoteConfigManager,
@@ -700,6 +715,7 @@ extension AppSetup.GlobalsContinuation {
             attachmentStore: attachmentStore,
             backupAttachmentUploadScheduler: backupAttachmentUploadScheduler,
             dateProvider: dateProvider,
+            localFileBackupAttachmentMetadataStore: localFileBackupAttachmentMetadataStore,
             orphanedAttachmentCleaner: orphanedAttachmentCleaner,
             orphanedAttachmentStore: orphanedAttachmentStore,
             orphanedBackupAttachmentScheduler: orphanedBackupAttachmentScheduler,
@@ -997,6 +1013,7 @@ extension AppSetup.GlobalsContinuation {
             storyManager: ThreadDeletionManagerImpl.Wrappers.StoryManager(),
             threadRemover: threadRemover,
             threadReplyInfoStore: threadReplyInfoStore,
+            unreadReminderManager: unreadReminderManager,
         )
 
         let deleteForMeAddressableMessageFinder = DeleteForMeAddressableMessageFinderImpl()
@@ -1048,7 +1065,6 @@ extension AppSetup.GlobalsContinuation {
 
         let authorMergeHelper = AuthorMergeHelper()
         let recipientMerger = RecipientMergerImpl(
-            blockedRecipientStore: blockedRecipientStore,
             identityManager: identityManager,
             observers: RecipientMergerImpl.buildObservers(
                 authorMergeHelper: authorMergeHelper,
@@ -1099,7 +1115,6 @@ extension AppSetup.GlobalsContinuation {
             backupCDNCredentialStore: backupCDNCredentialStore,
             backupSubscriptionManager: backupSubscriptionManager,
             backupTestFlightEntitlementManager: backupTestFlightEntitlementManager,
-            blockedRecipientStore: blockedRecipientStore,
             chatConnectionManager: chatConnectionManager,
             cron: cron,
             db: db,
@@ -1111,6 +1126,7 @@ extension AppSetup.GlobalsContinuation {
             paymentsEvents: paymentsEvents,
             recipientManager: recipientManager,
             recipientMerger: recipientMerger,
+            recipientStore: recipientDatabaseTable,
             senderKeyManager: senderKeyManager,
             signalProtocolStoreManager: signalProtocolStoreManager,
             storageServiceManager: storageServiceManager,
@@ -1133,12 +1149,12 @@ extension AppSetup.GlobalsContinuation {
             attachmentUploadStore: attachmentUploadStore,
             attachmentThumbnailService: attachmentThumbnailService,
             backupRequestManager: backupRequestManager,
-            chatConnectionManager: chatConnectionManager,
             dateProvider: dateProvider,
             db: db,
             fileSystem: Upload.Wrappers.FileSystem(),
             interactionStore: interactionStore,
             remoteConfigProvider: remoteConfigManager,
+            serviceProvider: chatConnectionManager,
             signalService: signalService,
             sleepTimer: Upload.Wrappers.SleepTimer(),
             storyStore: storyStore,
@@ -1293,7 +1309,7 @@ extension AppSetup.GlobalsContinuation {
         let registrationSessionManager = RegistrationSessionManagerImpl(
             dateProvider: dateProvider,
             db: db,
-            signalService: signalService,
+            networkManager: networkManager,
         )
 
         let recipientHidingManager = RecipientHidingManagerImpl(
@@ -1315,34 +1331,25 @@ extension AppSetup.GlobalsContinuation {
             tsAccountManager: tsAccountManager,
         )
 
-        let usernameApiClient = UsernameApiClientImpl(
-            networkManager: networkManager,
-            chatConnectionManager: chatConnectionManager,
-        )
         let usernameEducationManager = UsernameEducationManagerImpl()
-        let usernameLinkManager = UsernameLinkManagerImpl(
-            db: db,
-            apiClient: usernameApiClient,
-        )
         let localUsernameManager = LocalUsernameManagerImpl(
             db: db,
             keyTransparencyStore: keyTransparencyStore,
             reachabilityManager: reachabilityManager,
+            serviceProvider: chatConnectionManager,
             storageServiceManager: storageServiceManager,
             syncMessageSender: LocalUsernameManagerImpl.UsernameChangeSyncMessageSenderImpl(
                 messageSenderJobQueue: messageSenderJobQueue,
                 threadStore: threadStore,
             ),
             tsAccountManager: tsAccountManager,
-            usernameApiClient: usernameApiClient,
-            usernameLinkManager: usernameLinkManager,
         )
         let usernameValidationManager = UsernameValidationManagerImpl(context: .init(
             database: db,
             localUsernameManager: localUsernameManager,
             messageProcessor: Usernames.Validation.Wrappers.MessageProcessor(messageProcessor),
+            serviceProvider: chatConnectionManager,
             storageServiceManager: Usernames.Validation.Wrappers.StorageServiceManager(storageServiceManager),
-            usernameLinkManager: usernameLinkManager,
             whoAmIManager: whoAmIManager,
         ))
 
@@ -1478,8 +1485,8 @@ extension AppSetup.GlobalsContinuation {
             attachmentStore: attachmentStore,
             backupAttachmentDownloadScheduler: backupAttachmentDownloadScheduler,
             chatColorSettingStore: chatColorSettingStore,
+            localFileBackupAttachmentMetadataStore: localFileBackupAttachmentMetadataStore,
             wallpaperStore: wallpaperStore,
-            localFileBackupStore: localFileBackupStore,
         )
 
         let backupInteractionStore = BackupArchiveInteractionStore(interactionStore: interactionStore)
@@ -1528,6 +1535,7 @@ extension AppSetup.GlobalsContinuation {
             attachmentManager: attachmentManager,
             attachmentStore: attachmentStore,
             backupAttachmentDownloadScheduler: backupAttachmentDownloadScheduler,
+            localFileBackupAttachmentMetadataStore: localFileBackupAttachmentMetadataStore,
             localFileBackupStore: localFileBackupStore,
         )
         let backupsOversizeTextArchiver = BackupArchiveInlinedOversizeTextArchiver(
@@ -1555,6 +1563,7 @@ extension AppSetup.GlobalsContinuation {
             attachmentStore: attachmentStore,
             attachmentValidator: attachmentContentValidator,
             orphanedAttachmentCleaner: orphanedAttachmentCleaner,
+            localFileBackupAttachmentMetadataStore: localFileBackupAttachmentMetadataStore,
             localFileBackupStore: localFileBackupStore,
             securityScopedBookmarkAccess: SecurityScopedBookmarkAccessImpl(),
             restoreProgress: localFileBackupAttachmentRestoreProgress,
@@ -1575,6 +1584,7 @@ extension AppSetup.GlobalsContinuation {
                 linkPreviewSettingStore: linkPreviewSettingStore,
                 localUsernameManager: localUsernameManager,
                 mediaBandwidthPreferenceStore: mediaBandwidthPreferenceStore,
+                notificationPreferencesManager: notificationPreferencesManager,
                 ows2FAManager: BackupArchive.Wrappers.OWS2FAManager(ows2FAManager),
                 phoneNumberDiscoverabilityManager: phoneNumberDiscoverabilityManager,
                 preferences: BackupArchive.Wrappers.Preferences(preferences: preferences),
@@ -1664,6 +1674,7 @@ extension AppSetup.GlobalsContinuation {
                 storyStore: backupStoryStore,
                 threadStore: backupThreadStore,
             ),
+            jsonLinesStreamProvider: BackupArchiveJsonLinesStreamProvider(),
             libsignalNet: libsignalNet,
             localStorage: accountKeyStore,
             localRecipientArchiver: BackupArchiveLocalRecipientArchiver(
@@ -1724,7 +1735,6 @@ extension AppSetup.GlobalsContinuation {
         let inactiveLinkedDeviceFinder = InactiveLinkedDeviceFinderImpl(
             dateProvider: dateProvider,
             db: db,
-            deviceService: deviceService,
             deviceStore: deviceStore,
             remoteConfigProvider: remoteConfigManager,
             tsAccountManager: tsAccountManager,
@@ -1793,6 +1803,12 @@ extension AppSetup.GlobalsContinuation {
 
         let remoteReleaseNotesService = RemoteReleaseNotesService(signalService: signalService)
 
+        let localFileBackupAttachmentMetadataManager = LocalFileBackupAttachmentMetadataManager(
+            attachmentStore: attachmentStore,
+            db: db,
+            metadataStore: localFileBackupAttachmentMetadataStore,
+        )
+
         let localFileBackupExportJobStore = LocalFileBackupExportJobStore()
 
         let localFileBackupExportJobRunner = LocalFileBackupExportJobRunnerImpl(
@@ -1801,6 +1817,7 @@ extension AppSetup.GlobalsContinuation {
                 backupArchiveManager: backupArchiveManager,
                 db: db,
                 tsAccountManager: tsAccountManager,
+                localFileBackupAttachmentMetadataManager: localFileBackupAttachmentMetadataManager,
                 localFileBackupManager: localFileBackupManager,
                 securityScopedBookmarkAccess: SecurityScopedBookmarkAccessImpl(),
                 localFileBackupExportJobStore: localFileBackupExportJobStore,
@@ -1810,6 +1827,15 @@ extension AppSetup.GlobalsContinuation {
             db: db,
             backupExportLock: backupExportLock,
         )
+        let plaintextTakeoutManager = PlaintextTakeoutManager(
+            attachmentStore: attachmentStore,
+            backupArchiveManager: backupArchiveManager,
+            dateProvider: dateProvider,
+            db: db,
+            securityScopedBookmarkAccess: SecurityScopedBookmarkAccessImpl(),
+            tsAccountManager: tsAccountManager,
+        )
+
         let dependenciesBridge = DependenciesBridge(
             accountAttributesUpdater: accountAttributesUpdater,
             accountEntropyPoolManager: accountEntropyPoolManager,
@@ -1850,7 +1876,6 @@ extension AppSetup.GlobalsContinuation {
             backupSubscriptionManager: backupSubscriptionManager,
             backupTestFlightEntitlementManager: backupTestFlightEntitlementManager,
             badgeCountFetcher: badgeCountFetcher,
-            blockedRecipientStore: blockedRecipientStore,
             callLinkStore: callLinkStore,
             callRecordDeleteManager: callRecordDeleteManager,
             callRecordMissedCallManager: callRecordMissedCallManager,
@@ -1923,6 +1948,7 @@ extension AppSetup.GlobalsContinuation {
             pinnedMessageExpirationJob: pinnedMessageExpirationJob,
             pinnedThreadManager: pinnedThreadManager,
             pinnedThreadStore: pinnedThreadStore,
+            plaintextTakeoutManager: plaintextTakeoutManager,
             pollMessageManager: pollMessageManager,
             preKeyManager: preKeyManager,
             privateStoryThreadDeletionManager: privateStoryThreadDeletionManager,
@@ -1953,11 +1979,11 @@ extension AppSetup.GlobalsContinuation {
             svrLocalStorage: svrLocalStorage,
             threadReplyInfoStore: threadReplyInfoStore,
             threadDeletionManager: threadDeletionManager,
+            threadMuteManager: threadMuteManager,
             threadStore: threadStore,
             tsAccountManager: tsAccountManager,
-            usernameApiClient: usernameApiClient,
+            unreadReminderManager: unreadReminderManager,
             usernameEducationManager: usernameEducationManager,
-            usernameLinkManager: usernameLinkManager,
             usernameLookupManager: usernameLookupManager,
             usernameValidationManager: usernameValidationManager,
             wallpaperImageStore: wallpaperImageStore,

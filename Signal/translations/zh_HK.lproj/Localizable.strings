@@ -1462,6 +1462,9 @@
 /* An explanation of the consequences of blocking another user. */
 "BLOCK_USER_BEHAVIOR_EXPLANATION" = "被封鎖的用戶將無法與你通話或傳送訊息。";
 
+/* Shown as a subtitle for recipients & groups you've blocked to indicate when you blocked them. The replacement is a formatted date. */
+"BLOCKED_AT" = "已於 %1$@封鎖";
+
 /* Default text for the custom amount field of the boost view. */
 "BOOST_VIEW_CUSTOM_AMOUNT_PLACEHOLDER" = "請輸入自訂金額";
 
@@ -2437,14 +2440,44 @@
 /* navbar title for contact picker when sharing a contact */
 "CONTACT_PICKER_TITLE" = "選取聯絡人";
 
+/* Button on a shared contact in a group conversation that adds the contact to that group. It can share a row with other buttons, so a short label is preferred. */
+"CONTACT_SHARE_ADD_TO_GROUP_BUTTON" = "新增至群組";
+
+/* Button in the confirmation shown before adding a shared contact to the current group that adds the contact. */
+"CONTACT_SHARE_ADD_TO_GROUP_CONFIRMATION_BUTTON" = "新增至群組";
+
+/* Confirmation shown before adding a shared contact to the current group. Embeds {{ %1$@ contact name, %2$@ group name }}. */
+"CONTACT_SHARE_ADD_TO_GROUP_CONFIRMATION_FORMAT" = "要新增 %1$@ 至「%2$@」嗎？";
+
 /* Title for the 'Approve contact share' view. */
 "CONTACT_SHARE_APPROVAL_VIEW_TITLE" = "分享聯絡人";
+
+/* Name of the option to share a contact without a photo, which shows their initials instead. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_NO_PHOTO" = "沒有相片";
+
+/* Title for the sheet for choosing which photo to include when sharing a contact. */
+"CONTACT_SHARE_AVATAR_PICKER_TITLE" = "選擇一張相片來分享";
+
+/* Accessibility label for the row that chooses which photo to include when sharing a contact. */
+"CONTACT_SHARE_AVATAR_ROW_LABEL" = "照片";
+
+/* Name of the option to share a contact's Signal profile photo. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_SIGNAL_PHOTO" = "Signal 個人檔案相片";
+
+/* Name of the option to share a contact's photo from the phone's contacts. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_SYSTEM_CONTACT_PHOTO" = "聯絡人相片";
 
 /* Title for the 'edit contact share name' view. */
 "CONTACT_SHARE_EDIT_NAME_VIEW_TITLE" = "編輯姓名";
 
 /* Error indicating that an invalid contact cannot be shared. */
 "CONTACT_SHARE_INVALID_CONTACT" = "無效的聯絡人。";
+
+/* Button on a shared contact that opens a chat with that contact. It can share a row with other buttons, so a short label is preferred. */
+"CONTACT_SHARE_MESSAGE_BUTTON" = "訊息";
+
+/* Notice at the top of the 'Share Contact' view when the shared contact includes their Signal account. Embeds {{ contact name }}. */
+"CONTACT_SHARE_SIGNAL_ACCOUNT_NOTICE_FORMAT" = "任何你與其分享此個人檔案的人，都能夠在 Signal 上向 %1$@ 傳送訊息。";
 
 /* Alert body when contacts disabled while trying to share a contact. */
 "CONTACT_SHARING_NO_ACCESS_BODY" = "Signal 需要存取你的聯絡人資料。前往 iOS 設定，然後開啟通訊錄。你的聯絡人名單已加密，Signal 服務無法看到。";
@@ -3973,6 +4006,9 @@
 /* Label warning the user that the app will expire today. */
 "EXPIRATION_WARNING_TODAY" = "此版本的 Signal 將於今天到期。請更新以繼續收發訊息。";
 
+/* Description of how and why Signal iOS uses Touch ID/Face ID/Phone Passcode to export your chat history. */
+"EXPORT_CHATS_AUTHENTICATION_REASON" = "請進行驗證以匯出你的聊天紀錄";
+
 /* action sheet header when re-sending message which failed because of an invalid key signature */
 "FAILED_SENDING_BECAUSE_INVALID_KEY_SIGNATURE" = "無法傳送訊息，因為 %1$@ 需要更新並開啟 Signal。";
 
@@ -5107,6 +5143,21 @@
 /* Label reminding the user that they are in archive mode, and that chats are unarchived when they receive a new message. */
 "INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "當收到新訊息時，已存檔的聊天記錄會移至收件匣。";
 
+/* Title of action allowing user to connect to an existing device */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_EXITING_OLD_DEVICE_ACTION" = "與你的現有裝置配對";
+
+/* Body of prompt asking user to select device transfer target. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_BODY" = "選擇要配對的現有或新裝置。配對完成後，帳戶轉移將隨即開始。";
+
+/* Title of action allowing user to pair a new device transfer peer. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_PAIR_NEW_ACTION" = "配對新裝置";
+
+/* Title of prompt asking user to select device transfer target. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_TITLE" = "選擇要配對的裝置";
+
+/* Title of action allowing user to connect to an existing device */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_SPECIFIC_OLD_DEVICE_ACTION" = "與「%1$@」配對";
+
 /* Body of prompt notifying device transfer will continue on other device. */
 "INCOMING_DEVICE_TRANSFER_CONTINUE_BODY" = "在另一部裝置上繼續轉移你的帳戶。";
 
@@ -5443,8 +5494,8 @@
 /* Message for an action sheet telling users how to link a device, when trying to open a device-linking URL from the in-app camera. */
 "LINKED_DEVICE_URL_OPENED_ACTION_SHEET_IN_APP_CAMERA_MESSAGE" = "你似乎正嘗試連結 Signal 裝置。輕按繼續，然後輕按「連結新的裝置」並再次掃描二維碼。";
 
-/* Bullet point about downloads on the linked devices education sheet. Embeds {{ %1$@ iPad download link, %2$@ desktop download link }} */
-"LINKED_DEVICES_EDUCATION_POINT_DOWNLOADS" = "在你的其他裝置上，前往 %1$@ 以安裝 iPad 應用程式或 %2$@ 以安裝桌面版應用程式。";
+/* Bullet point about a download link on the linked devices education sheet. Embeds {{ %1$@ download link }} */
+"LINKED_DEVICES_EDUCATION_POINT_DOWNLOADS" = "在你想連結的裝置上，前往 %1$@ 以安裝 Signal";
 
 /* Bullet point about message sync on the linked devices education sheet */
 "LINKED_DEVICES_EDUCATION_POINT_MESSAGES" = "連結後，Signal 訊息會與手機上的 Signal 同步。";
@@ -5453,13 +5504,13 @@
 "LINKED_DEVICES_EDUCATION_POINT_PRIVACY" = "所有在已連結裝置上的訊息均為私密";
 
 /* Title for the linked device education sheet */
-"LINKED_DEVICES_EDUCATION_TITLE" = "在桌面電腦或 iPad 上的 Signal";
+"LINKED_DEVICES_EDUCATION_TITLE" = "在已連結裝置上的 Signal";
 
 /* Text that appears where the linked device list would be indicating that there are no linked devices. */
 "LINKED_DEVICES_EMPTY_STATE" = "沒有已連結裝置";
 
 /* Description for header of the linked devices list */
-"LINKED_DEVICES_HEADER_DESCRIPTION" = "在桌面電腦或 iPad 上使用 Signal。";
+"LINKED_DEVICES_HEADER_DESCRIPTION" = "在其他裝置上使用此 Signal 帳戶。";
 
 /* Footer text below the list of currently-linked devices */
 "LINKED_DEVICES_LIST_FOOTER" = "所有裝置上的訊息和聊天資訊均受端對端加密的保護";
@@ -5531,7 +5582,7 @@
 "LOCAL_BACKUPS_SELECT_HERO_SHEET_TITLE" = "選擇你的備份資料夾";
 
 /* Message for an action sheet informing the user we were unable to save their local backup location */
-"LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_MESSAGE" = "發生了錯誤，無法儲存你所選的資料夾位置。請再試一次。如果問題持續，請聯絡支援團隊。";
+"LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_MESSAGE" = "發生了錯誤，無法儲存你所選的資料夾位置。請再試一次。";
 
 /* Title for an action sheet informing the user we were unable to save their local backup location */
 "LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_TITLE" = "無法儲存資料夾位置";
@@ -6172,6 +6223,12 @@
 /* Alert title when user has previously denied media library access */
 "MISSING_MEDIA_LIBRARY_PERMISSION_TITLE" = "Signal 需要存取您的照片以使用此功能。";
 
+/* Title for a progress modal shown after the user taps Cancel, while the work is being cancelled. */
+"MODAL_CIRCULAR_PROGRESS_CANCELLING_TITLE" = "正在取消…";
+
+/* Label on a progress modal indicating how far along some work is. Embeds {{ formatted percentage }}. */
+"MODAL_CIRCULAR_PROGRESS_PERCENT_COMPLETE" = "完成 %1$@";
+
 /* Text on a blocking progress screen that indicates that there's a deletion in progress. */
 "MODAL_DELETING" = "正在刪除...";
 
@@ -6408,6 +6465,9 @@
 
 /* Shown in place of the text input box in a conversation when the user is no longer registered can't send messages. This value is a tappable link embedded in a larger sentence. */
 "NOT_REGISTERED_BOTTOM_REREGISTER" = "重新註冊";
+
+/* Description for an error indicating you are not registered. */
+"NOT_REGISTERED_ERROR_LOCALIZED_DESCRIPTION" = "你尚未註冊。";
 
 /* Label for 1:1 conversation with yourself. */
 "NOTE_TO_SELF" = "給自己的筆記";
@@ -7973,10 +8033,19 @@
 "REGISTER_WITHOUT_NUMBER" = "免號碼註冊";
 
 /* Short description for a sheet warning users about an incorrect recovery key used for registration. */
-"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_BODY" = "你可能輸入了錯誤的恢復金鑰。\n\n請確保你使用在啟用「Signal 安全備份」時儲存的電話號碼和恢復金鑰進行註冊。";
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_BODY" = "請確保你使用在啟用 Signal 備份時儲存的電話號碼和 64 個字元的恢復金鑰進行註冊。沒有此金鑰，則無法還原備份。";
 
 /* Title for a sheet warning users about an incorrect recovery key used for registration. */
 "REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TITLE" = "恢復金鑰不正確";
+
+/* Action label action allowing users to use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_ACTION" = "以其他方式註冊";
+
+/* Message body for a sheet asking users if they would rather use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_MESSAGE" = "你可以透過驗證 Signal 發送給你的 SMS 碼或輸入 PIN 碼來註冊帳戶。註冊後，你可以重新嘗試以恢復金鑰來還原備份。";
+
+/* Title for a sheet asking users if they would rather use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_TITLE" = "以 SMS 碼還是 PIN 碼來驗證？";
 
 /* Body for a sheet warning users about a missing backup. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_BACKUP_NOT_FOUND_BODY" = "沒有與此恢復金鑰相關的備份。請確認金鑰正確無誤，然後再試一次。";
@@ -8002,6 +8071,9 @@
 /* Body for a sheet warning users about a generic backup manual restore failure. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_BODY" = "發生錯誤，無法轉移你的帳戶。";
 
+/* Title for a sheet warning users about an error during backup restore. */
+"REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_CANT_RESTORE_TITLE" = "無法還原備份";
+
 /* Body for a sheet warning users about a generic backup restore failure. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_RETRY_BODY" = "發生錯誤，無法轉移你的帳戶。重新掃描二維碼和選擇你的轉移方式再試一次。";
 
@@ -8025,6 +8097,9 @@
 
 /* Title for a sheet warning users about an invalid local backup location */
 "REGISTRATION_BACKUP_RESTORE_ERROR_LOCAL_BACKUP_LOCATION_TITLE" = "無法還原備份";
+
+/* Message for a sheet telling the user that their phone number is mismatched with their recovery key used for making a local backup */
+"REGISTRATION_BACKUP_RESTORE_ERROR_MISMATCHED_LOCAL_BACKUP_MESSAGE" = "你正在嘗試還原的備份是使用另一個 Signal 帳戶建立的。要還原這個備份，你必須使用在啟用裝置上備份時儲存的電話號碼和 64 個字元的恢復金鑰。";
 
 /* Body for a sheet warning users about a network error during backup restore. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_NETWORK_BODY" = "現在無法還原你的備份。請檢查你的網路連線，然後重試。";
@@ -8233,6 +8308,9 @@
 /* Button on the Signal Login card on the 'Signal Login details' screen to show the full account ID and recovery key. */
 "REGISTRATION_SIGNAL_LOGIN_DETAILS_VIEW_DETAILS_BUTTON" = "檢視詳情";
 
+/* Explanation text for the 'Signal Login' screen. */
+"REGISTRATION_SIGNAL_LOGIN_EXPLANATION" = "使用 Signal Login，無需電話號碼即可註冊。只需付款一次，即可獲得帳戶 ID，立即開始使用。";
+
 /* Toast shown after copying the account ID on the 'Signal Login' details sheet. */
 "REGISTRATION_SIGNAL_LOGIN_FULL_DETAILS_ACCOUNT_ID_COPIED_TOAST" = "已複製帳戶 ID";
 
@@ -8265,6 +8343,33 @@
 
 /* Title for help button for the 'Signal Login' screen. */
 "REGISTRATION_SIGNAL_LOGIN_NEED_HELP_TITLE" = "需要幫助？";
+
+/* Button to initiate a purchase on the 'Signal Login' screen. The replacement is a localized cost (e.g., $2.99). */
+"REGISTRATION_SIGNAL_LOGIN_PAY" = "支付 %1$@";
+
+/* Text for a bullet point describing that an existing Signal Login can be used to log in and restore an account. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_BULLET_RESTORE" = "登入並還原你的帳戶";
+
+/* Text for a bullet point thanking the user for supporting Signal by previously buying a Signal Login. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_BULLET_THANKS" = "感謝你對 Signal 的支持";
+
+/* Subtitle for the option to register with a Signal Login the user already owns. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_SUBTITLE" = "使用現有的登入資訊";
+
+/* Title for the option to register with a Signal Login the user already owns. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_TITLE" = "我有 Signal Login";
+
+/* Text for a bullet point describing that a Signal Login lets you register without a phone number. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_NO_PHONE_NUMBER" = "無需電話號碼";
+
+/* Text for a bullet point explaining that buying a Signal Login supports Signal, a non-profit. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_NON_PROFIT" = "Signal 是一個非營利組織—你的購買將有助於支持我們的使命";
+
+/* Text for a bullet point describing that a Signal Login comes with a username for messaging and calling. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_USERNAME" = "以用戶名稱傳送訊息與通話";
+
+/* Subtitle for the option to buy a new Signal Login. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_SUBTITLE" = "一次性購買";
 
 /* Title text for the 'Signal Login' screen. */
 "REGISTRATION_SIGNAL_LOGIN_TITLE" = "Signal Login";
@@ -8821,6 +8926,9 @@
 /* In-app camera: title for the prompt to turn off multi-mode that will cause previously taken photos to be discarded. */
 "SEND_MEDIA_TURN_OFF_MM_TITLE" = "要關閉連拍模式嗎？";
 
+/* Label for the button to send a sticker message */
+"SEND_STICKER_BUTTON_TITLE" = "發送貼圖";
+
 /* String describing high quality sent media */
 "SENT_MEDIA_QUALITY_HIGH" = "高品質";
 
@@ -9033,6 +9141,45 @@
 
 /* Title for the 'chats' link in settings. */
 "SETTINGS_CHATS" = "聊天";
+
+/* Title for a button in Chats settings that starts exporting the user's chat history. */
+"SETTINGS_CHATS_EXPORT_BUTTON" = "匯出聊天";
+
+/* Title for a button in a sheet shown before the user chooses a folder to export their chat history into, which opens a folder picker. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_CHOOSE_BUTTON" = "請選擇資料夾";
+
+/* Message for a sheet shown before the user chooses a folder to export their chat history into. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_MESSAGE" = "在你裝置的儲存空間中選擇一個資料夾，將你的聊天紀錄儲存在那裡。";
+
+/* Title for a sheet shown before the user chooses a folder to export their chat history into. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_TITLE" = "選擇資料夾";
+
+/* Message for a sheet shown after the user's chat history has been exported. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_MESSAGE" = "請小心存放你的聊天匯出檔案，切勿與任何人分享。你裝置上的其他應用程式可以根據裝置權限來進行存取。";
+
+/* Title for a sheet shown after the user's chat history has been exported. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_TITLE" = "聊天匯出完成";
+
+/* Title for a button in a sheet shown after the user's chat history has been exported, which opens the exported folder in the Files app. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_VIEW_IN_FILES_BUTTON" = "在「檔案」中檢視";
+
+/* Message for a sheet shown when the user starts exporting their chat history from Chats settings. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_MESSAGE" = "請小心！請勿與任何人分享此檔案。你的聊天紀錄會儲存在你的裝置中，其他應用程式可以根據你的裝置權限設定來進行存取。連同媒體匯出，會使檔案大小增加。";
+
+/* Title for a sheet shown when the user starts exporting their chat history from Chats settings. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_TITLE" = "要匯出聊天紀錄嗎？";
+
+/* Title for a button in a sheet shown when the user starts exporting their chat history, which exports their chat history including attachments. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_WITH_MEDIA_BUTTON" = "連同媒體匯出";
+
+/* Title for a button in a sheet shown when the user starts exporting their chat history, which exports their chat history excluding attachments. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_WITHOUT_MEDIA_BUTTON" = "不連同媒體匯出";
+
+/* Footer for the section in Chats settings containing a button to export the user's chat history. */
+"SETTINGS_CHATS_EXPORT_FOOTER" = "匯出聊天內容的可機讀 JSON 副本。不包含自動銷毀訊息。";
+
+/* Title for a progress modal shown while the user's chat history is being exported. */
+"SETTINGS_CHATS_EXPORT_PROGRESS_TITLE" = "正在匯出聊天…";
 
 /* No comment provided by engineer. */
 "SETTINGS_CLEAR_HISTORY" = "清除聊天紀錄";
@@ -9306,6 +9453,16 @@
 
 /* Explanation for the button that resets all notification settings. */
 "SETTINGS_NOTIFICATIONS_RESET_FOOTER" = "將通知設定重設為預設值，包括聊天的自訂設定。";
+
+/* Label for the switch controlling whether reminders about unread messages are shown.
+   Label for the switch controlling whether reminders about unread messages in muted chats are shown. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS" = "未讀提示";
+
+/* Explanation for the switch controlling whether reminders about unread messages are shown in this chat while it is muted. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS_CHAT_FOOTER" = "當此聊天設為靜音時，若有未讀訊息，系統會偶爾通知。";
+
+/* Explanation for the switch controlling whether reminders about unread messages in muted chats are shown. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS_FOOTER" = "當靜音聊天中有未讀訊息時偶爾通知。";
 
 /* Label for the 'agree to payments terms' button in the 'activate payments confirmation' UI in the payment settings. */
 "SETTINGS_PAYMENTS_ACTIVATE_PAYMENTS_CONFIRM_AGREE" = "啟用";
@@ -10102,6 +10259,9 @@
 /* Text for a toast confirming that the speakerphone has been turned on for a call. */
 "SPEAKERPHONE_ON_CONFIRMATION_TOAST_LABEL" = "揚聲器開啟";
 
+/* Title for a button to view a sticker pack */
+"STICKER_BUTTON_VIEW_PACK" = "檢視貼圖包";
+
 /* The name for the sticker category 'Featured' */
 "STICKER_CATEGORY_FEATURED_NAME" = "精選";
 
@@ -10117,6 +10277,33 @@
 /* Preview text shown in notifications and conversation list for sticker messages. */
 "STICKER_MESSAGE_PREVIEW" = "貼圖訊息";
 
+/* Button to confirm a user wants to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_BUTTON" = "移除";
+
+/* Message for a sheet asking the user to confirm they want to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_MESSAGE" = "這會移除貼圖包。若無連結或貼圖訊息，你將無法再次新增貼圖包。";
+
+/* Title for a sheet asking the user to confirm they want to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_TITLE" = "要移除貼圖包嗎？";
+
+/* Label for a button to copy the link of a sticker pack */
+"STICKER_PACK_LINK" = "連結";
+
+/* Label for a button to uninstall a sticker pack */
+"STICKER_PACK_REMOVE" = "移除";
+
+/* Label for a button to send a sticker pack */
+"STICKER_PACK_SEND" = "傳送";
+
+/* Label for a button on a sticker-pack share sheet that copies the pack's share link. */
+"STICKER_PACK_SHARE_SHEET_COPY_LINK" = "複製連結";
+
+/* Text describing what you can do with a sticker pack link, on a sheet for sharing it. */
+"STICKER_PACK_SHARE_SHEET_HEADER" = "任何擁有此連結的人都可以新增並分享此貼圖包。";
+
+/* Label for a button on a sticker-pack share sheet that sends the pack in Signal. */
+"STICKER_PACK_SHARE_SHEET_SEND_IN_SIGNAL" = "在 Signal 發送";
+
 /* Message when trying to show a sticker that has expired and is unavailable for download */
 "STICKER_UNAVAILABLE_MESSAGE_LABEL" = "無法取得貼圖";
 
@@ -10124,7 +10311,7 @@
 "STICKER_UNAVAILABLE_SHEET_TITLE" = "無法取得貼圖";
 
 /* Label for the 'install sticker pack' button. */
-"STICKERS_INSTALL_BUTTON" = "安裝";
+"STICKERS_INSTALL_BUTTON" = "新增貼圖";
 
 /* Title for the 'available built-in stickers' section of the 'manage stickers' view. */
 "STICKERS_MANAGE_VIEW_AVAILABLE_BUILT_IN_PACKS_SECTION_TITLE" = "Signal 藝術家系列";
@@ -10158,9 +10345,6 @@
 
 /* Label indicating that the sticker pack failed to load. */
 "STICKERS_PACK_VIEW_FAILED_TO_LOAD" = "無法讀取貼圖包";
-
-/* Label for the 'uninstall sticker pack' button. */
-"STICKERS_UNINSTALL_BUTTON" = "移除";
 
 /* Text indication a story caption can be tapped to read more. */
 "STORIES_CAPTION_READ_MORE" = "閱讀全文";
@@ -10791,6 +10975,33 @@
 
 /* Pressing this button marks a thread as unread */
 "UNREAD_ACTION" = "標記為未讀";
+
+/* Notification placeholder for three or more recipients who sent unread messages */
+"UnreadReminderJob__authors_many" = "%1$@ 及其他人";
+
+/* Notification placeholder for a single recipient who sent unread messages */
+"UnreadReminderJob__authors_one" = "%1$@";
+
+/* Notification placeholder for two recipients who sent unread messages */
+"UnreadReminderJob__authors_two" = "%1$@ 及 %2$@";
+
+/* Notification body for unread reminders. First placeholder is unread messages or unread calls */
+"UnreadReminderJob__calls_or_unread" = "你有 %1$@。";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a list of people who sent them */
+"UnreadReminderJob__calls_or_unread_author" = "你有來自%2$@的 %1$@。";
+
+/* Notification placeholder that sums up a single unread mention. Placeholder is the name of the person who sent the message */
+"UnreadReminderJob__mentions_one" = "%1$@提及你";
+
+/* Notification placeholder that sums up a single unread reply. Placeholder is the name of the person who sent the message */
+"UnreadReminderJob__replies_one" = "%1$@的回覆";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a summary of unread mentions, third replies */
+"UnreadReminderJob__unread_both_summary" = "你有 %1$@，包括 %2$@ 及 %3$@。";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a summary of either unread mentions or replies */
+"UnreadReminderJob__unread_one_summary" = "你有 %1$@，包括 %2$@。";
 
 /* No comment provided by engineer. */
 "UNSUPPORTED_ATTACHMENT" = "收到不支援的附件格式";

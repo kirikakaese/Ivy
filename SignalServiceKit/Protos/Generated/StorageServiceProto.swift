@@ -1697,6 +1697,15 @@ public struct StorageServiceProtoContactRecord: Codable, CustomDebugStringConver
         return !proto.pniBinary.isEmpty
     }
 
+    public var blockedAtTimestamp: UInt64 {
+        return proto.blockedAtTimestamp
+    }
+    public var notifyForCallsIfMuted: StorageServiceProtoOptionalBool {
+        return StorageServiceProtoOptionalBoolWrap(proto.notifyForCallsIfMuted)
+    }
+    public var showUnreadReminders: StorageServiceProtoOptionalBool {
+        return StorageServiceProtoOptionalBoolWrap(proto.showUnreadReminders)
+    }
     public var hasUnknownFields: Bool {
         return !proto.unknownFields.data.isEmpty
     }
@@ -1818,6 +1827,9 @@ extension StorageServiceProtoContactRecord {
         if let _value = pniBinary {
             builder.setPniBinary(_value)
         }
+        builder.setBlockedAtTimestamp(blockedAtTimestamp)
+        builder.setNotifyForCallsIfMuted(notifyForCallsIfMuted)
+        builder.setShowUnreadReminders(showUnreadReminders)
         if let _value = sharedName {
             builder.setSharedName(_value)
         }
@@ -2022,6 +2034,18 @@ public struct StorageServiceProtoContactRecordBuilder {
 
     public mutating func setPniBinary(_ valueParam: Data) {
         proto.pniBinary = valueParam
+    }
+
+    public mutating func setBlockedAtTimestamp(_ valueParam: UInt64) {
+        proto.blockedAtTimestamp = valueParam
+    }
+
+    public mutating func setNotifyForCallsIfMuted(_ valueParam: StorageServiceProtoOptionalBool) {
+        proto.notifyForCallsIfMuted = StorageServiceProtoOptionalBoolUnwrap(valueParam)
+    }
+
+    public mutating func setShowUnreadReminders(_ valueParam: StorageServiceProtoOptionalBool) {
+        proto.showUnreadReminders = StorageServiceProtoOptionalBoolUnwrap(valueParam)
     }
 
     @available(swift, obsoleted: 1.0)
@@ -2291,6 +2315,21 @@ public struct StorageServiceProtoGroupV2Record: Codable, CustomDebugStringConver
         return !proto.verifiedNameHash.isEmpty
     }
 
+    public var blockedAtTimestamp: UInt64 {
+        return proto.blockedAtTimestamp
+    }
+    public var notifyForCallsIfMuted: StorageServiceProtoOptionalBool {
+        return StorageServiceProtoOptionalBoolWrap(proto.notifyForCallsIfMuted)
+    }
+    public var notifyForMentionsIfMuted: StorageServiceProtoOptionalBool {
+        return StorageServiceProtoOptionalBoolWrap(proto.notifyForMentionsIfMuted)
+    }
+    public var notifyForRepliesIfMuted: StorageServiceProtoOptionalBool {
+        return StorageServiceProtoOptionalBoolWrap(proto.notifyForRepliesIfMuted)
+    }
+    public var showUnreadReminders: StorageServiceProtoOptionalBool {
+        return StorageServiceProtoOptionalBoolWrap(proto.showUnreadReminders)
+    }
     public var hasUnknownFields: Bool {
         return !proto.unknownFields.data.isEmpty
     }
@@ -2358,6 +2397,11 @@ extension StorageServiceProtoGroupV2Record {
         if let _value = verifiedNameHash {
             builder.setVerifiedNameHash(_value)
         }
+        builder.setBlockedAtTimestamp(blockedAtTimestamp)
+        builder.setNotifyForCallsIfMuted(notifyForCallsIfMuted)
+        builder.setNotifyForMentionsIfMuted(notifyForMentionsIfMuted)
+        builder.setNotifyForRepliesIfMuted(notifyForRepliesIfMuted)
+        builder.setShowUnreadReminders(showUnreadReminders)
         if let _value = unknownFields {
             builder.setUnknownFields(_value)
         }
@@ -2430,6 +2474,26 @@ public struct StorageServiceProtoGroupV2RecordBuilder {
 
     public mutating func setVerifiedNameHash(_ valueParam: Data) {
         proto.verifiedNameHash = valueParam
+    }
+
+    public mutating func setBlockedAtTimestamp(_ valueParam: UInt64) {
+        proto.blockedAtTimestamp = valueParam
+    }
+
+    public mutating func setNotifyForCallsIfMuted(_ valueParam: StorageServiceProtoOptionalBool) {
+        proto.notifyForCallsIfMuted = StorageServiceProtoOptionalBoolUnwrap(valueParam)
+    }
+
+    public mutating func setNotifyForMentionsIfMuted(_ valueParam: StorageServiceProtoOptionalBool) {
+        proto.notifyForMentionsIfMuted = StorageServiceProtoOptionalBoolUnwrap(valueParam)
+    }
+
+    public mutating func setNotifyForRepliesIfMuted(_ valueParam: StorageServiceProtoOptionalBool) {
+        proto.notifyForRepliesIfMuted = StorageServiceProtoOptionalBoolUnwrap(valueParam)
+    }
+
+    public mutating func setShowUnreadReminders(_ valueParam: StorageServiceProtoOptionalBool) {
+        proto.showUnreadReminders = StorageServiceProtoOptionalBoolUnwrap(valueParam)
     }
 
     public mutating func setUnknownFields(_ unknownFields: SwiftProtobuf.UnknownStorage) {
@@ -3380,6 +3444,56 @@ extension StorageServiceProtoAccountRecordIAPSubscriberDataBuilder {
 
 #endif
 
+// MARK: - StorageServiceProtoAccountRecordUnreadBadgeType
+
+public enum StorageServiceProtoAccountRecordUnreadBadgeType: SwiftProtobuf.Enum {
+    public typealias RawValue = Int
+    case unknownBadgeType // 0
+    case unreadMessages // 1
+    case unreadChats // 2
+    case UNRECOGNIZED(Int)
+
+    public init() {
+        self = .unknownBadgeType
+    }
+
+    public init?(rawValue: Int) {
+        switch rawValue {
+            case 0: self = .unknownBadgeType
+            case 1: self = .unreadMessages
+            case 2: self = .unreadChats
+            default: self = .UNRECOGNIZED(rawValue)
+        }
+    }
+
+    public var rawValue: Int {
+        switch self {
+            case .unknownBadgeType: return 0
+            case .unreadMessages: return 1
+            case .unreadChats: return 2
+            case .UNRECOGNIZED(let i): return i
+        }
+    }
+}
+
+private func StorageServiceProtoAccountRecordUnreadBadgeTypeWrap(_ value: StorageServiceProtos_AccountRecord.UnreadBadgeType) -> StorageServiceProtoAccountRecordUnreadBadgeType {
+    switch value {
+    case .unknownBadgeType: return .unknownBadgeType
+    case .unreadMessages: return .unreadMessages
+    case .unreadChats: return .unreadChats
+    case .UNRECOGNIZED(let i): return .UNRECOGNIZED(i)
+    }
+}
+
+private func StorageServiceProtoAccountRecordUnreadBadgeTypeUnwrap(_ value: StorageServiceProtoAccountRecordUnreadBadgeType) -> StorageServiceProtos_AccountRecord.UnreadBadgeType {
+    switch value {
+    case .unknownBadgeType: return .unknownBadgeType
+    case .unreadMessages: return .unreadMessages
+    case .unreadChats: return .unreadChats
+    case .UNRECOGNIZED(let i): return .UNRECOGNIZED(i)
+    }
+}
+
 // MARK: - StorageServiceProtoAccountRecordPhoneNumberSharingMode
 
 public enum StorageServiceProtoAccountRecordPhoneNumberSharingMode: SwiftProtobuf.Enum {
@@ -3662,6 +3776,30 @@ public struct StorageServiceProtoAccountRecord: Codable, CustomDebugStringConver
         return proto.hasReleaseNotesChatMarkedUnread
     }
 
+    public var unreadBadgeType: StorageServiceProtoAccountRecordUnreadBadgeType {
+        return StorageServiceProtoAccountRecordUnreadBadgeTypeWrap(proto.unreadBadgeType)
+    }
+    public var includeMutedChatsInBadge: StorageServiceProtoOptionalBool {
+        return StorageServiceProtoOptionalBoolWrap(proto.includeMutedChatsInBadge)
+    }
+    public var reactionNotifications: StorageServiceProtoOptionalBool {
+        return StorageServiceProtoOptionalBoolWrap(proto.reactionNotifications)
+    }
+    public var notifyForCallsIfMuted: StorageServiceProtoOptionalBool {
+        return StorageServiceProtoOptionalBoolWrap(proto.notifyForCallsIfMuted)
+    }
+    public var notifyForMentionsIfMuted: StorageServiceProtoOptionalBool {
+        return StorageServiceProtoOptionalBoolWrap(proto.notifyForMentionsIfMuted)
+    }
+    public var notifyForRepliesIfMuted: StorageServiceProtoOptionalBool {
+        return StorageServiceProtoOptionalBoolWrap(proto.notifyForRepliesIfMuted)
+    }
+    public var showUnreadReminders: StorageServiceProtoOptionalBool {
+        return StorageServiceProtoOptionalBoolWrap(proto.showUnreadReminders)
+    }
+    public var notifyWhenContactJoins: StorageServiceProtoOptionalBool {
+        return StorageServiceProtoOptionalBoolWrap(proto.notifyWhenContactJoins)
+    }
     public var hasUnknownFields: Bool {
         return !proto.unknownFields.data.isEmpty
     }
@@ -3815,6 +3953,14 @@ extension StorageServiceProtoAccountRecord {
         if let _value = releaseNotesChatMarkedUnread {
             builder.setReleaseNotesChatMarkedUnread(_value)
         }
+        builder.setUnreadBadgeType(unreadBadgeType)
+        builder.setIncludeMutedChatsInBadge(includeMutedChatsInBadge)
+        builder.setReactionNotifications(reactionNotifications)
+        builder.setNotifyForCallsIfMuted(notifyForCallsIfMuted)
+        builder.setNotifyForMentionsIfMuted(notifyForMentionsIfMuted)
+        builder.setNotifyForRepliesIfMuted(notifyForRepliesIfMuted)
+        builder.setShowUnreadReminders(showUnreadReminders)
+        builder.setNotifyWhenContactJoins(notifyWhenContactJoins)
         if let _value = unknownFields {
             builder.setUnknownFields(_value)
         }
@@ -4064,6 +4210,38 @@ public struct StorageServiceProtoAccountRecordBuilder {
 
     public mutating func setReleaseNotesChatMarkedUnread(_ valueParam: Bool) {
         proto.releaseNotesChatMarkedUnread = valueParam
+    }
+
+    public mutating func setUnreadBadgeType(_ valueParam: StorageServiceProtoAccountRecordUnreadBadgeType) {
+        proto.unreadBadgeType = StorageServiceProtoAccountRecordUnreadBadgeTypeUnwrap(valueParam)
+    }
+
+    public mutating func setIncludeMutedChatsInBadge(_ valueParam: StorageServiceProtoOptionalBool) {
+        proto.includeMutedChatsInBadge = StorageServiceProtoOptionalBoolUnwrap(valueParam)
+    }
+
+    public mutating func setReactionNotifications(_ valueParam: StorageServiceProtoOptionalBool) {
+        proto.reactionNotifications = StorageServiceProtoOptionalBoolUnwrap(valueParam)
+    }
+
+    public mutating func setNotifyForCallsIfMuted(_ valueParam: StorageServiceProtoOptionalBool) {
+        proto.notifyForCallsIfMuted = StorageServiceProtoOptionalBoolUnwrap(valueParam)
+    }
+
+    public mutating func setNotifyForMentionsIfMuted(_ valueParam: StorageServiceProtoOptionalBool) {
+        proto.notifyForMentionsIfMuted = StorageServiceProtoOptionalBoolUnwrap(valueParam)
+    }
+
+    public mutating func setNotifyForRepliesIfMuted(_ valueParam: StorageServiceProtoOptionalBool) {
+        proto.notifyForRepliesIfMuted = StorageServiceProtoOptionalBoolUnwrap(valueParam)
+    }
+
+    public mutating func setShowUnreadReminders(_ valueParam: StorageServiceProtoOptionalBool) {
+        proto.showUnreadReminders = StorageServiceProtoOptionalBoolUnwrap(valueParam)
+    }
+
+    public mutating func setNotifyWhenContactJoins(_ valueParam: StorageServiceProtoOptionalBool) {
+        proto.notifyWhenContactJoins = StorageServiceProtoOptionalBoolUnwrap(valueParam)
     }
 
     public mutating func setUnknownFields(_ unknownFields: SwiftProtobuf.UnknownStorage) {

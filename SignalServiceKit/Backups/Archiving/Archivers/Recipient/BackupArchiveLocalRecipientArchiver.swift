@@ -6,22 +6,22 @@
 import GRDB
 
 extension BackupArchive {
-    public struct LocalRecipientId {}
+    struct LocalRecipientId {}
 
-    public typealias ArchiveLocalRecipientResult = ArchiveSingleFrameResult<RecipientId>
-    public typealias RestoreLocalRecipientResult = RestoreFrameResult
+    typealias ArchiveLocalRecipientResult = ArchiveSingleFrameResult<RecipientId>
+    typealias RestoreLocalRecipientResult = RestoreFrameResult
 }
 
 /// Archiver for the ``BackupProto_Self`` recipient, a.k.a. the local
 /// user author/recipient.  Used as the recipient for the Note To Self chat.
-public class BackupArchiveLocalRecipientArchiver: BackupArchiveProtoStreamWriter {
+class BackupArchiveLocalRecipientArchiver {
     private static let localRecipientId = BackupArchive.RecipientId(value: 1)
 
     private let avatarDefaultColorManager: AvatarDefaultColorManager
     private let profileManager: BackupArchive.Shims.ProfileManager
     private let recipientStore: BackupArchiveRecipientStore
 
-    public init(
+    init(
         avatarDefaultColorManager: AvatarDefaultColorManager,
         profileManager: BackupArchive.Shims.ProfileManager,
         recipientStore: BackupArchiveRecipientStore,
@@ -34,11 +34,12 @@ public class BackupArchiveLocalRecipientArchiver: BackupArchiveProtoStreamWriter
     /// Archive the local recipient.
     func archiveLocalRecipient(
         stream: BackupArchiveOutputStream,
-        bencher: BackupArchive.Bencher,
-        localIdentifiers: LocalIdentifiers,
-        tx: DBReadTransaction,
+        context: BackupArchive.ArchivingContext,
     ) -> BackupArchive.ArchiveLocalRecipientResult {
-        return bencher.processFrame { frameBencher in
+        let localIdentifiers = context.localIdentifiers
+        let tx = context.tx
+
+        return context.processFrame { frameBencher in
             let defaultAvatarColor: AvatarTheme
             if let localRecipient = recipientStore.fetchRecipient(localIdentifiers: localIdentifiers, tx: tx) {
                 defaultAvatarColor = avatarDefaultColorManager.defaultColor(
@@ -52,8 +53,9 @@ public class BackupArchiveLocalRecipientArchiver: BackupArchiveProtoStreamWriter
                 )
             }
 
-            let error: BackupArchive.ArchiveFrameError? = Self.writeFrameToStream(
-                stream,
+            let error: BackupArchive.ArchiveFrameError? = context.writeFrame(
+                toStream: stream,
+                flush: .afterWrite,
                 frameBencher: frameBencher,
             ) {
                 var selfRecipient = BackupProto_Self()
@@ -84,7 +86,7 @@ public class BackupArchiveLocalRecipientArchiver: BackupArchiveProtoStreamWriter
     }
 
     /// Restore a single ``BackupProto/Recipient`` frame for the local recipient.
-    public func restoreSelfRecipient(
+    func restoreSelfRecipient(
         _ selfRecipientProto: BackupProto_Self,
         recipient: BackupProto_Recipient,
         context: BackupArchive.RecipientRestoringContext,

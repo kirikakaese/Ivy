@@ -45,7 +45,7 @@ public final class ChatFolderManager {
     /// Every stored folder, including deleted ones.
     public func allFolders(tx: DBReadTransaction) -> [ChatFolder] {
         do {
-            return try store.allCodableValues(transaction: tx)
+            return try store.allDataValues(transaction: tx).map { try JSONDecoder().decode(ChatFolder.self, from: $0) }
         } catch {
             owsFailDebug("Couldn't read chat folders: \(error)")
             return []

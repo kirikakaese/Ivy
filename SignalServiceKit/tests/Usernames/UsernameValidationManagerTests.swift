@@ -17,7 +17,7 @@ final class UsernameValidationManagerTest: XCTestCase {
     private var mockLocalUsernameManager: MockLocalUsernameManager!
     private var mockMessageProcessor: MockMessageProcessor!
     private var mockStorageServiceManager: MockStorageServiceManager!
-    private var mockUsernameLinkManager: MockUsernameLinkManager!
+    private var mockUsernamesService: MockUsernamesService!
     private var mockWhoAmIManager: MockWhoAmIManager!
 
     private var validationManager: UsernameValidationManagerImpl!
@@ -27,15 +27,15 @@ final class UsernameValidationManagerTest: XCTestCase {
         mockLocalUsernameManager = MockLocalUsernameManager()
         mockMessageProcessor = MockMessageProcessor()
         mockStorageServiceManager = MockStorageServiceManager()
-        mockUsernameLinkManager = MockUsernameLinkManager()
+        mockUsernamesService = MockUsernamesService()
         mockWhoAmIManager = MockWhoAmIManager()
 
         validationManager = UsernameValidationManagerImpl(context: .init(
             database: mockDB,
             localUsernameManager: mockLocalUsernameManager,
             messageProcessor: mockMessageProcessor,
+            serviceProvider: MockServiceProvider(mockServices: [mockUsernamesService!]),
             storageServiceManager: mockStorageServiceManager,
-            usernameLinkManager: mockUsernameLinkManager,
             whoAmIManager: mockWhoAmIManager,
         ))
     }
@@ -44,7 +44,7 @@ final class UsernameValidationManagerTest: XCTestCase {
         mockWhoAmIManager.whoAmIResponse.ensureUnset()
         owsPrecondition(!mockMessageProcessor.canWait)
         mockStorageServiceManager.pendingRestoreResult.ensureUnset()
-        owsPrecondition(mockUsernameLinkManager.decryptEncryptedLinkMocks.isEmpty)
+        owsPrecondition(mockUsernamesService.lookUpUsernameLinkMocks.get().isEmpty)
     }
 
     func testUnsetValidationSuccessful() async throws {
@@ -100,7 +100,7 @@ final class UsernameValidationManagerTest: XCTestCase {
         mockMessageProcessor.canWait = true
         mockStorageServiceManager.pendingRestoreResult = .value(())
         mockWhoAmIManager.whoAmIResponse = .value(.withRemoteUsername("boba_fett.42"))
-        mockUsernameLinkManager.decryptEncryptedLinkMocks = [{ _ in "boba_fett.42" }]
+        mockUsernamesService.lookUpUsernameLinkMocks.set([{ _, _ in try! LibSignalClient.Username("boba_fett.42") }])
 
         let isValid = try await validationManager.validateUsername()
         XCTAssertTrue(isValid)
@@ -155,7 +155,7 @@ final class UsernameValidationManagerTest: XCTestCase {
         mockMessageProcessor.canWait = true
         mockStorageServiceManager.pendingRestoreResult = .value(())
         mockWhoAmIManager.whoAmIResponse = .value(.withRemoteUsername("boba_fett.42"))
-        mockUsernameLinkManager.decryptEncryptedLinkMocks = [{ _ in throw OWSGenericError("") }]
+        mockUsernamesService.lookUpUsernameLinkMocks.set([{ _, _ in throw OWSGenericError("") }])
 
         let isValid = await Result(catching: { try await validationManager.validateUsername() })
         XCTAssertThrowsError(try isValid.get())
@@ -174,7 +174,7 @@ final class UsernameValidationManagerTest: XCTestCase {
         mockMessageProcessor.canWait = true
         mockStorageServiceManager.pendingRestoreResult = .value(())
         mockWhoAmIManager.whoAmIResponse = .value(.withRemoteUsername("boba_fett.42"))
-        mockUsernameLinkManager.decryptEncryptedLinkMocks = [{ _ in "boba_fett.43" }]
+        mockUsernamesService.lookUpUsernameLinkMocks.set([{ _, _ in try! LibSignalClient.Username("boba_fett.43") }])
 
         let isValid = try await validationManager.validateUsername()
         XCTAssertFalse(isValid)
@@ -265,17 +265,17 @@ private extension AccountIdentityResponse {
     static func withRemoteUsername(_ remoteUsername: String) -> AccountIdentityResponse {
         return AccountIdentityResponse(
             localIdentifiers: .forUnitTests,
-            usernameHash: try! Usernames.HashedUsername(forUsername: remoteUsername).hashString,
+            usernameHash: try! LibSignalClient.Username(remoteUsername).hash,
         )
     }
 }
 
 private extension Usernames.UsernameLink {
-    static var mocked: Usernames.UsernameLink {
-        return Usernames.UsernameLink(
+    static var mocked: UsernameLink {
+        return UsernameLink(
             handle: UUID(),
-            entropy: Data(repeating: 5, count: 32),
-        )!
+            entropy: try! UsernameLink.Entropy(rawValue: Data(repeating: 5, count: 32)),
+        )
     }
 }
 

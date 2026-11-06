@@ -408,10 +408,11 @@ public final class MessageReceiver {
                 if dataMessage.hasProfileKey {
                     if let groupId {
                         let profileManager = SSKEnvironment.shared.profileManagerRef
-                        profileManager.addGroupId(
-                            toProfileWhitelist: groupId.serialize(),
+                        var groupRecord = GroupStore().fetchGroupOrInsert(groupId: .V2(groupId), tx: tx)
+                        profileManager.addGroupToProfileWhitelist(
+                            &groupRecord,
                             userProfileWriter: .syncMessage,
-                            transaction: tx,
+                            tx: tx,
                         )
                     } else {
                         let serviceId = ServiceId.parseFrom(
@@ -681,8 +682,7 @@ public final class MessageReceiver {
         } else if let request = syncMessage.request {
             handleIncomingSyncRequest(request, tx: tx)
         } else if let blocked = syncMessage.blocked {
-            Logger.info("Received blocked sync message.")
-            handleSyncedBlocklist(blocked, tx: tx)
+            handleSyncedBlocklist(blocked, localIdentifiers: localIdentifiers, tx: tx)
         } else if !syncMessage.read.isEmpty {
             let earlyReceipts = SSKEnvironment.shared.receiptManagerRef.processReadReceiptsFromLinkedDevice(
                 syncMessage.read,
@@ -760,8 +760,9 @@ public final class MessageReceiver {
         } else if let messageRequestResponse = syncMessage.messageRequestResponse {
             SSKEnvironment.shared.syncManagerRef.processIncomingMessageRequestResponseSyncMessage(
                 messageRequestResponse,
+                timestamp: decryptedEnvelope.timestamp,
                 localIdentifiers: registeredState.localIdentifiers,
-                transaction: tx,
+                tx: tx,
             )
         } else if let outgoingPayment = syncMessage.outgoingPayment {
             // An "incoming" sync message notifies us of an "outgoing" payment.
@@ -882,10 +883,18 @@ public final class MessageReceiver {
     }
 
     private func handleIncomingSyncRequest(_ request: SSKProtoSyncMessageRequest, tx: DBWriteTransaction) {
-        guard DependenciesBridge.shared.tsAccountManager.registrationState(tx: tx).isRegisteredPrimaryDevice else {
+        let blockingManager = SSKEnvironment.shared.blockingManagerRef
+        let syncManager = SSKEnvironment.shared.syncManagerRef
+        let tsAccountManager = DependenciesBridge.shared.tsAccountManager
+
+        guard
+            let registeredState = try? tsAccountManager.registeredState(tx: tx),
+            registeredState.isPrimary
+        else {
             // Don't respond to sync requests from a linked device.
             return
         }
+
         switch request.type {
         case .contacts:
             // We respond asynchronously because populating the sync message will
@@ -898,7 +907,6 @@ public final class MessageReceiver {
             tx.addSyncCompletion {
                 Task {
                     defer { pendingTask.complete() }
-                    let syncManager = SSKEnvironment.shared.syncManagerRef
                     do {
                         try await syncManager.syncAllContacts()
                     } catch {
@@ -912,7 +920,7 @@ public final class MessageReceiver {
             Task {
                 defer { pendingTask.complete() }
                 do {
-                    try await SSKEnvironment.shared.blockingManagerRef.syncBlockListIfNecessary(force: true)
+                    try await blockingManager.syncBlockListIfNecessary(force: true)
                 } catch {
                     Logger.warn("Failed to send block list sync message! \(error)")
                 }
@@ -920,26 +928,59 @@ public final class MessageReceiver {
 
         case .configuration:
             // We send _two_ responses to the "configuration request".
-            SSKEnvironment.shared.syncManagerRef.sendConfigurationSyncMessage()
+            syncManager.sendConfigurationSyncMessage(tx: tx)
             StickerManager.syncAllInstalledPacks(transaction: tx)
 
         case .keys:
-            SSKEnvironment.shared.syncManagerRef.sendKeysSyncMessage()
+            syncManager.sendKeysSyncMessage(tx: tx)
 
         case .unknown, .none:
             owsFailDebug("Ignoring sync request with unexpected type")
         }
     }
 
-    private func handleSyncedBlocklist(_ blocked: SSKProtoSyncMessageBlocked, tx: DBWriteTransaction) {
-        var blockedAcis = Set<Aci>()
-        if !blocked.acisBinary.isEmpty {
+    private func handleSyncedBlocklist(
+        _ blocked: SSKProtoSyncMessageBlocked,
+        localIdentifiers: LocalIdentifiers,
+        tx: DBWriteTransaction,
+    ) {
+        let blockingManager = SSKEnvironment.shared.blockingManagerRef
+
+        var blockedPhoneNumbers = [E164: BlockedTimestamp]()
+        if !blocked.blockedE164s.isEmpty {
+            for blockedE164 in blocked.blockedE164s {
+                guard let phoneNumber = E164(blockedE164.e164) else {
+                    owsFailDebug("couldn't parse blocked phone number")
+                    continue
+                }
+                blockedPhoneNumbers[phoneNumber] = BlockedTimestamp(clamping: blockedE164.timestamp)
+            }
+        } else {
+            for phoneNumber in blocked.numbers {
+                guard let phoneNumber = E164(phoneNumber) else {
+                    owsFailDebug("couldn't parse blocked phone number")
+                    continue
+                }
+                blockedPhoneNumbers[phoneNumber] = .unspecified
+            }
+        }
+
+        var blockedAcis = [Aci: BlockedTimestamp]()
+        if !blocked.blockedAcis.isEmpty {
+            for blockedAci in blocked.blockedAcis {
+                guard let aci = try? Aci.parseFrom(serviceIdBinary: blockedAci.aciBinary ?? Data()) else {
+                    owsFailDebug("couldn't parse blocked aci")
+                    continue
+                }
+                blockedAcis[aci] = BlockedTimestamp(clamping: blockedAci.timestamp)
+            }
+        } else if !blocked.acisBinary.isEmpty {
             for aciBinary in blocked.acisBinary {
                 guard let aci = try? Aci.parseFrom(serviceIdBinary: aciBinary) else {
                     owsFailDebug("Blocked ACI binary was nil")
                     continue
                 }
-                blockedAcis.insert(aci)
+                blockedAcis[aci] = .unspecified
             }
         } else {
             for aciString in blocked.acis {
@@ -947,13 +988,34 @@ public final class MessageReceiver {
                     owsFailDebug("Blocked ACI was nil.")
                     continue
                 }
-                blockedAcis.insert(aci)
+                blockedAcis[aci] = .unspecified
             }
         }
-        SSKEnvironment.shared.blockingManagerRef.processIncomingSync(
-            blockedPhoneNumbers: Set(blocked.numbers),
+
+        var blockedGroups = [AnyGroupIdentifier: BlockedTimestamp]()
+        if !blocked.blockedGroups.isEmpty {
+            for blockedGroup in blocked.blockedGroups {
+                guard let groupId = try? AnyGroupIdentifier.parseFrom(blockedGroup.groupID ?? Data()) else {
+                    owsFailDebug("couldn't parse blocked group")
+                    continue
+                }
+                blockedGroups[groupId] = BlockedTimestamp(clamping: blockedGroup.timestamp)
+            }
+        } else {
+            for groupIdData in blocked.groupIds {
+                guard let groupId = try? AnyGroupIdentifier.parseFrom(groupIdData) else {
+                    owsFailDebug("couldn't parse blocked group")
+                    continue
+                }
+                blockedGroups[groupId] = .unspecified
+            }
+        }
+
+        blockingManager.processIncomingSync(
+            blockedPhoneNumbers: blockedPhoneNumbers,
             blockedAcis: blockedAcis,
-            blockedGroupIds: Set(blocked.groupIds),
+            blockedGroups: blockedGroups,
+            localIdentifiers: localIdentifiers,
             tx: tx,
         )
     }
@@ -1755,6 +1817,9 @@ public final class MessageReceiver {
 
         DependenciesBridge.shared.attachmentDownloadManager.enqueueDownloadOfAttachmentsForMessage(message, tx: tx)
         SSKEnvironment.shared.notificationPresenterRef.notifyUser(forIncomingMessage: message, thread: updatedThread, transaction: tx)
+        if updatedThread.isMuted {
+            DependenciesBridge.shared.unreadReminderManager.didReceiveMessage(message, in: updatedThread, tx: tx)
+        }
 
         if CurrentAppContext().isMainApp {
             DispatchQueue.main.async {

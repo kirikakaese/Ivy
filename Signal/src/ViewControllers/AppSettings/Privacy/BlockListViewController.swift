@@ -29,6 +29,11 @@ class BlockListViewController: OWSTableViewController2 {
     }
 
     private func updateContactList(reloadTableView: Bool) {
+        let avatarBuilder = SSKEnvironment.shared.avatarBuilderRef
+        let contactManager = SSKEnvironment.shared.contactManagerRef
+        let databaseStorage = SSKEnvironment.shared.databaseStorageRef
+        let recipientStore = DependenciesBridge.shared.recipientDatabaseTable
+
         let contents = OWSTableContents()
 
         // "Add" section
@@ -51,19 +56,44 @@ class BlockListViewController: OWSTableViewController2 {
         )
         contents.add(sectionAddContact)
 
-        let addresses: [SignalServiceAddress]
-        let groups: [(groupId: Data, groupName: String, groupModel: TSGroupModel?, groupAvatarImage: UIImage?)]
-        (addresses, groups) = SSKEnvironment.shared.databaseStorageRef.read { transaction in
-            let avatarBuilder = SSKEnvironment.shared.avatarBuilderRef
-            let blockingManager = SSKEnvironment.shared.blockingManagerRef
-            let contactManager = SSKEnvironment.shared.contactManagerRef
-            let addresses = contactManager.sortSignalServiceAddresses(
-                blockingManager.blockedAddresses(transaction: transaction),
-                transaction: transaction,
-            )
-            let groups: [(groupId: Data, groupName: String, groupModel: TSGroupModel?, groupAvatarImage: UIImage?)]
-            groups = blockingManager.blockedGroupIds(transaction: transaction).map { groupId in
-                let groupModel = TSGroupThread.fetchThread(forGroupIdData: groupId, tx: transaction)?.groupModel
+        struct BlockedRecipient {
+            var address: SignalServiceAddress
+            var comparableName: ComparableDisplayName
+            var blockedAt: BlockedTimestamp
+        }
+        struct BlockedGroup {
+            var groupId: Data
+            var groupName: String
+            var groupAvatar: UIImage?
+            var blockedAt: BlockedTimestamp
+        }
+        let blockedRecipients: [BlockedRecipient]
+        let blockedGroups: [BlockedGroup]
+        (blockedRecipients, blockedGroups) = databaseStorage.read { tx in
+            let recipientResult: [BlockedRecipient]
+            let blockedRecipients = recipientStore.fetchBlockedRecipients(tx: tx)
+            let blockedComparableNames = contactManager.comparableNames(for: blockedRecipients.map(\.address), tx: tx)
+            recipientResult = zip(blockedRecipients, blockedComparableNames).map { recipient, comparableName in
+                return BlockedRecipient(
+                    address: recipient.address,
+                    comparableName: comparableName,
+                    blockedAt: recipient.blockedAt,
+                )
+            }.sorted(by: {
+                if $0.blockedAt != $1.blockedAt {
+                    return $0.blockedAt > $1.blockedAt
+                }
+                return $0.comparableName < $1.comparableName
+            })
+            let groupResult: [BlockedGroup]
+            let blockedGroups = GroupStore().fetchBlockedGroups(tx: tx)
+            groupResult = blockedGroups.map { groupRecord in
+                let groupThread = groupRecord.threadId.flatMap {
+                    return TSGroupThread.threadUniqueId(forThreadId: $0, tx: tx)
+                }.flatMap {
+                    return TSGroupThread.fetchViaCache(uniqueId: $0, transaction: tx)
+                }
+                let groupModel = groupThread?.groupModel
                 let groupName = groupModel?.groupName ?? OWSLocalizedString(
                     "UNKNOWN_GROUP",
                     comment: "Title shown for a group when it's name isn't known. Visible for blocked groups whose name isn't known.",
@@ -74,13 +104,21 @@ class BlockListViewController: OWSTableViewController2 {
                     }
 
                     return avatarBuilder.defaultAvatarImage(
-                        forGroupId: groupId,
+                        forGroupId: groupRecord.groupId,
                         diameterPoints: AvatarBuilder.standardAvatarSizePoints,
-                        transaction: transaction,
+                        transaction: tx,
                     )
                 }()
-                return (groupId, groupName, groupModel, groupAvatarImage)
+                return BlockedGroup(
+                    groupId: groupRecord.groupId,
+                    groupName: groupName,
+                    groupAvatar: groupAvatarImage,
+                    blockedAt: groupRecord.blockedAt,
+                )
             }.sorted(by: {
+                if $0.blockedAt != $1.blockedAt {
+                    return $0.blockedAt > $1.blockedAt
+                }
                 switch $0.groupName.localizedCaseInsensitiveCompare($1.groupName) {
                 case .orderedAscending:
                     return true
@@ -90,26 +128,26 @@ class BlockListViewController: OWSTableViewController2 {
                     return $0.groupId.hexadecimalString < $0.groupId.hexadecimalString
                 }
             })
-            return (addresses, groups)
+            return (recipientResult, groupResult)
         }
 
-        // Contacts
-        let contactsSectionItems = addresses.map { address in
+        let recipientSectionItems = blockedRecipients.map { blockedRecipient in
             OWSTableItem(
-                dequeueCellBlock: { [weak self] tableView in
-                    let cell = tableView.dequeueReusableCell(withIdentifier: ContactTableViewCell.reuseIdentifier) as! ContactTableViewCell
-                    let config = ContactCellView.Configuration(address: address, localUserDisplayMode: .asUser)
-                    if self != nil {
-                        SSKEnvironment.shared.databaseStorageRef.read { transaction in
-                            cell.configure(configuration: config, transaction: transaction)
-                        }
+                dequeueCellBlock: { tableView in
+                    let cell = tableView.dequeueReusableCell(ContactTableViewCell.self).owsFailUnwrap("must exist")
+                    var config = ContactCellView.Configuration(
+                        address: blockedRecipient.address,
+                        localUserDisplayMode: .asUser,
+                    )
+                    config.attributedSubtitle = Self.localizedBlockedAt(blockedRecipient.blockedAt).map(NSAttributedString.init(string:))
+                    databaseStorage.read { tx in
+                        cell.configure(configuration: config, transaction: tx)
                     }
-                    cell.accessibilityIdentifier = "BlockListViewController.user"
                     return cell
                 },
                 actionBlock: { [weak self] in
                     guard let self else { return }
-                    BlockListUIUtils.showUnblockAddressActionSheet(address, from: self) { isBlocked in
+                    BlockListUIUtils.showUnblockAddressActionSheet(blockedRecipient.address, from: self) { isBlocked in
                         if !isBlocked {
                             // Reload if unblocked.
                             self.updateContactList(reloadTableView: true)
@@ -118,45 +156,67 @@ class BlockListViewController: OWSTableViewController2 {
                 },
             )
         }
-        if !contactsSectionItems.isEmpty {
+        if !recipientSectionItems.isEmpty {
             contents.add(OWSTableSection(
                 title: NSLocalizedString(
                     "BLOCK_LIST_BLOCKED_USERS_SECTION",
                     comment: "Section header for users that have been blocked",
                 ),
-                items: contactsSectionItems,
+                items: recipientSectionItems,
             ))
         }
 
-        // Groups
-        let groupsSectionItems = groups.map { groupId, groupName, groupModel, groupAvatarImage in
+        let groupSectionItems = blockedGroups.map { blockedGroup in
             return OWSTableItem(
-                customCellBlock: {
-                    let cell = AvatarTableViewCell()
-                    cell.configure(image: groupAvatarImage, text: groupName)
+                dequeueCellBlock: { tableView in
+                    let cell = tableView.dequeueReusableCell(ContactTableViewCell.self).owsFailUnwrap("must exist")
+                    var config = ContactCellView.Configuration(
+                        name: blockedGroup.groupName,
+                        avatar: blockedGroup.groupAvatar,
+                    )
+                    config.attributedSubtitle = Self.localizedBlockedAt(blockedGroup.blockedAt).map(NSAttributedString.init(string:))
+                    databaseStorage.read { tx in
+                        cell.configure(configuration: config, transaction: tx)
+                    }
                     return cell
                 },
                 actionBlock: { [weak self] in
                     guard let self else { return }
-                    BlockListUIUtils.showUnblockGroupActionSheet(groupId: groupId, groupNameOrDefault: groupName, from: self) { isBlocked in
-                        if !isBlocked {
-                            self.updateContactList(reloadTableView: true)
-                        }
-                    }
+                    BlockListUIUtils.showUnblockGroupActionSheet(
+                        groupId: blockedGroup.groupId,
+                        groupNameOrDefault: blockedGroup.groupName,
+                        from: self,
+                        completion: { isBlocked in
+                            if !isBlocked {
+                                self.updateContactList(reloadTableView: true)
+                            }
+                        },
+                    )
                 },
             )
         }
-        if !groupsSectionItems.isEmpty {
+        if !groupSectionItems.isEmpty {
             contents.add(OWSTableSection(
                 title: NSLocalizedString(
                     "BLOCK_LIST_BLOCKED_GROUPS_SECTION",
                     comment: "Section header for groups that have been blocked",
                 ),
-                items: groupsSectionItems,
+                items: groupSectionItems,
             ))
         }
 
         setContents(contents, shouldReload: reloadTableView)
+    }
+
+    private static func localizedBlockedAt(_ blockedAt: BlockedTimestamp) -> String? {
+        guard let blockedAtDate = blockedAt.asDate else {
+            return nil
+        }
+        let format = OWSLocalizedString(
+            "BLOCKED_AT",
+            comment: "Shown as a subtitle for recipients & groups you've blocked to indicate when you blocked them. The replacement is a formatted date.",
+        )
+        return String.nonPluralLocalizedStringWithFormat(format, DateUtil.dateFormatter.string(from: blockedAtDate))
     }
 }
 

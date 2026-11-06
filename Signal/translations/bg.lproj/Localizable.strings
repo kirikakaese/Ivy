@@ -1462,6 +1462,9 @@
 /* An explanation of the consequences of blocking another user. */
 "BLOCK_USER_BEHAVIOR_EXPLANATION" = "Блокираните потребители не могат да ви се обаждат, нито да ви изпращат съобщения.";
 
+/* Shown as a subtitle for recipients & groups you've blocked to indicate when you blocked them. The replacement is a formatted date. */
+"BLOCKED_AT" = "Блокиран на %1$@";
+
 /* Default text for the custom amount field of the boost view. */
 "BOOST_VIEW_CUSTOM_AMOUNT_PLACEHOLDER" = "Въведете индивидуална сума";
 
@@ -2437,14 +2440,44 @@
 /* navbar title for contact picker when sharing a contact */
 "CONTACT_PICKER_TITLE" = "Избиране на контакта";
 
+/* Button on a shared contact in a group conversation that adds the contact to that group. It can share a row with other buttons, so a short label is preferred. */
+"CONTACT_SHARE_ADD_TO_GROUP_BUTTON" = "Добавяне към групата";
+
+/* Button in the confirmation shown before adding a shared contact to the current group that adds the contact. */
+"CONTACT_SHARE_ADD_TO_GROUP_CONFIRMATION_BUTTON" = "Добавяне към групата";
+
+/* Confirmation shown before adding a shared contact to the current group. Embeds {{ %1$@ contact name, %2$@ group name }}. */
+"CONTACT_SHARE_ADD_TO_GROUP_CONFIRMATION_FORMAT" = "Добавяне на %1$@ към „%2$@“?";
+
 /* Title for the 'Approve contact share' view. */
 "CONTACT_SHARE_APPROVAL_VIEW_TITLE" = "Споделяне на контакта";
+
+/* Name of the option to share a contact without a photo, which shows their initials instead. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_NO_PHOTO" = "Няма снимка";
+
+/* Title for the sheet for choosing which photo to include when sharing a contact. */
+"CONTACT_SHARE_AVATAR_PICKER_TITLE" = "Изберете снимка за споделяне";
+
+/* Accessibility label for the row that chooses which photo to include when sharing a contact. */
+"CONTACT_SHARE_AVATAR_ROW_LABEL" = "Снимка";
+
+/* Name of the option to share a contact's Signal profile photo. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_SIGNAL_PHOTO" = "Профилна снимка в Signal";
+
+/* Name of the option to share a contact's photo from the phone's contacts. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_SYSTEM_CONTACT_PHOTO" = "Снимка от „Контакти“";
 
 /* Title for the 'edit contact share name' view. */
 "CONTACT_SHARE_EDIT_NAME_VIEW_TITLE" = "Редактиране на име";
 
 /* Error indicating that an invalid contact cannot be shared. */
 "CONTACT_SHARE_INVALID_CONTACT" = "Невалиден контакт.";
+
+/* Button on a shared contact that opens a chat with that contact. It can share a row with other buttons, so a short label is preferred. */
+"CONTACT_SHARE_MESSAGE_BUTTON" = "Съобщение";
+
+/* Notice at the top of the 'Share Contact' view when the shared contact includes their Signal account. Embeds {{ contact name }}. */
+"CONTACT_SHARE_SIGNAL_ACCOUNT_NOTICE_FORMAT" = "Всеки, с когото споделите този профил, ще може да изпраща съобщения на %1$@ в Signal.";
 
 /* Alert body when contacts disabled while trying to share a contact. */
 "CONTACT_SHARING_NO_ACCESS_BODY" = "Signal се нуждае от достъп до вашите контакти. Отидете в настройките на iOS и включете контактите. Вашите контакти са криптирани и не се виждат от услугата Signal.";
@@ -3973,6 +4006,9 @@
 /* Label warning the user that the app will expire today. */
 "EXPIRATION_WARNING_TODAY" = "Тази версия на Signal ще изтече днес. Актуализирайте я, за да продължите да изпращате и получавате съобщения.";
 
+/* Description of how and why Signal iOS uses Touch ID/Face ID/Phone Passcode to export your chat history. */
+"EXPORT_CHATS_AUTHENTICATION_REASON" = "Удостоверете самоличността си, за да експортирате вашата история на чата";
+
 /* action sheet header when re-sending message which failed because of an invalid key signature */
 "FAILED_SENDING_BECAUSE_INVALID_KEY_SIGNATURE" = "Съобщението не беше изпратено успешно, защото %1$@ трябва да актуализира и да отвори Signal.";
 
@@ -5107,6 +5143,21 @@
 /* Label reminding the user that they are in archive mode, and that chats are unarchived when they receive a new message. */
 "INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "Архивираните чатове ще се преместят във входящата поща, когато пристигне ново съобщение.";
 
+/* Title of action allowing user to connect to an existing device */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_EXITING_OLD_DEVICE_ACTION" = "Свързване със съществуващо устройство";
+
+/* Body of prompt asking user to select device transfer target. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_BODY" = "Изберете съществуващо или ново устройство, с което да свържете. След свързването трансферът на вашия акаунт ще започне.";
+
+/* Title of action allowing user to pair a new device transfer peer. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_PAIR_NEW_ACTION" = "Свързване на ново устройство";
+
+/* Title of prompt asking user to select device transfer target. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_TITLE" = "Изберете устройство, с което да свържете";
+
+/* Title of action allowing user to connect to an existing device */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_SPECIFIC_OLD_DEVICE_ACTION" = "Свързване с(ъс) „%1$@“";
+
 /* Body of prompt notifying device transfer will continue on other device. */
 "INCOMING_DEVICE_TRANSFER_CONTINUE_BODY" = "Продължете с трансфера на акаунта си на другото устройство.";
 
@@ -5443,8 +5494,8 @@
 /* Message for an action sheet telling users how to link a device, when trying to open a device-linking URL from the in-app camera. */
 "LINKED_DEVICE_URL_OPENED_ACTION_SHEET_IN_APP_CAMERA_MESSAGE" = "Изглежда се опитвате да свържете устройство със Signal. Докоснете „продължаване“ и след това докоснете „Свързване на ново устройство“ и сканирайте QR отново.";
 
-/* Bullet point about downloads on the linked devices education sheet. Embeds {{ %1$@ iPad download link, %2$@ desktop download link }} */
-"LINKED_DEVICES_EDUCATION_POINT_DOWNLOADS" = "На другото си устройство посетете %1$@, за да инсталирате приложението за iPad, или %2$@, за да инсталирате приложението за десктоп.";
+/* Bullet point about a download link on the linked devices education sheet. Embeds {{ %1$@ download link }} */
+"LINKED_DEVICES_EDUCATION_POINT_DOWNLOADS" = "На устройството, което искате да свържете, посетете %1$@, за да инсталирате Signal";
 
 /* Bullet point about message sync on the linked devices education sheet */
 "LINKED_DEVICES_EDUCATION_POINT_MESSAGES" = "Съобщенията в Signal се синхронизират със Signal на мобилния ви телефон, след като бъде свързан.";
@@ -5453,13 +5504,13 @@
 "LINKED_DEVICES_EDUCATION_POINT_PRIVACY" = "Всички съобщения на свързаните устройства са поверителни";
 
 /* Title for the linked device education sheet */
-"LINKED_DEVICES_EDUCATION_TITLE" = "Signal на компютър или iPad";
+"LINKED_DEVICES_EDUCATION_TITLE" = "Signal на свързано устройство";
 
 /* Text that appears where the linked device list would be indicating that there are no linked devices. */
 "LINKED_DEVICES_EMPTY_STATE" = "Няма свързани устройства";
 
 /* Description for header of the linked devices list */
-"LINKED_DEVICES_HEADER_DESCRIPTION" = "Използвайте Signal на компютър или iPad.";
+"LINKED_DEVICES_HEADER_DESCRIPTION" = "Използвайте този акаунт за Signal на друго устройство.";
 
 /* Footer text below the list of currently-linked devices */
 "LINKED_DEVICES_LIST_FOOTER" = "Съобщенията и информацията за чатовете са защитени чрез криптиране от край до край на всички устройства";
@@ -5531,7 +5582,7 @@
 "LOCAL_BACKUPS_SELECT_HERO_SHEET_TITLE" = "Изберете папката ви за архивиране";
 
 /* Message for an action sheet informing the user we were unable to save their local backup location */
-"LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_MESSAGE" = "Нещо се обърка и избраното от вас местоположение на папката не можа да бъде запазено. Опитайте отново. Ако този проблем продължава, моля, свържете се с отдела за поддръжка.";
+"LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_MESSAGE" = "Нещо се обърка и избраното от вас местоположение на папката не можа да бъде запазено. Опитайте отново.";
 
 /* Title for an action sheet informing the user we were unable to save their local backup location */
 "LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_TITLE" = "Неуспешно запазване на местоположението на папката";
@@ -6172,6 +6223,12 @@
 /* Alert title when user has previously denied media library access */
 "MISSING_MEDIA_LIBRARY_PERMISSION_TITLE" = "Signal изисква достъп до вашите снимки за тази функция.";
 
+/* Title for a progress modal shown after the user taps Cancel, while the work is being cancelled. */
+"MODAL_CIRCULAR_PROGRESS_CANCELLING_TITLE" = "Анулиране…";
+
+/* Label on a progress modal indicating how far along some work is. Embeds {{ formatted percentage }}. */
+"MODAL_CIRCULAR_PROGRESS_PERCENT_COMPLETE" = "%1$@ завършено";
+
 /* Text on a blocking progress screen that indicates that there's a deletion in progress. */
 "MODAL_DELETING" = "Изтриване…";
 
@@ -6408,6 +6465,9 @@
 
 /* Shown in place of the text input box in a conversation when the user is no longer registered can't send messages. This value is a tappable link embedded in a larger sentence. */
 "NOT_REGISTERED_BOTTOM_REREGISTER" = "Пререгистриране";
+
+/* Description for an error indicating you are not registered. */
+"NOT_REGISTERED_ERROR_LOCALIZED_DESCRIPTION" = "Не сте регистрирани.";
 
 /* Label for 1:1 conversation with yourself. */
 "NOTE_TO_SELF" = "Напомняне за мен";
@@ -7973,10 +8033,19 @@
 "REGISTER_WITHOUT_NUMBER" = "Регистриране без номер";
 
 /* Short description for a sheet warning users about an incorrect recovery key used for registration. */
-"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_BODY" = "Възможно е да сте въвели своя ключ за възстановяване неправилно. \n\nУверете се, че се регистрирате със същите телефонен номер и ключ за възстановяване, които сте запазили при активирането на „Сигурни резервни копия“ на Signal.";
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_BODY" = "Уверете се, че се регистрирате със същия телефонен номер и ключа за възстановяване от 64 знака, които сте запазили при активирането на „Резервни копия в Signal“. Резервните копия не могат да се възстановяват без този ключ.";
 
 /* Title for a sheet warning users about an incorrect recovery key used for registration. */
 "REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TITLE" = "Неправилен ключ за възстановяване";
+
+/* Action label action allowing users to use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_ACTION" = "Регистриране по друг начин";
+
+/* Message body for a sheet asking users if they would rather use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_MESSAGE" = "Можете да регистрирате своя акаунт, като потвърдите чрез код от SMS, който Signal ще ви изпрати, или като въведете своя ПИН. След като се регистрирате, можете отново да опитате да възстановите резервното си копие със своя ключ за възстановяване.";
+
+/* Title for a sheet asking users if they would rather use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_TITLE" = "Потвърждаване с код от SMS или ПИН?";
 
 /* Body for a sheet warning users about a missing backup. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_BACKUP_NOT_FOUND_BODY" = "Няма резервно копие, свързано с този ключ за възстановяване. Моля, уверете се, че ключът е правилен, и опитайте отново.";
@@ -8002,6 +8071,9 @@
 /* Body for a sheet warning users about a generic backup manual restore failure. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_BODY" = "Възникна грешка и акаунтът ви не можа да бъде прехвърлен.";
 
+/* Title for a sheet warning users about an error during backup restore. */
+"REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_CANT_RESTORE_TITLE" = "Неуспешно възстановяване на резервно копие";
+
 /* Body for a sheet warning users about a generic backup restore failure. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_RETRY_BODY" = "Възникна грешка и акаунтът ви не беше прехвърлен успешно. Опитайте отново, като пак сканирате QR кода и изберете своя метод за трансфер.";
 
@@ -8025,6 +8097,9 @@
 
 /* Title for a sheet warning users about an invalid local backup location */
 "REGISTRATION_BACKUP_RESTORE_ERROR_LOCAL_BACKUP_LOCATION_TITLE" = "Неуспешно възстановяване на резервно копие";
+
+/* Message for a sheet telling the user that their phone number is mismatched with their recovery key used for making a local backup */
+"REGISTRATION_BACKUP_RESTORE_ERROR_MISMATCHED_LOCAL_BACKUP_MESSAGE" = "Резервното копие, което се опитвате да възстановите, е създадено с различен акаунт в Signal. За да възстановите това резервно копие, трябва да използвате същия телефонен номер и ключа за възстановяване, които сте запазили при активирането на резервните копия на устройството.";
 
 /* Body for a sheet warning users about a network error during backup restore. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_NETWORK_BODY" = "Вашето резервно копие не може да бъде възстановено в момента. Проверете връзката си с интернет и опитайте отново.";
@@ -8233,6 +8308,9 @@
 /* Button on the Signal Login card on the 'Signal Login details' screen to show the full account ID and recovery key. */
 "REGISTRATION_SIGNAL_LOGIN_DETAILS_VIEW_DETAILS_BUTTON" = "Преглед на подробностите";
 
+/* Explanation text for the 'Signal Login' screen. */
+"REGISTRATION_SIGNAL_LOGIN_EXPLANATION" = "Регистрирайте се без телефонен номер, като използвате Signal Login. С еднократно заплащане ще получите идентификатор на акаунт, с който да започнете.";
+
 /* Toast shown after copying the account ID on the 'Signal Login' details sheet. */
 "REGISTRATION_SIGNAL_LOGIN_FULL_DETAILS_ACCOUNT_ID_COPIED_TOAST" = "Идентификаторът на акаунта е копиран";
 
@@ -8265,6 +8343,33 @@
 
 /* Title for help button for the 'Signal Login' screen. */
 "REGISTRATION_SIGNAL_LOGIN_NEED_HELP_TITLE" = "Трябва ви помощ?";
+
+/* Button to initiate a purchase on the 'Signal Login' screen. The replacement is a localized cost (e.g., $2.99). */
+"REGISTRATION_SIGNAL_LOGIN_PAY" = "Платете %1$@";
+
+/* Text for a bullet point describing that an existing Signal Login can be used to log in and restore an account. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_BULLET_RESTORE" = "Влезте и възстановете акаунта си";
+
+/* Text for a bullet point thanking the user for supporting Signal by previously buying a Signal Login. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_BULLET_THANKS" = "Благодарим ви, че подкрепяте Signal";
+
+/* Subtitle for the option to register with a Signal Login the user already owns. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_SUBTITLE" = "Използвайте съществуващата си информация за вход";
+
+/* Title for the option to register with a Signal Login the user already owns. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_TITLE" = "Имам Signal Login";
+
+/* Text for a bullet point describing that a Signal Login lets you register without a phone number. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_NO_PHONE_NUMBER" = "Не е необходим телефонен номер";
+
+/* Text for a bullet point explaining that buying a Signal Login supports Signal, a non-profit. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_NON_PROFIT" = "Signal е организация с нестопанска цел – вашата покупка подкрепя нашата мисия";
+
+/* Text for a bullet point describing that a Signal Login comes with a username for messaging and calling. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_USERNAME" = "Потребителско име за съобщения и обаждания";
+
+/* Subtitle for the option to buy a new Signal Login. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_SUBTITLE" = "Еднократна покупка";
 
 /* Title text for the 'Signal Login' screen. */
 "REGISTRATION_SIGNAL_LOGIN_TITLE" = "Signal Login";
@@ -8821,6 +8926,9 @@
 /* In-app camera: title for the prompt to turn off multi-mode that will cause previously taken photos to be discarded. */
 "SEND_MEDIA_TURN_OFF_MM_TITLE" = "Изключване на режима на няколко снимки?";
 
+/* Label for the button to send a sticker message */
+"SEND_STICKER_BUTTON_TITLE" = "Изпращане на стикер";
+
 /* String describing high quality sent media */
 "SENT_MEDIA_QUALITY_HIGH" = "Високо";
 
@@ -9033,6 +9141,45 @@
 
 /* Title for the 'chats' link in settings. */
 "SETTINGS_CHATS" = "Чатове";
+
+/* Title for a button in Chats settings that starts exporting the user's chat history. */
+"SETTINGS_CHATS_EXPORT_BUTTON" = "Експорт на чатове";
+
+/* Title for a button in a sheet shown before the user chooses a folder to export their chat history into, which opens a folder picker. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_CHOOSE_BUTTON" = "Изберете папка";
+
+/* Message for a sheet shown before the user chooses a folder to export their chat history into. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_MESSAGE" = "Изберете папка в хранилището на устройството си, в която да се съхранява вашата история на чата.";
+
+/* Title for a sheet shown before the user chooses a folder to export their chat history into. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_TITLE" = "Изберете папка";
+
+/* Message for a sheet shown after the user's chat history has been exported. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_MESSAGE" = "ВНИМАВАЙТЕ къде съхранявате файла с експортираните чатове и не го споделяйте с никого. Други приложения на устройството ви може да осъществяват достъп до него в зависимост от разрешенията на вашето устройство.";
+
+/* Title for a sheet shown after the user's chat history has been exported. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_TITLE" = "Експортирането на чата завърши";
+
+/* Title for a button in a sheet shown after the user's chat history has been exported, which opens the exported folder in the Files app. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_VIEW_IN_FILES_BUTTON" = "Преглед във „Файлове“";
+
+/* Message for a sheet shown when the user starts exporting their chat history from Chats settings. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_MESSAGE" = "БЪДЕТЕ ВНИМАТЕЛНИ! НЕ споделяйте този файл с никого. Вашата история на чата ще бъде запазена на вашето устройство и други приложения ще могат да осъществяват достъп до нея според разрешенията на вашето устройство. Експортът с мултимедия ще направи размера на файла по-голям.";
+
+/* Title for a sheet shown when the user starts exporting their chat history from Chats settings. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_TITLE" = "Експорт на историята на чата?";
+
+/* Title for a button in a sheet shown when the user starts exporting their chat history, which exports their chat history including attachments. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_WITH_MEDIA_BUTTON" = "Експорт с мултимедия";
+
+/* Title for a button in a sheet shown when the user starts exporting their chat history, which exports their chat history excluding attachments. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_WITHOUT_MEDIA_BUTTON" = "Експорт без мултимедия";
+
+/* Footer for the section in Chats settings containing a button to export the user's chat history. */
+"SETTINGS_CHATS_EXPORT_FOOTER" = "Експортирайте машинно четимо JSON копие на чатовете си. Изчезващите съобщения няма да се включват.";
+
+/* Title for a progress modal shown while the user's chat history is being exported. */
+"SETTINGS_CHATS_EXPORT_PROGRESS_TITLE" = "Експорт на чатове…";
 
 /* No comment provided by engineer. */
 "SETTINGS_CLEAR_HISTORY" = "Изчистване на историята на чата";
@@ -9306,6 +9453,16 @@
 
 /* Explanation for the button that resets all notification settings. */
 "SETTINGS_NOTIFICATIONS_RESET_FOOTER" = "Нулиране на настройките за известия до тези по подразбиране, включително персонализираните настройки за вашите чатове.";
+
+/* Label for the switch controlling whether reminders about unread messages are shown.
+   Label for the switch controlling whether reminders about unread messages in muted chats are shown. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS" = "Непрочетени напомняния";
+
+/* Explanation for the switch controlling whether reminders about unread messages are shown in this chat while it is muted. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS_CHAT_FOOTER" = "Изпращане на известия от време на време, когато в този чат без звук има непрочетени съобщения.";
+
+/* Explanation for the switch controlling whether reminders about unread messages in muted chats are shown. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS_FOOTER" = "Изпращане на известия от време на време, когато в чатовете без звук има непрочетени съобщения.";
 
 /* Label for the 'agree to payments terms' button in the 'activate payments confirmation' UI in the payment settings. */
 "SETTINGS_PAYMENTS_ACTIVATE_PAYMENTS_CONFIRM_AGREE" = "Включване";
@@ -10102,6 +10259,9 @@
 /* Text for a toast confirming that the speakerphone has been turned on for a call. */
 "SPEAKERPHONE_ON_CONFIRMATION_TOAST_LABEL" = "Включен високоговорител";
 
+/* Title for a button to view a sticker pack */
+"STICKER_BUTTON_VIEW_PACK" = "Преглед на пакета";
+
 /* The name for the sticker category 'Featured' */
 "STICKER_CATEGORY_FEATURED_NAME" = "Препоръчани";
 
@@ -10117,6 +10277,33 @@
 /* Preview text shown in notifications and conversation list for sticker messages. */
 "STICKER_MESSAGE_PREVIEW" = "Съобщение със стикер";
 
+/* Button to confirm a user wants to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_BUTTON" = "Премахване";
+
+/* Message for a sheet asking the user to confirm they want to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_MESSAGE" = "Това ще премахне пакета със стикери. Не можете да го добавите отново без линк или съобщение със стикер.";
+
+/* Title for a sheet asking the user to confirm they want to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_TITLE" = "Премахване на пакета със стикери?";
+
+/* Label for a button to copy the link of a sticker pack */
+"STICKER_PACK_LINK" = "Линк";
+
+/* Label for a button to uninstall a sticker pack */
+"STICKER_PACK_REMOVE" = "Премахване";
+
+/* Label for a button to send a sticker pack */
+"STICKER_PACK_SEND" = "Изпращане";
+
+/* Label for a button on a sticker-pack share sheet that copies the pack's share link. */
+"STICKER_PACK_SHARE_SHEET_COPY_LINK" = "Копиране на линк";
+
+/* Text describing what you can do with a sticker pack link, on a sheet for sharing it. */
+"STICKER_PACK_SHARE_SHEET_HEADER" = "Всеки с този линк може да добавя и да споделя този пакет със стикери.";
+
+/* Label for a button on a sticker-pack share sheet that sends the pack in Signal. */
+"STICKER_PACK_SHARE_SHEET_SEND_IN_SIGNAL" = "Изпращане в Signal";
+
 /* Message when trying to show a sticker that has expired and is unavailable for download */
 "STICKER_UNAVAILABLE_MESSAGE_LABEL" = "Стикерът не е наличен";
 
@@ -10124,7 +10311,7 @@
 "STICKER_UNAVAILABLE_SHEET_TITLE" = "Стикерът не е наличен";
 
 /* Label for the 'install sticker pack' button. */
-"STICKERS_INSTALL_BUTTON" = "Инсталиране";
+"STICKERS_INSTALL_BUTTON" = "Добавяне на стикери";
 
 /* Title for the 'available built-in stickers' section of the 'manage stickers' view. */
 "STICKERS_MANAGE_VIEW_AVAILABLE_BUILT_IN_PACKS_SECTION_TITLE" = "Signal Artist серии";
@@ -10158,9 +10345,6 @@
 
 /* Label indicating that the sticker pack failed to load. */
 "STICKERS_PACK_VIEW_FAILED_TO_LOAD" = "Неуспешно зареждане на пакета със стикери";
-
-/* Label for the 'uninstall sticker pack' button. */
-"STICKERS_UNINSTALL_BUTTON" = "Деинсталиране";
 
 /* Text indication a story caption can be tapped to read more. */
 "STORIES_CAPTION_READ_MORE" = "Прочетете повече";
@@ -10791,6 +10975,33 @@
 
 /* Pressing this button marks a thread as unread */
 "UNREAD_ACTION" = "Непрочетени";
+
+/* Notification placeholder for three or more recipients who sent unread messages */
+"UnreadReminderJob__authors_many" = "%1$@ и други";
+
+/* Notification placeholder for a single recipient who sent unread messages */
+"UnreadReminderJob__authors_one" = "%1$@";
+
+/* Notification placeholder for two recipients who sent unread messages */
+"UnreadReminderJob__authors_two" = "%1$@ и %2$@";
+
+/* Notification body for unread reminders. First placeholder is unread messages or unread calls */
+"UnreadReminderJob__calls_or_unread" = "Имате %1$@.";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a list of people who sent them */
+"UnreadReminderJob__calls_or_unread_author" = "Имате %1$@ от %2$@.";
+
+/* Notification placeholder that sums up a single unread mention. Placeholder is the name of the person who sent the message */
+"UnreadReminderJob__mentions_one" = "споменати сте от %1$@";
+
+/* Notification placeholder that sums up a single unread reply. Placeholder is the name of the person who sent the message */
+"UnreadReminderJob__replies_one" = "отговор от %1$@";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a summary of unread mentions, third replies */
+"UnreadReminderJob__unread_both_summary" = "Имате %1$@, включително %2$@ и %3$@.";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a summary of either unread mentions or replies */
+"UnreadReminderJob__unread_one_summary" = "Имате %1$@, включително %2$@.";
 
 /* No comment provided by engineer. */
 "UNSUPPORTED_ATTACHMENT" = "Получихте непподържан тип прикачен файл.";
