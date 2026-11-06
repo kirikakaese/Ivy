@@ -5,15 +5,15 @@
 
 extension BackupArchive {
 
-    public typealias RawError = Swift.Error
+    typealias RawError = Swift.Error
 
     // MARK: - Archiving
 
     /// Error while archiving a single frame.
-    public struct ArchiveFrameError: BackupArchive.LoggableError {
-        public enum ErrorType {
+    struct ArchiveFrameError: BackupArchive.LoggableError {
+        enum ErrorType {
             /// Message types for which edit history is unexpected.
-            public enum UnexpectedRevisionsMessageType {
+            enum UnexpectedRevisionsMessageType {
                 case remoteDeletedMessage
                 case contactMessage
                 case stickerMessage
@@ -25,16 +25,8 @@ extension BackupArchive {
                 case adminDeletedMessage
             }
 
-            /// An error occurred serializing the proto.
-            /// - Note
-            /// Logging the raw error is safe, as it'll just contain proto field
-            /// names.
-            case protoSerializationError(RawError)
-            /// An error occurred during file IO.
-            /// - Note
-            /// Logging the raw error is safe, as we generate the file we stream
-            /// without user input.
-            case fileIOError(RawError)
+            /// An error occurred writing to the archive output stream.
+            case streamWriteError(RawError)
 
             /// The object we are archiving references a recipient that should already have an id assigned
             /// from having been archived, but does not.
@@ -54,8 +46,11 @@ extension BackupArchive {
             /// We were unable to fetch the OWSRecipientIdentity for a recipient.
             case unableToFetchRecipientIdentity(RawError)
 
-            /// An error generating the master key for a group, causing the group to be skipped.
+            /// A V2 group *thread* that lacks a master key.
             case groupMasterKeyError(RawError)
+
+            /// A V2 group *record* (without a thread) that lacks a master key.
+            case groupMasterKeyWarning(RawError)
 
             /// A contact thread has an invalid or missing address information, causing the
             /// thread to be skipped.
@@ -275,7 +270,7 @@ extension BackupArchive {
         /// Exposed as a static method rather than an initializer to help
         /// callsites have some context without needing to put the exhaustive
         /// (namespaced) type name at each site.
-        public static func archiveFrameError(
+        static func archiveFrameError(
             _ type: ErrorType,
             file: StaticString = #file,
             function: StaticString = #function,
@@ -286,20 +281,16 @@ extension BackupArchive {
 
         // MARK: BackupArchive.LoggableError
 
-        public var typeLogString: String {
+        var typeLogString: String {
             return "ArchiveFrameError: \(String(describing: type))"
         }
 
-        public var callsiteLogString: String {
+        var callsiteLogString: String {
             return "\(file):\(function):\(line)"
         }
 
-        public var collapseKey: String? {
+        var collapseKey: String? {
             switch type {
-            case .protoSerializationError(let rawError):
-                // We don't want to re-log every instance of this we see.
-                // Collapse them by the raw error itself.
-                return "\(rawError)"
             case
                 .referencedRecipientIdMissing,
                 .referencedThreadIdMissing,
@@ -311,8 +302,9 @@ extension BackupArchive {
                 .messageFromOtherRecipientInContactThread:
                 return typeLogString
             case
-                .fileIOError,
+                .streamWriteError,
                 .groupMasterKeyError,
+                .groupMasterKeyWarning,
                 .themedCustomChatColor,
                 .unableToFetchRecipientIdentity,
                 .distributionListMissingDistributionId,
@@ -383,15 +375,14 @@ extension BackupArchive {
             }
         }
 
-        public var logLevel: BackupArchive.LogLevel {
+        var logLevel: BackupArchive.LogLevel {
             switch type {
             case
-                .protoSerializationError,
+                .streamWriteError,
                 .referencedRecipientIdMissing,
                 .referencedThreadIdMissing,
                 .referencedCustomChatColorMissing,
                 .unableToFetchRecipientIdentity,
-                .fileIOError,
                 .groupMasterKeyError,
                 .themedCustomChatColor,
                 .distributionListMissingDistributionId,
@@ -453,6 +444,9 @@ extension BackupArchive {
                 .pollEndMissingPersistableData,
                 .pinMessageChatUpdateMissingPersistableData:
                 return .error
+            case .groupMasterKeyWarning:
+                // Groups might be blocked without having a master key.
+                return .warning
             case .invalidInteractionDatabaseRow:
                 // We've seen real world databases with interaction rows that
                 // failed to deserialize into TSInteraciton instances. We'll
@@ -506,8 +500,8 @@ extension BackupArchive {
 
     /// Error archiving an entire category of frames; not attributable to a
     /// single frame.
-    public struct FatalArchivingError: BackupArchive.LoggableError {
-        public enum ErrorType {
+    struct FatalArchivingError: BackupArchive.LoggableError {
+        enum ErrorType {
             /// An code-level invariant of some sort was violated in the Backups
             /// archiving code; for example, some codepath found an object type
             /// that should be handled elsewhere.
@@ -524,7 +518,7 @@ extension BackupArchive {
         /// Exposed as a static method rather than an initializer to help
         /// callsites have some context without needing to put the exhaustive
         /// (namespaced) type name at each site.
-        public static func fatalArchiveError(
+        static func fatalArchiveError(
             _ type: ErrorType,
             _ file: StaticString = #file,
             _ function: StaticString = #function,
@@ -535,29 +529,29 @@ extension BackupArchive {
 
         // MARK: BackupArchive.LoggableError
 
-        public var typeLogString: String {
+        var typeLogString: String {
             return "FatalArchiveError: \(String(describing: type))"
         }
 
-        public var callsiteLogString: String {
+        var callsiteLogString: String {
             return "\(file):\(function):\(line)"
         }
 
-        public var collapseKey: String? {
+        var collapseKey: String? {
             // Log each of these as we see them.
             return nil
         }
 
-        public var logLevel: BackupArchive.LogLevel {
+        var logLevel: BackupArchive.LogLevel {
             // All of these are hard errors.
             return .error
         }
     }
 
     /// Error restoring a frame.
-    public struct RestoreFrameError: BackupArchive.LoggableError {
-        public enum ErrorType {
-            public enum InvalidProtoDataError {
+    struct RestoreFrameError: BackupArchive.LoggableError {
+        enum ErrorType {
+            enum InvalidProtoDataError {
                 /// No ``BackupProto_BackupInfo`` header found.
                 case missingBackupInfoHeader
                 /// The ``BackupProto_BackupInfo`` has an unsupported version.
@@ -862,7 +856,7 @@ extension BackupArchive {
         /// Exposed as a static method rather than an initializer to help
         /// callsites have some context without needing to put the exhaustive
         /// (namespaced) type name at each site.
-        public static func restoreFrameError(
+        static func restoreFrameError(
             _ type: ErrorType,
             file: StaticString = #file,
             function: StaticString = #function,
@@ -871,15 +865,15 @@ extension BackupArchive {
             return RestoreFrameError(type: type, file: file, function: function, line: line)
         }
 
-        public var typeLogString: String {
+        var typeLogString: String {
             return "RestoreFrameError: \(String(describing: type))"
         }
 
-        public var callsiteLogString: String {
+        var callsiteLogString: String {
             return "\(file):\(function) line \(line)"
         }
 
-        public var collapseKey: String? {
+        var collapseKey: String? {
             switch type {
             case .invalidProtoData(let invalidProtoDataError):
                 switch invalidProtoDataError {
@@ -1001,7 +995,7 @@ extension BackupArchive {
             }
         }
 
-        public var logLevel: BackupArchive.LogLevel {
+        var logLevel: BackupArchive.LogLevel {
             switch type {
             case .invalidProtoData(let invalidProtoDataError):
                 switch invalidProtoDataError {
@@ -1126,11 +1120,11 @@ extension BackupArchive {
 
 extension BackupArchive {
 
-    public enum LogLevel: Int, Comparable {
+    enum LogLevel: Int, Comparable {
         case warning
         case error
 
-        public static func <(lhs: Self, rhs: Self) -> Bool {
+        static func <(lhs: Self, rhs: Self) -> Bool {
             return lhs.rawValue < rhs.rawValue
         }
     }
@@ -1167,13 +1161,13 @@ extension BackupArchive {
         return Array(collapsedLogs.orderedValues)
     }
 
-    public struct CollapsedErrorLog {
+    struct CollapsedErrorLog {
         private let logger: PrefixedLogger
 
-        public private(set) var typeLogString: String
-        public private(set) var exampleCallsiteString: String
-        public private(set) var errorCount: UInt = 0
-        public private(set) var logLevel: BackupArchive.LogLevel
+        private(set) var typeLogString: String
+        private(set) var exampleCallsiteString: String
+        private(set) var errorCount: UInt = 0
+        private(set) var logLevel: BackupArchive.LogLevel
 
         init(_ error: any LoggableError) {
             self.logger = PrefixedLogger(prefix: "[Backups]")

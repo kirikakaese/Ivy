@@ -1462,6 +1462,9 @@
 /* An explanation of the consequences of blocking another user. */
 "BLOCK_USER_BEHAVIOR_EXPLANATION" = "બ્લૉક કરેલા ઉપયોગકર્તાઓ તમને કૉલ કે મેસેજ કરી શકશે નહીં.";
 
+/* Shown as a subtitle for recipients & groups you've blocked to indicate when you blocked them. The replacement is a formatted date. */
+"BLOCKED_AT" = "%1$@ના રોજ બ્લૉક કર્યા";
+
 /* Default text for the custom amount field of the boost view. */
 "BOOST_VIEW_CUSTOM_AMOUNT_PLACEHOLDER" = "અનિર્દેશિત રકમ દાખલ કરો";
 
@@ -2437,14 +2440,44 @@
 /* navbar title for contact picker when sharing a contact */
 "CONTACT_PICKER_TITLE" = "સંપર્ક પસંદ કરો";
 
+/* Button on a shared contact in a group conversation that adds the contact to that group. It can share a row with other buttons, so a short label is preferred. */
+"CONTACT_SHARE_ADD_TO_GROUP_BUTTON" = "ગ્રૂપમાં ઉમેરો";
+
+/* Button in the confirmation shown before adding a shared contact to the current group that adds the contact. */
+"CONTACT_SHARE_ADD_TO_GROUP_CONFIRMATION_BUTTON" = "ગ્રૂપમાં ઉમેરો";
+
+/* Confirmation shown before adding a shared contact to the current group. Embeds {{ %1$@ contact name, %2$@ group name }}. */
+"CONTACT_SHARE_ADD_TO_GROUP_CONFIRMATION_FORMAT" = "%1$@ને \"%2$@\" પર ઉમેરવા છે?";
+
 /* Title for the 'Approve contact share' view. */
 "CONTACT_SHARE_APPROVAL_VIEW_TITLE" = "સંપર્ક શેર કરો";
+
+/* Name of the option to share a contact without a photo, which shows their initials instead. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_NO_PHOTO" = "કોઈ ફોટો નહીં";
+
+/* Title for the sheet for choosing which photo to include when sharing a contact. */
+"CONTACT_SHARE_AVATAR_PICKER_TITLE" = "શેર કરવા માટે ફોટો પસંદ કરો";
+
+/* Accessibility label for the row that chooses which photo to include when sharing a contact. */
+"CONTACT_SHARE_AVATAR_ROW_LABEL" = "ફોટો";
+
+/* Name of the option to share a contact's Signal profile photo. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_SIGNAL_PHOTO" = "Signal પ્રોફાઇલ ફોટો";
+
+/* Name of the option to share a contact's photo from the phone's contacts. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_SYSTEM_CONTACT_PHOTO" = "સંપર્ક ફોટો";
 
 /* Title for the 'edit contact share name' view. */
 "CONTACT_SHARE_EDIT_NAME_VIEW_TITLE" = "નામમાં ફેરફાર કરો";
 
 /* Error indicating that an invalid contact cannot be shared. */
 "CONTACT_SHARE_INVALID_CONTACT" = "અમાન્ય સંપર્ક.";
+
+/* Button on a shared contact that opens a chat with that contact. It can share a row with other buttons, so a short label is preferred. */
+"CONTACT_SHARE_MESSAGE_BUTTON" = "મેસેજ";
+
+/* Notice at the top of the 'Share Contact' view when the shared contact includes their Signal account. Embeds {{ contact name }}. */
+"CONTACT_SHARE_SIGNAL_ACCOUNT_NOTICE_FORMAT" = "તમે જેમની પણ સાથે આ પ્રોફાઇલ શેર કરશો તે %1$@ને Signal પર મેસેજ કરી શકશે.";
 
 /* Alert body when contacts disabled while trying to share a contact. */
 "CONTACT_SHARING_NO_ACCESS_BODY" = "Signalને તમારા સંપર્કો પરના ઍક્સેસની જરૂર છે. iOS સેટિંગ્સ પર જાઓ અને સંપર્કો ચાલુ કરો. તમારા સંપર્કો એન્ક્રિપ્ટેડ છે અને Signal સેવાને જોઈ શકતા નથી.";
@@ -3973,6 +4006,9 @@
 /* Label warning the user that the app will expire today. */
 "EXPIRATION_WARNING_TODAY" = "Signalનું આ વર્ઝન આજે સમાપ્ત થઈ જશે. મેસેજ કરતાં રહેવા માટે અપડેટ કરો.";
 
+/* Description of how and why Signal iOS uses Touch ID/Face ID/Phone Passcode to export your chat history. */
+"EXPORT_CHATS_AUTHENTICATION_REASON" = "તમારી ચેટ હિસ્ટ્રી એક્સપોર્ટ કરવા માટે પ્રમાણીકરણ કરો";
+
 /* action sheet header when re-sending message which failed because of an invalid key signature */
 "FAILED_SENDING_BECAUSE_INVALID_KEY_SIGNATURE" = "મેસેજ મોકલી શકાયો નથી કારણ કે %1$@એ Signalને અપડેટ કરીને પછી ખોલવાની જરૂર છે.";
 
@@ -5107,6 +5143,21 @@
 /* Label reminding the user that they are in archive mode, and that chats are unarchived when they receive a new message. */
 "INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "નવો મેસેજ આવે ત્યારે આર્કાઇવ કરેલ ચેટ ઇનબોક્સ પર ખસેડવામાં આવશે.";
 
+/* Title of action allowing user to connect to an existing device */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_EXITING_OLD_DEVICE_ACTION" = "હાલના ડિવાઇસ સાથે પેર કરો";
+
+/* Body of prompt asking user to select device transfer target. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_BODY" = "પેર કરવા માટે હાલનું કે નવું ડિવાઇસ પસંદ કરો. એકવાર પેર થયા પછી, તમારું એકાઉન્ટ ટ્રાન્સફર શરૂ થશે.";
+
+/* Title of action allowing user to pair a new device transfer peer. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_PAIR_NEW_ACTION" = "નવું ડિવાઇસ પેર કરો";
+
+/* Title of prompt asking user to select device transfer target. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_TITLE" = "જેની સાથે પેર કરવું હોય તે ડિવાઇસ પસંદ કરો";
+
+/* Title of action allowing user to connect to an existing device */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_SPECIFIC_OLD_DEVICE_ACTION" = "“%1$@” સાથે પેર કરો";
+
 /* Body of prompt notifying device transfer will continue on other device. */
 "INCOMING_DEVICE_TRANSFER_CONTINUE_BODY" = "તમારા અન્ય ડિવાઇસ પર તમારું એકાઉન્ટ ટ્રાન્સફર કરવાનું ચાલુ રાખો.";
 
@@ -5443,8 +5494,8 @@
 /* Message for an action sheet telling users how to link a device, when trying to open a device-linking URL from the in-app camera. */
 "LINKED_DEVICE_URL_OPENED_ACTION_SHEET_IN_APP_CAMERA_MESSAGE" = "એવું લાગે છે કે તમે કોઈ Signal ડિવાઇસને લિંક કરવાનો પ્રયાસ કરી રહ્યાં છો. ચાલુ રાખો પર ટેપ કરો અને પછી \"નવું ડિવાઇસ લિંક કરો\" પર ટેપ કરો અને ફરીથી QR કોડ સ્કેન કરો.";
 
-/* Bullet point about downloads on the linked devices education sheet. Embeds {{ %1$@ iPad download link, %2$@ desktop download link }} */
-"LINKED_DEVICES_EDUCATION_POINT_DOWNLOADS" = "તમારા અન્ય ડિવાઇસ પર, iPad ઍપ ઇન્સ્ટોલ કરવા માટે %1$@ અથવા ડેસ્કટોપ ઍપ ઇન્સ્ટોલ કરવા માટે %2$@ની મુલાકાત લો.";
+/* Bullet point about a download link on the linked devices education sheet. Embeds {{ %1$@ download link }} */
+"LINKED_DEVICES_EDUCATION_POINT_DOWNLOADS" = "તમે જે ડિવાઇસને લિંક કરવા માંગો છો તેના પર, Signal ઇન્સ્ટોલ કરવા માટે %1$@ની મુલાકાત લો";
 
 /* Bullet point about message sync on the linked devices education sheet */
 "LINKED_DEVICES_EDUCATION_POINT_MESSAGES" = "તમારા મોબાઇલ ફોન પર લિંક થયા પછી Signal મેસેજ તેની સાથે સિંક્રનાઇઝ થાય છે.";
@@ -5453,13 +5504,13 @@
 "LINKED_DEVICES_EDUCATION_POINT_PRIVACY" = "લિંક કરેલા ડિવાઇસ પરના તમામ મેસેજિંગ ખાનગી છે";
 
 /* Title for the linked device education sheet */
-"LINKED_DEVICES_EDUCATION_TITLE" = "ડેસ્કટોપ અથવા iPad પર Signal";
+"LINKED_DEVICES_EDUCATION_TITLE" = "લિંક કરેલા ડિવાઇસ પર Signal";
 
 /* Text that appears where the linked device list would be indicating that there are no linked devices. */
 "LINKED_DEVICES_EMPTY_STATE" = "કોઈ લિંક કરેલા ડિવાઇસ નથી";
 
 /* Description for header of the linked devices list */
-"LINKED_DEVICES_HEADER_DESCRIPTION" = "ડેસ્કટોપ અથવા iPad પર Signalનો ઉપયોગ કરો.";
+"LINKED_DEVICES_HEADER_DESCRIPTION" = "અન્ય ડિવાઇસ પર Signal એકાઉન્ટનો ઉપયોગ કરો.";
 
 /* Footer text below the list of currently-linked devices */
 "LINKED_DEVICES_LIST_FOOTER" = "મેસેજ અને ચેટ માહિતી બધા ડિવાઇસ પર એન્ડ-ટૂ-એન્ડ એન્ક્રિપ્શન દ્વારા સુરક્ષિત છે";
@@ -5531,7 +5582,7 @@
 "LOCAL_BACKUPS_SELECT_HERO_SHEET_TITLE" = "તમારું બેકઅપ ફોલ્ડર પસંદ કરો";
 
 /* Message for an action sheet informing the user we were unable to save their local backup location */
-"LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_MESSAGE" = "કંઈક ગડબડ થઈ અને તમે પસંદ કરેલું ફોલ્ડર લોકેશન સેવ ન કરી શકાયું. ફરીથી પ્રયત્ન કરો. જો સમસ્યા ચાલુ રહે તો કૃપા કરીને સપોર્ટનો સંપર્ક કરો.";
+"LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_MESSAGE" = "કંઈક ગડબડ થઈ અને તમે પસંદ કરેલું ફોલ્ડર લોકેશન સેવ ન કરી શકાયું. ફરીથી પ્રયત્ન કરો.";
 
 /* Title for an action sheet informing the user we were unable to save their local backup location */
 "LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_TITLE" = "ફોલ્ડર લોકેશન સેવ ન કરી શક્યા";
@@ -6172,6 +6223,12 @@
 /* Alert title when user has previously denied media library access */
 "MISSING_MEDIA_LIBRARY_PERMISSION_TITLE" = "આ સુવિધા માટે Signal ને તમારા ફોટાના ઍક્સેસની જરૂર છે.";
 
+/* Title for a progress modal shown after the user taps Cancel, while the work is being cancelled. */
+"MODAL_CIRCULAR_PROGRESS_CANCELLING_TITLE" = "રદ કરી રહ્યાં છીએ…";
+
+/* Label on a progress modal indicating how far along some work is. Embeds {{ formatted percentage }}. */
+"MODAL_CIRCULAR_PROGRESS_PERCENT_COMPLETE" = "%1$@ પૂર્ણ";
+
 /* Text on a blocking progress screen that indicates that there's a deletion in progress. */
 "MODAL_DELETING" = "ડિલીટ થાય છે…";
 
@@ -6408,6 +6465,9 @@
 
 /* Shown in place of the text input box in a conversation when the user is no longer registered can't send messages. This value is a tappable link embedded in a larger sentence. */
 "NOT_REGISTERED_BOTTOM_REREGISTER" = "ફરીથી રજીસ્ટર";
+
+/* Description for an error indicating you are not registered. */
+"NOT_REGISTERED_ERROR_LOCALIZED_DESCRIPTION" = "તમે રજીસ્ટર કરેલું નથી";
 
 /* Label for 1:1 conversation with yourself. */
 "NOTE_TO_SELF" = "પોતાના માટે નોંધ";
@@ -7973,10 +8033,19 @@
 "REGISTER_WITHOUT_NUMBER" = "નંબર વગર રજીસ્ટર કરો";
 
 /* Short description for a sheet warning users about an incorrect recovery key used for registration. */
-"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_BODY" = "તમે તમારી રિકવરી કી ખોટી રીતે દાખલ કરી હોઈ શકે છે. \n\nખાતરી કરો કે તમે Signal સુરક્ષિત બેકઅપને સક્ષમ કરતી વખતે સેવ કરેલો હોય તે જ ફોન નંબર અને રિકવરી કી સાથે રજિસ્ટર કરી રહ્યાં છો.";
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_BODY" = "ખાતરી કરો કે તમે Signal બેકઅપને સક્ષમ કરતી વખતે સેવ કરેલો હોય તે જ ફોન નંબર અને 64-અક્ષરની રિકવરી કી સાથે રજિસ્ટર કરી રહ્યાં છો. આ કી વિના બેકઅપ રિકવર કરી શકાતું નથી.";
 
 /* Title for a sheet warning users about an incorrect recovery key used for registration. */
 "REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TITLE" = "ખોટી રિકવરી કી";
+
+/* Action label action allowing users to use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_ACTION" = "અન્ય પદ્ધતિ રજિસ્ટર કરો";
+
+/* Message body for a sheet asking users if they would rather use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_MESSAGE" = "Signal તમને જે SMS કોડ મોકલશે તેના દ્વારા વેરિફાય કરીને કે તમારો પિન દાખલ કરીને તમે તમારું એકાઉન્ટ રજિસ્ટર કરી શકો છો. રજિસ્ટર કર્યા પછી, તમે ફરીથી તમારી રિકવરી કી વડે તમારો બેકઅપ રિસ્ટોર કરવાનો પ્રયાસ કરી શકો છો.";
+
+/* Title for a sheet asking users if they would rather use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_TITLE" = "SMS કે પિન વડે વેરિફાય કરવું છે?";
 
 /* Body for a sheet warning users about a missing backup. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_BACKUP_NOT_FOUND_BODY" = "આ રિકવરી કી સાથે કોઈ બેકઅપ સંકળાયેલ નથી. કૃપા કરીને ખાતરી કરો કે કી સાચી છે અને ફરી પ્રયાસ કરો.";
@@ -8002,6 +8071,9 @@
 /* Body for a sheet warning users about a generic backup manual restore failure. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_BODY" = "એક એરર આવી અને તમારું એકાઉન્ટ ટ્રાન્સફર કરી શકાયું નથી.";
 
+/* Title for a sheet warning users about an error during backup restore. */
+"REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_CANT_RESTORE_TITLE" = "બેકઅપ રિસ્ટોર કરી શકતા નથી";
+
 /* Body for a sheet warning users about a generic backup restore failure. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_RETRY_BODY" = "એક એરર આવી અને તમારું એકાઉન્ટ ટ્રાન્સફર કરી શકાયું નથી. QR કોડ સ્કેન કરી અને તમારી ટ્રાન્સફર પદ્ધતિ પસંદ કરીને ફરી પ્રયાસ કરો.";
 
@@ -8025,6 +8097,9 @@
 
 /* Title for a sheet warning users about an invalid local backup location */
 "REGISTRATION_BACKUP_RESTORE_ERROR_LOCAL_BACKUP_LOCATION_TITLE" = "બેકઅપ રિસ્ટોર કરી શકતા નથી";
+
+/* Message for a sheet telling the user that their phone number is mismatched with their recovery key used for making a local backup */
+"REGISTRATION_BACKUP_RESTORE_ERROR_MISMATCHED_LOCAL_BACKUP_MESSAGE" = "તમે જે બેકઅપને રિસ્ટોર કરવાનો પ્રયાસ કરી રહ્યા છો તે બેકઅપ કોઈ અલગ Signal એકાઉન્ટનો ઉપયોગ કરીને બનાવવામાં આવ્યું હતું. આ બેકઅપને રિસ્ટોર કરવા માટે, તમારે તે જ ફોન નંબર અને રિકવરી કીનો ઉપયોગ કરવો પડશે જે તમે ઓન-ડિવાઇસ બેકઅપ સક્રિય કરતી વખતે સાચવ્યા હતા.";
 
 /* Body for a sheet warning users about a network error during backup restore. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_NETWORK_BODY" = "તમારું બેકઅપ હમણાં રિસ્ટોર કરી શકાતું નથી. તમારું ઇન્ટરનેટ તપાસો અને ફરી પ્રયાસ કરો.";
@@ -8233,6 +8308,9 @@
 /* Button on the Signal Login card on the 'Signal Login details' screen to show the full account ID and recovery key. */
 "REGISTRATION_SIGNAL_LOGIN_DETAILS_VIEW_DETAILS_BUTTON" = "વિગતો જુઓ";
 
+/* Explanation text for the 'Signal Login' screen. */
+"REGISTRATION_SIGNAL_LOGIN_EXPLANATION" = "Signal Loginનો ઉપયોગ કરીને ફોન નંબર વગર રજિસ્ટર કરો. એક-વખતની ખરીદી સાથે, શરૂઆત કરવા માટે તમે એક એકાઉન્ટ ID મેળવશો.";
+
 /* Toast shown after copying the account ID on the 'Signal Login' details sheet. */
 "REGISTRATION_SIGNAL_LOGIN_FULL_DETAILS_ACCOUNT_ID_COPIED_TOAST" = "એકાઉન્ટ ID કૉપિ કર્યું";
 
@@ -8265,6 +8343,33 @@
 
 /* Title for help button for the 'Signal Login' screen. */
 "REGISTRATION_SIGNAL_LOGIN_NEED_HELP_TITLE" = "મદદ જોઈએ છે?";
+
+/* Button to initiate a purchase on the 'Signal Login' screen. The replacement is a localized cost (e.g., $2.99). */
+"REGISTRATION_SIGNAL_LOGIN_PAY" = "%1$@ ચૂકવો";
+
+/* Text for a bullet point describing that an existing Signal Login can be used to log in and restore an account. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_BULLET_RESTORE" = "લૉગ ઇન કરો અને તમારું એકાઉન્ટ રિસ્ટોર કરો";
+
+/* Text for a bullet point thanking the user for supporting Signal by previously buying a Signal Login. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_BULLET_THANKS" = "Signalને સપોર્ટ કરવા બદલ આભાર";
+
+/* Subtitle for the option to register with a Signal Login the user already owns. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_SUBTITLE" = "તમારી વર્તમાન લૉગ ઇન માહિતીનો ઉપયોગ કરો";
+
+/* Title for the option to register with a Signal Login the user already owns. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_TITLE" = "મારી પાસે Signal Login છે";
+
+/* Text for a bullet point describing that a Signal Login lets you register without a phone number. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_NO_PHONE_NUMBER" = "કોઈ ફોન નંબરની જરૂર નથી";
+
+/* Text for a bullet point explaining that buying a Signal Login supports Signal, a non-profit. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_NON_PROFIT" = "Signal એક બિન-લાભકારી છે— તમારી ખરીદી અમારા મિશનને સપોર્ટ કરવામાં મદદ કરે છે";
+
+/* Text for a bullet point describing that a Signal Login comes with a username for messaging and calling. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_USERNAME" = "મેસેજિંગ અને કૉલ માટે યુઝરનેમ";
+
+/* Subtitle for the option to buy a new Signal Login. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_SUBTITLE" = "એક-વખતની ખરીદી";
 
 /* Title text for the 'Signal Login' screen. */
 "REGISTRATION_SIGNAL_LOGIN_TITLE" = "Signal Login";
@@ -8821,6 +8926,9 @@
 /* In-app camera: title for the prompt to turn off multi-mode that will cause previously taken photos to be discarded. */
 "SEND_MEDIA_TURN_OFF_MM_TITLE" = "મલ્ટી-મોડ બંધ કરવો છે?";
 
+/* Label for the button to send a sticker message */
+"SEND_STICKER_BUTTON_TITLE" = "સ્ટીકર મોકલો";
+
 /* String describing high quality sent media */
 "SENT_MEDIA_QUALITY_HIGH" = "ઉચ્ચ";
 
@@ -9033,6 +9141,45 @@
 
 /* Title for the 'chats' link in settings. */
 "SETTINGS_CHATS" = "ચેટ";
+
+/* Title for a button in Chats settings that starts exporting the user's chat history. */
+"SETTINGS_CHATS_EXPORT_BUTTON" = "ચેટ એક્સપોર્ટ કરો";
+
+/* Title for a button in a sheet shown before the user chooses a folder to export their chat history into, which opens a folder picker. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_CHOOSE_BUTTON" = "ફોલ્ડર પસંદ કરો";
+
+/* Message for a sheet shown before the user chooses a folder to export their chat history into. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_MESSAGE" = "તમારા ડિવાઇસના સ્ટોરેજમાં એક ફોલ્ડર પસંદ કરો જ્યાં તમારી ચેટ હિસ્ટ્રી સ્ટોર કરવામાં આવશે.";
+
+/* Title for a sheet shown before the user chooses a folder to export their chat history into. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_TITLE" = "ફોલ્ડર પસંદ કરો";
+
+/* Message for a sheet shown after the user's chat history has been exported. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_MESSAGE" = "જ્યાં તમે તમારી ચેટ એક્સપોર્ટ ફાઈલ સ્ટોર કરો છો ત્યાં સાવધાન રહો અને તેને કોઈની સાથે શેર ન કરો. તમારા ડિવાઇસ પરની અન્ય ઍપ તમારા ડિવાઇસની પરવાનગીઓના આધારે તેને ઍક્સેસ કરી શકે છે.";
+
+/* Title for a sheet shown after the user's chat history has been exported. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_TITLE" = "ચેટ એક્સપોર્ટ પૂર્ણ";
+
+/* Title for a button in a sheet shown after the user's chat history has been exported, which opens the exported folder in the Files app. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_VIEW_IN_FILES_BUTTON" = "ફાઈલમાં જુઓ";
+
+/* Message for a sheet shown when the user starts exporting their chat history from Chats settings. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_MESSAGE" = "સાવધાન રહો! આ ફાઈલ કોઈની સાથે શેર કરશો નહીં. તમારી ચેટ હિસ્ટ્રી તમારા ડિવાઇસ પર સેવ કરવામાં આવશે અને અન્ય ઍપ તમારા ડિવાઇસની પરવાનગીઓના આધારે તેને ઍક્સેસ કરી શકશે. મીડિયા સાથે એક્સપોર્ટ કરવાથી ફાઈલ સાઇઝ મોટી થશે.";
+
+/* Title for a sheet shown when the user starts exporting their chat history from Chats settings. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_TITLE" = "ચેટ હિસ્ટ્રી એક્સપોર્ટ કરવી છે?";
+
+/* Title for a button in a sheet shown when the user starts exporting their chat history, which exports their chat history including attachments. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_WITH_MEDIA_BUTTON" = "મીડિયા સાથે એક્સપોર્ટ કરો";
+
+/* Title for a button in a sheet shown when the user starts exporting their chat history, which exports their chat history excluding attachments. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_WITHOUT_MEDIA_BUTTON" = "મીડિયા વગર એક્સપોર્ટ કરો";
+
+/* Footer for the section in Chats settings containing a button to export the user's chat history. */
+"SETTINGS_CHATS_EXPORT_FOOTER" = "તમારી ચેટની મશીન-રીડેબલ JSON કૉપિ એક્સપોર્ટ કરો. ગાયબ થતાં મેસેજ શામેલ કરવામાં આવશે નહીં.";
+
+/* Title for a progress modal shown while the user's chat history is being exported. */
+"SETTINGS_CHATS_EXPORT_PROGRESS_TITLE" = "ચેટ એક્સપોર્ટ થાય છે…";
 
 /* No comment provided by engineer. */
 "SETTINGS_CLEAR_HISTORY" = "ચેટ હિસ્ટ્રી દૂર કરો";
@@ -9306,6 +9453,16 @@
 
 /* Explanation for the button that resets all notification settings. */
 "SETTINGS_NOTIFICATIONS_RESET_FOOTER" = "તમારી ચેટ માટે કસ્ટમ સેટિંગ સહિત નોટિફિકેશન સેટિંગ્સને ફરીથી સેટ કરો.";
+
+/* Label for the switch controlling whether reminders about unread messages are shown.
+   Label for the switch controlling whether reminders about unread messages in muted chats are shown. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS" = "ન વાંચેલ રિમાઇન્ડર";
+
+/* Explanation for the switch controlling whether reminders about unread messages are shown in this chat while it is muted. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS_CHAT_FOOTER" = "આ ચેટ મ્યૂટ હોય ત્યારે જો વાંચ્યા વગરના મેસેજ હોય ત્યારે ક્યારેક ક્યારેક સૂચના મેળવો.";
+
+/* Explanation for the switch controlling whether reminders about unread messages in muted chats are shown. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS_FOOTER" = "મ્યૂટ કરેલી ચેટમાં વાંચ્યા વગરના મેસેજ હોય ત્યારે ક્યારેક-ક્યારેક સૂચિત કરો.";
 
 /* Label for the 'agree to payments terms' button in the 'activate payments confirmation' UI in the payment settings. */
 "SETTINGS_PAYMENTS_ACTIVATE_PAYMENTS_CONFIRM_AGREE" = "સક્રિય કરો";
@@ -10102,6 +10259,9 @@
 /* Text for a toast confirming that the speakerphone has been turned on for a call. */
 "SPEAKERPHONE_ON_CONFIRMATION_TOAST_LABEL" = "સ્પીકર ચાલુ";
 
+/* Title for a button to view a sticker pack */
+"STICKER_BUTTON_VIEW_PACK" = "પેક જુઓ";
+
 /* The name for the sticker category 'Featured' */
 "STICKER_CATEGORY_FEATURED_NAME" = "ફીચર્ડ";
 
@@ -10117,6 +10277,33 @@
 /* Preview text shown in notifications and conversation list for sticker messages. */
 "STICKER_MESSAGE_PREVIEW" = "સ્ટીકર મેસેજ";
 
+/* Button to confirm a user wants to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_BUTTON" = "દૂર કરો";
+
+/* Message for a sheet asking the user to confirm they want to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_MESSAGE" = "આનાથી સ્ટીકર પેક દૂર થઈ જશે. તમે તેને લિંક કે સ્ટીકર મેસેજ વગર ફરીથી ઉમેરી શકશો નહીં.";
+
+/* Title for a sheet asking the user to confirm they want to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_TITLE" = "સ્ટીકર પેક દૂર કરવું છે?";
+
+/* Label for a button to copy the link of a sticker pack */
+"STICKER_PACK_LINK" = "લિંક";
+
+/* Label for a button to uninstall a sticker pack */
+"STICKER_PACK_REMOVE" = "દૂર કરો";
+
+/* Label for a button to send a sticker pack */
+"STICKER_PACK_SEND" = "મોકલો";
+
+/* Label for a button on a sticker-pack share sheet that copies the pack's share link. */
+"STICKER_PACK_SHARE_SHEET_COPY_LINK" = "લિંક કૉપિ કરો";
+
+/* Text describing what you can do with a sticker pack link, on a sheet for sharing it. */
+"STICKER_PACK_SHARE_SHEET_HEADER" = "આ લિંક ધરાવતી કોઈ પણ વ્યક્તિ આ સ્ટીકર પેકને ઉમેરી અને શેર કરી શકશે.";
+
+/* Label for a button on a sticker-pack share sheet that sends the pack in Signal. */
+"STICKER_PACK_SHARE_SHEET_SEND_IN_SIGNAL" = "Signalમાં મોકલો";
+
 /* Message when trying to show a sticker that has expired and is unavailable for download */
 "STICKER_UNAVAILABLE_MESSAGE_LABEL" = "સ્ટીકર ઉપલબ્ધ નથી";
 
@@ -10124,7 +10311,7 @@
 "STICKER_UNAVAILABLE_SHEET_TITLE" = "સ્ટીકર ઉપલબ્ધ નથી";
 
 /* Label for the 'install sticker pack' button. */
-"STICKERS_INSTALL_BUTTON" = "ઇન્સ્ટોલ";
+"STICKERS_INSTALL_BUTTON" = "સ્ટીકર ઉમેરો";
 
 /* Title for the 'available built-in stickers' section of the 'manage stickers' view. */
 "STICKERS_MANAGE_VIEW_AVAILABLE_BUILT_IN_PACKS_SECTION_TITLE" = "Signal આર્ટિસ્ટ સિરીઝ";
@@ -10158,9 +10345,6 @@
 
 /* Label indicating that the sticker pack failed to load. */
 "STICKERS_PACK_VIEW_FAILED_TO_LOAD" = "સ્ટીકર પેક લોડ થવામાં નિષ્ફળ";
-
-/* Label for the 'uninstall sticker pack' button. */
-"STICKERS_UNINSTALL_BUTTON" = "અનઇન્સ્ટોલ";
 
 /* Text indication a story caption can be tapped to read more. */
 "STORIES_CAPTION_READ_MORE" = "વધુ vancho";
@@ -10791,6 +10975,33 @@
 
 /* Pressing this button marks a thread as unread */
 "UNREAD_ACTION" = "ન વંચાયેલ";
+
+/* Notification placeholder for three or more recipients who sent unread messages */
+"UnreadReminderJob__authors_many" = "%1$@ અને અન્ય";
+
+/* Notification placeholder for a single recipient who sent unread messages */
+"UnreadReminderJob__authors_one" = "%1$@";
+
+/* Notification placeholder for two recipients who sent unread messages */
+"UnreadReminderJob__authors_two" = "%1$@ અને %2$@";
+
+/* Notification body for unread reminders. First placeholder is unread messages or unread calls */
+"UnreadReminderJob__calls_or_unread" = "તમારી પાસે %1$@ છે.";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a list of people who sent them */
+"UnreadReminderJob__calls_or_unread_author" = "તમારી પાસે %2$@ તરફથી %1$@ છે.";
+
+/* Notification placeholder that sums up a single unread mention. Placeholder is the name of the person who sent the message */
+"UnreadReminderJob__mentions_one" = "%1$@ તરફથી તમારો ઉલ્લેખ";
+
+/* Notification placeholder that sums up a single unread reply. Placeholder is the name of the person who sent the message */
+"UnreadReminderJob__replies_one" = "%1$@ તરફથી જવાબ";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a summary of unread mentions, third replies */
+"UnreadReminderJob__unread_both_summary" = "તમને %2$@ અને %3$@ સહિત %1$@ છે.";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a summary of either unread mentions or replies */
+"UnreadReminderJob__unread_one_summary" = "તમારી પાસે %2$@ સહિત %1$@ છે.";
 
 /* No comment provided by engineer. */
 "UNSUPPORTED_ATTACHMENT" = "અસમર્થિત જોડાણ પ્રકાર પ્રાપ્ત થયો.";

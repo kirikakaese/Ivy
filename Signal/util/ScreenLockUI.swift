@@ -127,7 +127,7 @@ class ScreenLockUI {
     }
 
     func startObserving() {
-        appIsInactiveOrBackground = UIApplication.shared.applicationState != .active
+        appIsInactiveOrBackground = !CurrentAppContext().isMainAppAndActive
 
         NotificationCenter.default.addObserver(
             self,
@@ -275,17 +275,28 @@ class ScreenLockUI {
             !viewController.isViewLoaded || viewController.view.window == nil
         })
 
-        guard
-            SSKEnvironment.shared.preferencesRef.isScreenSecurityEnabled
-            || sensitiveContentViewControllers.elements.count > 0
-            // Ivy: with a lock, the chats never show outside the app: not in
-            // the app switcher, and not for a moment before the lock comes up.
-            || (appReadiness.isAppReady && ScreenLock.shared.isScreenLockEnabled())
-        else {
-            return .none
+        if SSKEnvironment.shared.preferencesRef.isScreenSecurityEnabled {
+            return .screenProtection
         }
 
-        return .screenProtection
+        // Ivy: with a lock, the chats never show outside the app: not in
+        // the app switcher, and not for a moment before the lock comes up.
+        if appReadiness.isAppReady, ScreenLock.shared.isScreenLockEnabled() {
+            return .screenProtection
+        }
+
+        if sensitiveContentViewControllers.elements.count > 0 {
+            return .screenProtection
+        }
+
+        // When we're blocking screenshots and not foreground, enable screen
+        // protection. Because screenshots are blocked the App Switcher will
+        // otherwise show a blank snapshot of the app.
+        if AppEnvironment.shared.windowManagerRef.blocksScreenshots {
+            return .screenProtection
+        }
+
+        return .none
     }
 
     private func tryToPresentAuthUIToUnlockScreenLock() {

@@ -51,7 +51,7 @@ public class SSKEnvironment: NSObject {
     @objc
     public let receiptSenderRef: ReceiptSender
     public let reachabilityManagerRef: SSKReachabilityManager
-    public let syncManagerRef: SyncManagerProtocol
+    public let syncManagerRef: SyncManager
     public let typingIndicatorsRef: TypingIndicators
     public let stickerManagerRef: StickerManager
     @objc
@@ -115,7 +115,7 @@ public class SSKEnvironment: NSObject {
         receiptManager: OWSReceiptManager,
         receiptSender: ReceiptSender,
         reachabilityManager: SSKReachabilityManager,
-        syncManager: SyncManagerProtocol,
+        syncManager: SyncManager,
         typingIndicators: TypingIndicators,
         stickerManager: StickerManager,
         databaseStorage: SDSDatabaseStorage,
@@ -280,9 +280,9 @@ public class SSKEnvironment: NSObject {
     /// Pni (a one-time migration), but it also helps ensure that the value is
     /// always consistent with TSAccountManager's values.
     private func fixLocalRecipientIfNeeded(dependenciesBridge: DependenciesBridge) {
-        let blockedRecipientStore = dependenciesBridge.blockedRecipientStore
         let databaseStorage = self.databaseStorageRef
         let recipientMerger = dependenciesBridge.recipientMerger
+        let recipientStore = dependenciesBridge.recipientDatabaseTable
         let tsAccountManager = dependenciesBridge.tsAccountManager
 
         databaseStorage.write { tx in
@@ -298,14 +298,18 @@ public class SSKEnvironment: NSObject {
             } else {
                 phoneNumberObj = nil
             }
-            let localRecipient = recipientMerger.applyMergeForLocalAccount(
+            var localRecipient = recipientMerger.applyMergeForLocalAccount(
                 aci: localIdentifiers.aci,
                 phoneNumber: phoneNumberObj,
                 pni: localIdentifiers.pni,
                 shouldUpdateStorageService: true,
                 tx: tx,
             )
-            blockedRecipientStore.setBlocked(false, recipientId: localRecipient.id, tx: tx)
+            if localRecipient.isBlocked {
+                localRecipient.status = .unspecified
+                localRecipient.blockedAt = .unspecified
+                recipientStore.updateRecipient(localRecipient, transaction: tx)
+            }
         }
     }
 

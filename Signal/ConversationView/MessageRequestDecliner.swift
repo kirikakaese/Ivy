@@ -16,6 +16,7 @@ enum MessageRequestDecliner {
         let blockingManager = SSKEnvironment.shared.blockingManagerRef
         let databaseStorage = SSKEnvironment.shared.databaseStorageRef
         let deleteManager = DependenciesBridge.shared.threadDeletionManager
+        let recipientFetcher = DependenciesBridge.shared.recipientFetcher
         let syncManager = SSKEnvironment.shared.syncManagerRef
         let tsAccountManager = DependenciesBridge.shared.tsAccountManager
 
@@ -25,18 +26,45 @@ enum MessageRequestDecliner {
 
         databaseStorage.write { tx in
             let localIdentifiers = tsAccountManager.localIdentifiers(tx: tx).owsFailUnwrap("never registered")
+            let timestamp = MessageTimestampGenerator.sharedInstance.generateTimestamp()
 
             syncManager.sendMessageRequestResponseSyncMessage(
-                thread: thread,
+                forThread: thread,
+                timestamp: timestamp,
                 responseType: responseType,
-                transaction: tx,
+                tx: tx,
             )
             if responseType.shouldBlockThread {
-                blockingManager.addBlockedThread(
-                    thread,
-                    blockMode: .localUser,
-                    transaction: tx,
-                )
+                switch thread {
+                case let thread as TSContactThread:
+                    if localIdentifiers.contains(address: thread.contactAddress) {
+                        owsFailDebug("can't block note to self")
+                    } else if var recipient = recipientFetcher.fetchOrCreate(address: thread.contactAddress, tx: tx) {
+                        blockingManager.addBlockedRecipient(
+                            &recipient,
+                            blockedAt: BlockedTimestamp(clamping: timestamp),
+                            blockMode: .localUser,
+                            tx: tx,
+                        )
+                    } else {
+                        owsFailDebug("can't block contact thread with invalid address")
+                    }
+                case let thread as TSGroupThread:
+                    if var groupRecord = GroupStore().fetchGroup(forGroupIdData: thread.groupId, tx: tx) {
+                        blockingManager.addBlockedGroup(
+                            &groupRecord,
+                            blockedAt: BlockedTimestamp(clamping: timestamp),
+                            blockMode: .localUser,
+                            tx: tx,
+                        )
+                    } else {
+                        owsFailDebug("can't block group thread that's somehow missing its GroupRecord")
+                    }
+                case let thread as TSReleaseNotesThread:
+                    blockingManager.addBlockedReleaseNotesThread(thread: thread, blockMode: .localUser, transaction: tx)
+                default:
+                    owsFailDebug("can't block thread: \(type(of: thread))")
+                }
             }
             if responseType.shouldReportSpam {
                 let spamReport = ReportSpamUIUtils.insertSpamReportMessage(in: thread, tx: tx)

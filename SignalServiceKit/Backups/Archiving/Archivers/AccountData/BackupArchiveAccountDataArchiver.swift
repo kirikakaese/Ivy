@@ -6,12 +6,12 @@
 import LibSignalClient
 
 extension BackupArchive {
-    public typealias ArchiveAccountDataResult = ArchiveSingleFrameResult<Void>
-    public typealias RestoreAccountDataResult = RestoreFrameResult
+    typealias ArchiveAccountDataResult = ArchiveSingleFrameResult<Void>
+    typealias RestoreAccountDataResult = RestoreFrameResult
 }
 
 /// Archives the ``BackupProto_AccountData`` frame.
-public class BackupArchiveAccountDataArchiver: BackupArchiveProtoStreamWriter {
+class BackupArchiveAccountDataArchiver {
     private let adminDeleteManager: AdminDeleteManager
     private let backupAttachmentUploadEraStore: BackupAttachmentUploadEraStore
     private let backupSettingsStore: BackupSettingsStore
@@ -27,6 +27,7 @@ public class BackupArchiveAccountDataArchiver: BackupArchiveProtoStreamWriter {
     private let localUsernameManager: LocalUsernameManager
     private let logger: PrefixedLogger
     private let mediaBandwidthPreferenceStore: MediaBandwidthPreferenceStore
+    private let notificationPreferencesManager: NotificationPreferencesManager
     private let ows2FAManager: BackupArchive.Shims.OWS2FAManager
     private let phoneNumberDiscoverabilityManager: PhoneNumberDiscoverabilityManager
     private let preferences: BackupArchive.Shims.Preferences
@@ -42,7 +43,7 @@ public class BackupArchiveAccountDataArchiver: BackupArchiveProtoStreamWriter {
     private let udManager: BackupArchive.Shims.UDManager
     private let usernameEducationManager: UsernameEducationManager
 
-    public init(
+    init(
         adminDeleteManager: AdminDeleteManager,
         backupAttachmentUploadEraStore: BackupAttachmentUploadEraStore,
         backupSettingsStore: BackupSettingsStore,
@@ -57,6 +58,7 @@ public class BackupArchiveAccountDataArchiver: BackupArchiveProtoStreamWriter {
         linkPreviewSettingStore: LinkPreviewSettingStore,
         localUsernameManager: LocalUsernameManager,
         mediaBandwidthPreferenceStore: MediaBandwidthPreferenceStore,
+        notificationPreferencesManager: NotificationPreferencesManager,
         ows2FAManager: BackupArchive.Shims.OWS2FAManager,
         phoneNumberDiscoverabilityManager: PhoneNumberDiscoverabilityManager,
         preferences: BackupArchive.Shims.Preferences,
@@ -87,6 +89,7 @@ public class BackupArchiveAccountDataArchiver: BackupArchiveProtoStreamWriter {
         self.localUsernameManager = localUsernameManager
         self.logger = PrefixedLogger(prefix: "[Backups]")
         self.mediaBandwidthPreferenceStore = mediaBandwidthPreferenceStore
+        self.notificationPreferencesManager = notificationPreferencesManager
         self.ows2FAManager = ows2FAManager
         self.phoneNumberDiscoverabilityManager = phoneNumberDiscoverabilityManager
         self.preferences = preferences
@@ -109,7 +112,7 @@ public class BackupArchiveAccountDataArchiver: BackupArchiveProtoStreamWriter {
         stream: BackupArchiveOutputStream,
         context: BackupArchive.CustomChatColorArchivingContext,
     ) -> BackupArchive.ArchiveAccountDataResult {
-        return context.bencher.processFrame { frameBencher in
+        return context.processFrame { frameBencher in
             guard let localProfile = profileManager.getUserProfileForLocalUser(tx: context.tx) else {
                 return .failure(.archiveFrameError(.missingLocalProfile))
             }
@@ -171,8 +174,9 @@ public class BackupArchiveAccountDataArchiver: BackupArchiveProtoStreamWriter {
                 accountData.iosSpecificSettings = iosSpecificSettings
             }
 
-            let error: BackupArchive.ArchiveFrameError? = Self.writeFrameToStream(
-                stream,
+            let error: BackupArchive.ArchiveFrameError? = context.writeFrame(
+                toStream: stream,
+                flush: .afterWrite,
                 frameBencher: frameBencher,
             ) {
                 var frame = BackupProto_Frame()
@@ -196,7 +200,7 @@ public class BackupArchiveAccountDataArchiver: BackupArchiveProtoStreamWriter {
             return nil
         case .available(let username, let usernameLink):
             var usernameLinkProto = BackupProto_AccountData.UsernameLink()
-            usernameLinkProto.entropy = usernameLink.entropy
+            usernameLinkProto.entropy = usernameLink.entropy.rawValue
             usernameLinkProto.serverID = usernameLink.handle.data
             usernameLinkProto.color = localUsernameManager.usernameLinkQRCodeColor(tx: context.tx).backupProtoColor
 
@@ -332,6 +336,33 @@ public class BackupArchiveAccountDataArchiver: BackupArchiveProtoStreamWriter {
             .mobileDataOnly
         } else {
             .never
+        }
+
+        // Notifications
+        accountSettings.unreadBadgeType = switch notificationPreferencesManager.badgeCountType(tx: context.tx) {
+        case .unreadMessages: .unreadMessages
+        case .unreadChats: .unreadChats
+        }
+        if let includeMutedChatsInBadge = notificationPreferencesManager.storedIncludeMutedThreadsInBadgeCount(tx: context.tx) {
+            accountSettings.includeMutedChatsInBadge = includeMutedChatsInBadge
+        }
+        if let reactionNotifications = notificationPreferencesManager.storedAreReactionNotificationsEnabled(tx: context.tx) {
+            accountSettings.reactionNotifications = reactionNotifications
+        }
+        if let notifyForCallsIfMuted = notificationPreferencesManager.storedGlobalNotifyForCallsWhenMuted(tx: context.tx) {
+            accountSettings.notifyForCallsIfMuted = notifyForCallsIfMuted
+        }
+        if let notifyForMentionsIfMuted = notificationPreferencesManager.storedGlobalNotifyForMentionsWhenMuted(tx: context.tx) {
+            accountSettings.notifyForMentionsIfMuted = notifyForMentionsIfMuted
+        }
+        if let notifyForRepliesIfMuted = notificationPreferencesManager.storedGlobalNotifyForRepliesWhenMuted(tx: context.tx) {
+            accountSettings.notifyForRepliesIfMuted = notifyForRepliesIfMuted
+        }
+        if let showUnreadReminders = notificationPreferencesManager.storedGlobalShowUnreadReminders(tx: context.tx) {
+            accountSettings.showUnreadReminders = showUnreadReminders
+        }
+        if let notifyWhenContactJoins = notificationPreferencesManager.storedShouldNotifyOfNewAccounts(tx: context.tx) {
+            accountSettings.notifyWhenContactJoins = notifyWhenContactJoins
         }
 
         return .success(accountSettings)
@@ -623,6 +654,66 @@ public class BackupArchiveAccountDataArchiver: BackupArchiveProtoStreamWriter {
                 callServiceDataMode,
                 tx: context.tx,
             )
+
+            // Notifications
+            let badgeCountType: BadgeCountType = switch settings.unreadBadgeType {
+            case .UNRECOGNIZED, .unknownBadgeType, .unreadMessages: .unreadMessages
+            case .unreadChats: .unreadChats
+            }
+            notificationPreferencesManager.setBadgeCountType(
+                badgeCountType,
+                updateStorageService: false,
+                tx: context.tx,
+            )
+            if settings.hasIncludeMutedChatsInBadge {
+                notificationPreferencesManager.setIncludeMutedThreadsInBadgeCount(
+                    settings.includeMutedChatsInBadge,
+                    updateStorageService: false,
+                    tx: context.tx,
+                )
+            }
+            if settings.hasReactionNotifications {
+                notificationPreferencesManager.setAreReactionNotificationsEnabled(
+                    settings.reactionNotifications,
+                    updateStorageService: false,
+                    tx: context.tx,
+                )
+            }
+            if settings.hasNotifyForCallsIfMuted {
+                notificationPreferencesManager.setGlobalNotifyForCallsWhenMuted(
+                    settings.notifyForCallsIfMuted,
+                    updateStorageService: false,
+                    tx: context.tx,
+                )
+            }
+            if settings.hasNotifyForMentionsIfMuted {
+                notificationPreferencesManager.setGlobalNotifyForMentionsWhenMuted(
+                    settings.notifyForMentionsIfMuted,
+                    updateStorageService: false,
+                    tx: context.tx,
+                )
+            }
+            if settings.hasNotifyForRepliesIfMuted {
+                notificationPreferencesManager.setGlobalNotifyForRepliesWhenMuted(
+                    settings.notifyForRepliesIfMuted,
+                    updateStorageService: false,
+                    tx: context.tx,
+                )
+            }
+            if settings.hasShowUnreadReminders {
+                notificationPreferencesManager.setGlobalShowUnreadReminders(
+                    settings.showUnreadReminders,
+                    updateStorageService: false,
+                    tx: context.tx,
+                )
+            }
+            if settings.hasNotifyWhenContactJoins {
+                notificationPreferencesManager.setShouldNotifyOfNewAccounts(
+                    settings.notifyWhenContactJoins,
+                    updateStorageService: false,
+                    tx: context.tx,
+                )
+            }
         }
 
         // Restore username details (username, link, QR color)
@@ -632,8 +723,9 @@ public class BackupArchiveAccountDataArchiver: BackupArchiveProtoStreamWriter {
 
             if
                 let handle = UUID(data: usernameLink.serverID),
-                let linkData = Usernames.UsernameLink(handle: handle, entropy: usernameLink.entropy)
+                let entropy = try? UsernameLink.Entropy(rawValue: usernameLink.entropy)
             {
+                let linkData = UsernameLink(handle: handle, entropy: entropy)
                 localUsernameManager.setLocalUsername(username: username, usernameLink: linkData, tx: context.tx)
             } else {
                 return .failure([.restoreFrameError(.invalidProtoData(.invalidLocalUsernameLink))])

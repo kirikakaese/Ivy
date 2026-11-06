@@ -34,7 +34,7 @@ public protocol ContactShareManager {
         from contactShare: OWSContact,
         parentMessage: TSMessage,
         tx: DBReadTransaction,
-    ) throws -> SSKProtoDataMessageContact
+    ) -> SSKProtoDataMessageContact
 }
 
 // MARK: -
@@ -100,15 +100,13 @@ class ContactShareManagerImpl: ContactShareManager {
         contact.emails = contactProto.email.compactMap { OWSContactEmail(proto: $0) }
         contact.addresses = contactProto.address.compactMap { OWSContactAddress(proto: $0) }
 
-        if BuildFlags.accountIdentifierSharing, let aciBinary = contactProto.aciBinary {
+        if let aciBinary = contactProto.aciBinary {
             contact.aci = try? Aci.parseFrom(serviceIdBinary: aciBinary)
         }
-        if BuildFlags.accountIdentifierSharing, let nicknameProto = contactProto.nickname {
+        if let nicknameProto = contactProto.nickname {
             contact.nickname = ProfileName(givenName: nicknameProto.given, familyName: nicknameProto.family)?.nameComponents
         }
-        if BuildFlags.accountIdentifierSharing {
-            contact.note = contactProto.note?.strippedOrNil
-        }
+        contact.note = contactProto.note?.strippedOrNil
 
         return ValidatedContactShareProto(
             contact: contact,
@@ -128,7 +126,10 @@ class ContactShareManagerImpl: ContactShareManager {
                     existingAttachment: stream,
                     with: existingAvatarAttachment.reference,
                 )
-            } else if let avatarImage = draft.avatarImage {
+            } else if
+                let selectedAvatarImageData = draft.selectedAvatarImageData,
+                let avatarImage = UIImage(data: selectedAvatarImageData)
+            {
                 // TODO: Use NormalizedImage.
                 guard let imageData = avatarImage.jpegDataSafe(compressionQuality: 0.9) else {
                     throw OWSAssertionError("Failed to get JPEG")
@@ -181,7 +182,7 @@ class ContactShareManagerImpl: ContactShareManager {
         from contactShare: OWSContact,
         parentMessage: TSMessage,
         tx: DBReadTransaction,
-    ) throws -> SSKProtoDataMessageContact {
+    ) -> SSKProtoDataMessageContact {
 
         let contactBuilder = SSKProtoDataMessageContact.builder()
 
@@ -208,11 +209,10 @@ class ContactShareManagerImpl: ContactShareManager {
 
         contactBuilder.setName(nameBuilder.buildInfallibly())
 
-        if BuildFlags.accountIdentifierSharing, let aci = contactShare.aci {
+        if let aci = contactShare.aci {
             contactBuilder.setAciBinary(aci.serviceIdBinary)
         }
         if
-            BuildFlags.accountIdentifierSharing,
             let nickname = contactShare.nickname,
             let profileName = ProfileName(givenName: nickname.givenName, familyName: nickname.familyName)
         {
@@ -225,7 +225,7 @@ class ContactShareManagerImpl: ContactShareManager {
             }
             contactBuilder.setNickname(nicknameBuilder.buildInfallibly())
         }
-        if BuildFlags.accountIdentifierSharing, let note = contactShare.note?.strippedOrNil {
+        if let note = contactShare.note?.strippedOrNil {
             contactBuilder.setNote(note)
         }
 
@@ -246,12 +246,6 @@ class ContactShareManagerImpl: ContactShareManager {
             contactBuilder.setAvatar(avatarBuilder.buildInfallibly())
         }
 
-        let contactProto = contactBuilder.buildInfallibly()
-
-        guard contactProto.aciBinary != nil || !contactProto.number.isEmpty || !contactProto.email.isEmpty || !contactProto.address.isEmpty else {
-            throw OWSAssertionError("contact has neither ACI, phone, email or address.")
-        }
-
-        return contactProto
+        return contactBuilder.buildInfallibly()
     }
 }

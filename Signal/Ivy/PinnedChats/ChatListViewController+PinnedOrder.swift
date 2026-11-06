@@ -124,7 +124,7 @@ extension ChatListViewController {
                 Self.ivySetFolderPins(references, folderId: folder.id)
             }
             let globalVisible = visible.filter { !folderPinned.contains($0) }
-            let all = DependenciesBridge.shared.pinnedThreadManager.pinnedThreads(tx: tx).map(\.uniqueId)
+            let all = DependenciesBridge.shared.pinnedThreadManager.pinnedThreads(filterToVisible: true, tx: tx).map(\.uniqueId)
             PinnedChatOrder.setOrder(PinnedChatOrder.order(all: all, visibleInNewOrder: globalVisible), tx: tx)
         }
     }

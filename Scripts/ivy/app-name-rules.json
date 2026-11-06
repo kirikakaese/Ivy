@@ -617,6 +617,18 @@
     false
    ]
   },
+  "CONTACT_SHARE_AVATAR_SIGNAL_PHOTO": {
+   "fingerprint": "a54dfa99b68921d8",
+   "replace": [
+    false
+   ]
+  },
+  "CONTACT_SHARE_SIGNAL_ACCOUNT_NOTICE_FORMAT": {
+   "fingerprint": "f72b66bd716ff9a3",
+   "replace": [
+    false
+   ]
+  },
   "CONTACT_SHARING_NO_ACCESS_BODY": {
    "fingerprint": "6fd47219dc84bc0c",
    "replace": [
@@ -982,6 +994,12 @@
     false
    ]
   },
+  "LINKED_DEVICES_EDUCATION_POINT_DOWNLOADS": {
+   "fingerprint": "e614e060f28fd1b5",
+   "replace": [
+    false
+   ]
+  },
   "LINKED_DEVICES_EDUCATION_POINT_MESSAGES": {
    "fingerprint": "9a3289bf446aba71",
    "replace": [
@@ -990,13 +1008,13 @@
    ]
   },
   "LINKED_DEVICES_EDUCATION_TITLE": {
-   "fingerprint": "1649a53014651479",
+   "fingerprint": "fc0cf562fe4a191c",
    "replace": [
     false
    ]
   },
   "LINKED_DEVICES_HEADER_DESCRIPTION": {
-   "fingerprint": "5128ac5e4fa4f431",
+   "fingerprint": "1880d92e85ef2a72",
    "replace": [
     false
    ]
@@ -1506,13 +1524,25 @@
    ]
   },
   "REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_BODY": {
-   "fingerprint": "c73bf524c05ca806",
+   "fingerprint": "125119ae58546dee",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_MESSAGE": {
+   "fingerprint": "f282a25b7e56614b",
    "replace": [
     false
    ]
   },
   "REGISTRATION_BACKUP_RESTORE_ERROR_INCORRECT_KEY_BODY": {
    "fingerprint": "4aef71322911c12e",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_BACKUP_RESTORE_ERROR_MISMATCHED_LOCAL_BACKUP_MESSAGE": {
+   "fingerprint": "cf77d12eca2daee8",
    "replace": [
     false
    ]
@@ -1571,6 +1601,12 @@
     false
    ]
   },
+  "REGISTRATION_SIGNAL_LOGIN_EXPLANATION": {
+   "fingerprint": "f3d770bf13fd22e8",
+   "replace": [
+    false
+   ]
+  },
   "REGISTRATION_SIGNAL_LOGIN_FULL_DETAILS_TITLE": {
    "fingerprint": "89dfa826d6dda04b",
    "replace": [
@@ -1583,6 +1619,24 @@
     false,
     false,
     false,
+    false
+   ]
+  },
+  "REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_BULLET_THANKS": {
+   "fingerprint": "9d790b31f8355017",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_TITLE": {
+   "fingerprint": "7e2782d13c006281",
+   "replace": [
+    false
+   ]
+  },
+  "REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_NON_PROFIT": {
+   "fingerprint": "bc464399f11262b1",
+   "replace": [
     false
    ]
   },
@@ -2098,6 +2152,12 @@
    "fingerprint": "f30d8b294aec91e0",
    "replace": [
     false
+   ]
+  },
+  "STICKER_PACK_SHARE_SHEET_SEND_IN_SIGNAL": {
+   "fingerprint": "9b29af49884f1e37",
+   "replace": [
+    true
    ]
   },
   "STORY_SETTINGS_LEARN_MORE_SHEET_HEADER_FORMAT": {

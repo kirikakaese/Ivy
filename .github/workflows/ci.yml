@@ -111,7 +111,7 @@ jobs:
             ~/Library/Caches/CocoaPods
             ~/Library/Caches/org.signal.libsignal
             ~/Library/Caches/org.signal.ringrtc
-          key: deps-${{ hashFiles('Podfile.lock') }}
+          key: deps-${{ hashFiles('Podfile.lock', 'Scripts/ivy/catalyst-dependencies.json') }}
 
       # Build products from another runner image (another macOS version)
       # are rebuilt anyway, so each image keeps its own cache. GitHub rolls
@@ -148,7 +148,8 @@ jobs:
           ls -la Pods/SignalRingRTC/out/release Pods/SignalRingRTC/out/release/libringrtc
           ls Pods/SignalRingRTC/out/release/WebRTC.xcframework/
           ls Pods/LibMobileCoin/Artifacts/target
-          ls -la ~/Library/Caches/org.signal.libsignal
+          # libsignal downloads its archive during the build when it isn't cached yet.
+          ls -la ~/Library/Caches/org.signal.libsignal || true
 
       - name: Build and test (${{ env.MODE }})
         run: Scripts/ivy/ci-build.sh ${{ matrix.platform }} "$MODE"

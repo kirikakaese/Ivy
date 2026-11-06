@@ -540,8 +540,6 @@ public struct CVComponentState: Equatable {
 
     struct BottomButtons: Equatable {
         let actions: [CVMessageAction]
-        // Ivy: side by side instead of stacked (the date reply buttons).
-        var ivyIsRow = false
     }
 
     let bottomButtons: BottomButtons?
@@ -741,7 +739,6 @@ public struct CVComponentState: Equatable {
         var poll: Poll?
 
         var bottomButtonsActions = [CVMessageAction]()
-        var ivyBottomButtonsAreRow = false
         var bottomLabel: String?
 
         init(interaction: TSInteraction, itemBuildingContext: CVItemBuildingContext) {
@@ -754,7 +751,7 @@ public struct CVComponentState: Equatable {
         mutating func build() -> CVComponentState {
             var bottomButtons: BottomButtons?
             if !bottomButtonsActions.isEmpty {
-                bottomButtons = BottomButtons(actions: bottomButtonsActions, ivyIsRow: ivyBottomButtonsAreRow)
+                bottomButtons = BottomButtons(actions: bottomButtonsActions)
             }
 
             return CVComponentState(
@@ -877,6 +874,10 @@ public struct CVComponentState: Equatable {
 
     var isBorderlessStickerMessage: Bool {
         sticker != nil && quotedReply == nil
+    }
+
+    var isReplyStickerMessage: Bool {
+        sticker != nil && quotedReply != nil
     }
 
     var activeComponentStateKeys: Set<CVComponentKey> {
@@ -1290,7 +1291,6 @@ private extension CVComponentState.Builder {
             )
         {
             bottomButtonsActions = ivyActions
-            ivyBottomButtonsAreRow = ivyActions.count > 1
         }
 
         if let outgoingMessage = message as? TSOutgoingMessage {
@@ -1588,10 +1588,14 @@ private extension CVComponentState.Builder {
         )
         self.contactShare = ContactShare(state: state)
 
+        let messageButtonTitle = OWSLocalizedString(
+            "CONTACT_SHARE_MESSAGE_BUTTON",
+            comment: "Button on a shared contact that opens a chat with that contact. It can share a row with other buttons, so a short label is preferred.",
+        )
         let contactShareAction: CVMessageAction?
-        if BuildFlags.accountIdentifierSharing, let aci = contactShare.dbRecord.aci {
+        if let aci = contactShare.dbRecord.aci {
             contactShareAction = CVMessageAction(
-                title: CommonStrings.sendMessage,
+                title: messageButtonTitle,
                 accessibilityIdentifier: "send_message_to_contact_share",
                 action: .didTapSendMessageToAci(aci: aci, sharedName: contactShare.dbRecord.name),
             )
@@ -1600,7 +1604,7 @@ private extension CVComponentState.Builder {
                 ifSendablePhoneNumbers: {
                     // If system contacts are known/linkable, show a "Send" button.
                     return CVMessageAction(
-                        title: CommonStrings.sendMessage,
+                        title: messageButtonTitle,
                         accessibilityIdentifier: "send_message_to_contact_share",
                         action: .didTapSendMessage(phoneNumbers: $0),
                     )
@@ -1630,7 +1634,34 @@ private extension CVComponentState.Builder {
             bottomButtonsActions.append(contactShareAction)
         }
 
+        if
+            let aci = contactShare.dbRecord.aci,
+            let groupThread = thread as? TSGroupThread,
+            canAddToGroup(aci: aci, groupThread: groupThread)
+        {
+            bottomButtonsActions.append(CVMessageAction(
+                title: OWSLocalizedString(
+                    "CONTACT_SHARE_ADD_TO_GROUP_BUTTON",
+                    comment: "Button on a shared contact in a group conversation that adds the contact to that group. It can share a row with other buttons, so a short label is preferred.",
+                ),
+                accessibilityIdentifier: "add_contact_share_to_group",
+                action: .didTapAddToGroup(aci: aci, sharedName: contactShare.dbRecord.name),
+            ))
+        }
+
         return build()
+    }
+
+    private func canAddToGroup(aci: Aci, groupThread: TSGroupThread) -> Bool {
+        guard
+            let groupModel = groupThread.groupModel as? TSGroupModelV2,
+            !groupModel.isTerminated,
+            GroupViewHelper(threadViewModel: threadViewModel, memberLabelCoordinator: nil)
+                .canEditConversationMembership(localAci: localAci)
+        else {
+            return false
+        }
+        return groupModel.groupMembership.canTryToAddToGroup(serviceId: aci, tx: transaction)
     }
 
     // TODO: Should we throw more?

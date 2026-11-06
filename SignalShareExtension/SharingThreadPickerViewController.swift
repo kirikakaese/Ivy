@@ -141,12 +141,13 @@ class SharingThreadPickerViewController: ConversationPickerViewController {
         case .contact(let contactData):
             let cnContact = try SystemContact.parseVCardData(contactData)
             let contactShareDraft = SSKEnvironment.shared.databaseStorageRef.read { tx in
-                return ContactShareDraft.load(
+                return ContactShareDraft.loadWithMatchingSignalAvatar(
                     cnContact: cnContact,
                     signalContact: SystemContact(cnContact: cnContact),
                     contactManager: SSKEnvironment.shared.contactManagerRef,
                     phoneNumberUtil: SSKEnvironment.shared.phoneNumberUtilRef,
                     profileManager: SSKEnvironment.shared.profileManagerRef,
+                    recipientHidingManager: DependenciesBridge.shared.recipientHidingManager,
                     recipientManager: DependenciesBridge.shared.recipientManager,
                     tsAccountManager: DependenciesBridge.shared.tsAccountManager,
                     tx: tx,
@@ -155,6 +156,11 @@ class SharingThreadPickerViewController: ConversationPickerViewController {
             let approvalView = ContactShareViewController(contactShareDraft: contactShareDraft)
             approvalVC = approvalView
             approvalView.shareDelegate = self
+            if withCancelButton {
+                approvalView.navigationItem.leftBarButtonItem = .cancelButton { [weak self] in
+                    self?.shareViewDelegate?.shareViewWasCancelled()
+                }
+            }
 
         case .other:
             // We know that the first element of typedItems isn't .text or .contact
@@ -623,10 +629,6 @@ extension SharingThreadPickerViewController: ContactShareViewControllerDelegate 
 
     func contactShareViewController(_ viewController: ContactShareViewController, didApproveContactShare contactShare: ContactShareDraft) {
         send(.contact(contactShare: contactShare))
-    }
-
-    func contactShareViewControllerDidCancel(_ viewController: ContactShareViewController) {
-        shareViewDelegate?.shareViewWasCancelled()
     }
 
     func titleForContactShareViewController(_ viewController: ContactShareViewController) -> String? {
