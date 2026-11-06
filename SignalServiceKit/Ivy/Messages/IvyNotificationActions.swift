@@ -4,7 +4,7 @@
 //
 
 import Foundation
-public import UserNotifications
+import UserNotifications
 
 /// Ivy's extra actions on message notifications: a heart reaction and a
 /// reminder in an hour on every message, and accept or decline first on
