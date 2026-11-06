@@ -4437,6 +4437,9 @@
 		D0854ACE19FF79B63B60069E /* IvyProblemReportTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E743847FC1561D1A8CEF286F /* IvyProblemReportTest.swift */; };
 		7A337D46BF41D66731C51FE0 /* ChatFolderRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3BC3D45D1A2AA81E8EA6F1C /* ChatFolderRules.swift */; };
 		35BE8C6EB85AB7D7725C13BD /* ChatFolderRulesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7001E5E64BA1B27B4A29432B /* ChatFolderRulesTest.swift */; };
+		FE1C19D9B9E1DEC2315F4C17 /* IvyNotificationActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787B37365B010F665A22EA47 /* IvyNotificationActions.swift */; };
+		383DB03342BA0A0C04E69215 /* IvyNotificationActionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0BFA41388727FE6D614740 /* IvyNotificationActionsTest.swift */; };
+		D3EBBE0C2B051ECA5F34434F /* IvyNotificationActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F238BAA1E584445A19217B5 /* IvyNotificationActionHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -9175,6 +9178,9 @@
 		E743847FC1561D1A8CEF286F /* IvyProblemReportTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyProblemReportTest.swift; sourceTree = "<group>"; };
 		E3BC3D45D1A2AA81E8EA6F1C /* ChatFolderRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderRules.swift; sourceTree = "<group>"; };
 		7001E5E64BA1B27B4A29432B /* ChatFolderRulesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderRulesTest.swift; sourceTree = "<group>"; };
+		787B37365B010F665A22EA47 /* IvyNotificationActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyNotificationActions.swift; sourceTree = "<group>"; };
+		AE0BFA41388727FE6D614740 /* IvyNotificationActionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyNotificationActionsTest.swift; sourceTree = "<group>"; };
+		3F238BAA1E584445A19217B5 /* IvyNotificationActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyNotificationActionHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16909,6 +16915,7 @@
 				62DA6C9923EA3EE16C4ADD9C /* ChatFolderOnlyHereTest.swift */,
 				A3608FA477A421B630684868 /* IvyDateRepliesTest.swift */,
 				7001E5E64BA1B27B4A29432B /* ChatFolderRulesTest.swift */,
+				AE0BFA41388727FE6D614740 /* IvyNotificationActionsTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -17227,6 +17234,7 @@
 				DEF2B23C8666EF1EED0C6D4F /* IvyScheduledMessages.swift */,
 				1CB28684C3EB5E39D18A2EA7 /* IvyTaskPhrases.swift */,
 				55E9FE8CB6A478FE4B9E962F /* IvyDateReplies.swift */,
+				787B37365B010F665A22EA47 /* IvyNotificationActions.swift */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -17247,6 +17255,7 @@
 				703E32BF2F3658E97D17C226 /* IvyFirstTimeTips.swift */,
 				0E4A5121B417965245DAA561 /* IvySwipeLeft.swift */,
 				31B25205458D19CE81E8C4BE /* IvyDateReplyButtons.swift */,
+				3F238BAA1E584445A19217B5 /* IvyNotificationActionHandler.swift */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -20767,6 +20776,7 @@
 				FB0F55BD1EB8638416B84908 /* IvyMoveFromSignal.swift in Sources */,
 				36225541FAFBCA90DAC7F837 /* IvyDateReplyButtons.swift in Sources */,
 				E945EE11457ABE7575363773 /* IvyProblemReport.swift in Sources */,
+				D3EBBE0C2B051ECA5F34434F /* IvyNotificationActionHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22179,6 +22189,7 @@
 				195810D75BE50E39613B5DFD /* IvyWakeStats.swift in Sources */,
 				6BA235D5FCB0675B099E8905 /* IvyDateReplies.swift in Sources */,
 				7A337D46BF41D66731C51FE0 /* ChatFolderRules.swift in Sources */,
+				FE1C19D9B9E1DEC2315F4C17 /* IvyNotificationActions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22490,6 +22501,7 @@
 				049EC2ABB2D351F35DBAEDED /* ChatFolderOnlyHereTest.swift in Sources */,
 				697D54D3C8CB49364A5A5832 /* IvyDateRepliesTest.swift in Sources */,
 				35BE8C6EB85AB7D7725C13BD /* ChatFolderRulesTest.swift in Sources */,
+				383DB03342BA0A0C04E69215 /* IvyNotificationActionsTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
