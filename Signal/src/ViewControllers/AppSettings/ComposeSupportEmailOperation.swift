@@ -31,6 +31,8 @@ struct SupportEmailModel {
     let signalAppVersion: String
     let locale: String
     let backupPlan: BackupPlan
+    let deviceCount: Int?
+    let localDeviceType: DeviceType?
     let userDescription: String
     let emojiMood: EmojiMoodPickerView.Mood?
     let debugLogPolicy: LogPolicy?
@@ -45,6 +47,8 @@ struct SupportEmailModel {
         debugLogPolicy: LogPolicy?,
         hasRecentChallenge: Bool,
         backupPlan: BackupPlan,
+        deviceCount: Int?,
+        localDeviceType: DeviceType?,
     ) {
         // Ivy: requests become problem reports on Ivy's issue page.
         self.localizedSubject = IvyLocalizedString(
@@ -57,6 +61,8 @@ struct SupportEmailModel {
         self.signalAppVersion = AppVersionImpl.shared.currentAppVersion
         self.locale = Locale.current.identifier
         self.backupPlan = backupPlan
+        self.deviceCount = deviceCount
+        self.localDeviceType = localDeviceType
 
         self.userDescription = userDescription ?? OWSLocalizedString(
             "SUPPORT_EMAIL_DEFAULT_DESCRIPTION",
@@ -124,6 +130,8 @@ final class ComposeSupportEmailOperation: NSObject {
         logUrl: URL,
         hasRecentChallenge: Bool,
         backupPlan: BackupPlan,
+        deviceCount: Int?,
+        localDeviceType: DeviceType?,
     ) async {
         do {
             try await sendEmail(
@@ -131,6 +139,8 @@ final class ComposeSupportEmailOperation: NSObject {
                 logUrl: logUrl,
                 hasRecentChallenge: hasRecentChallenge,
                 backupPlan: backupPlan,
+                deviceCount: deviceCount,
+                localDeviceType: localDeviceType,
             )
         } catch {
             OWSActionSheets.showErrorAlert(message: error.userErrorDescription)
@@ -142,6 +152,8 @@ final class ComposeSupportEmailOperation: NSObject {
         logUrl: URL?,
         hasRecentChallenge: Bool,
         backupPlan: BackupPlan,
+        deviceCount: Int?,
+        localDeviceType: DeviceType?,
     ) async throws {
         let model = SupportEmailModel(
             userDescription: nil,
@@ -150,6 +162,8 @@ final class ComposeSupportEmailOperation: NSObject {
             debugLogPolicy: logUrl.map { .link($0) },
             hasRecentChallenge: hasRecentChallenge,
             backupPlan: backupPlan,
+            deviceCount: deviceCount,
+            localDeviceType: localDeviceType,
         )
         try await sendEmail(model: model)
     }
@@ -306,6 +320,13 @@ final class ComposeSupportEmailOperation: NSObject {
                 }
                 return "Backups: \(backupPlanCode)"
             }(),
+            model.deviceCount.map { "Devices: \($0)" },
+            model.localDeviceType.map { localDeviceType in
+                switch localDeviceType {
+                case .primary: "This device: primary"
+                case .linked: "This device: linked"
+                }
+            },
             {
                 if let debugURLString = model.resolvedDebugString {
                     return String.nonPluralLocalizedStringWithFormat(

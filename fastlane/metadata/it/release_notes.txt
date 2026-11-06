@@ -1,1 +1,1 @@
-• Questo aggiornamento introduce una nuova opzione ad hoc per silenziare le chat, così puoi specificare nel dettaglio quando interrompere la tua meritata pausa dalle notifiche di una determinata chat.
+• Da oggi Signal è ottimizzato per iPhone Duo, così puoi installare un solo aggiornamento per goderti l'app aggiornata su due schermi. Nei prossimi mesi faremo uscire altri "doppi" aggiornamenti.

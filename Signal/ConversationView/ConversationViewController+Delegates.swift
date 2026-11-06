@@ -136,12 +136,13 @@ extension ConversationViewController: ContactPickerDelegate, ContactSharingPicke
         }
 
         let contactShareDraft = SSKEnvironment.shared.databaseStorageRef.read { tx in
-            return ContactShareDraft.load(
+            return ContactShareDraft.loadWithMatchingSignalAvatar(
                 cnContact: cnContact,
                 signalContact: systemContact,
                 contactManager: SSKEnvironment.shared.contactManagerRef,
                 phoneNumberUtil: SSKEnvironment.shared.phoneNumberUtilRef,
                 profileManager: SSKEnvironment.shared.profileManagerRef,
+                recipientHidingManager: DependenciesBridge.shared.recipientHidingManager,
                 recipientManager: DependenciesBridge.shared.recipientManager,
                 tsAccountManager: DependenciesBridge.shared.tsAccountManager,
                 tx: tx,
@@ -180,10 +181,6 @@ extension ConversationViewController: ContactShareViewControllerDelegate {
         dismiss(animated: true) {
             self.send(contactShareDraft: contactShare)
         }
-    }
-
-    public func contactShareViewControllerDidCancel(_ viewController: ContactShareViewController) {
-        dismiss(animated: true, completion: nil)
     }
 
     public func titleForContactShareViewController(_ viewController: ContactShareViewController) -> String? {

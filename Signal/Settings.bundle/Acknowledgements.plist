@@ -952,7 +952,7 @@ You should also get your employer (if you work as a programmer) or school, if an
 			<key>License</key>
 			<string>GNU Affero General Public License v3.0 only</string>
 			<key>Title</key>
-			<string>attest, device-transfer, libsignal-account-keys, libsignal-account-keys 0.1.0, libsignal-bridge, libsignal-bridge-macros, libsignal-bridge-testing, libsignal-bridge-types, libsignal-core, libsignal-core 0.1.0, libsignal-debug, libsignal-debug 0.99.1, libsignal-ffi, libsignal-ffi-impl, libsignal-keytrans, libsignal-message-backup, libsignal-message-backup-macros, libsignal-net, libsignal-net-chat, libsignal-net-grpc, libsignal-net-infra, libsignal-protocol, libsignal-svrb, mrp 2.72.0, partial-default 0.1.0, partial-default-derive 0.1.0, poksho, protobuf 2.72.0, regex-aot 0.1.0, ringrtc 2.72.0, signal-crypto, signal-media, usernames, zkcredential, zkgroup</string>
+			<string>attest, device-transfer, libsignal-account-keys, libsignal-account-keys 0.1.0, libsignal-bridge, libsignal-bridge-macros, libsignal-bridge-testing, libsignal-bridge-types, libsignal-core, libsignal-core 0.1.0, libsignal-debug, libsignal-debug 0.99.1, libsignal-ffi, libsignal-ffi-impl, libsignal-keytrans, libsignal-message-backup, libsignal-message-backup-macros, libsignal-net, libsignal-net-chat, libsignal-net-grpc, libsignal-net-infra, libsignal-protocol, libsignal-svrb, mrp 2.73.0, partial-default 0.1.0, partial-default-derive 0.1.0, poksho, protobuf 2.73.0, regex-aot 0.1.0, ringrtc 2.73.0, signal-crypto, signal-media, usernames, zkcredential, zkgroup</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
@@ -1411,8 +1411,6 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 </string>
-			<key>License</key>
-			<string>MIT</string>
 			<key>Title</key>
 			<string>BonMot</string>
 			<key>Type</key>
@@ -1441,42 +1439,6 @@ limitations under the License.
 			<string>Apache License 2.0</string>
 			<key>Title</key>
 			<string>boring 5.2.0</string>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-		</dict>
-		<dict>
-			<key>FooterText</key>
-			<string>Copyright (c) 2014 Alex Crichton
-Copyright (c) 2020 Ivan Nikulin &lt;ifaaan@gmail.com&gt;
-
-Permission is hereby granted, free of charge, to any
-person obtaining a copy of this software and associated
-documentation files (the "Software"), to deal in the
-Software without restriction, including without
-limitation the rights to use, copy, modify, merge,
-publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software
-is furnished to do so, subject to the following
-conditions:
-
-The above copyright notice and this permission notice
-shall be included in all copies or substantial portions
-of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
-ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
-TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
-SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
-IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
-</string>
-			<key>License</key>
-			<string>MIT License</string>
-			<key>Title</key>
-			<string>boring-sys 5.2.0</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
@@ -1723,6 +1685,42 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 </string>
 			<key>License</key>
 			<string>Apache License 2.0</string>
+			<key>Title</key>
+			<string>boring-sys 5.2.0</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>FooterText</key>
+			<string>Copyright (c) 2014 Alex Crichton
+Copyright (c) 2020 Ivan Nikulin &lt;ifaaan@gmail.com&gt;
+
+Permission is hereby granted, free of charge, to any
+person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without
+limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice
+shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+</string>
+			<key>License</key>
+			<string>MIT License</string>
 			<key>Title</key>
 			<string>boring-sys 5.2.0</string>
 			<key>Type</key>
@@ -7069,8 +7067,6 @@ copy of the Program in return for a fee.
 
    END OF TERMS AND CONDITIONS
 </string>
-			<key>License</key>
-			<string>Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0)</string>
 			<key>Title</key>
 			<string>libPhoneNumber-iOS</string>
 			<key>Type</key>
@@ -7864,10 +7860,8 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 </string>
-			<key>License</key>
-			<string>BSD</string>
 			<key>Title</key>
-			<string>libwebp</string>
+			<string>libwebp-Xcode</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
@@ -8612,8 +8606,6 @@ SOFTWARE.
    See the License for the specific language governing permissions and
    limitations under the License.
 </string>
-			<key>License</key>
-			<string>Apache</string>
 			<key>Title</key>
 			<string>lottie-ios</string>
 			<key>Type</key>
@@ -11248,8 +11240,6 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 </string>
-			<key>License</key>
-			<string>MIT</string>
 			<key>Title</key>
 			<string>PureLayout</string>
 			<key>Type</key>
@@ -11922,7 +11912,7 @@ SOFTWARE.
 			<key>License</key>
 			<string>MIT License</string>
 			<key>Title</key>
-			<string>rustls-platform-verifier 0.5.3</string>
+			<string>rustls-platform-verifier 0.7.1</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
@@ -12044,8 +12034,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 </string>
-			<key>License</key>
-			<string>MIT</string>
 			<key>Title</key>
 			<string>SDWebImage</string>
 			<key>Type</key>
@@ -12073,8 +12061,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 </string>
-			<key>License</key>
-			<string>MIT</string>
 			<key>Title</key>
 			<string>SDWebImageWebPCoder</string>
 			<key>Type</key>
@@ -14525,51 +14511,6 @@ SOFTWARE.
 			<string>MIT License</string>
 			<key>Title</key>
 			<string>typenum 1.20.1</string>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-		</dict>
-		<dict>
-			<key>FooterText</key>
-			<string>Without any further information, all the sources provided here are under the MIT License
-quoted below.
-
-Anyway, please contact me by email (olivier.halligon+ae@gmail.com) if you plan to use my work and the provided classes
-in your own software. Thanks.
-
-
-/***********************************************************************************
- *
- * Copyright (c) 2010 Olivier Halligon
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- ***********************************************************************************
- *
- * Any comment or suggestion welcome. Referencing this project in your AboutBox is appreciated.
- * Please tell me if you use this class so we can cross-reference our projects.
- *
- ***********************************************************************************/
-</string>
-			<key>License</key>
-			<string>MIT</string>
-			<key>Title</key>
-			<string>UIImage-Resize</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>

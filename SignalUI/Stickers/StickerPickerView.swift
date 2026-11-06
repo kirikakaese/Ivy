@@ -3,14 +3,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import SignalServiceKit
+public import SignalServiceKit
 
-protocol StickerPickerViewDelegate: StickerPickerDelegate {
+public protocol StickerPickerViewDelegate: StickerPickerDelegate {
 
     func presentManageStickersView(for: StickerPickerView)
 }
 
-class StickerPickerView: UIView {
+public class StickerPickerView: UIView {
 
     weak var delegate: StickerPickerViewDelegate?
     private let storyStickerConfigation: StoryStickerConfiguration
@@ -19,7 +19,7 @@ class StickerPickerView: UIView {
         stickerPageView.stickerPackCollectionViews
     }
 
-    init(
+    public init(
         delegate: StickerPickerViewDelegate,
         storyStickerConfiguration: StoryStickerConfiguration = .hide,
     ) {
@@ -62,11 +62,11 @@ class StickerPickerView: UIView {
 
     // MARK: Presentation
 
-    func willBePresented() {
+    public func willBePresented() {
         stickerPageView.willBePresented()
     }
 
-    func wasPresented() {
+    public func wasPresented() {
         stickerPageView.wasPresented()
     }
 
@@ -83,12 +83,12 @@ class StickerPickerView: UIView {
     private var quoteReplyPreviewView: UIView?
     private var quoteReplyPreviewStickerInfo: StickerInfo?
 
-    override func layoutMarginsDidChange() {
+    override public func layoutMarginsDidChange() {
         super.layoutMarginsDidChange()
         updateStickerPageViewContentInsets()
     }
 
-    override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
 
         // Necessary to update bottom inset after footer has its final position and size.
@@ -122,7 +122,7 @@ extension StickerPickerView: StickerPacksToolbarDelegate {
 }
 
 extension StickerPickerView: StickerPickerPageViewDelegate {
-    func shouldShowStickerPreview() -> Bool {
+    public func shouldShowStickerPreview() -> Bool {
         delegate?.shouldShowStickerPreview() ?? false
     }
 
@@ -134,17 +134,17 @@ extension StickerPickerView: StickerPickerPageViewDelegate {
         toolbar.packsCollectionView.updateSelections(scrollToSelectedItem: scrollToSelectedItem)
     }
 
-    func didSelectSticker(_ stickerInfo: StickerInfo) {
-        delegate?.didSelectSticker(stickerInfo)
+    public func didSelectSticker(_ stickerMetadata: any StickerMetadata) {
+        delegate?.didSelectSticker(stickerMetadata)
     }
 
-    func didRequestQuoteReplyPreview(for stickerInfo: StickerInfo, stickerView: UIView) {
-        showQuoteReplyPreview(for: stickerInfo, stickerView: stickerView)
+    func didRequestQuoteReplyPreview(for stickerMetadata: any StickerMetadata, stickerView: UIView) {
+        showQuoteReplyPreview(for: stickerMetadata, stickerView: stickerView)
     }
 
     // MARK: - Quote Reply preview
 
-    func dismissQuoteReplyPreviewIfNeeded() {
+    public func dismissQuoteReplyPreviewIfNeeded() {
         guard quoteReplyPreviewView != nil else { return }
         handleQuoteReplyPreviewDismiss()
     }
@@ -155,7 +155,7 @@ extension StickerPickerView: StickerPickerPageViewDelegate {
         quoteReplyPreviewStickerInfo = nil
     }
 
-    private func showQuoteReplyPreview(for stickerInfo: StickerInfo, stickerView: UIView) {
+    private func showQuoteReplyPreview(for stickerMetadata: any StickerMetadata, stickerView: UIView) {
         let replyLabel = UILabel()
         let replyText = NSAttributedString(
             string: OWSLocalizedString(
@@ -194,7 +194,7 @@ extension StickerPickerView: StickerPickerPageViewDelegate {
         sendButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 24)
 
         sendButton.addAction(UIAction { [weak self] _ in
-            self?.handleSendQuoteReplySticker(stickerInfo: stickerInfo)
+            self?.handleSendQuoteReplySticker(stickerMetadata: stickerMetadata)
         }, for: .touchUpInside)
 
         blurView.contentView.addSubview(dismissButton)
@@ -207,15 +207,15 @@ extension StickerPickerView: StickerPickerPageViewDelegate {
         }, for: .touchUpInside)
 
         quoteReplyPreviewView = blurView
-        quoteReplyPreviewStickerInfo = stickerInfo
+        quoteReplyPreviewStickerInfo = stickerMetadata.stickerInfo
     }
 
     private func handleQuoteReplyPreviewDismiss() {
         hideQuoteReplyPreview()
     }
 
-    private func handleSendQuoteReplySticker(stickerInfo: StickerInfo) {
-        delegate?.didSelectSticker(stickerInfo)
+    private func handleSendQuoteReplySticker(stickerMetadata: any StickerMetadata) {
+        delegate?.didSelectSticker(stickerMetadata)
     }
 }
 
@@ -452,7 +452,7 @@ private protocol StickerPickerPageViewDelegate: StickerPickerDelegate {
 
     func updateSelections(scrollToSelectedItem: Bool)
 
-    func didRequestQuoteReplyPreview(for stickerInfo: StickerInfo, stickerView: UIView)
+    func didRequestQuoteReplyPreview(for stickerMetadata: any StickerMetadata, stickerView: UIView)
 }
 
 private class StickerPickerPageView: UIView {
@@ -940,8 +940,8 @@ extension StickerPickerPageView: StickerPackCollectionViewDelegate {
         delegate?.shouldShowStickerPreview() ?? false
     }
 
-    func didSelectSticker(_ stickerInfo: StickerInfo) {
-        delegate?.didSelectSticker(stickerInfo)
+    func didSelectSticker(_ stickerMetadata: any StickerMetadata) {
+        delegate?.didSelectSticker(stickerMetadata)
     }
 
     func stickerPreviewHostView() -> UIView? {
@@ -952,7 +952,7 @@ extension StickerPickerPageView: StickerPackCollectionViewDelegate {
         return true
     }
 
-    func didRequestQuoteReplyPreview(for stickerInfo: StickerInfo, stickerView: UIView) {
-        delegate?.didRequestQuoteReplyPreview(for: stickerInfo, stickerView: stickerView)
+    func didRequestQuoteReplyPreview(for stickerMetadata: any StickerMetadata, stickerView: UIView) {
+        delegate?.didRequestQuoteReplyPreview(for: stickerMetadata, stickerView: stickerView)
     }
 }

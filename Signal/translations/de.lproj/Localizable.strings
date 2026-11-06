@@ -1462,6 +1462,9 @@
 /* An explanation of the consequences of blocking another user. */
 "BLOCK_USER_BEHAVIOR_EXPLANATION" = "Blockierte Kontakte werden dich nicht anrufen oder dir Nachrichten senden können.";
 
+/* Shown as a subtitle for recipients & groups you've blocked to indicate when you blocked them. The replacement is a formatted date. */
+"BLOCKED_AT" = "Blockiert um %1$@";
+
 /* Default text for the custom amount field of the boost view. */
 "BOOST_VIEW_CUSTOM_AMOUNT_PLACEHOLDER" = "Eigenen Betrag eingeben";
 
@@ -2437,14 +2440,44 @@
 /* navbar title for contact picker when sharing a contact */
 "CONTACT_PICKER_TITLE" = "Kontakt auswählen";
 
+/* Button on a shared contact in a group conversation that adds the contact to that group. It can share a row with other buttons, so a short label is preferred. */
+"CONTACT_SHARE_ADD_TO_GROUP_BUTTON" = "Zur Gruppe hinzufügen";
+
+/* Button in the confirmation shown before adding a shared contact to the current group that adds the contact. */
+"CONTACT_SHARE_ADD_TO_GROUP_CONFIRMATION_BUTTON" = "Zur Gruppe hinzufügen";
+
+/* Confirmation shown before adding a shared contact to the current group. Embeds {{ %1$@ contact name, %2$@ group name }}. */
+"CONTACT_SHARE_ADD_TO_GROUP_CONFIRMATION_FORMAT" = "%1$@ zu »%2$@« hinzufügen?";
+
 /* Title for the 'Approve contact share' view. */
 "CONTACT_SHARE_APPROVAL_VIEW_TITLE" = "Kontakt teilen";
+
+/* Name of the option to share a contact without a photo, which shows their initials instead. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_NO_PHOTO" = "Kein Foto";
+
+/* Title for the sheet for choosing which photo to include when sharing a contact. */
+"CONTACT_SHARE_AVATAR_PICKER_TITLE" = "Wähle ein Foto aus, das du teilen möchtest";
+
+/* Accessibility label for the row that chooses which photo to include when sharing a contact. */
+"CONTACT_SHARE_AVATAR_ROW_LABEL" = "Foto";
+
+/* Name of the option to share a contact's Signal profile photo. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_SIGNAL_PHOTO" = "Signal-Profilfoto";
+
+/* Name of the option to share a contact's photo from the phone's contacts. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_SYSTEM_CONTACT_PHOTO" = "Kontaktfoto";
 
 /* Title for the 'edit contact share name' view. */
 "CONTACT_SHARE_EDIT_NAME_VIEW_TITLE" = "Name bearbeiten";
 
 /* Error indicating that an invalid contact cannot be shared. */
 "CONTACT_SHARE_INVALID_CONTACT" = "Ungültiger Kontakt.";
+
+/* Button on a shared contact that opens a chat with that contact. It can share a row with other buttons, so a short label is preferred. */
+"CONTACT_SHARE_MESSAGE_BUTTON" = "Nachricht";
+
+/* Notice at the top of the 'Share Contact' view when the shared contact includes their Signal account. Embeds {{ contact name }}. */
+"CONTACT_SHARE_SIGNAL_ACCOUNT_NOTICE_FORMAT" = "Alle, mit denen du dieses Profil teilst, können %1$@ auf Signal Nachrichten schicken.";
 
 /* Alert body when contacts disabled while trying to share a contact. */
 "CONTACT_SHARING_NO_ACCESS_BODY" = "Signal benötigt Zugriff auf deine Kontakte. Gehe zu den iOS-Einstellungen und aktiviere Kontakte. Deine Kontakte sind verschlüsselt und für den Signal-Dienst nicht sichtbar.";
@@ -3973,6 +4006,9 @@
 /* Label warning the user that the app will expire today. */
 "EXPIRATION_WARNING_TODAY" = "Diese Signal-Version wird heute ablaufen. Aktualisiere Signal, um die App weiterhin nutzen zu können.";
 
+/* Description of how and why Signal iOS uses Touch ID/Face ID/Phone Passcode to export your chat history. */
+"EXPORT_CHATS_AUTHENTICATION_REASON" = "Authentifiziere dich, um deinen Chat-Verlauf zu exportieren";
+
 /* action sheet header when re-sending message which failed because of an invalid key signature */
 "FAILED_SENDING_BECAUSE_INVALID_KEY_SIGNATURE" = "Die Nachricht konnte nicht gesendet werden, weil %1$@ Signal erst aktualisieren und öffnen muss.";
 
@@ -5107,6 +5143,21 @@
 /* Label reminding the user that they are in archive mode, and that chats are unarchived when they receive a new message. */
 "INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "Archivierte Chats werden beim Eintreffen einer neuen Nachricht wieder in den Eingang verschoben.";
 
+/* Title of action allowing user to connect to an existing device */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_EXITING_OLD_DEVICE_ACTION" = "Mit einem vorhandenen Gerät verbinden";
+
+/* Body of prompt asking user to select device transfer target. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_BODY" = "Wähle ein vorhandenes oder neues Gerät aus, mit dem du es verbinden möchtest. Sobald die Verbindung steht, beginnt die Übertragung deines Kontos.";
+
+/* Title of action allowing user to pair a new device transfer peer. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_PAIR_NEW_ACTION" = "Neues Gerät verbinden";
+
+/* Title of prompt asking user to select device transfer target. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_TITLE" = "Wähle ein Gerät, mit dem du eine Verbindung aufbauen möchtest";
+
+/* Title of action allowing user to connect to an existing device */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_SPECIFIC_OLD_DEVICE_ACTION" = "Verbinden mit »%1$@«";
+
 /* Body of prompt notifying device transfer will continue on other device. */
 "INCOMING_DEVICE_TRANSFER_CONTINUE_BODY" = "Fahre damit fort, dein Konto auf dein anderes Gerät zu übertragen.";
 
@@ -5443,8 +5494,8 @@
 /* Message for an action sheet telling users how to link a device, when trying to open a device-linking URL from the in-app camera. */
 "LINKED_DEVICE_URL_OPENED_ACTION_SHEET_IN_APP_CAMERA_MESSAGE" = "Es sieht so aus, als würdest du versuchen, ein Gerät mit Signal zu koppeln. Tippe auf Fortfahren und dann auf „Neues Gerät koppeln“, und scanne den Code erneut.";
 
-/* Bullet point about downloads on the linked devices education sheet. Embeds {{ %1$@ iPad download link, %2$@ desktop download link }} */
-"LINKED_DEVICES_EDUCATION_POINT_DOWNLOADS" = "Besuche %1$@ auf deinem anderen Gerät, um die iPad-App zu installieren, oder besuche %2$@, um die Desktop-App zu installieren.";
+/* Bullet point about a download link on the linked devices education sheet. Embeds {{ %1$@ download link }} */
+"LINKED_DEVICES_EDUCATION_POINT_DOWNLOADS" = "Besuche %1$@ auf dem Gerät, das zu koppeln möchtest, um Signal zu installieren";
 
 /* Bullet point about message sync on the linked devices education sheet */
 "LINKED_DEVICES_EDUCATION_POINT_MESSAGES" = "Signal-Nachrichten werden nach der Kopplung mit Signal auf deinem Mobiltelefon synchronisiert.";
@@ -5453,13 +5504,13 @@
 "LINKED_DEVICES_EDUCATION_POINT_PRIVACY" = "Alle Nachrichten auf gekoppelten Geräten sind vertraulich";
 
 /* Title for the linked device education sheet */
-"LINKED_DEVICES_EDUCATION_TITLE" = "Signal für Computer oder iPad";
+"LINKED_DEVICES_EDUCATION_TITLE" = "Signal auf einem gekoppelten Gerät";
 
 /* Text that appears where the linked device list would be indicating that there are no linked devices. */
 "LINKED_DEVICES_EMPTY_STATE" = "Keine gekoppelten Geräte";
 
 /* Description for header of the linked devices list */
-"LINKED_DEVICES_HEADER_DESCRIPTION" = "Signal auf dem Computer oder iPad verwenden.";
+"LINKED_DEVICES_HEADER_DESCRIPTION" = "Dieses Signal-Konto auf einem anderen Gerät verwenden.";
 
 /* Footer text below the list of currently-linked devices */
 "LINKED_DEVICES_LIST_FOOTER" = "Nachrichten und Chat-Infos sind auf allen Geräten durch eine Ende-zu-Ende-Verschlüsselung geschützt";
@@ -5531,7 +5582,7 @@
 "LOCAL_BACKUPS_SELECT_HERO_SHEET_TITLE" = "Wähle deinen Backup-Ordner aus";
 
 /* Message for an action sheet informing the user we were unable to save their local backup location */
-"LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_MESSAGE" = "Es ist ein Fehler aufgetreten, und der von dir ausgewählte Ordnerpfad konnte nicht gespeichert werden. Bitte versuche es erneut. Falls das Problem weiterhin besteht, kontaktiere bitte den Support.";
+"LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_MESSAGE" = "Es ist ein Fehler aufgetreten, und der von dir ausgewählte Ordnerpfad konnte nicht gespeichert werden. Bitte versuche es erneut.";
 
 /* Title for an action sheet informing the user we were unable to save their local backup location */
 "LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_TITLE" = "Ordnerpfad konnte nicht gespeichert werden";
@@ -6172,6 +6223,12 @@
 /* Alert title when user has previously denied media library access */
 "MISSING_MEDIA_LIBRARY_PERMISSION_TITLE" = "Signal benötigt für diese Funktion Zugriff auf deine Fotos.";
 
+/* Title for a progress modal shown after the user taps Cancel, while the work is being cancelled. */
+"MODAL_CIRCULAR_PROGRESS_CANCELLING_TITLE" = "Abbrechen …";
+
+/* Label on a progress modal indicating how far along some work is. Embeds {{ formatted percentage }}. */
+"MODAL_CIRCULAR_PROGRESS_PERCENT_COMPLETE" = "%1$@ abgeschlossen";
+
 /* Text on a blocking progress screen that indicates that there's a deletion in progress. */
 "MODAL_DELETING" = "Löschen…";
 
@@ -6408,6 +6465,9 @@
 
 /* Shown in place of the text input box in a conversation when the user is no longer registered can't send messages. This value is a tappable link embedded in a larger sentence. */
 "NOT_REGISTERED_BOTTOM_REREGISTER" = "Neu registrieren";
+
+/* Description for an error indicating you are not registered. */
+"NOT_REGISTERED_ERROR_LOCALIZED_DESCRIPTION" = "Du bist nicht registriert.";
 
 /* Label for 1:1 conversation with yourself. */
 "NOTE_TO_SELF" = "Notiz an mich";
@@ -7973,10 +8033,19 @@
 "REGISTER_WITHOUT_NUMBER" = "Ohne Telefonnummer registrieren";
 
 /* Short description for a sheet warning users about an incorrect recovery key used for registration. */
-"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_BODY" = "Möglicherweise hast du deinen Wiederherstellungsschlüssel falsch eingegeben. \n\nRegistriere dich unbedingt mit derselben Telefonnummer und demselben Wiederherstellungsschlüssel, den du beim Aktivieren von Signal Secure Backups gespeichert hast.";
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_BODY" = "Registriere dich unbedingt mit derselben Telefonnummer und demselben 64-stelligen Wiederherstellungsschlüssel, den du beim Aktivieren von Signal Backups gespeichert hast. Backups können ohne diesen Schlüssel nicht wiederhergestellt werden.";
 
 /* Title for a sheet warning users about an incorrect recovery key used for registration. */
 "REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TITLE" = "Wiederherstellungsschlüssel nicht korrekt";
+
+/* Action label action allowing users to use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_ACTION" = "Auf andere Art registrieren";
+
+/* Message body for a sheet asking users if they would rather use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_MESSAGE" = "Du kannst dein Konto registrieren, indem du es mit einem SMS-Code verifizierst, den dir Signal zusendet, oder indem du deine PIN eingibst. Nach der Registrierung kannst du erneut versuchen, dein Backup mit deinem Wiederherstellungsschlüssel wiederherzustellen.";
+
+/* Title for a sheet asking users if they would rather use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_TITLE" = "Mit SMS oder PIN verifizieren?";
 
 /* Body for a sheet warning users about a missing backup. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_BACKUP_NOT_FOUND_BODY" = "Diesem Wiederherstellungsschlüssel ist kein Backup zugeordnet. Bitte stelle sicher, dass der Schlüssel stimmt und versuche es dann erneut.";
@@ -8002,6 +8071,9 @@
 /* Body for a sheet warning users about a generic backup manual restore failure. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_BODY" = "Es ist ein Fehler aufgetreten und dein Konto konnte nicht übertragen werden.";
 
+/* Title for a sheet warning users about an error during backup restore. */
+"REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_CANT_RESTORE_TITLE" = "Backup kann nicht wiederhergestellt werden";
+
 /* Body for a sheet warning users about a generic backup restore failure. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_RETRY_BODY" = "Es ist ein Fehler aufgetreten und dein Konto konnte nicht übertragen werden. Versuch's noch mal, indem du den QR-Code scannst und deine Übertragungsmethode auswählst.";
 
@@ -8025,6 +8097,9 @@
 
 /* Title for a sheet warning users about an invalid local backup location */
 "REGISTRATION_BACKUP_RESTORE_ERROR_LOCAL_BACKUP_LOCATION_TITLE" = "Backup kann nicht wiederhergestellt werden";
+
+/* Message for a sheet telling the user that their phone number is mismatched with their recovery key used for making a local backup */
+"REGISTRATION_BACKUP_RESTORE_ERROR_MISMATCHED_LOCAL_BACKUP_MESSAGE" = "Das Backup, das du wiederherstellen möchtest, wurde mit einem anderen Signal-Konto erstellt. Um dieses Backup wiederherzustellen, musst du dieselbe Telefonnummer und denselben Wiederherstellungsschlüssel verwenden, die du bei der Aktivierung lokaler Backups gespeichert hast.";
 
 /* Body for a sheet warning users about a network error during backup restore. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_NETWORK_BODY" = "Dein Backup kann im Moment nicht wiederhergestellt werden. Überprüfe deine Internetverbindung und versuche es erneut.";
@@ -8233,6 +8308,9 @@
 /* Button on the Signal Login card on the 'Signal Login details' screen to show the full account ID and recovery key. */
 "REGISTRATION_SIGNAL_LOGIN_DETAILS_VIEW_DETAILS_BUTTON" = "Details anzeigen";
 
+/* Explanation text for the 'Signal Login' screen. */
+"REGISTRATION_SIGNAL_LOGIN_EXPLANATION" = "Registriere dich ohne Telefonnummer mit Signal Login. Nach dem einmaligen Kauf erhältst du eine Konto-ID, mit der du loslegen kannst.";
+
 /* Toast shown after copying the account ID on the 'Signal Login' details sheet. */
 "REGISTRATION_SIGNAL_LOGIN_FULL_DETAILS_ACCOUNT_ID_COPIED_TOAST" = "Konto-ID kopiert";
 
@@ -8265,6 +8343,33 @@
 
 /* Title for help button for the 'Signal Login' screen. */
 "REGISTRATION_SIGNAL_LOGIN_NEED_HELP_TITLE" = "Hilfe benötigt?";
+
+/* Button to initiate a purchase on the 'Signal Login' screen. The replacement is a localized cost (e.g., $2.99). */
+"REGISTRATION_SIGNAL_LOGIN_PAY" = "Du zahlst %1$@";
+
+/* Text for a bullet point describing that an existing Signal Login can be used to log in and restore an account. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_BULLET_RESTORE" = "Log dich ein und stell dein Konto wieder her";
+
+/* Text for a bullet point thanking the user for supporting Signal by previously buying a Signal Login. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_BULLET_THANKS" = "Danke, dass du Signal unterstützt";
+
+/* Subtitle for the option to register with a Signal Login the user already owns. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_SUBTITLE" = "Verwende deine bestehenden Anmeldedaten";
+
+/* Title for the option to register with a Signal Login the user already owns. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_TITLE" = "Ich habe einen Signal Login";
+
+/* Text for a bullet point describing that a Signal Login lets you register without a phone number. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_NO_PHONE_NUMBER" = "Keine Telefonnummer erforderlich";
+
+/* Text for a bullet point explaining that buying a Signal Login supports Signal, a non-profit. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_NON_PROFIT" = "Signal ist eine gemeinnützige Organisation – mit deinem Kauf unterstützt du unsere Arbeit";
+
+/* Text for a bullet point describing that a Signal Login comes with a username for messaging and calling. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_USERNAME" = "Nutzername für Nachrichten und Anrufe";
+
+/* Subtitle for the option to buy a new Signal Login. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_SUBTITLE" = "Einmaliger Kauf";
 
 /* Title text for the 'Signal Login' screen. */
 "REGISTRATION_SIGNAL_LOGIN_TITLE" = "Signal Login";
@@ -8821,6 +8926,9 @@
 /* In-app camera: title for the prompt to turn off multi-mode that will cause previously taken photos to be discarded. */
 "SEND_MEDIA_TURN_OFF_MM_TITLE" = "Multimodus ausschalten?";
 
+/* Label for the button to send a sticker message */
+"SEND_STICKER_BUTTON_TITLE" = "Sticker senden";
+
 /* String describing high quality sent media */
 "SENT_MEDIA_QUALITY_HIGH" = "Hoch";
 
@@ -8975,7 +9083,7 @@
 "SETTINGS_BACKUPS" = "Backups";
 
 /* A label for the 'add phone number' button in the block list table. */
-"SETTINGS_BLOCK_LIST_ADD_BUTTON" = "Blockierten Kontakte hinzufügen";
+"SETTINGS_BLOCK_LIST_ADD_BUTTON" = "Person blockieren";
 
 /* A label that indicates the user has no Signal contacts that they haven't blocked. */
 "SETTINGS_BLOCK_LIST_NO_CONTACTS" = "Du hast bei Signal keine Kontakte.";
@@ -9033,6 +9141,45 @@
 
 /* Title for the 'chats' link in settings. */
 "SETTINGS_CHATS" = "Chats";
+
+/* Title for a button in Chats settings that starts exporting the user's chat history. */
+"SETTINGS_CHATS_EXPORT_BUTTON" = "Chats exportieren";
+
+/* Title for a button in a sheet shown before the user chooses a folder to export their chat history into, which opens a folder picker. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_CHOOSE_BUTTON" = "Ordner wählen";
+
+/* Message for a sheet shown before the user chooses a folder to export their chat history into. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_MESSAGE" = "Wähle einen Ordner in deinem Gerätespeicher aus, in dem dein Chat-Verlauf gespeichert werden soll.";
+
+/* Title for a sheet shown before the user chooses a folder to export their chat history into. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_TITLE" = "Einen Ordner wählen";
+
+/* Message for a sheet shown after the user's chat history has been exported. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_MESSAGE" = "ACHTE DARAUF, wo du deine Chat-Exportdatei speicherst, und gib sie nicht an andere weiter. Andere Apps auf deinem Gerät können je nach Berechtigungen darauf zugreifen.";
+
+/* Title for a sheet shown after the user's chat history has been exported. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_TITLE" = "Chat-Export abgeschlossen";
+
+/* Title for a button in a sheet shown after the user's chat history has been exported, which opens the exported folder in the Files app. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_VIEW_IN_FILES_BUTTON" = "In Dateien anzeigen";
+
+/* Message for a sheet shown when the user starts exporting their chat history from Chats settings. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_MESSAGE" = "VORSICHT! Gib diese Datei an niemanden weiter. Dein Chat-Verlauf wird auf deinem Gerät gespeichert und andere Apps können je nach Berechtigung darauf zugreifen. Das Exportieren mit Medien erhöht die Dateigröße.";
+
+/* Title for a sheet shown when the user starts exporting their chat history from Chats settings. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_TITLE" = "Chat-Verlauf exportieren?";
+
+/* Title for a button in a sheet shown when the user starts exporting their chat history, which exports their chat history including attachments. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_WITH_MEDIA_BUTTON" = "Mit Medien exportieren";
+
+/* Title for a button in a sheet shown when the user starts exporting their chat history, which exports their chat history excluding attachments. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_WITHOUT_MEDIA_BUTTON" = "Ohne Medien exportieren";
+
+/* Footer for the section in Chats settings containing a button to export the user's chat history. */
+"SETTINGS_CHATS_EXPORT_FOOTER" = "Exportiere eine maschinenlesbare JSON-Kopie deiner Chats. Verschwindende Nachrichten sind nicht mit dabei.";
+
+/* Title for a progress modal shown while the user's chat history is being exported. */
+"SETTINGS_CHATS_EXPORT_PROGRESS_TITLE" = "Chats werden exportiert …";
 
 /* No comment provided by engineer. */
 "SETTINGS_CLEAR_HISTORY" = "Chat-Verlauf leeren";
@@ -9306,6 +9453,16 @@
 
 /* Explanation for the button that resets all notification settings. */
 "SETTINGS_NOTIFICATIONS_RESET_FOOTER" = "Benachrichtigungseinstellungen auf Standardeinstellungen zurücksetzen, einschließlich der benutzerdefinierten Einstellungen für deine Chats.";
+
+/* Label for the switch controlling whether reminders about unread messages are shown.
+   Label for the switch controlling whether reminders about unread messages in muted chats are shown. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS" = "Ungelesene Erinnerungen";
+
+/* Explanation for the switch controlling whether reminders about unread messages are shown in this chat while it is muted. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS_CHAT_FOOTER" = "Gelegentlich benachrichtigen, wenn ungelesene Nachrichten vorliegen, während dieser Chat stummgeschaltet ist.";
+
+/* Explanation for the switch controlling whether reminders about unread messages in muted chats are shown. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS_FOOTER" = "Gelegentlich benachrichtigen, wenn in stummgeschalteten Chats ungelesene Nachrichten vorliegen.";
 
 /* Label for the 'agree to payments terms' button in the 'activate payments confirmation' UI in the payment settings. */
 "SETTINGS_PAYMENTS_ACTIVATE_PAYMENTS_CONFIRM_AGREE" = "Aktivieren";
@@ -10102,6 +10259,9 @@
 /* Text for a toast confirming that the speakerphone has been turned on for a call. */
 "SPEAKERPHONE_ON_CONFIRMATION_TOAST_LABEL" = "Lautsprecher an";
 
+/* Title for a button to view a sticker pack */
+"STICKER_BUTTON_VIEW_PACK" = "Set anzeigen";
+
 /* The name for the sticker category 'Featured' */
 "STICKER_CATEGORY_FEATURED_NAME" = "Ausgewählt";
 
@@ -10117,6 +10277,33 @@
 /* Preview text shown in notifications and conversation list for sticker messages. */
 "STICKER_MESSAGE_PREVIEW" = "Sticker-Nachricht";
 
+/* Button to confirm a user wants to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_BUTTON" = "Entfernen";
+
+/* Message for a sheet asking the user to confirm they want to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_MESSAGE" = "Dadurch wird dieses Sticker-Set entfernt. Ohne einen Link oder eine Sticker-Nachricht kannst du es nicht erneut hinzufügen.";
+
+/* Title for a sheet asking the user to confirm they want to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_TITLE" = "Sticker-Set entfernen?";
+
+/* Label for a button to copy the link of a sticker pack */
+"STICKER_PACK_LINK" = "Link";
+
+/* Label for a button to uninstall a sticker pack */
+"STICKER_PACK_REMOVE" = "Entfernen";
+
+/* Label for a button to send a sticker pack */
+"STICKER_PACK_SEND" = "Senden";
+
+/* Label for a button on a sticker-pack share sheet that copies the pack's share link. */
+"STICKER_PACK_SHARE_SHEET_COPY_LINK" = "Link kopieren";
+
+/* Text describing what you can do with a sticker pack link, on a sheet for sharing it. */
+"STICKER_PACK_SHARE_SHEET_HEADER" = "Alle, die diesen Link haben, können dieses Sticker-Set hinzufügen und teilen.";
+
+/* Label for a button on a sticker-pack share sheet that sends the pack in Signal. */
+"STICKER_PACK_SHARE_SHEET_SEND_IN_SIGNAL" = "In Signal senden";
+
 /* Message when trying to show a sticker that has expired and is unavailable for download */
 "STICKER_UNAVAILABLE_MESSAGE_LABEL" = "Sticker nicht verfügbar";
 
@@ -10124,7 +10311,7 @@
 "STICKER_UNAVAILABLE_SHEET_TITLE" = "Sticker nicht verfügbar";
 
 /* Label for the 'install sticker pack' button. */
-"STICKERS_INSTALL_BUTTON" = "Installieren";
+"STICKERS_INSTALL_BUTTON" = "Sticker hinzufügen";
 
 /* Title for the 'available built-in stickers' section of the 'manage stickers' view. */
 "STICKERS_MANAGE_VIEW_AVAILABLE_BUILT_IN_PACKS_SECTION_TITLE" = "Signal-Artist-Serie";
@@ -10158,9 +10345,6 @@
 
 /* Label indicating that the sticker pack failed to load. */
 "STICKERS_PACK_VIEW_FAILED_TO_LOAD" = "Sticker-Set konnte nicht geladen werden";
-
-/* Label for the 'uninstall sticker pack' button. */
-"STICKERS_UNINSTALL_BUTTON" = "Deinstallieren";
 
 /* Text indication a story caption can be tapped to read more. */
 "STORIES_CAPTION_READ_MORE" = "Weiterlesen";
@@ -10791,6 +10975,33 @@
 
 /* Pressing this button marks a thread as unread */
 "UNREAD_ACTION" = "Ungelesen";
+
+/* Notification placeholder for three or more recipients who sent unread messages */
+"UnreadReminderJob__authors_many" = "%1$@ und andere";
+
+/* Notification placeholder for a single recipient who sent unread messages */
+"UnreadReminderJob__authors_one" = "%1$@";
+
+/* Notification placeholder for two recipients who sent unread messages */
+"UnreadReminderJob__authors_two" = "%1$@ und %2$@";
+
+/* Notification body for unread reminders. First placeholder is unread messages or unread calls */
+"UnreadReminderJob__calls_or_unread" = "Du hast %1$@.";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a list of people who sent them */
+"UnreadReminderJob__calls_or_unread_author" = "Du hast %1$@ von %2$@.";
+
+/* Notification placeholder that sums up a single unread mention. Placeholder is the name of the person who sent the message */
+"UnreadReminderJob__mentions_one" = "eine Erwähnung über dich von %1$@";
+
+/* Notification placeholder that sums up a single unread reply. Placeholder is the name of the person who sent the message */
+"UnreadReminderJob__replies_one" = "eine Antwort von %1$@";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a summary of unread mentions, third replies */
+"UnreadReminderJob__unread_both_summary" = "Du hast %1$@ einschließlich %2$@ und %3$@.";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a summary of either unread mentions or replies */
+"UnreadReminderJob__unread_one_summary" = "Du hast %1$@ einschließlich %2$@.";
 
 /* No comment provided by engineer. */
 "UNSUPPORTED_ATTACHMENT" = "Nicht unterstützten Anhangstyp erhalten.";

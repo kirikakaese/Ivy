@@ -1462,6 +1462,9 @@
 /* An explanation of the consequences of blocking another user. */
 "BLOCK_USER_BEHAVIOR_EXPLANATION" = "ব্লক করা ইউজাররা আপনাকে কল করতে বা ম্যাসেজ পাঠাতে পারবেন না।";
 
+/* Shown as a subtitle for recipients & groups you've blocked to indicate when you blocked them. The replacement is a formatted date. */
+"BLOCKED_AT" = "%1$@ তারিখে ব্লক করা হয়েছে";
+
 /* Default text for the custom amount field of the boost view. */
 "BOOST_VIEW_CUSTOM_AMOUNT_PLACEHOLDER" = "কাস্টম পরিমাণ লিখুন";
 
@@ -2437,14 +2440,44 @@
 /* navbar title for contact picker when sharing a contact */
 "CONTACT_PICKER_TITLE" = "পরিচিতি নির্বাচন করুন";
 
+/* Button on a shared contact in a group conversation that adds the contact to that group. It can share a row with other buttons, so a short label is preferred. */
+"CONTACT_SHARE_ADD_TO_GROUP_BUTTON" = "গ্রুপে যোগ করুন";
+
+/* Button in the confirmation shown before adding a shared contact to the current group that adds the contact. */
+"CONTACT_SHARE_ADD_TO_GROUP_CONFIRMATION_BUTTON" = "গ্রুপে যোগ করুন";
+
+/* Confirmation shown before adding a shared contact to the current group. Embeds {{ %1$@ contact name, %2$@ group name }}. */
+"CONTACT_SHARE_ADD_TO_GROUP_CONFIRMATION_FORMAT" = "%1$@-কে কি \"%2$@\"-এ যোগ করবেন?";
+
 /* Title for the 'Approve contact share' view. */
 "CONTACT_SHARE_APPROVAL_VIEW_TITLE" = "পরিচিতি শেয়ার করুন";
+
+/* Name of the option to share a contact without a photo, which shows their initials instead. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_NO_PHOTO" = "কোনো ছবি নেই";
+
+/* Title for the sheet for choosing which photo to include when sharing a contact. */
+"CONTACT_SHARE_AVATAR_PICKER_TITLE" = "শেয়ার করার জন্য একটি ছবি বেছে নিন";
+
+/* Accessibility label for the row that chooses which photo to include when sharing a contact. */
+"CONTACT_SHARE_AVATAR_ROW_LABEL" = "ফটো";
+
+/* Name of the option to share a contact's Signal profile photo. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_SIGNAL_PHOTO" = "Signal প্রোফাইল ছবি";
+
+/* Name of the option to share a contact's photo from the phone's contacts. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_SYSTEM_CONTACT_PHOTO" = "কন্টাক্টের ছবি";
 
 /* Title for the 'edit contact share name' view. */
 "CONTACT_SHARE_EDIT_NAME_VIEW_TITLE" = "নাম সম্পাদনা করুন";
 
 /* Error indicating that an invalid contact cannot be shared. */
 "CONTACT_SHARE_INVALID_CONTACT" = "ভুল কন্ট্যাক্ট।";
+
+/* Button on a shared contact that opens a chat with that contact. It can share a row with other buttons, so a short label is preferred. */
+"CONTACT_SHARE_MESSAGE_BUTTON" = "ম্যাসেজ";
+
+/* Notice at the top of the 'Share Contact' view when the shared contact includes their Signal account. Embeds {{ contact name }}. */
+"CONTACT_SHARE_SIGNAL_ACCOUNT_NOTICE_FORMAT" = "আপনি যাদের সাথে এই প্রোফাইলটি শেয়ার করবেন, তারা Signal-এ %1$@-কে মেসেজ পাঠাতে পারবেন।";
 
 /* Alert body when contacts disabled while trying to share a contact. */
 "CONTACT_SHARING_NO_ACCESS_BODY" = "আপনার কন্টাক্টে Signal-এর অ্যাক্সেস প্রয়োজন। iOS সেটিংসে যান এবং কন্টাক্ট চালু করুন। আপনার কন্টাক্টগুলো এনক্রিপ্ট অবস্থায় আছে এবং সেগুলো Signal পরিষেবায় দৃশ্যমান নয়।";
@@ -3973,6 +4006,9 @@
 /* Label warning the user that the app will expire today. */
 "EXPIRATION_WARNING_TODAY" = "Signal-এর এই সংস্করণটির মেয়াদ আজ শেষ হয়ে যাবে। ম্যাসেজ করা চালিয়ে যেতে আপডেট করুন।";
 
+/* Description of how and why Signal iOS uses Touch ID/Face ID/Phone Passcode to export your chat history. */
+"EXPORT_CHATS_AUTHENTICATION_REASON" = "আপনার চ্যাটের ইতিহাস এক্সপোর্ট করার জন্য অথেনটিকেশন সম্পন্ন করুন";
+
 /* action sheet header when re-sending message which failed because of an invalid key signature */
 "FAILED_SENDING_BECAUSE_INVALID_KEY_SIGNATURE" = "ম্যাসেজ পাঠানো যায়নি কারণ %1$@-কে Signal আপডেট করতে হবে এবং খুলতে হবে।";
 
@@ -5107,6 +5143,21 @@
 /* Label reminding the user that they are in archive mode, and that chats are unarchived when they receive a new message. */
 "INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "নতুন ম্যাসেজ আসলে আর্কাইভকৃত চ্যাট ইনবক্সে চলে যাবে।";
 
+/* Title of action allowing user to connect to an existing device */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_EXITING_OLD_DEVICE_ACTION" = "বিদ্যমান ডিভাইসের সাথে পেয়ার করুন";
+
+/* Body of prompt asking user to select device transfer target. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_BODY" = "পেয়ার করার জন্য একটি বিদ্যমান অথবা নতুন ডিভাইস বেছে নিন। একবার পেয়ার করা হয়ে গেলে, আপনার অ্যাকাউন্ট স্থানান্তরের প্রক্রিয়া শুরু হবে।";
+
+/* Title of action allowing user to pair a new device transfer peer. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_PAIR_NEW_ACTION" = "একটি নতুন ডিভাইস পেয়ার করুন";
+
+/* Title of prompt asking user to select device transfer target. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_TITLE" = "পেয়ার করার জন্য একটি ডিভাইস বেছে নিন";
+
+/* Title of action allowing user to connect to an existing device */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_SPECIFIC_OLD_DEVICE_ACTION" = "\"%1$@\"-এর সাথে পেয়ার করুন";
+
 /* Body of prompt notifying device transfer will continue on other device. */
 "INCOMING_DEVICE_TRANSFER_CONTINUE_BODY" = "আপনার অন্য ডিভাইসে আপনার অ্যাকাউন্ট ট্রান্সফার চালিয়ে যান।";
 
@@ -5443,8 +5494,8 @@
 /* Message for an action sheet telling users how to link a device, when trying to open a device-linking URL from the in-app camera. */
 "LINKED_DEVICE_URL_OPENED_ACTION_SHEET_IN_APP_CAMERA_MESSAGE" = "মনে হচ্ছে আপনি একটি Signal ডিভাইস লিংক করার চেষ্টা করছেন। \"এগিয়ে যান\"-এ ট্যাপ করুন এবং তারপর \"একটি নতুন ডিভাইস লিংক করুন\"-এ ট্যাপ করুন এবং আবারো QR কোডটি স্ক্যান করুন।";
 
-/* Bullet point about downloads on the linked devices education sheet. Embeds {{ %1$@ iPad download link, %2$@ desktop download link }} */
-"LINKED_DEVICES_EDUCATION_POINT_DOWNLOADS" = "আপনার অন্য ডিভাইসে, iPad অ্যাপ ইনস্টল করতে %1$@-এ যান অথবা ডেস্কটপ অ্যাপ ইনস্টল করতে %2$@-এ যান।";
+/* Bullet point about a download link on the linked devices education sheet. Embeds {{ %1$@ download link }} */
+"LINKED_DEVICES_EDUCATION_POINT_DOWNLOADS" = "আপনি যে ডিভাইসটি লিংক করতে চান তাতে Signal ইনস্টল করতে %1$@-এ যান";
 
 /* Bullet point about message sync on the linked devices education sheet */
 "LINKED_DEVICES_EDUCATION_POINT_MESSAGES" = "এটি লিংক করার পর Signal মেসেজগুলো আপনার মোবাইল ফোনে Signal-এর সাথে সিঙ্ক করা হয়।";
@@ -5453,13 +5504,13 @@
 "LINKED_DEVICES_EDUCATION_POINT_PRIVACY" = "লিংককৃত ডিভাইসে সকল মেসেজিং ব্যক্তিগত করা হয়েছে";
 
 /* Title for the linked device education sheet */
-"LINKED_DEVICES_EDUCATION_TITLE" = "ডেস্কটপ বা iPad-এ Signal";
+"LINKED_DEVICES_EDUCATION_TITLE" = "লিংককৃত ডিভাইসে Signal";
 
 /* Text that appears where the linked device list would be indicating that there are no linked devices. */
 "LINKED_DEVICES_EMPTY_STATE" = "কোনো লিংককৃত ডিভাইস নেই";
 
 /* Description for header of the linked devices list */
-"LINKED_DEVICES_HEADER_DESCRIPTION" = "ডেস্কটপ বা iPad-এ Signal ব্যবহার করুন।";
+"LINKED_DEVICES_HEADER_DESCRIPTION" = "এই Signal অ্যাকাউন্টটি অন্য কোনো ডিভাইসে ব্যবহার করুন।";
 
 /* Footer text below the list of currently-linked devices */
 "LINKED_DEVICES_LIST_FOOTER" = "মেসেজ এবং চ্যাটের তথ্য সকল ডিভাইসে এন্ড-টু-এন্ড এনক্রিপশন দ্বারা সুরক্ষিত";
@@ -5531,7 +5582,7 @@
 "LOCAL_BACKUPS_SELECT_HERO_SHEET_TITLE" = "আপনার ব্যাকআপ ফোল্ডারটি নির্বাচন করুন";
 
 /* Message for an action sheet informing the user we were unable to save their local backup location */
-"LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_MESSAGE" = "কিছু একটা ভুল হয়েছে এবং আপনার বেছে নেওয়া ফোল্ডারের অবস্থানটি সেভ করা যায়নি। আবার চেষ্টা করুন। এই সমস্যাটি চলতে থাকলে, অনুগ্রহ করে সাপোর্টে যোগাযোগ করুন।";
+"LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_MESSAGE" = "কিছু একটা ভুল হয়েছে এবং আপনার বেছে নেওয়া ফোল্ডারের অবস্থানটি সেভ করা যায়নি। আবার চেষ্টা করুন।";
 
 /* Title for an action sheet informing the user we were unable to save their local backup location */
 "LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_TITLE" = "ফোল্ডারের অবস্থান সেভ করা যায়নি";
@@ -6172,6 +6223,12 @@
 /* Alert title when user has previously denied media library access */
 "MISSING_MEDIA_LIBRARY_PERMISSION_TITLE" = "এই বৈশিষ্ট্যটির জন্য Signal এর আপনার ছবির অ্যাক্সেস প্রয়োজন।";
 
+/* Title for a progress modal shown after the user taps Cancel, while the work is being cancelled. */
+"MODAL_CIRCULAR_PROGRESS_CANCELLING_TITLE" = "বাতিল করা হচ্ছে…";
+
+/* Label on a progress modal indicating how far along some work is. Embeds {{ formatted percentage }}. */
+"MODAL_CIRCULAR_PROGRESS_PERCENT_COMPLETE" = "%1$@ সম্পূর্ণ";
+
 /* Text on a blocking progress screen that indicates that there's a deletion in progress. */
 "MODAL_DELETING" = "মুছে ফেলা হচ্ছে…";
 
@@ -6408,6 +6465,9 @@
 
 /* Shown in place of the text input box in a conversation when the user is no longer registered can't send messages. This value is a tappable link embedded in a larger sentence. */
 "NOT_REGISTERED_BOTTOM_REREGISTER" = "পুনরায় নিবন্ধন করুন";
+
+/* Description for an error indicating you are not registered. */
+"NOT_REGISTERED_ERROR_LOCALIZED_DESCRIPTION" = "আপনি রেজিস্টার্ড নন।";
 
 /* Label for 1:1 conversation with yourself. */
 "NOTE_TO_SELF" = "নিজের জন্য নোট";
@@ -7973,10 +8033,19 @@
 "REGISTER_WITHOUT_NUMBER" = "নম্বর ছাড়া রেজিস্ট্রেশন করুন";
 
 /* Short description for a sheet warning users about an incorrect recovery key used for registration. */
-"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_BODY" = "আপনি হয়তো আপনার পুনরুদ্ধার 'কি' ভুলভাবে লিখেছেন। \n\nনিশ্চিত করুন যে আপনি Signal নিরাপদ ব্যাকআপ চালু করার সময় যে ফোন নম্বর ও পুনরুদ্ধার 'কি' সেভ করেছিলেন, সেটি দিয়েই নিবন্ধন করছেন।";
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_BODY" = "নিশ্চিত করুন যে আপনি সেই একই ফোন নম্বর এবং 64-ক্যারেক্টারের পুনরুদ্ধার 'কি' ব্যবহার করে নিবন্ধন করছেন, যা Signal ব্যাকআপ চালু করার সময় আপনি সংরক্ষণ করেছিলেন। এই 'কি' ছাড়া ব্যাকআপ পুনর্বহাল করা যাবে না।";
 
 /* Title for a sheet warning users about an incorrect recovery key used for registration. */
 "REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TITLE" = "ভুল পুনরুদ্ধার 'কি'";
+
+/* Action label action allowing users to use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_ACTION" = "অন্য উপায়ে রেজিস্টার করুন";
+
+/* Message body for a sheet asking users if they would rather use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_MESSAGE" = "Signal থেকে পাঠানো SMS কোড যাচাই করে অথবা আপনার পিন প্রবেশ করিয়ে আপনি আপনার অ্যাকাউন্ট রেজিস্টার করতে পারেন। রেজিস্ট্রেশন সম্পন্ন করার পর, আপনি আপনার পুনরুদ্ধার 'কি' ব্যবহার করে পুনরায় ব্যাকআপ রিস্টোর করার চেষ্টা করতে পারেন।";
+
+/* Title for a sheet asking users if they would rather use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_TITLE" = "SMS নাকি পিন, কীভাবে যাচাই করবেন?";
 
 /* Body for a sheet warning users about a missing backup. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_BACKUP_NOT_FOUND_BODY" = "এই পুনরুদ্ধার 'কি'-টির সাথে কোনো ব্যাকআপ যুক্ত নেই। অনুগ্রহ করে নিশ্চিত করুন যে 'কি'-টি সঠিক এবং আবার চেষ্টা করুন।";
@@ -8002,6 +8071,9 @@
 /* Body for a sheet warning users about a generic backup manual restore failure. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_BODY" = "একটি ত্রুটি ঘটেছে এবং আপনার অ্যাকাউন্ট ট্রান্সফার করা যায়নি।";
 
+/* Title for a sheet warning users about an error during backup restore. */
+"REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_CANT_RESTORE_TITLE" = "ব্যাকআপ পুনর্বহাল করা যায়নি";
+
 /* Body for a sheet warning users about a generic backup restore failure. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_RETRY_BODY" = "একটি ত্রুটি ঘটেছে এবং আপনার অ্যাকাউন্ট ট্রান্সফার করা যায়নি। QR কোড স্ক্যান করে এবং আপনার ট্রান্সফার পদ্ধতি বেছে নিয়ে আবার চেষ্টা করুন।";
 
@@ -8025,6 +8097,9 @@
 
 /* Title for a sheet warning users about an invalid local backup location */
 "REGISTRATION_BACKUP_RESTORE_ERROR_LOCAL_BACKUP_LOCATION_TITLE" = "ব্যাকআপ পুনর্বহাল করা যায়নি";
+
+/* Message for a sheet telling the user that their phone number is mismatched with their recovery key used for making a local backup */
+"REGISTRATION_BACKUP_RESTORE_ERROR_MISMATCHED_LOCAL_BACKUP_MESSAGE" = "আপনি যে ব্যাকআপটি পুনরুদ্ধার করার চেষ্টা করছেন, সেটি অন্য একটি Signal অ্যাকাউন্ট ব্যবহার করে তৈরি করা হয়েছিলো। এই ব্যাকআপটি পুনরুদ্ধার করতে আপনাকে সেই একই ফোন নম্বর এবং পুনরুদ্ধার 'কি' ব্যবহার করতে হবে, যা আপনি ডিভাইসে ব্যাকআপ চালু করার সময় সংরক্ষণ করেছিলেন।";
 
 /* Body for a sheet warning users about a network error during backup restore. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_NETWORK_BODY" = "আপনার ব্যাকআপ এখনই পুনর্বহাল করা যাবে না। আপনার ইন্টারনেট সংযোগ ঠিক আছে কি না দেখুন এবং আবার চেষ্টা করুন।";
@@ -8233,6 +8308,9 @@
 /* Button on the Signal Login card on the 'Signal Login details' screen to show the full account ID and recovery key. */
 "REGISTRATION_SIGNAL_LOGIN_DETAILS_VIEW_DETAILS_BUTTON" = "বিস্তারিত দেখুন";
 
+/* Explanation text for the 'Signal Login' screen. */
+"REGISTRATION_SIGNAL_LOGIN_EXPLANATION" = "Signal Login ব্যবহার করে ফোন নম্বর ছাড়াই রেজিস্ট্রেশন করুন। একবার কেনাকাটা করলেই আপনি শুরু করার জন্য একটি অ্যাকাউন্ট আইডি পাবেন।";
+
 /* Toast shown after copying the account ID on the 'Signal Login' details sheet. */
 "REGISTRATION_SIGNAL_LOGIN_FULL_DETAILS_ACCOUNT_ID_COPIED_TOAST" = "অ্যাকাউন্ট আইডি কপি করা হয়েছে";
 
@@ -8265,6 +8343,33 @@
 
 /* Title for help button for the 'Signal Login' screen. */
 "REGISTRATION_SIGNAL_LOGIN_NEED_HELP_TITLE" = "সাহায্য দরকার?";
+
+/* Button to initiate a purchase on the 'Signal Login' screen. The replacement is a localized cost (e.g., $2.99). */
+"REGISTRATION_SIGNAL_LOGIN_PAY" = "%1$@ পেমেন্ট করুন";
+
+/* Text for a bullet point describing that an existing Signal Login can be used to log in and restore an account. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_BULLET_RESTORE" = "লগইন করুন এবং আপনার অ্যাকাউন্ট পুনর্বহাল করুন";
+
+/* Text for a bullet point thanking the user for supporting Signal by previously buying a Signal Login. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_BULLET_THANKS" = "Signal-কে সহায়তা করার জন্য ধন্যবাদ";
+
+/* Subtitle for the option to register with a Signal Login the user already owns. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_SUBTITLE" = "আপনার বর্তমান লগইনের তথ্য ব্যবহার করুন";
+
+/* Title for the option to register with a Signal Login the user already owns. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_TITLE" = "আমার একটি Signal Login আছে";
+
+/* Text for a bullet point describing that a Signal Login lets you register without a phone number. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_NO_PHONE_NUMBER" = "কোনো ফোন নম্বরের প্রয়োজন নেই";
+
+/* Text for a bullet point explaining that buying a Signal Login supports Signal, a non-profit. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_NON_PROFIT" = "Signal একটি অলাভজনক প্রতিষ্ঠান — আপনার ক্রয় আমাদের লক্ষ্য পূরণে সাহায্য করে";
+
+/* Text for a bullet point describing that a Signal Login comes with a username for messaging and calling. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_USERNAME" = "মেসেজ ও কলের জন্য ব্যবহারকারীর নাম";
+
+/* Subtitle for the option to buy a new Signal Login. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_SUBTITLE" = "এককালীন ক্রয়";
 
 /* Title text for the 'Signal Login' screen. */
 "REGISTRATION_SIGNAL_LOGIN_TITLE" = "Signal Login";
@@ -8821,6 +8926,9 @@
 /* In-app camera: title for the prompt to turn off multi-mode that will cause previously taken photos to be discarded. */
 "SEND_MEDIA_TURN_OFF_MM_TITLE" = "মাল্টি-মোড বন্ধ করবেন?";
 
+/* Label for the button to send a sticker message */
+"SEND_STICKER_BUTTON_TITLE" = "স্টিকার পাঠান";
+
 /* String describing high quality sent media */
 "SENT_MEDIA_QUALITY_HIGH" = "উচ্চ";
 
@@ -9033,6 +9141,45 @@
 
 /* Title for the 'chats' link in settings. */
 "SETTINGS_CHATS" = "চ্যাট";
+
+/* Title for a button in Chats settings that starts exporting the user's chat history. */
+"SETTINGS_CHATS_EXPORT_BUTTON" = "চ্যাট এক্সপোর্ট করুন";
+
+/* Title for a button in a sheet shown before the user chooses a folder to export their chat history into, which opens a folder picker. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_CHOOSE_BUTTON" = "ফোল্ডার চয়ন করুন";
+
+/* Message for a sheet shown before the user chooses a folder to export their chat history into. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_MESSAGE" = "আপনার ডিভাইসের স্টোরেজে এমন একটি ফোল্ডার বেছে নিন যেখানে আপনার চ্যাটের ইতিহাস সংরক্ষিত হবে।";
+
+/* Title for a sheet shown before the user chooses a folder to export their chat history into. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_TITLE" = "একটি ফোল্ডার বেছে নিন";
+
+/* Message for a sheet shown after the user's chat history has been exported. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_MESSAGE" = "আপনি আপনার চ্যাট এক্সপোর্ট ফাইল কোথায় সংরক্ষণ করছেন সে ব্যাপারে সাবধান এবং এটি কারো সাথে শেয়ার করবেন না। আপনার ডিভাইসের অনুমতির উপর নির্ভর করে, ডিভাইসের অন্যান্য অ্যাপ এটি অ্যাক্সেস করতে পারে।";
+
+/* Title for a sheet shown after the user's chat history has been exported. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_TITLE" = "চ্যাট এক্সপোর্ট সম্পন্ন হয়েছে";
+
+/* Title for a button in a sheet shown after the user's chat history has been exported, which opens the exported folder in the Files app. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_VIEW_IN_FILES_BUTTON" = "ফাইলে দেখুন";
+
+/* Message for a sheet shown when the user starts exporting their chat history from Chats settings. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_MESSAGE" = "সাবধান! এই ফাইলটি কারো সাথে শেয়ার করবেন না। আপনার চ্যাটের ইতিহাস আপনার ডিভাইসে সংরক্ষণ করা হবে এবং আপনার ডিভাইসের অনুমতির উপর নির্ভর করে অন্যান্য অ্যাপ এটি অ্যাক্সেস করতে পারবে। মিডিয়া সহ এক্সপোর্ট করলে ফাইলের আকার বড় হবে।";
+
+/* Title for a sheet shown when the user starts exporting their chat history from Chats settings. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_TITLE" = "চ্যাট-এর ইতিহাস এক্সপোর্ট করবেন?";
+
+/* Title for a button in a sheet shown when the user starts exporting their chat history, which exports their chat history including attachments. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_WITH_MEDIA_BUTTON" = "মিডিয়া সহ এক্সপোর্ট করুন";
+
+/* Title for a button in a sheet shown when the user starts exporting their chat history, which exports their chat history excluding attachments. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_WITHOUT_MEDIA_BUTTON" = "মিডিয়া ছাড়া এক্সপোর্ট করুন";
+
+/* Footer for the section in Chats settings containing a button to export the user's chat history. */
+"SETTINGS_CHATS_EXPORT_FOOTER" = "আপনার সব চ্যাটের একটি মেশিন কর্তৃক পাঠযোগ্য JSON কপি এক্সপোর্ট করুন। অদৃশ্য হতে যাওয়া মেসেজ এতে অন্তর্ভুক্ত থাকবে না।";
+
+/* Title for a progress modal shown while the user's chat history is being exported. */
+"SETTINGS_CHATS_EXPORT_PROGRESS_TITLE" = "চ্যাট এক্সপোর্ট করা হচ্ছে…";
 
 /* No comment provided by engineer. */
 "SETTINGS_CLEAR_HISTORY" = "চ্যাটের ইতিহাস মুছুন";
@@ -9306,6 +9453,16 @@
 
 /* Explanation for the button that resets all notification settings. */
 "SETTINGS_NOTIFICATIONS_RESET_FOOTER" = "আপনার চ্যাটের কাস্টম সেটিংস সহ নোটিফিকেশন সেটিংস ডিফল্টে রিসেট করুন।";
+
+/* Label for the switch controlling whether reminders about unread messages are shown.
+   Label for the switch controlling whether reminders about unread messages in muted chats are shown. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS" = "পড়া হয়নি এমন রিমাইন্ডার";
+
+/* Explanation for the switch controlling whether reminders about unread messages are shown in this chat while it is muted. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS_CHAT_FOOTER" = "এই চ্যাটটি মিউট থাকা অবস্থায় পড়া হয়নি এমন মেসেজ থাকলে মাঝে মাঝে নোটিফিকেশন পান।";
+
+/* Explanation for the switch controlling whether reminders about unread messages in muted chats are shown. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS_FOOTER" = "মিউট করা চ্যাটে অপঠিত মেসেজ থাকলে মাঝে মাঝে নোটিফাই করুন।";
 
 /* Label for the 'agree to payments terms' button in the 'activate payments confirmation' UI in the payment settings. */
 "SETTINGS_PAYMENTS_ACTIVATE_PAYMENTS_CONFIRM_AGREE" = "সক্রিয় করুন";
@@ -10102,6 +10259,9 @@
 /* Text for a toast confirming that the speakerphone has been turned on for a call. */
 "SPEAKERPHONE_ON_CONFIRMATION_TOAST_LABEL" = "স্পিকার চালু";
 
+/* Title for a button to view a sticker pack */
+"STICKER_BUTTON_VIEW_PACK" = "প্যাক দেখুন";
+
 /* The name for the sticker category 'Featured' */
 "STICKER_CATEGORY_FEATURED_NAME" = "ফিচারকৃত";
 
@@ -10117,6 +10277,33 @@
 /* Preview text shown in notifications and conversation list for sticker messages. */
 "STICKER_MESSAGE_PREVIEW" = "স্টিকার বার্তা";
 
+/* Button to confirm a user wants to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_BUTTON" = "সরিয়ে ফেলুন";
+
+/* Message for a sheet asking the user to confirm they want to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_MESSAGE" = "এর ফলে স্টিকার প্যাকটি মুছে যাবে। লিংক বা স্টিকার মেসেজ ছাড়া আপনি এটি আর যোগ করতে পারবেন না।";
+
+/* Title for a sheet asking the user to confirm they want to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_TITLE" = "স্টিকার প্যাক মুছে ফেলবেন?";
+
+/* Label for a button to copy the link of a sticker pack */
+"STICKER_PACK_LINK" = "লিংক";
+
+/* Label for a button to uninstall a sticker pack */
+"STICKER_PACK_REMOVE" = "সরিয়ে ফেলুন";
+
+/* Label for a button to send a sticker pack */
+"STICKER_PACK_SEND" = "পাঠান";
+
+/* Label for a button on a sticker-pack share sheet that copies the pack's share link. */
+"STICKER_PACK_SHARE_SHEET_COPY_LINK" = "লিংক কপি করুন";
+
+/* Text describing what you can do with a sticker pack link, on a sheet for sharing it. */
+"STICKER_PACK_SHARE_SHEET_HEADER" = "এই লিংকটি যার কাছে থাকবে, তিনিই এই স্টিকার প্যাকটি ইনস্টল ও শেয়ার করতে পারবেন।";
+
+/* Label for a button on a sticker-pack share sheet that sends the pack in Signal. */
+"STICKER_PACK_SHARE_SHEET_SEND_IN_SIGNAL" = "Signal-এ পাঠান";
+
 /* Message when trying to show a sticker that has expired and is unavailable for download */
 "STICKER_UNAVAILABLE_MESSAGE_LABEL" = "স্টিকার নেই";
 
@@ -10124,7 +10311,7 @@
 "STICKER_UNAVAILABLE_SHEET_TITLE" = "স্টিকার নেই";
 
 /* Label for the 'install sticker pack' button. */
-"STICKERS_INSTALL_BUTTON" = "ইনস্টল করুন";
+"STICKERS_INSTALL_BUTTON" = "স্টিকার যোগ করুন";
 
 /* Title for the 'available built-in stickers' section of the 'manage stickers' view. */
 "STICKERS_MANAGE_VIEW_AVAILABLE_BUILT_IN_PACKS_SECTION_TITLE" = "Signal  শিল্পী সিরিজ";
@@ -10158,9 +10345,6 @@
 
 /* Label indicating that the sticker pack failed to load. */
 "STICKERS_PACK_VIEW_FAILED_TO_LOAD" = "স্টিকার প্যাক লোড করতে ব্যর্থ হয়েছে";
-
-/* Label for the 'uninstall sticker pack' button. */
-"STICKERS_UNINSTALL_BUTTON" = "আনইনস্টল";
 
 /* Text indication a story caption can be tapped to read more. */
 "STORIES_CAPTION_READ_MORE" = "আরও পড়ুন";
@@ -10791,6 +10975,33 @@
 
 /* Pressing this button marks a thread as unread */
 "UNREAD_ACTION" = "অপঠিত করুন";
+
+/* Notification placeholder for three or more recipients who sent unread messages */
+"UnreadReminderJob__authors_many" = "%1$@ এবং অন্যান্যরা";
+
+/* Notification placeholder for a single recipient who sent unread messages */
+"UnreadReminderJob__authors_one" = "%1$@";
+
+/* Notification placeholder for two recipients who sent unread messages */
+"UnreadReminderJob__authors_two" = "%1$@ এবং %2$@";
+
+/* Notification body for unread reminders. First placeholder is unread messages or unread calls */
+"UnreadReminderJob__calls_or_unread" = "আপনার জন্য %1$@ আছে।";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a list of people who sent them */
+"UnreadReminderJob__calls_or_unread_author" = "%2$@ থেকে আপনার জন্য %1$@ আছে।";
+
+/* Notification placeholder that sums up a single unread mention. Placeholder is the name of the person who sent the message */
+"UnreadReminderJob__mentions_one" = "%1$@ আপনাকে একবার মেনশন করেছেন";
+
+/* Notification placeholder that sums up a single unread reply. Placeholder is the name of the person who sent the message */
+"UnreadReminderJob__replies_one" = "%1$@-এর কাছ থেকে একটি রিপ্লাই";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a summary of unread mentions, third replies */
+"UnreadReminderJob__unread_both_summary" = "%2$@ এবং %3$@ সহ আপনার জন্য %1$@-টি আছে।";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a summary of either unread mentions or replies */
+"UnreadReminderJob__unread_one_summary" = "%2$@ সহ আপনার জন্য %1$@-টি আছে।";
 
 /* No comment provided by engineer. */
 "UNSUPPORTED_ATTACHMENT" = "অসমর্থিত সংযুক্তির ধরন পওয়া গেছে।";

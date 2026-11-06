@@ -1462,6 +1462,9 @@
 /* An explanation of the consequences of blocking another user. */
 "BLOCK_USER_BEHAVIOR_EXPLANATION" = "Engelli kullanıcılar seni arayamaz veya sana mesaj gönderemez.";
 
+/* Shown as a subtitle for recipients & groups you've blocked to indicate when you blocked them. The replacement is a formatted date. */
+"BLOCKED_AT" = "Engellenme saati: %1$@";
+
 /* Default text for the custom amount field of the boost view. */
 "BOOST_VIEW_CUSTOM_AMOUNT_PLACEHOLDER" = "Farklı Bir Miktar Gir";
 
@@ -2437,14 +2440,44 @@
 /* navbar title for contact picker when sharing a contact */
 "CONTACT_PICKER_TITLE" = "Kişiyi Seç";
 
+/* Button on a shared contact in a group conversation that adds the contact to that group. It can share a row with other buttons, so a short label is preferred. */
+"CONTACT_SHARE_ADD_TO_GROUP_BUTTON" = "Gruba Ekle";
+
+/* Button in the confirmation shown before adding a shared contact to the current group that adds the contact. */
+"CONTACT_SHARE_ADD_TO_GROUP_CONFIRMATION_BUTTON" = "Gruba Ekle";
+
+/* Confirmation shown before adding a shared contact to the current group. Embeds {{ %1$@ contact name, %2$@ group name }}. */
+"CONTACT_SHARE_ADD_TO_GROUP_CONFIRMATION_FORMAT" = "%1$@ \"%2$@\" grubuna eklensin mi?";
+
 /* Title for the 'Approve contact share' view. */
 "CONTACT_SHARE_APPROVAL_VIEW_TITLE" = "Kişiyi Paylaş";
+
+/* Name of the option to share a contact without a photo, which shows their initials instead. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_NO_PHOTO" = "Fotoğraf yok";
+
+/* Title for the sheet for choosing which photo to include when sharing a contact. */
+"CONTACT_SHARE_AVATAR_PICKER_TITLE" = "Paylaşmak için bir fotoğraf seç";
+
+/* Accessibility label for the row that chooses which photo to include when sharing a contact. */
+"CONTACT_SHARE_AVATAR_ROW_LABEL" = "Fotoğraf";
+
+/* Name of the option to share a contact's Signal profile photo. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_SIGNAL_PHOTO" = "Signal profil fotoğrafı";
+
+/* Name of the option to share a contact's photo from the phone's contacts. Read by VoiceOver on the option, and as the current value of the photo row when it's selected. */
+"CONTACT_SHARE_AVATAR_SYSTEM_CONTACT_PHOTO" = "Rehberdeki fotoğraf";
 
 /* Title for the 'edit contact share name' view. */
 "CONTACT_SHARE_EDIT_NAME_VIEW_TITLE" = "Adı Düzenle";
 
 /* Error indicating that an invalid contact cannot be shared. */
 "CONTACT_SHARE_INVALID_CONTACT" = "Geçersiz kişi.";
+
+/* Button on a shared contact that opens a chat with that contact. It can share a row with other buttons, so a short label is preferred. */
+"CONTACT_SHARE_MESSAGE_BUTTON" = "İleti";
+
+/* Notice at the top of the 'Share Contact' view when the shared contact includes their Signal account. Embeds {{ contact name }}. */
+"CONTACT_SHARE_SIGNAL_ACCOUNT_NOTICE_FORMAT" = "Bu profili paylaştığın herkes Signal'dan %1$@ kişisine mesaj gönderebilecek.";
 
 /* Alert body when contacts disabled while trying to share a contact. */
 "CONTACT_SHARING_NO_ACCESS_BODY" = "Signal'in kişilerine erişmesi gerekiyor. iOS Ayarları'na git ve kişileri aç. Kişilerin şifrelendi ve Signal hizmetinde görünmüyor.";
@@ -3973,6 +4006,9 @@
 /* Label warning the user that the app will expire today. */
 "EXPIRATION_WARNING_TODAY" = "Signal'in bu sürümü bugün kullanım dışı kalacak. Mesajlaşmaya devam etmek için güncelle.";
 
+/* Description of how and why Signal iOS uses Touch ID/Face ID/Phone Passcode to export your chat history. */
+"EXPORT_CHATS_AUTHENTICATION_REASON" = "Sohbet geçmişini dışa aktarmak için kimlik doğrulaması yap";
+
 /* action sheet header when re-sending message which failed because of an invalid key signature */
 "FAILED_SENDING_BECAUSE_INVALID_KEY_SIGNATURE" = "%1$@ Signal'i güncelleyip açması gerektiğinden mesaj gönderilemedi.";
 
@@ -5107,6 +5143,21 @@
 /* Label reminding the user that they are in archive mode, and that chats are unarchived when they receive a new message. */
 "INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "Arşivlenmiş sohbetler, yeni bir mesaj geldiğinde Gelen Kutusuna taşınır.";
 
+/* Title of action allowing user to connect to an existing device */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_EXITING_OLD_DEVICE_ACTION" = "Mevcut Cihazınla Eşleştir";
+
+/* Body of prompt asking user to select device transfer target. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_BODY" = "Eşleştirilecek mevcut veya yeni bir cihaz seç. Eşleştikten sonra hesap aktarımın başlar.";
+
+/* Title of action allowing user to pair a new device transfer peer. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_PAIR_NEW_ACTION" = "Yeni bir Cihaz Eşleştir";
+
+/* Title of prompt asking user to select device transfer target. */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_TITLE" = "Eşleştirilecek Bir Cihaz Seç";
+
+/* Title of action allowing user to connect to an existing device */
+"INCOMING_DEVICE_TRANSFER_CHOOSE_SPECIFIC_OLD_DEVICE_ACTION" = "\"%1$@\" İle Eşleştir";
+
 /* Body of prompt notifying device transfer will continue on other device. */
 "INCOMING_DEVICE_TRANSFER_CONTINUE_BODY" = "Hesabını diğer cihazına aktarmaya devam et.";
 
@@ -5443,8 +5494,8 @@
 /* Message for an action sheet telling users how to link a device, when trying to open a device-linking URL from the in-app camera. */
 "LINKED_DEVICE_URL_OPENED_ACTION_SHEET_IN_APP_CAMERA_MESSAGE" = "Signal cihazını bağlamaya çalışıyorsun gibi görünüyor. Devam et'e dokun ve ardından \"Yeni Bir Cihaz Bağla\"ya dokun ve kare kodu tekrar tara.";
 
-/* Bullet point about downloads on the linked devices education sheet. Embeds {{ %1$@ iPad download link, %2$@ desktop download link }} */
-"LINKED_DEVICES_EDUCATION_POINT_DOWNLOADS" = "Diğer cihazına iPad uygulamasını yüklemek için %1$@ adresini ya da masaüstü uygulamasını yüklemek için %2$@ adresini ziyaret et.";
+/* Bullet point about a download link on the linked devices education sheet. Embeds {{ %1$@ download link }} */
+"LINKED_DEVICES_EDUCATION_POINT_DOWNLOADS" = "Signal'ı yüklemek için bağlamak istediğin cihazda %1$@ adresini ziyaret et";
 
 /* Bullet point about message sync on the linked devices education sheet */
 "LINKED_DEVICES_EDUCATION_POINT_MESSAGES" = "Signal mesajları, bağlandıktan sonra cep telefonundaki Signal uygulamasıyla senkronize edilir.";
@@ -5453,13 +5504,13 @@
 "LINKED_DEVICES_EDUCATION_POINT_PRIVACY" = "Bağlı cihazlardaki tüm mesajlaşmalar özeldir";
 
 /* Title for the linked device education sheet */
-"LINKED_DEVICES_EDUCATION_TITLE" = "Desktop veya iPad'de Signal";
+"LINKED_DEVICES_EDUCATION_TITLE" = "Bağlı cihazda Signal";
 
 /* Text that appears where the linked device list would be indicating that there are no linked devices. */
 "LINKED_DEVICES_EMPTY_STATE" = "Bağlı cihaz yok";
 
 /* Description for header of the linked devices list */
-"LINKED_DEVICES_HEADER_DESCRIPTION" = "Signal'i masaüstünde veya iPad'de kullan.";
+"LINKED_DEVICES_HEADER_DESCRIPTION" = "Bu Signal hesabını başka bir cihazda kullan.";
 
 /* Footer text below the list of currently-linked devices */
 "LINKED_DEVICES_LIST_FOOTER" = "Mesajlar ve sohbet bilgileri tüm cihazlarda uçtan uca şifreleme ile korunmaktadır";
@@ -5531,7 +5582,7 @@
 "LOCAL_BACKUPS_SELECT_HERO_SHEET_TITLE" = "Yedekleme klasörünü seç";
 
 /* Message for an action sheet informing the user we were unable to save their local backup location */
-"LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_MESSAGE" = "Bir şeyler ters gitti ve seçtiğin klasör konumu kaydedilemedi. Tekrar dene. Sorun devam ederse, lütfen Destek ile iletişime geç.";
+"LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_MESSAGE" = "Bir şeyler ters gitti ve seçtiğin klasör konumu kaydedilemedi. Tekrar dene.";
 
 /* Title for an action sheet informing the user we were unable to save their local backup location */
 "LOCAL_FILE_BACKUP_CHOOSE_FOLDER_ERROR_TITLE" = "Klasör Konumu Kaydedilemedi";
@@ -6172,6 +6223,12 @@
 /* Alert title when user has previously denied media library access */
 "MISSING_MEDIA_LIBRARY_PERMISSION_TITLE" = "Bu özellik için Signal'in fotoğraflarınıza erişmeye ihtiyacı var.";
 
+/* Title for a progress modal shown after the user taps Cancel, while the work is being cancelled. */
+"MODAL_CIRCULAR_PROGRESS_CANCELLING_TITLE" = "İptal ediliyor…";
+
+/* Label on a progress modal indicating how far along some work is. Embeds {{ formatted percentage }}. */
+"MODAL_CIRCULAR_PROGRESS_PERCENT_COMPLETE" = "%1$@ tamamlandı";
+
 /* Text on a blocking progress screen that indicates that there's a deletion in progress. */
 "MODAL_DELETING" = "Siliniyor…";
 
@@ -6408,6 +6465,9 @@
 
 /* Shown in place of the text input box in a conversation when the user is no longer registered can't send messages. This value is a tappable link embedded in a larger sentence. */
 "NOT_REGISTERED_BOTTOM_REREGISTER" = "tekrar kaydet";
+
+/* Description for an error indicating you are not registered. */
+"NOT_REGISTERED_ERROR_LOCALIZED_DESCRIPTION" = "Kayıtlı değilsin.";
 
 /* Label for 1:1 conversation with yourself. */
 "NOTE_TO_SELF" = "Kendime Not";
@@ -7973,10 +8033,19 @@
 "REGISTER_WITHOUT_NUMBER" = "Numarasız kaydol";
 
 /* Short description for a sheet warning users about an incorrect recovery key used for registration. */
-"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_BODY" = "Kurtarma anahtarını hatalı girmiş olabilirsin.\n\nSignal Güvenli Yedeklemeler’i etkinleştirirken kaydettiğin telefon numarası ve kurtarma anahtarıyla kayıt olduğundan emin ol.";
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_BODY" = "Signal yedeklemelerini etkinleştirirken kaydettiğin aynı telefon numarası ve 64 karakterlik kurtarma anahtarıyla kaydolduğundan emin ol. Yedeklemeler bu anahtar olmadan kurtarılamaz.";
 
 /* Title for a sheet warning users about an incorrect recovery key used for registration. */
 "REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TITLE" = "Hatalı Kurtarma Anahtarı";
+
+/* Action label action allowing users to use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_ACTION" = "Başka Bir Yöntemle Kaydol";
+
+/* Message body for a sheet asking users if they would rather use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_MESSAGE" = "Hesabını, Signal'ın sana göndereceği bir SMS koduyla doğrulayarak veya PIN'ini girerek kaydedebilirsin. Kaydolduktan sonra, yedeklemeni kurtarma anahtarınla tekrar geri yüklemeyi deneyebilirsin.";
+
+/* Title for a sheet asking users if they would rather use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_TITLE" = "SMS veya PIN ile doğrulansın mı?";
 
 /* Body for a sheet warning users about a missing backup. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_BACKUP_NOT_FOUND_BODY" = "Bu kurtarma anahtarıyla ilişkili bir yedekleme yoktur. Lütfen anahtarın doğru olduğundan emin ol ve tekrar dene.";
@@ -8002,6 +8071,9 @@
 /* Body for a sheet warning users about a generic backup manual restore failure. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_BODY" = "Bir hata oluştu ve hesabın aktarılamadı.";
 
+/* Title for a sheet warning users about an error during backup restore. */
+"REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_CANT_RESTORE_TITLE" = "Yedekleme Geri Yüklenemiyor";
+
 /* Body for a sheet warning users about a generic backup restore failure. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_GENERIC_RETRY_BODY" = "Bir hata oluştu ve hesabın aktarılamadı. Kare kodu tarayarak ve aktarım yöntemini seçerek tekrar dene.";
 
@@ -8025,6 +8097,9 @@
 
 /* Title for a sheet warning users about an invalid local backup location */
 "REGISTRATION_BACKUP_RESTORE_ERROR_LOCAL_BACKUP_LOCATION_TITLE" = "Yedekleme Geri Yüklenemiyor";
+
+/* Message for a sheet telling the user that their phone number is mismatched with their recovery key used for making a local backup */
+"REGISTRATION_BACKUP_RESTORE_ERROR_MISMATCHED_LOCAL_BACKUP_MESSAGE" = "Geri yüklemeye çalıştığın yedekleme, farklı bir Signal hesabı kullanılarak oluşturulmuştur. Bu yedeklemeyi geri yüklemek için cihazdaki yedeklemeleri etkinleştirirken kullandığın telefon numarasını ve kaydettiğin kurtarma anahtarını kullanmalısın.";
 
 /* Body for a sheet warning users about a network error during backup restore. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_NETWORK_BODY" = "Yedeklemen şu anda geri yüklenemiyor. İnternet bağlantını kontrol et ve tekrar dene.";
@@ -8233,6 +8308,9 @@
 /* Button on the Signal Login card on the 'Signal Login details' screen to show the full account ID and recovery key. */
 "REGISTRATION_SIGNAL_LOGIN_DETAILS_VIEW_DETAILS_BUTTON" = "Detayları Görüntüle";
 
+/* Explanation text for the 'Signal Login' screen. */
+"REGISTRATION_SIGNAL_LOGIN_EXPLANATION" = "Signal Login'i kullanarak telefon numarası olmadan kaydol. Tek seferlik bir satın alımla, başlamak için kullanabileceğin bir hesap kimliği alacaksın.";
+
 /* Toast shown after copying the account ID on the 'Signal Login' details sheet. */
 "REGISTRATION_SIGNAL_LOGIN_FULL_DETAILS_ACCOUNT_ID_COPIED_TOAST" = "Hesap kimliği kopyalandı";
 
@@ -8265,6 +8343,33 @@
 
 /* Title for help button for the 'Signal Login' screen. */
 "REGISTRATION_SIGNAL_LOGIN_NEED_HELP_TITLE" = "Yardıma mı ihtiyacın var?";
+
+/* Button to initiate a purchase on the 'Signal Login' screen. The replacement is a localized cost (e.g., $2.99). */
+"REGISTRATION_SIGNAL_LOGIN_PAY" = "%1$@ öde";
+
+/* Text for a bullet point describing that an existing Signal Login can be used to log in and restore an account. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_BULLET_RESTORE" = "Oturum aç ve hesabını geri yükle";
+
+/* Text for a bullet point thanking the user for supporting Signal by previously buying a Signal Login. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_BULLET_THANKS" = "Signal'ı desteklediğin için teşekkürler";
+
+/* Subtitle for the option to register with a Signal Login the user already owns. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_SUBTITLE" = "Mevcut giriş bilgilerini kullan";
+
+/* Title for the option to register with a Signal Login the user already owns. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_EXISTING_TITLE" = "Bir Signal Login'im var";
+
+/* Text for a bullet point describing that a Signal Login lets you register without a phone number. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_NO_PHONE_NUMBER" = "Telefon numarası gerekmez";
+
+/* Text for a bullet point explaining that buying a Signal Login supports Signal, a non-profit. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_NON_PROFIT" = "Signal kâr amacı gütmeyen bir kuruluştur — satın alımın misyonumuzun desteklenmesine yardımcı olur";
+
+/* Text for a bullet point describing that a Signal Login comes with a username for messaging and calling. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_BULLET_USERNAME" = "Mesajlaşma ve aramalar için kullanıcı adı";
+
+/* Subtitle for the option to buy a new Signal Login. */
+"REGISTRATION_SIGNAL_LOGIN_SELECTION_PURCHASE_SUBTITLE" = "Tek seferlik satın alım";
 
 /* Title text for the 'Signal Login' screen. */
 "REGISTRATION_SIGNAL_LOGIN_TITLE" = "Signal Login";
@@ -8821,6 +8926,9 @@
 /* In-app camera: title for the prompt to turn off multi-mode that will cause previously taken photos to be discarded. */
 "SEND_MEDIA_TURN_OFF_MM_TITLE" = "Çoklu modu kapat?";
 
+/* Label for the button to send a sticker message */
+"SEND_STICKER_BUTTON_TITLE" = "Çıkartma Gönder";
+
 /* String describing high quality sent media */
 "SENT_MEDIA_QUALITY_HIGH" = "Yüksek";
 
@@ -9033,6 +9141,45 @@
 
 /* Title for the 'chats' link in settings. */
 "SETTINGS_CHATS" = "Sohbetler";
+
+/* Title for a button in Chats settings that starts exporting the user's chat history. */
+"SETTINGS_CHATS_EXPORT_BUTTON" = "Sohbetleri Dışa Aktar";
+
+/* Title for a button in a sheet shown before the user chooses a folder to export their chat history into, which opens a folder picker. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_CHOOSE_BUTTON" = "Klasör Seç";
+
+/* Message for a sheet shown before the user chooses a folder to export their chat history into. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_MESSAGE" = "Cihazının depolama alanında, sohbet geçmişinin depolanacağı bir klasör seç.";
+
+/* Title for a sheet shown before the user chooses a folder to export their chat history into. */
+"SETTINGS_CHATS_EXPORT_CHOOSE_FOLDER_SHEET_TITLE" = "Klasör seç";
+
+/* Message for a sheet shown after the user's chat history has been exported. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_MESSAGE" = "Sohbet dışa aktarma dosyanı nerede sakladığına DİKKAT ET ve bunu kimseyle paylaşma. Cihazındaki diğer uygulamalar, cihazının izinlerine göre bu dosyaya erişebilir.";
+
+/* Title for a sheet shown after the user's chat history has been exported. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_TITLE" = "Sohbet Dışa Aktarma Tamamlandı";
+
+/* Title for a button in a sheet shown after the user's chat history has been exported, which opens the exported folder in the Files app. */
+"SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_VIEW_IN_FILES_BUTTON" = "Dosyalarda Görüntüle";
+
+/* Message for a sheet shown when the user starts exporting their chat history from Chats settings. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_MESSAGE" = "DİKKATLİ OL! Bu dosyayı kimseyle PAYLAŞMA. Sohbet geçmişin cihazına kaydedilir ve cihazının izin ayarlarına bağlı olarak diğer uygulamalar buna erişebilir. Medyayla dışa aktarım daha büyük bir dosya boyutuna sebep olacaktır.";
+
+/* Title for a sheet shown when the user starts exporting their chat history from Chats settings. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_TITLE" = "Sohbet Geçmişi Dışa Aktarılsın mı?";
+
+/* Title for a button in a sheet shown when the user starts exporting their chat history, which exports their chat history including attachments. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_WITH_MEDIA_BUTTON" = "Medyayla Dışa Aktar";
+
+/* Title for a button in a sheet shown when the user starts exporting their chat history, which exports their chat history excluding attachments. */
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_WITHOUT_MEDIA_BUTTON" = "Medyasız Dışa Aktar";
+
+/* Footer for the section in Chats settings containing a button to export the user's chat history. */
+"SETTINGS_CHATS_EXPORT_FOOTER" = "Sohbetlerinin makine tarafından okunabilir bir JSON kopyasını dışa aktar. Kaybolan mesajlar dışa aktarılmaz.";
+
+/* Title for a progress modal shown while the user's chat history is being exported. */
+"SETTINGS_CHATS_EXPORT_PROGRESS_TITLE" = "Sohbetler dışa aktarılıyor…";
 
 /* No comment provided by engineer. */
 "SETTINGS_CLEAR_HISTORY" = "Sohbet Geçmişini Temizle";
@@ -9306,6 +9453,16 @@
 
 /* Explanation for the button that resets all notification settings. */
 "SETTINGS_NOTIFICATIONS_RESET_FOOTER" = "Sohbetlerine özel ayarlar da dahil olmak üzere bildirim ayarlarını varsayılana sıfırla.";
+
+/* Label for the switch controlling whether reminders about unread messages are shown.
+   Label for the switch controlling whether reminders about unread messages in muted chats are shown. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS" = "Okunmamış Hatırlatmalar";
+
+/* Explanation for the switch controlling whether reminders about unread messages are shown in this chat while it is muted. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS_CHAT_FOOTER" = "Bu sohbet sessizdeyken okunmamış mesajlar olduğunda arada bildirim yap.";
+
+/* Explanation for the switch controlling whether reminders about unread messages in muted chats are shown. */
+"SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS_FOOTER" = "Sessize alınmış sohbetlerde okunmamış mesajlar olduğunda arada bildirim yap.";
 
 /* Label for the 'agree to payments terms' button in the 'activate payments confirmation' UI in the payment settings. */
 "SETTINGS_PAYMENTS_ACTIVATE_PAYMENTS_CONFIRM_AGREE" = "Etkinleştir";
@@ -10102,6 +10259,9 @@
 /* Text for a toast confirming that the speakerphone has been turned on for a call. */
 "SPEAKERPHONE_ON_CONFIRMATION_TOAST_LABEL" = "Hoparlör açık";
 
+/* Title for a button to view a sticker pack */
+"STICKER_BUTTON_VIEW_PACK" = "Paketi Görüntüle";
+
 /* The name for the sticker category 'Featured' */
 "STICKER_CATEGORY_FEATURED_NAME" = "Önerilenler";
 
@@ -10117,6 +10277,33 @@
 /* Preview text shown in notifications and conversation list for sticker messages. */
 "STICKER_MESSAGE_PREVIEW" = "Çıkartma İletisi";
 
+/* Button to confirm a user wants to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_BUTTON" = "Kaldır";
+
+/* Message for a sheet asking the user to confirm they want to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_MESSAGE" = "Bu işlem çıkartma paketini kaldırır. Bir bağlantı veya çıkartma mesajı olmadan tekrar ekleyemezsin.";
+
+/* Title for a sheet asking the user to confirm they want to remove a sticker pack */
+"STICKER_PACK_CONFIRM_REMOVE_TITLE" = "Çıkartma Paketi Kaldırılsın mı?";
+
+/* Label for a button to copy the link of a sticker pack */
+"STICKER_PACK_LINK" = "Bağlantı";
+
+/* Label for a button to uninstall a sticker pack */
+"STICKER_PACK_REMOVE" = "Kaldır";
+
+/* Label for a button to send a sticker pack */
+"STICKER_PACK_SEND" = "Gönder";
+
+/* Label for a button on a sticker-pack share sheet that copies the pack's share link. */
+"STICKER_PACK_SHARE_SHEET_COPY_LINK" = "Bağlantıyı Kopyala";
+
+/* Text describing what you can do with a sticker pack link, on a sheet for sharing it. */
+"STICKER_PACK_SHARE_SHEET_HEADER" = "Bu bağlantıya sahip herkes bu çıkartma paketini ekleyebilir ve paylaşabilir.";
+
+/* Label for a button on a sticker-pack share sheet that sends the pack in Signal. */
+"STICKER_PACK_SHARE_SHEET_SEND_IN_SIGNAL" = "Signal'da gönder";
+
 /* Message when trying to show a sticker that has expired and is unavailable for download */
 "STICKER_UNAVAILABLE_MESSAGE_LABEL" = "Çıkartma kullanılamıyor";
 
@@ -10124,7 +10311,7 @@
 "STICKER_UNAVAILABLE_SHEET_TITLE" = "Çıkartma kullanılamıyor";
 
 /* Label for the 'install sticker pack' button. */
-"STICKERS_INSTALL_BUTTON" = "Yükle";
+"STICKERS_INSTALL_BUTTON" = "Çıkartma Ekle";
 
 /* Title for the 'available built-in stickers' section of the 'manage stickers' view. */
 "STICKERS_MANAGE_VIEW_AVAILABLE_BUILT_IN_PACKS_SECTION_TITLE" = "Signal Tarafından";
@@ -10158,9 +10345,6 @@
 
 /* Label indicating that the sticker pack failed to load. */
 "STICKERS_PACK_VIEW_FAILED_TO_LOAD" = "Çıkartma Paketi yüklenemedi";
-
-/* Label for the 'uninstall sticker pack' button. */
-"STICKERS_UNINSTALL_BUTTON" = "Kaldır";
 
 /* Text indication a story caption can be tapped to read more. */
 "STORIES_CAPTION_READ_MORE" = "Devamını oku";
@@ -10791,6 +10975,33 @@
 
 /* Pressing this button marks a thread as unread */
 "UNREAD_ACTION" = "Okunmamış";
+
+/* Notification placeholder for three or more recipients who sent unread messages */
+"UnreadReminderJob__authors_many" = "%1$@ ve diğerleri";
+
+/* Notification placeholder for a single recipient who sent unread messages */
+"UnreadReminderJob__authors_one" = "%1$@";
+
+/* Notification placeholder for two recipients who sent unread messages */
+"UnreadReminderJob__authors_two" = "%1$@ ve %2$@";
+
+/* Notification body for unread reminders. First placeholder is unread messages or unread calls */
+"UnreadReminderJob__calls_or_unread" = "%1$@ var.";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a list of people who sent them */
+"UnreadReminderJob__calls_or_unread_author" = "%2$@ adlı kişiden %1$@ var.";
+
+/* Notification placeholder that sums up a single unread mention. Placeholder is the name of the person who sent the message */
+"UnreadReminderJob__mentions_one" = "%1$@ tarafından senden bahsetme";
+
+/* Notification placeholder that sums up a single unread reply. Placeholder is the name of the person who sent the message */
+"UnreadReminderJob__replies_one" = "%1$@ tarafından bir yanıt";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a summary of unread mentions, third replies */
+"UnreadReminderJob__unread_both_summary" = "%2$@ ve %3$@ dahil %1$@ var.";
+
+/* Notification body for unread reminders. First placeholder is unread messages, second is a summary of either unread mentions or replies */
+"UnreadReminderJob__unread_one_summary" = "%2$@ dahil %1$@ var.";
 
 /* No comment provided by engineer. */
 "UNSUPPORTED_ATTACHMENT" = "Desteklenmeyen eklenti türü alındı.";

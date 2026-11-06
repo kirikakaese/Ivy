@@ -38,7 +38,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
     let isCallDetails: Bool
     var memberLabelCoordinator: MemberLabelCoordinator?
 
-    let backgroundContainer = CVBackgroundContainer()
+    private lazy var backgroundContainer = CVBackgroundContainer()
 
     var thread: TSThread {
         threadViewModel.threadRecord
@@ -179,6 +179,9 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
         defaultSeparatorInsetLeading = Self.cellHInnerMargin + 24 + OWSTableItem.iconSpacing
 
         tableView.register(ContactTableViewCell.self, forCellReuseIdentifier: ContactTableViewCell.reuseIdentifier)
+        if #available(iOS 26, *) {
+            tableView.topEdgeEffect.style = .soft
+        }
 
         observeNotifications()
 
@@ -198,7 +201,6 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
                 overrideCellBackgroundColor = UIColor(rgbHex: 0x424757, alpha: 1)
             }
 
-            let backgroundContainer = self.backgroundContainer
             view.insertSubview(backgroundContainer, belowSubview: tableView)
             backgroundContainer.autoPinEdgesToSuperviewEdges()
             backgroundContainer.set(wallpaperView: WallpaperViewBuilder.releaseNotes.build())

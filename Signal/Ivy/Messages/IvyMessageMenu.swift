@@ -55,7 +55,7 @@ enum IvyMessageMenuItem: String, CaseIterable {
         case .speak, .stopSpeaking: self = .speak
         case .edit: self = .edit
         case .pin, .unpin: self = .pin
-        case .endPoll, .showPaymentDetails: self = .other
+        case .endPoll, .showPaymentDetails, .viewStickerPack: self = .other
         }
     }
 }

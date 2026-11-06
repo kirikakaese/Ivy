@@ -17,14 +17,8 @@ public final class TSReleaseNotesThread: TSThread {
     public class func createReleaseNotes(transaction: DBWriteTransaction) -> TSReleaseNotesThread {
         let releaseNotes = TSReleaseNotesThread(uniqueId: releaseNotesUniqueId)
         releaseNotes.shouldThreadBeVisible = false
+        releaseNotes.mutedUntilTimestamp = TSThread.alwaysMutedTimestamp
         releaseNotes.anyInsert(transaction: transaction)
-
-        // Mute release notes thread by default.
-        releaseNotes.updateWith(
-            mutedUntilTimestamp: TSThread.alwaysMutedTimestamp,
-            updateStorageService: false,
-            transaction: transaction,
-        )
         return releaseNotes
     }
 
@@ -44,6 +38,7 @@ public final class TSReleaseNotesThread: TSThread {
             shouldNotifyForMentionsWhenMuted: self.shouldNotifyForMentionsWhenMuted,
             shouldNotifyForRepliesWhenMuted: self.shouldNotifyForRepliesWhenMuted,
             shouldNotifyForCallsWhenMuted: self.shouldNotifyForCallsWhenMuted,
+            shouldNotifyForUnreadRemindersWhenMuted: self.shouldNotifyForUnreadRemindersWhenMuted,
             messageDraft: self.messageDraft,
             messageDraftBodyRanges: self.messageDraftBodyRanges,
             mutedUntilTimestamp: self.mutedUntilTimestamp,

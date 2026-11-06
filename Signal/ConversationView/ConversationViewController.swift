@@ -45,6 +45,7 @@ public final class ConversationViewController: OWSViewController {
     public let searchController: ConversationSearchController
     public var pinnedMessageIndex: Int
     var memberLabelCoordinator: MemberLabelCoordinator?
+    var sendStickerFlow: SendStickerFlow?
 
     weak var threadActionProviderDelegate: ThreadContextualActionProvider?
 
@@ -251,6 +252,9 @@ public final class ConversationViewController: OWSViewController {
         self.collectionView.keyboardDismissMode = .interactive
         self.collectionView.allowsMultipleSelection = true
         self.collectionView.backgroundColor = .clear
+        if #available(iOS 26, *) {
+            self.collectionView.topEdgeEffect.style = .soft
+        }
 
         // To minimize time to initial apearance, we initially disable prefetching, but then
         // re-enable it once the view has appeared.

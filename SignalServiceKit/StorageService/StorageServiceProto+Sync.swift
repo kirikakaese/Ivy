@@ -195,7 +195,9 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
     private let recipientHidingManager: RecipientHidingManager
     private let remoteConfigProvider: any RemoteConfigProvider
     private let signalServiceAddressCache: SignalServiceAddressCache
+    private let threadMuteManager: ThreadMuteManager
     private let tsAccountManager: TSAccountManager
+    private let unreadReminderManager: UnreadReminderManager
     private let usernameLookupManager: UsernameLookupManager
 
     init(
@@ -216,7 +218,9 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
         recipientHidingManager: RecipientHidingManager,
         remoteConfigProvider: any RemoteConfigProvider,
         signalServiceAddressCache: SignalServiceAddressCache,
+        threadMuteManager: ThreadMuteManager,
         tsAccountManager: TSAccountManager,
+        unreadReminderManager: UnreadReminderManager,
         usernameLookupManager: UsernameLookupManager,
     ) {
         self.localIdentifiers = localIdentifiers
@@ -237,7 +241,9 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
         self.recipientHidingManager = recipientHidingManager
         self.remoteConfigProvider = remoteConfigProvider
         self.signalServiceAddressCache = signalServiceAddressCache
+        self.threadMuteManager = threadMuteManager
         self.tsAccountManager = tsAccountManager
+        self.unreadReminderManager = unreadReminderManager
         self.usernameLookupManager = usernameLookupManager
     }
 
@@ -289,11 +295,11 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
         // This could be an ACI or a PNI address.
         let anyAddress = SignalServiceAddress(contact.serviceIds.aciOrElsePni)
 
-        let isInWhitelist = profileManager.isRecipientInProfileWhitelist(recipient, tx: tx)
-        builder.setWhitelisted(isInWhitelist)
-
-        builder.setBlocked(blockingManager.isAddressBlocked(anyAddress, transaction: tx))
-        builder.setHidden(recipientHidingManager.isHiddenAddress(anyAddress, tx: tx))
+        let isHidden = recipientHidingManager.isHiddenAddress(anyAddress, tx: tx)
+        builder.setHidden(isHidden)
+        builder.setWhitelisted(recipient.isWhitelisted && !isHidden)
+        builder.setBlocked(recipient.isBlocked)
+        builder.setBlockedAtTimestamp(recipient.blockedAt.asMilliseconds)
 
         // Identity
 
@@ -372,6 +378,8 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
             builder.setArchived(thread.isArchived)
             builder.setMarkedUnread(thread.isMarkedUnread)
             builder.setMutedUntilTimestamp(thread.mutedUntilTimestamp)
+            builder.setNotifyForCallsIfMuted(StorageServiceProtoOptionalBool(thread.shouldNotifyForCallsWhenMuted))
+            builder.setShowUnreadReminders(StorageServiceProtoOptionalBool(thread.shouldNotifyForUnreadRemindersWhenMuted))
         }
 
         if let aci = contact.aci, let associatedData = StoryFinder.getAssociatedData(forAci: aci, tx: tx) {
@@ -520,9 +528,6 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
         let anyAddress = SignalServiceAddress(serviceIds.aciOrElsePni)
 
         // Gather some local contact state to do comparisons against.
-        let localIsBlocked = blockingManager.isAddressBlocked(anyAddress, transaction: tx)
-        let localIsHidden = recipientHidingManager.isHiddenAddress(anyAddress, tx: tx)
-        let localIsWhitelisted = profileManager.isRecipientInProfileWhitelist(recipient, tx: tx)
         let localUserProfile = profileManager.userProfile(for: anyAddress, tx: tx)
 
         // If our local profile key record differs from what's on the service, use the service's value.
@@ -598,30 +603,39 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
             needsUpdate = true
         }
 
-        // If our local blocked state differs from the service state, use the service's value.
-        if record.blocked != localIsBlocked {
-            if record.blocked {
-                blockingManager.addBlockedAddress(anyAddress, blockMode: .storageService, transaction: tx)
-            } else {
-                blockingManager.removeBlockedAddress(anyAddress, wasLocallyInitiated: false, transaction: tx)
-            }
+        // Set our local blocked state to match the remote state. (We do this
+        // unconditionally because BlockingManager will ignore redundant requests.)
+        if record.blocked {
+            blockingManager.addBlockedRecipient(
+                &recipient,
+                blockedAt: BlockedTimestamp(clamping: record.blockedAtTimestamp),
+                blockMode: .storageService,
+                tx: tx,
+            )
+        } else {
+            blockingManager.removeBlockedRecipient(
+                &recipient,
+                wasLocallyInitiated: false,
+                tx: tx,
+            )
         }
 
         // If our local hidden state differs from the service state, use the service's value.
+        let localIsHidden = recipientHidingManager.isHiddenRecipient(recipientId: recipient.id, tx: tx)
         if record.hidden != localIsHidden {
             if record.hidden {
-                do {
-                    try recipientHidingManager.addHiddenRecipient(
-                        anyAddress,
-                        inKnownMessageRequestState: false,
-                        wasLocallyInitiated: false,
-                        tx: tx,
-                    )
-                } catch {
-                    Logger.warn("Recipient hidden remotely could not be hidden locally.")
-                }
+                recipientHidingManager.addHiddenRecipient(
+                    &recipient,
+                    inKnownMessageRequestState: false,
+                    wasLocallyInitiated: false,
+                    tx: tx,
+                )
             } else {
-                recipientHidingManager.removeHiddenRecipient(anyAddress, wasLocallyInitiated: false, tx: tx)
+                recipientHidingManager.removeHiddenRecipient(
+                    &recipient,
+                    wasLocallyInitiated: false,
+                    tx: tx,
+                )
             }
         }
 
@@ -630,7 +644,7 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
         // transitions schedule a profile key rotation.
 
         // If our local whitelisted state differs from the service state, use the service's value.
-        if record.whitelisted != localIsWhitelisted {
+        if record.whitelisted != recipient.isWhitelisted {
             if record.whitelisted {
                 profileManager.addRecipientToProfileWhitelist(&recipient, userProfileWriter: .storageService, tx: tx)
             } else {
@@ -649,7 +663,26 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
         }
 
         if record.mutedUntilTimestamp != localThread.mutedUntilTimestamp {
-            localThread.updateWith(mutedUntilTimestamp: record.mutedUntilTimestamp, updateStorageService: false, transaction: tx)
+            threadMuteManager.setMutedUntilTimestamp(record.mutedUntilTimestamp, for: localThread, updateStorageService: false, tx: tx)
+        }
+
+        if
+            !record.notifyForCallsIfMuted.isUnrecognized,
+            record.notifyForCallsIfMuted.boolValue != localThread.shouldNotifyForCallsWhenMuted
+        {
+            localThread.updateWithShouldNotifyForCallsWhenMuted(record.notifyForCallsIfMuted.boolValue, transaction: tx)
+        }
+
+        if
+            !record.showUnreadReminders.isUnrecognized,
+            record.showUnreadReminders.boolValue != localThread.shouldNotifyForUnreadRemindersWhenMuted
+        {
+            unreadReminderManager.setShowUnreadReminders(
+                record.showUnreadReminders.boolValue,
+                thread: localThread,
+                updateStorageService: false,
+                tx: tx,
+            )
         }
 
         if let aci = serviceIds.aci {
@@ -962,6 +995,8 @@ class StorageServiceGroupV2RecordUpdater: StorageServiceRecordUpdater {
     private let blockingManager: BlockingManager
     private let groupsV2: GroupsV2
     private let profileManager: ProfileManager
+    private let threadMuteManager: ThreadMuteManager
+    private let unreadReminderManager: UnreadReminderManager
 
     init(
         authedAccount: AuthedAccount,
@@ -970,6 +1005,8 @@ class StorageServiceGroupV2RecordUpdater: StorageServiceRecordUpdater {
         blockingManager: BlockingManager,
         groupsV2: GroupsV2,
         profileManager: ProfileManager,
+        threadMuteManager: ThreadMuteManager,
+        unreadReminderManager: UnreadReminderManager,
     ) {
         self.authedAccount = authedAccount
         self.isPrimaryDevice = isPrimaryDevice
@@ -978,6 +1015,8 @@ class StorageServiceGroupV2RecordUpdater: StorageServiceRecordUpdater {
         self.blockingManager = blockingManager
         self.groupsV2 = groupsV2
         self.profileManager = profileManager
+        self.threadMuteManager = threadMuteManager
+        self.unreadReminderManager = unreadReminderManager
     }
 
     func unknownFields(for record: StorageServiceProtoGroupV2Record) -> UnknownStorage? { record.unknownFields }
@@ -1013,8 +1052,9 @@ class StorageServiceGroupV2RecordUpdater: StorageServiceRecordUpdater {
 
         var builder = StorageServiceProtoGroupV2Record.builder(masterKey: masterKeyData)
 
-        builder.setWhitelisted(profileManager.isGroupId(inProfileWhitelist: groupId.serialize(), transaction: transaction))
-        builder.setBlocked(blockingManager.isGroupIdBlocked(groupId, transaction: transaction))
+        builder.setWhitelisted(groupRecord.isWhitelisted)
+        builder.setBlocked(groupRecord.isBlocked)
+        builder.setBlockedAtTimestamp(groupRecord.blockedAt.asMilliseconds)
 
         if let storyContextAssociatedData = StoryFinder.getAssociatedData(forContext: .group(groupId: groupId.serialize()), transaction: transaction) {
             builder.setHideStory(storyContextAssociatedData.isHidden)
@@ -1032,7 +1072,11 @@ class StorageServiceGroupV2RecordUpdater: StorageServiceRecordUpdater {
             if let lastVerifiedGroupNameHash = groupRecord.lastVerifiedGroupNameHash {
                 builder.setVerifiedNameHash(lastVerifiedGroupNameHash)
             }
-            builder.setDontNotifyForMentionsIfMuted(!groupThread.shouldNotifyForMentionsWhenMutedLegacy)
+            builder.setNotifyForCallsIfMuted(StorageServiceProtoOptionalBool(groupThread.shouldNotifyForCallsWhenMuted))
+            builder.setNotifyForMentionsIfMuted(StorageServiceProtoOptionalBool(groupThread.shouldNotifyForMentionsWhenMuted))
+            builder.setNotifyForRepliesIfMuted(StorageServiceProtoOptionalBool(groupThread.shouldNotifyForRepliesWhenMuted))
+            builder.setShowUnreadReminders(StorageServiceProtoOptionalBool(groupThread.shouldNotifyForUnreadRemindersWhenMuted))
+            builder.setDontNotifyForMentionsIfMuted(groupThread.shouldNotifyForMentionsWhenMuted == false)
             builder.setStorySendMode(groupThread.storyViewMode.storageServiceMode)
         } else if
             let enqueuedRecord = groupsV2.groupRecordPendingStorageServiceRestore(
@@ -1050,6 +1094,10 @@ class StorageServiceGroupV2RecordUpdater: StorageServiceRecordUpdater {
                 builder.setVerifiedNameHash(verifiedNameHash)
             }
             builder.setDontNotifyForMentionsIfMuted(enqueuedRecord.dontNotifyForMentionsIfMuted)
+            builder.setNotifyForCallsIfMuted(enqueuedRecord.notifyForCallsIfMuted)
+            builder.setNotifyForMentionsIfMuted(enqueuedRecord.notifyForMentionsIfMuted)
+            builder.setNotifyForRepliesIfMuted(enqueuedRecord.notifyForRepliesIfMuted)
+            builder.setShowUnreadReminders(enqueuedRecord.showUnreadReminders)
             builder.setStorySendMode(enqueuedRecord.storySendMode)
         }
 
@@ -1097,13 +1145,72 @@ class StorageServiceGroupV2RecordUpdater: StorageServiceRecordUpdater {
                 groupThread.updateWithStoryViewMode(.init(storageServiceMode: record.storySendMode), transaction: transaction)
             }
 
-            let localShouldNotifyForMentionsWhenMuted = groupThread.shouldNotifyForMentionsWhenMutedLegacy
-            let remoteShouldNotifyForMentionsWhenMuted = !record.dontNotifyForMentionsIfMuted
-            if localShouldNotifyForMentionsWhenMuted != remoteShouldNotifyForMentionsWhenMuted {
-                groupThread.updateWithShouldNotifyForMentionsWhenMutedLegacy(
-                    remoteShouldNotifyForMentionsWhenMuted,
-                    wasLocallyInitiated: false,
+            if
+                !record.notifyForCallsIfMuted.isUnrecognized,
+                record.notifyForCallsIfMuted.boolValue != groupThread.shouldNotifyForCallsWhenMuted
+            {
+                groupThread.updateWithShouldNotifyForCallsWhenMuted(record.notifyForCallsIfMuted.boolValue, transaction: transaction)
+            }
+
+            let remoteNotifyForRepliesWhenMuted: Bool?
+            switch record.notifyForRepliesIfMuted {
+            case .unset:
+                remoteNotifyForRepliesWhenMuted = nil
+            case .true:
+                remoteNotifyForRepliesWhenMuted = true
+            case .false:
+                remoteNotifyForRepliesWhenMuted = false
+            case .UNRECOGNIZED:
+                // Make it fail the != check to skip it
+                remoteNotifyForRepliesWhenMuted = groupThread.shouldNotifyForRepliesWhenMuted
+            }
+
+            if remoteNotifyForRepliesWhenMuted != groupThread.shouldNotifyForRepliesWhenMuted {
+                groupThread.updateWithShouldNotifyForRepliesWhenMuted(
+                    remoteNotifyForRepliesWhenMuted,
                     transaction: transaction,
+                )
+            }
+
+            let remoteNotifyForMentionsWhenMuted: Bool?
+            if record.dontNotifyForMentionsIfMuted {
+                // The legacy field wins when the fields disagree: an old client
+                // edited it and round-tripped a stale value for the new field.
+                remoteNotifyForMentionsWhenMuted = false
+                if record.notifyForMentionsIfMuted != .false {
+                    needsUpdate = true
+                }
+            } else {
+                // Note that the legacy setting is false here, or "do notify".
+                switch record.notifyForMentionsIfMuted {
+                case .unset, .UNRECOGNIZED:
+                    remoteNotifyForMentionsWhenMuted = nil
+                case .true:
+                    remoteNotifyForMentionsWhenMuted = true
+                case .false:
+                    // An old client re-enabled mentions, and round-tripped a stale
+                    // value for the new setting.
+                    remoteNotifyForMentionsWhenMuted = true
+                    needsUpdate = true
+                }
+            }
+
+            if remoteNotifyForMentionsWhenMuted != groupThread.shouldNotifyForMentionsWhenMuted {
+                groupThread.updateWithShouldNotifyForMentionsWhenMuted(
+                    remoteNotifyForMentionsWhenMuted,
+                    transaction: transaction,
+                )
+            }
+
+            if
+                !record.showUnreadReminders.isUnrecognized,
+                record.showUnreadReminders.boolValue != groupThread.shouldNotifyForUnreadRemindersWhenMuted
+            {
+                unreadReminderManager.setShowUnreadReminders(
+                    record.showUnreadReminders.boolValue,
+                    thread: groupThread,
+                    updateStorageService: false,
+                    tx: transaction,
                 )
             }
 
@@ -1116,7 +1223,7 @@ class StorageServiceGroupV2RecordUpdater: StorageServiceRecordUpdater {
             }
 
             if record.mutedUntilTimestamp != groupThread.mutedUntilTimestamp {
-                groupThread.updateWith(mutedUntilTimestamp: record.mutedUntilTimestamp, updateStorageService: false, transaction: transaction)
+                threadMuteManager.setMutedUntilTimestamp(record.mutedUntilTimestamp, for: groupThread, updateStorageService: false, tx: transaction)
             }
         } else {
             // Save this and re-apply it after we successfully restore the group.
@@ -1127,17 +1234,21 @@ class StorageServiceGroupV2RecordUpdater: StorageServiceRecordUpdater {
             localRecord.setLastVerifiedGroupNameHash(verifiedHash, tx: transaction)
         }
 
-        // Gather some local contact state to do comparisons against.
-        let localIsBlocked = blockingManager.isGroupIdBlocked(groupId, transaction: transaction)
-        let localIsWhitelisted = profileManager.isGroupId(inProfileWhitelist: groupId.serialize(), transaction: transaction)
-
-        // If our local blocked state differs from the service state, use the service's value.
-        if record.blocked != localIsBlocked {
-            if record.blocked {
-                blockingManager.addBlockedGroupId(groupId.serialize(), blockMode: .storageService, transaction: transaction)
-            } else {
-                blockingManager.removeBlockedGroup(groupId: groupId.serialize(), wasLocallyInitiated: false, transaction: transaction)
-            }
+        // Set our local blocked state to match the remote state. (We do this
+        // unconditionally because BlockingManager will ignore redundant requests.)
+        if record.blocked {
+            blockingManager.addBlockedGroup(
+                &localRecord,
+                blockedAt: BlockedTimestamp(clamping: record.blockedAtTimestamp),
+                blockMode: .storageService,
+                tx: transaction,
+            )
+        } else {
+            blockingManager.removeBlockedGroup(
+                &localRecord,
+                wasLocallyInitiated: false,
+                tx: transaction,
+            )
         }
 
         // Note: It's important to set "blocked" first so that blocked ->
@@ -1145,18 +1256,18 @@ class StorageServiceGroupV2RecordUpdater: StorageServiceRecordUpdater {
         // transitions schedule a profile key rotation.
 
         // If our local whitelisted state differs from the service state, use the service's value.
-        if record.whitelisted != localIsWhitelisted {
+        if record.whitelisted != localRecord.isWhitelisted {
             if record.whitelisted {
-                profileManager.addGroupId(
-                    toProfileWhitelist: groupId.serialize(),
+                profileManager.addGroupToProfileWhitelist(
+                    &localRecord,
                     userProfileWriter: .storageService,
-                    transaction: transaction,
+                    tx: transaction,
                 )
             } else {
-                _ = profileManager.removeGroupId(
-                    fromProfileWhitelist: groupId.serialize(),
+                _ = profileManager.removeGroupFromProfileWhitelist(
+                    &localRecord,
                     userProfileWriter: .storageService,
-                    transaction: transaction,
+                    tx: transaction,
                 )
             }
         }
@@ -1228,6 +1339,7 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
     private let dmConfigurationStore: DisappearingMessagesConfigurationStore
     private let linkPreviewSettingStore: LinkPreviewSettingStore
     private let localUsernameManager: LocalUsernameManager
+    private let notificationPreferencesManager: NotificationPreferencesManager
     private let keyTransparencyManager: KeyTransparencyManager
     private let paymentsHelper: PaymentsHelperSwift
     private let phoneNumberDiscoverabilityManager: PhoneNumberDiscoverabilityManager
@@ -1247,7 +1359,9 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
     private let usernameEducationManager: UsernameEducationManager
     private let adminDeleteManager: AdminDeleteManager
     private let blockingManager: BlockingManager
+    private let threadMuteManager: ThreadMuteManager
     private let threadStore: ThreadStore
+    private let unreadReminderManager: UnreadReminderManager
 
     init(
         localIdentifiers: LocalIdentifiers,
@@ -1260,6 +1374,7 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
         dmConfigurationStore: DisappearingMessagesConfigurationStore,
         linkPreviewSettingStore: LinkPreviewSettingStore,
         localUsernameManager: LocalUsernameManager,
+        notificationPreferencesManager: NotificationPreferencesManager,
         keyTransparencyManager: KeyTransparencyManager,
         paymentsHelper: PaymentsHelperSwift,
         phoneNumberDiscoverabilityManager: PhoneNumberDiscoverabilityManager,
@@ -1279,7 +1394,9 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
         usernameEducationManager: UsernameEducationManager,
         adminDeleteManager: AdminDeleteManager,
         blockingManager: BlockingManager,
+        threadMuteManager: ThreadMuteManager,
         threadStore: ThreadStore,
+        unreadReminderManager: UnreadReminderManager,
     ) {
         self.localIdentifiers = localIdentifiers
         self.isPrimaryDevice = isPrimaryDevice
@@ -1292,6 +1409,7 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
         self.dmConfigurationStore = dmConfigurationStore
         self.linkPreviewSettingStore = linkPreviewSettingStore
         self.localUsernameManager = localUsernameManager
+        self.notificationPreferencesManager = notificationPreferencesManager
         self.keyTransparencyManager = keyTransparencyManager
         self.paymentsHelper = paymentsHelper
         self.phoneNumberDiscoverabilityManager = phoneNumberDiscoverabilityManager
@@ -1311,7 +1429,9 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
         self.usernameEducationManager = usernameEducationManager
         self.adminDeleteManager = adminDeleteManager
         self.blockingManager = blockingManager
+        self.threadMuteManager = threadMuteManager
         self.threadStore = threadStore
+        self.unreadReminderManager = unreadReminderManager
     }
 
     func unknownFields(for record: StorageServiceProtoAccountRecord) -> UnknownStorage? { record.unknownFields }
@@ -1325,6 +1445,7 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
         unknownFields: UnknownStorage?,
         transaction: DBReadTransaction,
     ) -> StorageServiceProtoAccountRecord? {
+        let tx = transaction
         var builder = StorageServiceProtoAccountRecord.builder()
 
         let localAddress = localIdentifiers.aciAddress
@@ -1342,7 +1463,7 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
             if let usernameLink = localUsernameState.usernameLink {
                 var usernameLinkProtoBuilder = StorageServiceProtoAccountRecordUsernameLink.builder()
 
-                usernameLinkProtoBuilder.setEntropy(usernameLink.entropy)
+                usernameLinkProtoBuilder.setEntropy(usernameLink.entropy.rawValue)
                 usernameLinkProtoBuilder.setServerID(usernameLink.handle.data)
                 usernameLinkProtoBuilder.setColor(
                     localUsernameManager.usernameLinkQRCodeColor(
@@ -1457,6 +1578,26 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
             !usernameEducationManager.shouldShowUsernameEducation(tx: transaction),
         )
 
+        // While-muted notifications
+        builder.setNotifyForCallsIfMuted(StorageServiceProtoOptionalBool(notificationPreferencesManager.globalNotifyForCallsWhenMuted(tx: tx)))
+        builder.setNotifyForMentionsIfMuted(StorageServiceProtoOptionalBool(notificationPreferencesManager.globalNotifyForMentionsWhenMuted(tx: tx)))
+        builder.setNotifyForRepliesIfMuted(StorageServiceProtoOptionalBool(notificationPreferencesManager.globalNotifyForRepliesWhenMuted(tx: tx)))
+
+        builder.setReactionNotifications(StorageServiceProtoOptionalBool(notificationPreferencesManager.areReactionNotificationsEnabled(tx: tx)))
+
+        builder.setShowUnreadReminders(.init(notificationPreferencesManager.globalShowUnreadReminders(tx: tx)))
+
+        builder.setNotifyWhenContactJoins(StorageServiceProtoOptionalBool(notificationPreferencesManager.shouldNotifyOfNewAccounts(tx: tx)))
+
+        // Badge
+        builder.setUnreadBadgeType({
+            switch notificationPreferencesManager.badgeCountType(tx: tx) {
+            case .unreadMessages: .unreadMessages
+            case .unreadChats: .unreadChats
+            }
+        }())
+        builder.setIncludeMutedChatsInBadge(StorageServiceProtoOptionalBool(notificationPreferencesManager.includeMutedThreadsInBadgeCount(tx: tx)))
+
         if
             let localRecipient = recipientDatabaseTable.fetchRecipient(
                 serviceId: localIdentifiers.aci,
@@ -1503,6 +1644,7 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
         _ record: StorageServiceProtoAccountRecord,
         transaction: DBWriteTransaction,
     ) -> StorageServiceMergeResult<Void> {
+        let tx = transaction
         var needsUpdate = false
 
         let localAddress = localIdentifiers.aciAddress
@@ -1598,12 +1740,13 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
                 let remoteUsernameLinkProto = record.usernameLink,
                 let remoteUsernameLinkProtoHandleData = remoteUsernameLinkProto.serverID,
                 let remoteUsernameLinkProtoHandle = UUID(data: remoteUsernameLinkProtoHandleData),
-                let remoteUsernameLinkProtoEntropy = remoteUsernameLinkProto.entropy,
-                let remoteUsernameLink = Usernames.UsernameLink(
+                let remoteUsernameLinkProtoEntropyData = remoteUsernameLinkProto.entropy,
+                let remoteUsernameLinkProtoEntropy = try? UsernameLink.Entropy(rawValue: remoteUsernameLinkProtoEntropyData)
+            {
+                let remoteUsernameLink = UsernameLink(
                     handle: remoteUsernameLinkProtoHandle,
                     entropy: remoteUsernameLinkProtoEntropy,
                 )
-            {
                 localUsernameManager.setLocalUsername(
                     username: remoteUsername,
                     usernameLink: remoteUsernameLink,
@@ -1829,6 +1972,94 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
             )
         }
 
+        // MARK: Notifications
+
+        func setIfMismatched(
+            localValue: Bool,
+            recordValue: StorageServiceProtoOptionalBool,
+            setter: (_ newValue: Bool, _ updateStorageService: Bool, _ tx: DBWriteTransaction) -> Void,
+        ) {
+            switch recordValue {
+            case .unset:
+                needsUpdate = true
+            case .true:
+                if !localValue {
+                    setter(true, false, tx)
+                }
+            case .false:
+                if localValue {
+                    setter(false, false, tx)
+                }
+            case .UNRECOGNIZED:
+                break
+            }
+        }
+
+        // While-muted notifications
+        setIfMismatched(
+            localValue: notificationPreferencesManager.globalNotifyForCallsWhenMuted(tx: tx),
+            recordValue: record.notifyForCallsIfMuted,
+            setter: notificationPreferencesManager.setGlobalNotifyForCallsWhenMuted(_:updateStorageService:tx:),
+        )
+        setIfMismatched(
+            localValue: notificationPreferencesManager.globalNotifyForMentionsWhenMuted(tx: tx),
+            recordValue: record.notifyForMentionsIfMuted,
+            setter: notificationPreferencesManager.setGlobalNotifyForMentionsWhenMuted(_:updateStorageService:tx:),
+        )
+        setIfMismatched(
+            localValue: notificationPreferencesManager.globalNotifyForRepliesWhenMuted(tx: tx),
+            recordValue: record.notifyForRepliesIfMuted,
+            setter: notificationPreferencesManager.setGlobalNotifyForRepliesWhenMuted(_:updateStorageService:tx:),
+        )
+
+        setIfMismatched(
+            localValue: notificationPreferencesManager.areReactionNotificationsEnabled(tx: tx),
+            recordValue: record.reactionNotifications,
+            setter: notificationPreferencesManager.setAreReactionNotificationsEnabled(_:updateStorageService:tx:),
+        )
+
+        setIfMismatched(
+            localValue: notificationPreferencesManager.globalShowUnreadReminders(tx: tx),
+            recordValue: record.showUnreadReminders,
+            setter: unreadReminderManager.setGlobalShowUnreadReminders(_:updateStorageService:tx:),
+        )
+
+        setIfMismatched(
+            localValue: notificationPreferencesManager.shouldNotifyOfNewAccounts(tx: tx),
+            recordValue: record.notifyWhenContactJoins,
+            setter: notificationPreferencesManager.setShouldNotifyOfNewAccounts(_:updateStorageService:tx:),
+        )
+
+        // Badge
+        setIfMismatched(
+            localValue: notificationPreferencesManager.includeMutedThreadsInBadgeCount(tx: tx),
+            recordValue: record.includeMutedChatsInBadge,
+            setter: notificationPreferencesManager.setIncludeMutedThreadsInBadgeCount(_:updateStorageService:tx:),
+        )
+        let localBadgeCountType = notificationPreferencesManager.badgeCountType(tx: tx)
+        switch record.unreadBadgeType {
+        case .unknownBadgeType:
+            needsUpdate = true
+        case .unreadMessages:
+            if localBadgeCountType != .unreadMessages {
+                notificationPreferencesManager.setBadgeCountType(
+                    .unreadMessages,
+                    updateStorageService: false,
+                    tx: tx,
+                )
+            }
+        case .unreadChats:
+            if localBadgeCountType != .unreadChats {
+                notificationPreferencesManager.setBadgeCountType(
+                    .unreadChats,
+                    updateStorageService: false,
+                    tx: tx,
+                )
+            }
+        case .UNRECOGNIZED:
+            break
+        }
+
         mergeBackupPlan(in: record, tx: transaction)
 
         if mergeDefaultAvatarColor(in: record, tx: transaction) {
@@ -1895,10 +2126,17 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
         releaseNotesThread.updateWith(
             isArchived: updatedArchivedValue,
             isMarkedUnread: updatedUnreadValue,
-            mutedUntilTimestamp: updatedMutedTimestampValue,
             updateStorageService: false,
             transaction: transaction,
         )
+        if let updatedMutedTimestampValue {
+            threadMuteManager.setMutedUntilTimestamp(
+                updatedMutedTimestampValue,
+                for: releaseNotesThread,
+                updateStorageService: false,
+                tx: transaction,
+            )
+        }
 
         return .merged(needsUpdate: needsUpdate, ())
     }
@@ -2392,8 +2630,16 @@ extension StorageServiceProtoOptionalBool {
         }
     }
 
-    init(_ boolValue: Bool) {
-        self = boolValue ? .true : .false
+    var isUnrecognized: Bool {
+        if case .UNRECOGNIZED = self { true } else { false }
+    }
+
+    init(_ boolValue: Bool?) {
+        switch boolValue {
+        case nil: self = .unset
+        case true: self = .true
+        case false: self = .false
+        }
     }
 }
 

@@ -327,7 +327,6 @@ public class GRDBSchemaMigrator {
         case setAttachmentContentTypeFromMimeType
         case dropAttachmentContentTypeAUTrigger
         case addOrphanedAttachmentTimestamp
-        case migrateSecureValueRecovery
         case addMimeTypeToMessageAttachmentReference
         case purgeMyStoryDeletedAtTimestamp
         case addRecoverablePlaceholderExpirationIndex
@@ -368,6 +367,13 @@ public class GRDBSchemaMigrator {
         case addAttachmentAudioWaveformSamples
         case addAciContactShareNameTable
         case addAciContactShareNamesToSearchableName
+        case addShouldNotifyForUnreadRemindersWhenMutedColumn
+        case disableUnreadRemindersForExistingUsers
+        case migrateBlocked
+        case addBlockedAt
+        case migrateLegacyMentionNotificationMode
+        case addLastSnapshotAt
+        case removeLocalFileBackupLastEnumeratedAttachmentId
 
         // NOTE: Every time we add a migration id, consider
         // incrementing grdbSchemaVersionLatest.
@@ -409,6 +415,7 @@ public class GRDBSchemaMigrator {
         case dataMigration_indexSearchableNames
         case dataMigration_clearLaunchScreenCache2
         case dataMigration_resetLinkedDeviceAuthorMergeBuilder
+        case dataMigration_scheduleStorageServiceUpdateForLegacyMentionNotifications
 
 // We must ensure that we never re-use a MigrationId. It's unlikely that
 // we'll happen to pick the same name twice, but it's possible. We keep old
@@ -459,6 +466,7 @@ public class GRDBSchemaMigrator {
         case signalAccount_add_contactAvatarData
         case signalAccount_add_contactAvatarPngData
         case wipeCachedSVRBAuthCredentials
+        case migrateSecureValueRecovery
 
         // This used to insert `media_gallery_record` rows for every message
         // attachment. This table is now obsolete.
@@ -497,7 +505,7 @@ public class GRDBSchemaMigrator {
     }
 
     public static let grdbSchemaVersionDefault: UInt = 0
-    public static let grdbSchemaVersionLatest: UInt = 161
+    public static let grdbSchemaVersionLatest: UInt = 164
 
     private class DatabaseMigratorWrapper {
         // Run with immediate (or disabled) foreign key checks so that pre-existing
@@ -5199,11 +5207,6 @@ public class GRDBSchemaMigrator {
             return .success(())
         }
 
-        migrator.registerMigration(.migrateSecureValueRecovery) { tx in
-            try migrateSecureValueRecovery(tx: tx)
-            return .success(())
-        }
-
         migrator.registerMigration(.addMimeTypeToMessageAttachmentReference) { tx in
             try Self.addMimeTypeToMessageAttachmentReference(tx: tx)
             return .success(())
@@ -5682,6 +5685,60 @@ public class GRDBSchemaMigrator {
             return .success(())
         }
 
+        migrator.registerMigration(.addShouldNotifyForUnreadRemindersWhenMutedColumn) { tx in
+            try addShouldNotifyForUnreadRemindersWhenMutedColumn(tx: tx)
+            return .success(())
+        }
+
+        migrator.registerMigration(.disableUnreadRemindersForExistingUsers) { tx in
+            // This used to disable unread reminders for existing installs,
+            // but now it's disabled by default for all users.
+            return .success(())
+        }
+
+        migrator.registerMigration(.migrateBlocked) { tx in
+            try addGroupStatus(tx: tx)
+            try migrateBlocked(tx: tx)
+            try removeBlockedRecipients(tx: tx)
+            try removeBlockedGroups(tx: tx)
+            return .success(())
+        }
+
+        migrator.registerMigration(.addBlockedAt) { tx in
+            try tx.database.alter(table: "model_SignalRecipient") {
+                $0.add(column: "blockedAtMs", .integer).notNull().defaults(to: 0)
+            }
+            try tx.database.alter(table: "GroupRecord") {
+                $0.add(column: "blockedAtMs", .integer).notNull().defaults(to: 0)
+            }
+            return .success(())
+        }
+
+        migrator.registerMigration(.migrateLegacyMentionNotificationMode) { tx in
+            try migrateLegacyMentionNotificationMode(tx: tx)
+            return .success(())
+        }
+
+        migrator.registerMigration(.addLastSnapshotAt) { tx in
+            try tx.database.alter(table: "GroupRecord") {
+                $0.add(column: "lastSnapshotAt", .integer).notNull().defaults(to: 0)
+                $0.add(column: "lastSnapshotVersion", .integer).notNull().defaults(to: 0)
+            }
+            return .success(())
+        }
+
+        migrator.registerMigration(.removeLocalFileBackupLastEnumeratedAttachmentId) { tx in
+            // Moved to a new collection; enumeration will start over.
+            try tx.database.execute(
+                sql: """
+                DELETE FROM "keyvalue"
+                WHERE "collection" = 'LocalFileBackups' AND "key" = 'lastEnumeratedAttachmentId'
+                """,
+            )
+
+            return .success(())
+        }
+
         // MARK: - Schema Migration Insertion Point
     }
 
@@ -5959,6 +6016,11 @@ public class GRDBSchemaMigrator {
             for collection in keyValueCollections {
                 KeyValueStore(collection: collection).removeAll(transaction: tx)
             }
+            return .success(())
+        }
+
+        migrator.registerMigration(.dataMigration_scheduleStorageServiceUpdateForLegacyMentionNotifications) { tx in
+            scheduleStorageServiceUpdateForLegacyMentionNotifications(tx: tx)
             return .success(())
         }
 
@@ -7055,6 +7117,34 @@ public class GRDBSchemaMigrator {
         return tx.database.lastInsertedRowID
     }
 
+    private struct GroupIdForMigrationV1 {
+        let rawValue: Data
+
+        init?(rawValue: Data) {
+            guard rawValue.count == 16 || rawValue.count == 32 else {
+                return nil
+            }
+            self.rawValue = rawValue
+        }
+    }
+
+    private static func fetchOrCreateGroup(groupId: GroupIdForMigrationV1, tx: DBWriteTransaction) throws -> GroupRecord.RowId {
+        let db = tx.database
+        let rowId = try GroupRecord.RowId.fetchOne(db, sql: "SELECT rowId FROM GroupRecord WHERE groupId = ?", arguments: [groupId.rawValue])
+        if let rowId {
+            return rowId
+        }
+        return try createGroup(groupId: groupId, tx: tx)
+    }
+
+    private static func createGroup(groupId: GroupIdForMigrationV1, tx: DBWriteTransaction) throws -> GroupRecord.RowId {
+        try tx.database.execute(
+            sql: "INSERT INTO GroupRecord (groupId) VALUES (?)",
+            arguments: [groupId.rawValue],
+        )
+        return tx.database.lastInsertedRowID
+    }
+
     private static func fetchLocalAci(tx: DBReadTransaction) throws -> Aci? {
         let aciString = try String.fetchOne(
             tx.database,
@@ -7908,7 +7998,7 @@ public class GRDBSchemaMigrator {
         try tx.database.alter(table: "model_SignalRecipient") {
             $0.add(column: "status", .integer).notNull().defaults(to: 0)
         }
-        // For fetching whitelisted recipients.
+        // For fetching blocked/whitelisted recipients.
         try tx.database.create(index: "Recipient_Status", on: "model_SignalRecipient", columns: ["status"])
     }
 
@@ -7997,60 +8087,6 @@ public class GRDBSchemaMigrator {
             DELETE FROM BackupAttachmentUploadQueue
             """,
         )
-    }
-
-    static func migrateSecureValueRecovery(tx: DBWriteTransaction) throws {
-        // When this causes a unit test to fail, pre-migration enclaves have been
-        // torn down, and we don't need to delete anything from them. We should
-        // delete the `do` block that follows at that point in time.
-        assert({
-            let migrationEnclaves = Set([
-                // Production
-                "1240acbd4aa26974184844c8a46b1022d3957ac8a76c1fd8f5b1a15141ee0708",
-                "29cd63c87bea751e3bfd0fbd401279192e2e5c99948b4ee9437eafc4968355fb",
-
-                // Staging
-                "97f151f6ed078edbbfd72fa9cae694dcc08353f1f5e8d9ccd79a971b10ffc535",
-                "a75542d82da9f6914a1e31f8a7407053b99cc99a0e7291d8fbd394253e19b036",
-            ])
-            let allEnclaves = TSConstants.svr2Enclaves
-            let shouldMigrate = !migrationEnclaves.isDisjoint(with: allEnclaves.lazy.map(\.stringValue))
-            return shouldMigrate
-        }())
-        do {
-            try tx.database.execute(sql: """
-            INSERT OR IGNORE INTO keyvalue (collection, key, value)
-            SELECT 'SVR.Potential', j.value, X''
-            FROM keyvalue, json_each(keyvalue.value) j
-            WHERE
-                keyvalue.collection IS 'SecureValueRecovery2Impl'
-                AND keyvalue.key IS 'OldEnclavesToDeleteFrom'
-                AND json_valid(keyvalue.value)
-            """)
-
-            let currentEnclaveData = try Data.fetchOne(
-                tx.database,
-                sql: "SELECT value FROM keyvalue WHERE collection IS ? AND key IS ?",
-                arguments: ["kOWSKeyBackupService_Keys", "svr2_mrenclaveStringValue"],
-            )
-            if let currentEnclaveData {
-                let currentEnclaveString: String?
-                do {
-                    currentEnclaveString = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSString.self, from: currentEnclaveData) as String?
-                } catch {
-                    Logger.warn("couldn't decode current enclave: \(error)")
-                    currentEnclaveString = nil
-                }
-                if let currentEnclaveString {
-                    try tx.database.execute(
-                        sql: "INSERT OR IGNORE INTO keyvalue (collection, key, value) VALUES (?, ?, ?)",
-                        arguments: ["SVR.Potential", currentEnclaveString, Data()],
-                    )
-                } else {
-                    Logger.warn("couldn't migrate current enclave")
-                }
-            }
-        }
     }
 
     static func setHasEverHadPin(tx: DBWriteTransaction) throws {
@@ -8567,6 +8603,143 @@ public class GRDBSchemaMigrator {
         try tx.database.alter(table: "Attachment") {
             $0.add(column: "audioWaveformSamples", .blob)
         }
+    }
+
+    static func addShouldNotifyForUnreadRemindersWhenMutedColumn(tx: DBWriteTransaction) throws {
+        try tx.database.alter(table: "model_TSThread") {
+            $0.add(column: "shouldNotifyForUnreadRemindersWhenMuted", .boolean)
+        }
+    }
+
+    static func addGroupStatus(tx: DBWriteTransaction) throws {
+        try tx.database.alter(table: "GroupRecord") {
+            $0.add(column: "status", .integer).notNull().defaults(to: 0)
+        }
+        // For fetching blocked/whitelisted groups.
+        try tx.database.create(index: "GroupRecord_Status", on: "GroupRecord", columns: ["status"])
+    }
+
+    static func migrateBlocked(tx: DBWriteTransaction) throws {
+        let hasAnyBlockedWhitelistedRecipients = try Bool.fetchOne(
+            tx.database,
+            sql: """
+            SELECT EXISTS (SELECT * FROM "model_SignalRecipient" WHERE "status" = 1 AND "id" IN (SELECT "recipientId" FROM "BlockedRecipient"))
+            """,
+        ).owsFailUnwrap("must return value")
+
+        try tx.database.execute(sql: """
+        UPDATE "model_SignalRecipient" SET "status" = 2 WHERE "id" IN (SELECT "recipientId" FROM "BlockedRecipient")
+        """)
+
+        let whitelistedGroupIds = try Data?.fetchAll(
+            tx.database,
+            sql: """
+            SELECT unhex("key") FROM "keyvalue" WHERE "collection" = ?
+            """,
+            arguments: ["kOWSProfileManager_GroupWhitelistCollection"],
+        )
+        for whitelistedGroupId in whitelistedGroupIds {
+            guard
+                let whitelistedGroupId,
+                let groupId = GroupIdForMigrationV1(rawValue: whitelistedGroupId)
+            else {
+                Logger.warn("couldn't migrate malformed group id: \(whitelistedGroupId as Optional)")
+                continue
+            }
+            let rowId = try fetchOrCreateGroup(groupId: groupId, tx: tx)
+            try tx.database.execute(sql: "UPDATE GroupRecord SET status = 1 WHERE rowId = ?", arguments: [rowId])
+        }
+
+        let blockedGroupIds = try Data.fetchAll(
+            tx.database,
+            sql: "SELECT groupId FROM BlockedGroup",
+        )
+        for blockedGroupId in blockedGroupIds {
+            guard let groupId = GroupIdForMigrationV1(rawValue: blockedGroupId) else {
+                Logger.warn("couldn't migrate malformed group id: \(blockedGroupId)")
+                continue
+            }
+            let rowId = try fetchOrCreateGroup(groupId: groupId, tx: tx)
+            try tx.database.execute(sql: "UPDATE GroupRecord SET status = 2 WHERE rowId = ?", arguments: [rowId])
+        }
+
+        let hasAnyBlockedWhitelistedGroups = !Set(blockedGroupIds).isDisjoint(with: whitelistedGroupIds.lazy.compactMap({ $0 }))
+
+        if hasAnyBlockedWhitelistedRecipients || hasAnyBlockedWhitelistedGroups {
+            let randomToken = Randomness.generateRandomBytes(16)
+            try tx.database.execute(
+                sql: """
+                INSERT OR REPLACE INTO "keyvalue" ("collection", "key", "value") VALUES (?, ?, ?)
+                """,
+                arguments: ["kOWSProfileManager_Metadata", "leaveGroupTriggerTimestampKey", randomToken],
+            )
+        }
+    }
+
+    static func removeBlockedRecipients(tx: DBWriteTransaction) throws {
+        try tx.database.drop(table: "BlockedRecipient")
+    }
+
+    static func removeBlockedGroups(tx: DBWriteTransaction) throws {
+        try tx.database.drop(table: "BlockedGroup")
+    }
+
+    // The default is to have @ mentions and replies go through (even
+    // though the setting only said mentions). If the user turned that
+    // off for a chat (set mentionNotificationMode = 2), turn the new
+    // shouldNotifyForMentionsWhenMuted and shouldNotifyForRepliesWhenMuted
+    // off, otherwise inherit the app default.
+    static func migrateLegacyMentionNotificationMode(tx: DBWriteTransaction) throws {
+        try tx.database.execute(sql: """
+        UPDATE model_TSThread
+        SET shouldNotifyForMentionsWhenMuted = 0
+        WHERE mentionNotificationMode = 2
+        AND shouldNotifyForMentionsWhenMuted IS NULL
+        """)
+
+        try tx.database.execute(sql: """
+        UPDATE model_TSThread
+        SET shouldNotifyForRepliesWhenMuted = 0
+        WHERE mentionNotificationMode = 2
+        AND shouldNotifyForRepliesWhenMuted IS NULL
+        """)
+    }
+
+    // Record pending updates so the Storage Service Manager writes the migrated fields
+    static func scheduleStorageServiceUpdateForLegacyMentionNotifications(tx: DBWriteTransaction) {
+        var masterKeys = [GroupMasterKey]()
+
+        TSThread.anyEnumerate(
+            transaction: tx,
+            sql: """
+                SELECT *
+                FROM \(TSThread.databaseTableName)
+                WHERE \(threadColumn: .recordType) = ?
+                AND \(threadColumn: .mentionNotificationMode) = ?
+            """,
+            arguments: [
+                TSThreadType.groupThread.rawValue,
+                TSThread.MentionNotificationMode.doNotNotifyWhenMuted.rawValue,
+            ],
+        ) { thread, _ in
+            guard
+                let groupThread = thread as? TSGroupThread,
+                let groupModel = groupThread.groupModel as? TSGroupModelV2
+            else {
+                return
+            }
+            do {
+                masterKeys.append(try groupModel.masterKey())
+            } catch {
+                owsFailDebug("Missing master key: \(error)")
+            }
+        }
+
+        guard !masterKeys.isEmpty else {
+            return
+        }
+
+        StorageServiceOperation.recordPendingUpdates(updatedGroupV2MasterKeys: masterKeys, tx: tx)
     }
 
     static func dedupeSignalRecipients(tx: DBWriteTransaction) throws {

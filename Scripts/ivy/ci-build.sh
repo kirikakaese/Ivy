@@ -33,6 +33,7 @@ case "$PLATFORM" in
     DESTINATION="platform=iOS Simulator,id=$SIMULATOR"
     PLATFORM_SETTINGS=()
     TEST_SETTINGS=()
+    PLATFORM_FLAGS=()
     ;;
   macos)
     DESTINATION="platform=macOS,variant=Mac Catalyst,arch=arm64"
@@ -42,6 +43,10 @@ case "$PLATFORM" in
     # certificate, which CI does not have yet. Run this test on iOS only
     # until it does (see docs/BUILDING.md).
     TEST_SETTINGS=(-skip-testing:SignalTests/SelfSignedIdentityTest)
+    # The scheme collects code coverage, but Swift packages built for Mac
+    # Catalyst don't get the profiling runtime linked in, so their frameworks
+    # fail to link (___llvm_profile_runtime). Coverage is iOS only.
+    PLATFORM_FLAGS=(-enableCodeCoverage NO)
     ;;
   *)
     echo "unknown platform: $PLATFORM" >&2
@@ -57,6 +62,7 @@ COMMON=(
   -disableAutomaticPackageResolution
   -IDEBuildingContinueBuildingAfterErrors=YES
   COMPILATION_CACHE_ENABLE_CACHING=YES
+  ${PLATFORM_FLAGS[@]+"${PLATFORM_FLAGS[@]}"}
   ${PLATFORM_SETTINGS[@]+"${PLATFORM_SETTINGS[@]}"}
 )
 

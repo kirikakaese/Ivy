@@ -31,7 +31,7 @@ public protocol RegistrationCoordinatorLoader {
 
 public class RegistrationCoordinatorLoaderImpl: RegistrationCoordinatorLoader {
 
-    public enum Mode: Codable {
+    public enum Mode: Codable, CustomStringConvertible {
         case registering(RegisteringState)
         case reRegistering(ReregisteringLocalIdentifiers)
         case changingNumber(ChangeNumberState)
@@ -79,11 +79,17 @@ public class RegistrationCoordinatorLoaderImpl: RegistrationCoordinatorLoader {
                 return state.pniState != nil
             }
         }
+
+        public var description: String {
+            switch self {
+            case .registering: return "registering"
+            case .reRegistering: return "reRegistering"
+            case .changingNumber: return "changingNumber"
+            }
+        }
     }
 
-    private lazy var kvStore: KeyValueStore = {
-        KeyValueStore(collection: Constants.collectionName)
-    }()
+    private let kvStore: NewKeyValueStore = NewKeyValueStore(collection: Constants.collectionName)
 
     private let deps: RegistrationCoordinatorDependencies
 
@@ -101,11 +107,7 @@ public class RegistrationCoordinatorLoaderImpl: RegistrationCoordinatorLoader {
         logger: PrefixedLogger,
     ) -> RegistrationCoordinator {
         let mode = loadMode(transaction: transaction) ?? desiredMode.asInternalMode()
-        do {
-            try self.kvStore.setCodable(mode, key: Constants.modeKey, transaction: transaction)
-        } catch {
-            owsFailDebug("Failed to write registration mode to disk: \(error)")
-        }
+        self.kvStore.writeValueAsJSON(mode, forKey: Constants.modeKey, tx: transaction)
         if mode.hasPendingChangeNumber {
             // This should happen on app startup, but do it here too to be safe.
             deps.messagePipelineSupervisor.suspendMessageProcessingWithoutHandle(for: .pendingChangeNumber)
@@ -122,7 +124,7 @@ public class RegistrationCoordinatorLoaderImpl: RegistrationCoordinatorLoader {
 
     private func loadMode(transaction: DBReadTransaction) -> Mode? {
         do {
-            return try kvStore.getCodableValue(forKey: Constants.modeKey, transaction: transaction)
+            return try kvStore.fetchJSONAsValue(Mode.self, forKey: Constants.modeKey, tx: transaction)
         } catch {
             // Failed to parse, even though we know there is something there.
             // This is BAD. We might've been in the middle of change number, which NEEDS to recover.
@@ -147,7 +149,7 @@ public class RegistrationCoordinatorLoaderImpl: RegistrationCoordinatorLoader {
         }
 
         func clearPersistedMode(transaction: DBWriteTransaction) {
-            loader.kvStore.removeValue(forKey: Constants.modeKey, transaction: transaction)
+            loader.kvStore.removeValue(forKey: Constants.modeKey, tx: transaction)
         }
 
         func savePendingChangeNumber(
@@ -157,9 +159,7 @@ public class RegistrationCoordinatorLoaderImpl: RegistrationCoordinatorLoader {
         ) -> Mode.ChangeNumberState {
             var newState = oldState
             newState.pniState = pniState
-            failIfThrows {
-                try loader.kvStore.setCodable(Mode.changingNumber(newState), key: Constants.modeKey, transaction: transaction)
-            }
+            loader.kvStore.writeValueAsJSON(Mode.changingNumber(newState), forKey: Constants.modeKey, tx: transaction)
             let messagePipelineSupervisor = loader.deps.messagePipelineSupervisor
             let preKeyManager = loader.deps.preKeyManager
             transaction.addSyncCompletion {

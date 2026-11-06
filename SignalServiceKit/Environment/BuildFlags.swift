@@ -35,7 +35,6 @@ public enum BuildFlags {
     public enum Backups {
         public static let showOptimizeMedia = build <= .dev
 
-        public static let restoreFailOnAnyError = build <= .beta
         public static let detailedBenchLogging = build <= .internal
         public static let archiveErrorDisplay = build <= .internal
 
@@ -44,6 +43,8 @@ public enum BuildFlags {
 
         public static let mediaErrorDisplay = build <= .beta
         public static let useLowerDefaultListMediaRefreshInterval = build <= .beta
+
+        public static let takeoutExport = true
     }
 
     static let netBuildVariant: Net.BuildVariant = build <= .beta ? .beta : .production
@@ -61,24 +62,6 @@ public enum BuildFlags {
     // Turn this off 7 days after the last release without this change expires.
     // Then, delete all the code that's now dead.
     public static let migrateGroupRefreshedAt = true
-
-    /// Covers "deriving" audio details for incoming audio attachments, which
-    /// are being migrated to a sender-provided structure.
-    ///
-    /// Once a flag is turned off, delete all the code that's dead because it's
-    /// false. Note that disabling these flags may make it so we can remove
-    /// `audioDetails` arguments from Attachment methods, for example because we
-    /// may only ever then pass `nil` to those arguments.
-    public enum AudioWaveforms {
-        // Turn this off once enough clients are sending audio waveforms and
-        // durations in AttachmentPointer. Then, delete dead code.
-        public static let deriveAudioDetailsOnDownload = true
-
-        // Turn this off once enough clients will have populated their Backups
-        // with waveform samples. See `AudioWaveformFileMigrator`. Then, delete
-        // dead code.
-        public static let deriveAudioDetailsFromBackups = true
-    }
 
     public enum KeyTransparency {
         public static let conservativeSelfCheck = build <= .internal
@@ -99,17 +82,21 @@ public enum BuildFlags {
     static let hardDeleteGroupThreadsDuringRefresh = true
 
     /// New notification settings. Don't enable until Storage Service is integrated
-    public static let improvedNotifications = build <= .dev
+    public static let improvedNotifications = true
 
-    /// The ability to share account identifiers when sharing contacts.
-    public static let accountIdentifierSharing = false
+    /// The new contact sharing picker, which can share signal contacts by ACI. We plan to turn this
+    /// on after receive support has baked in prod for a bit so that more devices can handle the
+    /// ACI share.
+    public static let accountIdentifierSharingSend = build <= .internal
 
     public static let phoneNumberlessCanLinkNewDevices = false
-    public static let phoneNumberlessCanBeLinkedDevice = false
+    public static let phoneNumberlessCanBeLinkedDevice = true
 
-    public static let phoneNumberlessRegistration = false
+    public static let phoneNumberlessRegistration = build <= .dev
 
     public static let stickerReply = build <= .dev
+
+    public static let screenshotBlocking = build <= .internal
 }
 
 // MARK: -
@@ -269,6 +256,14 @@ public enum DebugFlags {
         messageSendsFail,
     ]
 
+    // MARK: - TestableFlag: Notifications
+
+    public static let unreadReminderIntervalSecs = TestableFlag<Int>(
+        0,
+        title: LocalizationNotNeeded("Unread Reminder Interval (secs)"),
+        details: LocalizationNotNeeded("How long after a message arrives in a muted chat its unread reminder fires. 0 = use the default interval."),
+    )
+
     // MARK: - TestableFlag: Voice Messages
 
     public static let voiceMessageBitRate = TestableFlag<Int>(
@@ -278,7 +273,7 @@ public enum DebugFlags {
     )
 
     public static let voiceMessageSampleRate = TestableFlag<Int>(
-        44100,
+        24000,
         title: LocalizationNotNeeded("Sample Rate"),
         details: LocalizationNotNeeded("The sample rate to use for new voice message recordings."),
     )
@@ -311,25 +306,6 @@ public enum DebugFlags {
         voiceMessageBitRate,
         voiceMessageSampleRate,
         voiceMessageAudioQuality,
-    ]
-
-    // MARK: - TestableFlag: Audio
-
-    public static let audioDeriveDetailsOnDownload = TestableFlag<Bool>(
-        BuildFlags.AudioWaveforms.deriveAudioDetailsOnDownload,
-        title: "Derive audio details on download",
-        details: "Compute waveforms and durations for downloaded audio attachments, rather than relying on sender-provided values.",
-    )
-
-    public static let audioDeriveDetailsFromBackups = TestableFlag<Bool>(
-        BuildFlags.AudioWaveforms.deriveAudioDetailsFromBackups,
-        title: "Derive audio details from Backups",
-        details: "Compute waveforms and durations for audio attachments restored from Backups, rather than relying on backed-up values.",
-    )
-
-    public static let audioTestableFlags: [AnyTestableFlag] = [
-        audioDeriveDetailsOnDownload,
-        audioDeriveDetailsFromBackups,
     ]
 }
 

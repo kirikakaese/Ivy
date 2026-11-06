@@ -6,7 +6,7 @@
 import Foundation
 import LibSignalClient
 
-public class BackupArchiveChatArchiver: BackupArchiveProtoStreamWriter {
+class BackupArchiveChatArchiver {
     typealias ChatId = BackupArchive.ChatId
     typealias ArchiveMultiFrameResult = BackupArchive.ArchiveMultiFrameResult
     typealias RestoreFrameResult = BackupArchive.RestoreFrameResult
@@ -50,8 +50,16 @@ public class BackupArchiveChatArchiver: BackupArchiveProtoStreamWriter {
         var completeFailureError: BackupArchive.FatalArchivingError?
         var partialErrors = [ArchiveFrameError]()
 
-        try context.bencher.wrapEnumeration(
-            tx: context.tx,
+        context.pinnedThreadRowIds = Set(
+            pinnedThreadManager.pinnedThreads(
+                filterToVisible: false,
+                tx: context.tx,
+            ).map { thread in
+                thread.sqliteRowId.owsFailUnwrap("must have row ID to be fetched")
+            },
+        )
+
+        try context.wrapEnumeration(
             enumerationBlock: { tx, block throws(CancellationError) in
                 try threadStore.enumerateNonStoryThreads(tx: tx, block: block)
             },
@@ -230,23 +238,26 @@ public class BackupArchiveChatArchiver: BackupArchiveProtoStreamWriter {
     ) -> ArchiveMultiFrameResult {
         var partialErrors = [ArchiveFrameError]()
 
-        let pinnedThreadOrder = pinnedThreadManager.pinnedThreadOrder(
-            forThread: thread.tsThread,
-            tx: context.tx,
-        )
+        let pinnedThreadOrder: Int64?
+        if context.pinnedThreadRowIds.contains(thread.threadRowId) {
+            pinnedThreadOrder = pinnedThreadManager.pinnedThreadOrder(
+                forThread: thread.tsThread,
+                tx: context.tx,
+            )
+        } else {
+            pinnedThreadOrder = nil
+        }
 
         let versionedExpireTimerToken = dmConfigurationStore.fetchOrBuildDefault(
             for: .thread(thread.tsThread),
             tx: context.tx,
         ).asVersionedToken
 
-        let dontNotifyForMentionsIfMuted = !thread.tsThread.shouldNotifyForMentionsWhenMutedLegacy
-
         var chat = BackupProto_Chat()
         chat.id = context.assignChatId(to: thread.tsThread).value
         chat.recipientID = recipientId.value
         chat.archived = thread.tsThread.isArchived
-        if let pinnedThreadOrder = pinnedThreadOrder.flatMap(UInt32.init(exactly:)) {
+        if let pinnedThreadOrder = pinnedThreadOrder.flatMap({ UInt32(exactly: $0) }) {
             chat.pinnedOrder = pinnedThreadOrder
         }
         if versionedExpireTimerToken.isEnabled {
@@ -262,7 +273,30 @@ public class BackupArchiveChatArchiver: BackupArchiveProtoStreamWriter {
             }
         }
         chat.markedUnread = thread.tsThread.isMarkedUnread
-        chat.dontNotifyForMentionsIfMuted = dontNotifyForMentionsIfMuted
+
+        if let shouldNotifyForCallsWhenMuted = thread.tsThread.shouldNotifyForCallsWhenMuted {
+            chat.notifyForCallsIfMuted = shouldNotifyForCallsWhenMuted
+        }
+        if let shouldNotifyForUnreadRemindersWhenMuted = thread.tsThread.shouldNotifyForUnreadRemindersWhenMuted {
+            chat.showUnreadReminders = shouldNotifyForUnreadRemindersWhenMuted
+        }
+
+        switch thread.threadType {
+        case .contact(let contactThread):
+            chat.dontNotifyForMentionsIfMuted = !contactThread.shouldNotifyForMentionsWhenMutedLegacy
+        case .groupV2(let groupThread):
+            let dontNotifyForMentionsIfMuted = groupThread.shouldNotifyForMentionsWhenMuted == false
+            chat.dontNotifyForMentionsIfMuted = dontNotifyForMentionsIfMuted
+            // dontNotifyForMentionsIfMuted = true and notifyForMentionsIfMuted = true is rejected
+            if dontNotifyForMentionsIfMuted {
+                chat.notifyForMentionsIfMuted = false
+            } else if let shouldNotifyForMentionsWhenMuted = groupThread.shouldNotifyForMentionsWhenMuted {
+                chat.notifyForMentionsIfMuted = shouldNotifyForMentionsWhenMuted
+            }
+            if let shouldNotifyForRepliesWhenMuted = groupThread.shouldNotifyForRepliesWhenMuted {
+                chat.notifyForRepliesIfMuted = shouldNotifyForRepliesWhenMuted
+            }
+        }
 
         let chatStyleResult = chatStyleArchiver.archiveChatStyle(
             thread: thread,
@@ -277,8 +311,9 @@ public class BackupArchiveChatArchiver: BackupArchiveProtoStreamWriter {
             partialErrors.append(error)
         }
 
-        let error: ArchiveFrameError? = Self.writeFrameToStream(
-            stream,
+        let error: ArchiveFrameError? = context.writeFrame(
+            toStream: stream,
+            flush: nil,
             frameBencher: frameBencher,
         ) {
             var frame = BackupProto_Frame()
@@ -418,10 +453,28 @@ public class BackupArchiveChatArchiver: BackupArchiveProtoStreamWriter {
             tx: context.tx,
         )
 
+        var shouldNotifyForMentionsWhenMuted: Bool?
+        var shouldNotifyForRepliesWhenMuted: Bool?
+        if case .groupV2 = chatThread.threadType {
+            if chat.dontNotifyForMentionsIfMuted {
+                shouldNotifyForMentionsWhenMuted = false
+            } else if chat.hasNotifyForMentionsIfMuted {
+                shouldNotifyForMentionsWhenMuted = chat.notifyForMentionsIfMuted
+            }
+
+            if chat.hasNotifyForRepliesIfMuted {
+                shouldNotifyForRepliesWhenMuted = chat.notifyForRepliesIfMuted
+            }
+        }
+
         do {
             try threadStore.update(
                 thread: chatThread,
                 dontNotifyForMentionsIfMuted: chat.dontNotifyForMentionsIfMuted,
+                shouldNotifyForCallsWhenMuted: chat.hasNotifyForCallsIfMuted ? chat.notifyForCallsIfMuted : nil,
+                shouldNotifyForMentionsWhenMuted: shouldNotifyForMentionsWhenMuted,
+                shouldNotifyForRepliesWhenMuted: shouldNotifyForRepliesWhenMuted,
+                shouldNotifyForUnreadRemindersWhenMuted: chat.hasShowUnreadReminders ? chat.showUnreadReminders : nil,
                 context: context,
             )
         } catch let error {

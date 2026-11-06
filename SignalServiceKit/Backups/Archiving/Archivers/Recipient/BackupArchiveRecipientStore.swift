@@ -5,7 +5,7 @@
 
 import GRDB
 
-public class BackupArchiveRecipientStore {
+class BackupArchiveRecipientStore {
 
     private let recipientTable: RecipientDatabaseTable
     private let searchableNameIndexer: SearchableNameIndexer
@@ -35,7 +35,7 @@ public class BackupArchiveRecipientStore {
         for address: BackupArchive.ContactAddress,
         tx: DBReadTransaction,
     ) -> SignalRecipient? {
-        return recipientTable.fetchRecipient(address: address.asInteropAddress(), tx: tx)
+        return recipientTable.fetchRecipient(address: address.asSignalServiceAddress(), tx: tx)
     }
 
     func fetchRecipient(

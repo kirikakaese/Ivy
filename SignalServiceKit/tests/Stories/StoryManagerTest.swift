@@ -97,10 +97,11 @@ class StoryManagerTest: SSKBaseTest {
             var recipient = recipientFetcher.fetchOrCreate(serviceId: author, tx: $0)
             profileManager.addRecipientToProfileWhitelist(&recipient, userProfileWriter: .localUser, tx: $0)
 
-            SSKEnvironment.shared.blockingManagerRef.addBlockedAddress(
-                SignalServiceAddress(author),
+            SSKEnvironment.shared.blockingManagerRef.addBlockedRecipient(
+                &recipient,
+                blockedAt: .now(),
                 blockMode: .localUser,
-                transaction: $0,
+                tx: $0,
             )
 
             XCTAssertNil(try? StoryManager.processIncomingStoryMessage(
@@ -147,17 +148,18 @@ class StoryManagerTest: SSKBaseTest {
 
             let thread = TSGroupThread.forUnitTest(masterKey: groupMasterKey)
             thread.anyInsert(transaction: $0)
-            _ = GroupRecord.insertRecord(
+            var groupRecord = GroupRecord.insertRecord(
                 groupId: groupId,
                 threadId: thread.sqliteRowId!,
                 masterKey: groupMasterKey,
                 refreshedAt: .distantPast,
                 tx: $0,
             )
-            SSKEnvironment.shared.blockingManagerRef.addBlockedGroupId(
-                groupId,
-                blockMode: .localUser,
-                transaction: $0,
+            SSKEnvironment.shared.blockingManagerRef.addBlockedGroup(
+                &groupRecord,
+                blockedAt: .now(),
+                blockMode: .storageService,
+                tx: $0,
             )
 
             XCTAssertNil(try? StoryManager.processIncomingStoryMessage(

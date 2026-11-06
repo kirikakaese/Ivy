@@ -29,7 +29,7 @@ public class RegistrationCoordinatorTest {
     private var mockIdentityManager: OWSIdentityManager!
     private var mockMessagePipelineSupervisor: RegistrationCoordinatorImpl.TestMocks.MessagePipelineSupervisor!
     private var mockMessageProcessor: RegistrationCoordinatorImpl.TestMocks.MessageProcessor!
-    private var mockURLSession: TSRequestOWSURLSessionMock!
+    private var mockUsernamesService: MockUsernamesService!
     private var networkManagerMock: MockNetworkManager!
     private var ows2FAManagerMock: RegistrationCoordinatorImpl.TestMocks.OWS2FAManager!
     private var phoneNumberDiscoverabilityManagerMock: MockPhoneNumberDiscoverabilityManager!
@@ -46,8 +46,6 @@ public class RegistrationCoordinatorTest {
     private var svrAuthCredentialManager: SVRAuthCredentialManager!
     private var timeoutProviderMock: RegistrationCoordinatorImpl.TestMocks.TimeoutProvider!
     private var tsAccountManagerMock: MockTSAccountManager!
-    private var usernameApiClientMock: RegistrationCoordinatorImpl.TestMocks.UsernameApiClient!
-    private var usernameLinkManagerMock: MockUsernameLinkManager!
     private var localFileBackupManager: LocalFileBackupManager!
 
     class RegistrationTestRun {
@@ -82,6 +80,7 @@ public class RegistrationCoordinatorTest {
         svrAuthCredentialManager = SVRAuthCredentialManager.mock()
         mockMessagePipelineSupervisor = RegistrationCoordinatorImpl.TestMocks.MessagePipelineSupervisor()
         mockMessageProcessor = RegistrationCoordinatorImpl.TestMocks.MessageProcessor()
+        mockUsernamesService = MockUsernamesService()
         networkManagerMock = MockNetworkManager()
         ows2FAManagerMock = RegistrationCoordinatorImpl.TestMocks.OWS2FAManager()
         phoneNumberDiscoverabilityManagerMock = MockPhoneNumberDiscoverabilityManager()
@@ -94,8 +93,6 @@ public class RegistrationCoordinatorTest {
         storageServiceManagerMock = RegistrationCoordinatorImpl.TestMocks.StorageServiceManager(run: testRun)
         timeoutProviderMock = RegistrationCoordinatorImpl.TestMocks.TimeoutProvider()
         tsAccountManagerMock = MockTSAccountManager()
-        usernameApiClientMock = RegistrationCoordinatorImpl.TestMocks.UsernameApiClient()
-        usernameLinkManagerMock = MockUsernameLinkManager()
 
         let recipientDbTable = RecipientDatabaseTable()
         let recipientFetcher = RecipientFetcher(
@@ -119,13 +116,6 @@ public class RegistrationCoordinatorTest {
             tsAccountManager: tsAccountManagerMock,
         )
 
-        let mockURLSession = TSRequestOWSURLSessionMock()
-        self.mockURLSession = mockURLSession
-        let mockSignalService = OWSSignalServiceMock()
-        mockSignalService.mockUrlSessionBuilder = { _, _, _ in
-            return mockURLSession
-        }
-
         let localFileBackupManager = LocalFileBackupManager(
             appReadiness: AppReadinessMock(),
             db: db,
@@ -133,6 +123,7 @@ public class RegistrationCoordinatorTest {
             attachmentStore: AttachmentStore(),
             attachmentValidator: AttachmentContentValidatorMock(),
             orphanedAttachmentCleaner: OrphanedAttachmentCleanerImpl(dateProvider: { Date() }, db: db),
+            localFileBackupAttachmentMetadataStore: LocalFileBackupAttachmentMetadataStore(),
             localFileBackupStore: LocalFileBackupStore(),
             securityScopedBookmarkAccess: SecurityScopedBookmarkAccessMock(hasAccess: true, url: nil),
             restoreProgress: LocalFileBackupAttachmentRestoreProgress(),
@@ -172,8 +163,9 @@ public class RegistrationCoordinatorTest {
             registrationWebSocketManager: MockRegistrationWebSocketManager(),
             remoteConfigManager: StubbableRemoteConfigManager(),
             securityScopedBookmarkAccess: SecurityScopedBookmarkAccessMock(hasAccess: true, url: nil),
+            serviceProvider: MockServiceProvider(mockServices: [mockUsernamesService!]),
             sessionManager: sessionManager,
-            signalService: mockSignalService,
+            signalService: OWSSignalServiceMock(),
             storageServiceManager: storageServiceManagerMock,
             svr: svr,
             svrLocalStorage: SVRLocalStorage(),
@@ -181,8 +173,6 @@ public class RegistrationCoordinatorTest {
             timeoutProvider: timeoutProviderMock,
             tsAccountManager: tsAccountManagerMock,
             udManager: RegistrationCoordinatorImpl.TestMocks.UDManager(),
-            usernameApiClient: usernameApiClientMock,
-            usernameLinkManager: usernameLinkManagerMock,
         )
         registrationCoordinatorLoader = RegistrationCoordinatorLoaderImpl(dependencies: dependencies)
     }
@@ -349,18 +339,14 @@ public class RegistrationCoordinatorTest {
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
         // And will finalize prekeys after success.
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
 
         let identityResponse = Stubs.accountIdentityResponse()
         var authPassword: String!
         let expectedRequest = createAccountWithRecoveryPw(initialMasterKey.deriveRegistrationRecoveryPassword())
-        mockURLSession.addResponse(TSRequestOWSURLSessionMock.Response(
-            matcher: { request in
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { request in
                 // The password is generated internally by RegistrationCoordinator.
                 // Extract it so we can check that the same password sent to the server
                 // to register is used later for other requests.
@@ -377,7 +363,7 @@ public class RegistrationCoordinatorTest {
                 return request.url == expectedRequest.url
             },
             statusCode: 200,
-            bodyData: try JSONEncoder().encode(identityResponse),
+            bodyJson: identityResponse,
         ))
 
         func expectedAuth() -> ChatServiceAuth {
@@ -415,14 +401,9 @@ public class RegistrationCoordinatorTest {
         // our username.
         let mockUsernameLink: Usernames.UsernameLink = .mocked
         localUsernameManagerMock.startingUsernameState = .available(username: "boba.42", usernameLink: mockUsernameLink)
-        usernameApiClientMock.confirmReservedUsernameMocks = [{ _, _, chatServiceAuth in
-            #expect(chatServiceAuth == .explicit(
-                aci: identityResponse.localIdentifiers.aci,
-                deviceId: .primary,
-                password: authPassword,
-            ))
-            return .success(usernameLinkHandle: mockUsernameLink.handle)
-        }]
+        mockUsernamesService.confirmUsernameMocks.set([{ _, _ in
+            return mockUsernameLink.handle
+        }])
 
         // Once we do the username reclamation,
         // then we are finished!
@@ -485,18 +466,14 @@ public class RegistrationCoordinatorTest {
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
         // And we finalize them after.
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
 
         let identityResponse = Stubs.accountIdentityResponse()
         var authPassword: String!
         let expectedRequest = createAccountWithRecoveryPw(initialMasterKey.deriveRegistrationRecoveryPassword())
-        mockURLSession.addResponse(TSRequestOWSURLSessionMock.Response(
-            matcher: { request in
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { request in
                 authPassword = request.authPassword
                 let requestAttributes = Self.attributesFromCreateAccountRequest(request)
                 let recoveryPw = initialMasterKey.regRecoveryPw
@@ -506,7 +483,7 @@ public class RegistrationCoordinatorTest {
                 return request.url == expectedRequest.url
             },
             statusCode: 200,
-            bodyData: try JSONEncoder().encode(identityResponse),
+            bodyJson: identityResponse,
         ))
 
         func expectedAuth() -> ChatServiceAuth {
@@ -613,26 +590,15 @@ public class RegistrationCoordinatorTest {
 
         // And we finalize them after.
         // Set up a list of mocks that should be returned in order
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(!didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(!didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
 
         // Fail the request; the reg recovery pw is invalid.
         let expectedRecoveryPwRequest = createAccountWithRecoveryPw(aep.getMasterKey().deriveRegistrationRecoveryPassword())
-        let failResponse = TSRequestOWSURLSessionMock.Response(
-            urlSuffix: expectedRecoveryPwRequest.url.absoluteString,
-            statusCode: RegistrationServiceResponses.AccountCreationResponseCodes.unauthorized.rawValue,
-        )
-        mockURLSession.addResponse(failResponse)
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { $0.url == expectedRecoveryPwRequest.url },
+            statusCode: 401,
+        ))
 
         // Once the first request fails, it should try an start a session. Resolve with a session.
         sessionManager.addBeginSessionResponseMock(.success(stubs.session()))
@@ -725,34 +691,21 @@ public class RegistrationCoordinatorTest {
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
 
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(!didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(!didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(!didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(!didSucceed)
-        }
-
         // Fail the first request; the reglock is invalid.
         let expectedRecoveryPwRequest = createAccountWithRecoveryPw(aep.getMasterKey().deriveRegistrationRecoveryPassword())
-        let failResponse = TSRequestOWSURLSessionMock.Response(
-            urlSuffix: expectedRecoveryPwRequest.url.absoluteString,
-            statusCode: RegistrationServiceResponses.AccountCreationResponseCodes.reglockFailed.rawValue,
+        let failResponse = MockNetworkManager.mockResponse(
+            matchingRequest: { $0.url == expectedRecoveryPwRequest.url },
+            statusCode: 423,
             bodyJson: EncodableRegistrationLockFailureResponse(
                 timeRemainingMs: 10,
                 svr2AuthCredential: Stubs.svr2AuthCredential,
             ),
         )
-        mockURLSession.addResponse(failResponse)
+        networkManagerMock.asyncRequestHandlers.append(failResponse)
 
         // Once the request fails, we should try again with the reglock
         // token, this time.
-        mockURLSession.addResponse(failResponse)
+        networkManagerMock.asyncRequestHandlers.append(failResponse)
 
         // Once the second request fails, it should try an start a session.
 
@@ -829,52 +782,35 @@ public class RegistrationCoordinatorTest {
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
 
         // And we finalize them after.
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(!didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(!didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
 
         // Fail the request with a network error.
-        let expectedRecoveryPwRequest = createAccountWithRecoveryPw(initialMasterKey.deriveRegistrationRecoveryPassword())
-        let failResponse = TSRequestOWSURLSessionMock.Response.networkError(
-            matcher: { _ in
-                self.testRun.addObservedStep(.failedRequest)
-                return true
-            },
-            url: expectedRecoveryPwRequest.url,
-        )
-        mockURLSession.addResponse(failResponse)
+        networkManagerMock.asyncRequestHandlers.append({ _, _ in
+            self.testRun.addObservedStep(.failedRequest)
+            throw OWSHTTPError.networkFailure(.unknownNetworkFailure)
+        })
 
         let identityResponse = Stubs.accountIdentityResponse()
         var authPassword: String!
 
         // Once the first request fails, it should retry. Resolve with success
         let expectedRequest = createAccountWithRecoveryPw(initialMasterKey.deriveRegistrationRecoveryPassword())
-        mockURLSession.addResponse(
-            TSRequestOWSURLSessionMock.Response(
-                matcher: { request in
-                    if request.url == expectedRequest.url {
-                        self.testRun.addObservedStep(.createAccount)
-                        // The password is generated internally by RegistrationCoordinator.
-                        // Extract it so we can check that the same password sent to the server
-                        // to register is used later for other requests.
-                        authPassword = request.authPassword
-                        return true
-                    }
-                    return false
-                },
-                statusCode: 200,
-                bodyData: try! JSONEncoder().encode(identityResponse),
-            ),
-        )
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { request in
+                if request.url == expectedRequest.url {
+                    self.testRun.addObservedStep(.createAccount)
+                    // The password is generated internally by RegistrationCoordinator.
+                    // Extract it so we can check that the same password sent to the server
+                    // to register is used later for other requests.
+                    authPassword = request.authPassword
+                    return true
+                }
+                return false
+            },
+            statusCode: 200,
+            bodyJson: identityResponse,
+        ))
 
         func expectedAuth() -> ChatServiceAuth {
             return ChatServiceAuth.explicit(
@@ -916,15 +852,10 @@ public class RegistrationCoordinatorTest {
         // Once we restore from storage service, we should attempt to reclaim our username.
         let mockUsernameLink: Usernames.UsernameLink = .mocked
         localUsernameManagerMock.startingUsernameState = .available(username: "boba.42", usernameLink: mockUsernameLink)
-        usernameApiClientMock.confirmReservedUsernameMocks = [{ _, _, chatServiceAuth in
+        mockUsernamesService.confirmUsernameMocks.set([{ _, _ in
             self.testRun.addObservedStep(.confirmReservedUsername)
-            #expect(chatServiceAuth == .explicit(
-                aci: identityResponse.localIdentifiers.aci,
-                deviceId: .primary,
-                password: authPassword,
-            ))
-            return .success(usernameLinkHandle: mockUsernameLink.handle)
-        }]
+            return mockUsernameLink.handle
+        }])
 
         // Once we do the storage service restore,
         // then we are finished!
@@ -951,8 +882,6 @@ public class RegistrationCoordinatorTest {
             .createPreKeys,
             .createPreKeys,
             .failedRequest,
-            .finalizePreKeys,
-            .finalizePreKeys,
             .requestPushToken,
             .createPreKeys,
             .createPreKeys,
@@ -1021,20 +950,11 @@ public class RegistrationCoordinatorTest {
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
 
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, _ in }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, _ in }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, _ in }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, _ in }
-
         // Fail the first request;
         let expectedRecoveryPwRequest = createAccountWithRecoveryPw(aep.getMasterKey().deriveRegistrationRecoveryPassword())
-        mockURLSession.addResponse(TSRequestOWSURLSessionMock.Response(
-            urlSuffix: expectedRecoveryPwRequest.url.absoluteString,
-            statusCode: RegistrationServiceResponses.AccountCreationResponseCodes.regRecoveryPasswordRejected.rawValue,
-            bodyJson: EncodableRegistrationLockFailureResponse(
-                timeRemainingMs: 10,
-                svr2AuthCredential: Stubs.svr2AuthCredential,
-            ),
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { $0.url == expectedRecoveryPwRequest.url },
+            statusCode: 403,
         ))
 
         // Once the first request fails, it should try an start a session.
@@ -1062,9 +982,9 @@ public class RegistrationCoordinatorTest {
         // Once the request fails, we should try again with the reglock
         // token, this time.
         let expectedRecoveryPwRequest2 = createAccountWithSession(recoveryPassword: aep.getMasterKey().deriveRegistrationRecoveryPassword())
-        mockURLSession.addResponse(TSRequestOWSURLSessionMock.Response(
-            urlSuffix: expectedRecoveryPwRequest2.url.absoluteString,
-            statusCode: RegistrationServiceResponses.AccountCreationResponseCodes.reglockFailed.rawValue,
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { $0.url == expectedRecoveryPwRequest2.url },
+            statusCode: 423,
             bodyJson: EncodableRegistrationLockFailureResponse(
                 timeRemainingMs: 10000,
                 svr2AuthCredential: Stubs.svr2AuthCredential,
@@ -1130,21 +1050,6 @@ public class RegistrationCoordinatorTest {
         ]
         storeSvrCredentials(svr2CredentialCandidates)
 
-        // Give it a phone number, which should cause it to check the auth credentials.
-        // Match the main auth credential.
-        let expectedSVR2CheckRequest = RegistrationRequestFactory.svr2AuthCredentialCheckRequest(
-            e164: Stubs.e164,
-            credentials: svr2CredentialCandidates,
-            logger: .empty(),
-        )
-        mockURLSession.addResponse(TSRequestOWSURLSessionMock.Response(
-            urlSuffix: expectedSVR2CheckRequest.url.absoluteString,
-            statusCode: 200,
-            bodyJson: RegistrationServiceResponses.SVR2AuthCheckResponse(matches: [
-                "\(Stubs.svr2AuthCredential.credential.username):\(Stubs.svr2AuthCredential.credential.password)": .match,
-            ]),
-        ))
-
         // NOTE: We expect to skip opening path steps because
         // if we have a SVR master key locally, this _must_ be
         // a previously registered device, and we can skip intros.
@@ -1174,28 +1079,27 @@ public class RegistrationCoordinatorTest {
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
 
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(!didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(!didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
 
         // Fail the first request; the reglock is invalid.
         let expectedRecoveryPwRequest = createAccountWithRecoveryPw(masterKey.deriveRegistrationRecoveryPassword())
-        mockURLSession.addResponse(TSRequestOWSURLSessionMock.Response(
-            urlSuffix: expectedRecoveryPwRequest.url.absoluteString,
-            statusCode: RegistrationServiceResponses.AccountCreationResponseCodes.regRecoveryPasswordRejected.rawValue,
-            bodyJson: EncodableRegistrationLockFailureResponse(
-                timeRemainingMs: 10,
-                svr2AuthCredential: Stubs.svr2AuthCredential,
-            ),
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { $0.url == expectedRecoveryPwRequest.url },
+            statusCode: 403,
+        ))
+
+        let expectedSVR2CheckRequest = RegistrationRequestFactory.svr2AuthCredentialCheckRequest(
+            e164: Stubs.e164,
+            credentials: svr2CredentialCandidates,
+            logger: .empty(),
+        )
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { $0.url.relativeString.hasSuffix(expectedSVR2CheckRequest.url.absoluteString) },
+            statusCode: 200,
+            bodyJson: RegistrationServiceResponses.SVR2AuthCheckResponse(matches: [
+                "\(Stubs.svr2AuthCredential.credential.username):\(Stubs.svr2AuthCredential.credential.password)": .match,
+            ]),
         ))
 
         // Once the request fails, we should try again with the reglock
@@ -1203,8 +1107,8 @@ public class RegistrationCoordinatorTest {
         let accountIdentityResponse = Stubs.accountIdentityResponse()
         var authPassword: String!
         let expectedRecoveryPwRequest2 = createAccountWithRecoveryPw(remoteMasterKey.deriveRegistrationRecoveryPassword())
-        mockURLSession.addResponse(TSRequestOWSURLSessionMock.Response(
-            matcher: { request in
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { request in
                 authPassword = request.authPassword
                 let requestAttributes = Self.attributesFromCreateAccountRequest(request)
                 #expect((request.parameters["recoveryPassword"] as? String) == remoteMasterKey.regRecoveryPw)
@@ -1248,14 +1152,9 @@ public class RegistrationCoordinatorTest {
         // our username.
         let mockUsernameLink: Usernames.UsernameLink = .mocked
         localUsernameManagerMock.startingUsernameState = .available(username: "boba.42", usernameLink: mockUsernameLink)
-        usernameApiClientMock.confirmReservedUsernameMocks = [{ _, _, chatServiceAuth in
-            #expect(chatServiceAuth == .explicit(
-                aci: accountIdentityResponse.localIdentifiers.aci,
-                deviceId: .primary,
-                password: authPassword,
-            ))
-            return .success(usernameLinkHandle: mockUsernameLink.handle)
-        }]
+        mockUsernamesService.confirmUsernameMocks.set([{ _, _ in
+            return mockUsernameLink.handle
+        }])
 
         storageServiceManagerMock.addRotateManifestMock({ _, _ in return .value(()) })
 
@@ -1327,21 +1226,6 @@ public class RegistrationCoordinatorTest {
         ]
         storeSvrCredentials(svr2CredentialCandidates)
 
-        // Give it a phone number, which should cause it to check the auth credentials.
-        // Match the main auth credential.
-        let expectedSVR2CheckRequest = RegistrationRequestFactory.svr2AuthCredentialCheckRequest(
-            e164: Stubs.e164,
-            credentials: svr2CredentialCandidates,
-            logger: .empty(),
-        )
-        mockURLSession.addResponse(TSRequestOWSURLSessionMock.Response(
-            urlSuffix: expectedSVR2CheckRequest.url.absoluteString,
-            statusCode: 200,
-            bodyJson: RegistrationServiceResponses.SVR2AuthCheckResponse(matches: [
-                "\(Stubs.svr2AuthCredential.credential.username):\(Stubs.svr2AuthCredential.credential.password)": .match,
-            ]),
-        ))
-
         // NOTE: We expect to skip opening path steps because
         // if we have a SVR master key locally, this _must_ be
         // a previously registered device, and we can skip intros.
@@ -1372,25 +1256,28 @@ public class RegistrationCoordinatorTest {
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
 
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, _ in }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, _ in }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, _ in }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, _ in }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, _ in }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, _ in }
-
         // Fail the first request; the local key is invalid.
         let expectedRecoveryPwRequest = createAccountWithRecoveryPw(masterKey.deriveRegistrationRecoveryPassword())
-        let failResponse = TSRequestOWSURLSessionMock.Response(
-            urlSuffix: expectedRecoveryPwRequest.url.absoluteString,
-            statusCode: RegistrationServiceResponses.AccountCreationResponseCodes.regRecoveryPasswordRejected.rawValue,
-            bodyJson: EncodableRegistrationLockFailureResponse(
-                timeRemainingMs: 10000,
-                svr2AuthCredential: Stubs.svr2AuthCredential,
-            ),
+        let failResponse = MockNetworkManager.mockResponse(
+            matchingRequest: { $0.url == expectedRecoveryPwRequest.url },
+            statusCode: 403,
         )
-        mockURLSession.addResponse(failResponse)
-        mockURLSession.addResponse(failResponse)
+        networkManagerMock.asyncRequestHandlers.append(failResponse)
+
+        let expectedSVR2CheckRequest = RegistrationRequestFactory.svr2AuthCredentialCheckRequest(
+            e164: Stubs.e164,
+            credentials: svr2CredentialCandidates,
+            logger: .empty(),
+        )
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { $0.url.relativeString.hasSuffix(expectedSVR2CheckRequest.url.absoluteString) },
+            statusCode: 200,
+            bodyJson: RegistrationServiceResponses.SVR2AuthCheckResponse(matches: [
+                "\(Stubs.svr2AuthCredential.credential.username):\(Stubs.svr2AuthCredential.credential.password)": .match,
+            ]),
+        ))
+
+        networkManagerMock.asyncRequestHandlers.append(failResponse)
 
         pushRegistrationManagerMock.setReceivePreAuthChallengeTokenMock({
             try! await Task.sleep(nanoseconds: TimeInterval.infinity.clampedNanoseconds)
@@ -1407,9 +1294,9 @@ public class RegistrationCoordinatorTest {
         // token, this time.
         // The third attempt should fall back to session using the remote key(?)
         let expectedRecoveryPwRequest3 = createAccountWithSession(recoveryPassword: remoteMasterKey.deriveRegistrationRecoveryPassword())
-        mockURLSession.addResponse(TSRequestOWSURLSessionMock.Response(
-            urlSuffix: expectedRecoveryPwRequest3.url.absoluteString,
-            statusCode: RegistrationServiceResponses.AccountCreationResponseCodes.reglockFailed.rawValue,
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { $0.url == expectedRecoveryPwRequest3.url },
+            statusCode: 423,
             bodyJson: EncodableRegistrationLockFailureResponse(
                 timeRemainingMs: 10000,
                 svr2AuthCredential: Stubs.svr2AuthCredential,
@@ -1511,28 +1398,22 @@ public class RegistrationCoordinatorTest {
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
 
         // And we finalize them after.
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
 
         // Now still at it should make a reg recovery pw request
         let accountIdentityResponse = Stubs.accountIdentityResponse()
         var authPassword: String!
         let expectedRegRecoveryPwRequest = createAccountWithRecoveryPw(initialMasterKey.deriveRegistrationRecoveryPassword())
-        mockURLSession.addResponse(
-            TSRequestOWSURLSessionMock.Response(
-                matcher: { request in
-                    self.testRun.addObservedStep(.createAccount)
-                    authPassword = request.authPassword
-                    return request.url == expectedRegRecoveryPwRequest.url
-                },
-                statusCode: 200,
-                bodyJson: accountIdentityResponse,
-            ),
-        )
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { request in
+                self.testRun.addObservedStep(.createAccount)
+                authPassword = request.authPassword
+                return request.url == expectedRegRecoveryPwRequest.url
+            },
+            statusCode: 200,
+            bodyJson: accountIdentityResponse,
+        ))
 
         func expectedAuth() -> ChatServiceAuth {
             return ChatServiceAuth.explicit(
@@ -1573,15 +1454,10 @@ public class RegistrationCoordinatorTest {
         // Once we restore from storage service, we should attempt to reclaim our username.
         let mockUsernameLink: Usernames.UsernameLink = .mocked
         localUsernameManagerMock.startingUsernameState = .available(username: "boba.42", usernameLink: mockUsernameLink)
-        usernameApiClientMock.confirmReservedUsernameMocks = [{ _, _, chatServiceAuth in
+        mockUsernamesService.confirmUsernameMocks.set([{ _, _ in
             self.testRun.addObservedStep(.confirmReservedUsername)
-            #expect(chatServiceAuth == .explicit(
-                aci: accountIdentityResponse.localIdentifiers.aci,
-                deviceId: .primary,
-                password: authPassword,
-            ))
-            return .success(usernameLinkHandle: mockUsernameLink.handle)
-        }]
+            return mockUsernameLink.handle
+        }])
 
         // Once we do the storage service restore, then we are finished!
 
@@ -1696,15 +1572,13 @@ public class RegistrationCoordinatorTest {
             credentials: credentialCandidates,
             logger: .empty(),
         )
-        mockURLSession.addResponse(
-            TSRequestOWSURLSessionMock.Response(
-                urlSuffix: expectedSVRCheckRequest.url.absoluteString,
-                statusCode: 200,
-                bodyJson: RegistrationServiceResponses.SVR2AuthCheckResponse(matches: [
-                    "\(Stubs.svr2AuthCredential.credential.username):\(Stubs.svr2AuthCredential.credential.password)": .notMatch,
-                ]),
-            ),
-        )
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { $0.url.relativeString.hasSuffix(expectedSVRCheckRequest.url.absoluteString) },
+            statusCode: 200,
+            bodyJson: RegistrationServiceResponses.SVR2AuthCheckResponse(matches: [
+                "\(Stubs.svr2AuthCredential.credential.username):\(Stubs.svr2AuthCredential.credential.password)": .notMatch,
+            ]),
+        ))
 
         // Once the first request fails, it should try an start a session.
         // We'll ask for a push challenge, though we don't need to resolve it in this test.
@@ -1728,15 +1602,13 @@ public class RegistrationCoordinatorTest {
             credentials: credentialCandidates,
             logger: .empty(),
         )
-        mockURLSession.addResponse(
-            TSRequestOWSURLSessionMock.Response(
-                urlSuffix: expectedSVRCheckRequest.url.absoluteString,
-                statusCode: 200,
-                bodyJson: RegistrationServiceResponses.SVR2AuthCheckResponse(matches: [
-                    "\(Stubs.svr2AuthCredential.credential.username):\(Stubs.svr2AuthCredential.credential.password)": .match,
-                ]),
-            ),
-        )
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { $0.url.relativeString.hasSuffix(expectedSVRCheckRequest.url.absoluteString) },
+            statusCode: 200,
+            bodyJson: RegistrationServiceResponses.SVR2AuthCheckResponse(matches: [
+                "\(Stubs.svr2AuthCredential.credential.username):\(Stubs.svr2AuthCredential.credential.password)": .match,
+            ]),
+        ))
 
         // Give it a phone number, which should cause it to check the auth credentials.
         // Now we should expect to be at verification code entry since we already set the phone number.
@@ -1789,16 +1661,14 @@ public class RegistrationCoordinatorTest {
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
 
         let expectedRequest = createAccountWithSession(recoveryPassword: newMasterKey.deriveRegistrationRecoveryPassword())
-        mockURLSession.addResponse(
-            TSRequestOWSURLSessionMock.Response(
-                matcher: { request in
-                    authPassword = request.authPassword
-                    return request.url == expectedRequest.url
-                },
-                statusCode: 200,
-                bodyJson: accountIdentityResponse,
-            ),
-        )
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { request in
+                authPassword = request.authPassword
+                return request.url == expectedRequest.url
+            },
+            statusCode: 200,
+            bodyJson: accountIdentityResponse,
+        ))
 
         func expectedAuth() -> ChatServiceAuth {
             return ChatServiceAuth.explicit(
@@ -1809,12 +1679,8 @@ public class RegistrationCoordinatorTest {
         }
 
         // Once we are registered, we should finalize prekeys.
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
 
         // Finish the validation.
         var didMarkPinEnabled = false
@@ -1839,14 +1705,9 @@ public class RegistrationCoordinatorTest {
         // no different impact on the rest of registration.
         let mockUsernameLink: Usernames.UsernameLink = .mocked
         localUsernameManagerMock.startingUsernameState = .available(username: "boba.42", usernameLink: mockUsernameLink)
-        usernameApiClientMock.confirmReservedUsernameMocks = [{ _, _, chatServiceAuth in
-            #expect(chatServiceAuth == .explicit(
-                aci: accountIdentityResponse.localIdentifiers.aci,
-                deviceId: .primary,
-                password: authPassword,
-            ))
+        mockUsernamesService.confirmUsernameMocks.set([{ _, _ in
             throw OWSGenericError("Something went wrong :(")
-        }]
+        }])
 
         // And once we do the storage service restore,
         // then we are finished!
@@ -2821,20 +2682,18 @@ public class RegistrationCoordinatorTest {
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
 
         let expectedRequest = createAccountWithSession(recoveryPassword: newMasterKey.deriveRegistrationRecoveryPassword())
-        mockURLSession.addResponse(
-            TSRequestOWSURLSessionMock.Response(
-                matcher: { request in
-                    authPassword = request.authPassword
-                    let requestAttributes = Self.attributesFromCreateAccountRequest(request)
-                    // These should be empty if sessionId is sent
-                    #expect((request.parameters["recoveryPassword"] as? String) == nil)
-                    #expect(requestAttributes.registrationRecoveryPassword == nil)
-                    return request.url == expectedRequest.url
-                },
-                statusCode: 200,
-                bodyJson: accountIdentityResponse,
-            ),
-        )
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { request in
+                authPassword = request.authPassword
+                let requestAttributes = Self.attributesFromCreateAccountRequest(request)
+                // These should be empty if sessionId is sent
+                #expect((request.parameters["recoveryPassword"] as? String) == nil)
+                #expect(requestAttributes.registrationRecoveryPassword == nil)
+                return request.url == expectedRequest.url
+            },
+            statusCode: 200,
+            bodyJson: accountIdentityResponse,
+        ))
 
         func expectedAuth() -> ChatServiceAuth {
             return ChatServiceAuth.explicit(
@@ -2845,12 +2704,8 @@ public class RegistrationCoordinatorTest {
         }
 
         // Once we are registered, we should finalize prekeys.
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
 
         // When we skip the pin, it should skip any SVR backups.
         ows2FAManagerMock.didMarkPinEnabled = { _ in
@@ -2936,16 +2791,14 @@ public class RegistrationCoordinatorTest {
         preKeyManagerMock.addCreatePreKeysMock(Stubs.preKeyBundle(identity:))
 
         let expectedRequest = createAccountWithSession(recoveryPassword: newMasterKey.deriveRegistrationRecoveryPassword())
-        mockURLSession.addResponse(
-            TSRequestOWSURLSessionMock.Response(
-                matcher: { request in
-                    authPassword = request.authPassword
-                    return request.url == expectedRequest.url
-                },
-                statusCode: 200,
-                bodyJson: accountIdentityResponse,
-            ),
-        )
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { request in
+                authPassword = request.authPassword
+                return request.url == expectedRequest.url
+            },
+            statusCode: 200,
+            bodyJson: accountIdentityResponse,
+        ))
 
         func expectedAuth() -> ChatServiceAuth {
             return ChatServiceAuth.explicit(
@@ -2956,12 +2809,8 @@ public class RegistrationCoordinatorTest {
         }
 
         // Once we are registered, we should finalize prekeys.
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
-        preKeyManagerMock.addFinalizePreKeyBundleMock { _, didSucceed in
-            #expect(didSucceed)
-        }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
+        preKeyManagerMock.addFinalizePreKeyBundleMock { _ in }
 
         // When we skip the pin, it should skip any SVR backups.
         ows2FAManagerMock.didMarkPinEnabled = { _ in
@@ -3264,8 +3113,8 @@ public class RegistrationCoordinatorTest {
             credentials: svr2CredentialCandidates,
             logger: .empty(),
         )
-        mockURLSession.addResponse(TSRequestOWSURLSessionMock.Response(
-            urlSuffix: expectedSVR2CheckRequest.url.absoluteString,
+        networkManagerMock.asyncRequestHandlers.append(MockNetworkManager.mockResponse(
+            matchingRequest: { $0.url.relativeString.hasSuffix(expectedSVR2CheckRequest.url.absoluteString) },
             statusCode: 200,
             bodyJson: RegistrationServiceResponses.SVR2AuthCheckResponse(matches: [
                 "\(Stubs.svr2AuthCredential.credential.username):\(Stubs.svr2AuthCredential.credential.password)": isMatch ? .match : .notMatch,
@@ -3624,8 +3473,8 @@ extension AccountIdentityResponse: @retroactive Encodable {
         case .phoneNumberless(let authCredentialSalt):
             try container.encode(authCredentialSalt, forKey: .authCredentialSalt)
         }
-        try container.encode(self.usernameHash, forKey: .usernameHash)
-        try container.encode(self.usernameLinkHandle, forKey: .usernameLinkHandle)
+        try container.encodeIfPresent(self.usernameHash.map({ DataBase64Url($0) }), forKey: .usernameHash)
+        try container.encodeIfPresent(self.usernameLinkHandle, forKey: .usernameLinkHandle)
         try container.encode(self.storageCapable, forKey: .storageCapable)
         // Omit entitlements because they're not needed here.
         struct FakeEntitlements: Encodable {
@@ -3638,10 +3487,10 @@ extension AccountIdentityResponse: @retroactive Encodable {
 
 private extension Usernames.UsernameLink {
     static var mocked: Usernames.UsernameLink {
-        return Usernames.UsernameLink(
+        return UsernameLink(
             handle: UUID(),
-            entropy: Data(repeating: 8, count: 32),
-        )!
+            entropy: try! UsernameLink.Entropy(rawValue: Data(repeating: 8, count: 32)),
+        )
     }
 }
 
