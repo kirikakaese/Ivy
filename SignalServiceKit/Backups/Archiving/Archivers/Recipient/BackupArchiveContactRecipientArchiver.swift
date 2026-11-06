@@ -8,7 +8,7 @@ import GRDB
 import LibSignalClient
 
 /// Archives ``SignalRecipient``s as ``BackupProto_Contact`` recipients.
-public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWriter {
+class BackupArchiveContactRecipientArchiver {
     typealias RecipientId = BackupArchive.RecipientId
     typealias RecipientAppId = BackupArchive.RecipientArchivingContext.Address
 
@@ -35,7 +35,7 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
     private let tsAccountManager: TSAccountManager
     private let usernameLookupManager: UsernameLookupManager
 
-    public init(
+    init(
         aciContactShareNameManager: AciContactShareNameManager,
         avatarDefaultColorManager: AvatarDefaultColorManager,
         avatarFetcher: BackupArchiveAvatarFetcher,
@@ -77,8 +77,6 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
         stream: BackupArchiveOutputStream,
         context: BackupArchive.RecipientArchivingContext,
     ) throws(CancellationError) -> ArchiveMultiFrameResult {
-        let blockedRecipientIds = blockingManager.blockedRecipientIds(tx: context.tx)
-
         var errors = [ArchiveFrameError]()
 
         func writeToStream(
@@ -87,8 +85,9 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
             contactDbRowId: SignalRecipient.RowId?,
             frameBencher: BackupArchive.Bencher.FrameBencher,
         ) {
-            let maybeError: ArchiveFrameError? = Self.writeFrameToStream(
-                stream,
+            let maybeError: ArchiveFrameError? = context.writeFrame(
+                toStream: stream,
+                flush: .afterWrite,
                 frameBencher: frameBencher,
                 frameBuilder: {
                     let recipientAddress = contactAddress.asArchivingAddress()
@@ -123,8 +122,7 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
         /// key" for contacts. They directly contain many of the fields we store
         /// in a `Contact` recipient, with the other fields keyed off data in
         /// the recipient.
-        try context.bencher.wrapEnumeration(
-            tx: context.tx,
+        try context.wrapEnumeration(
             enumerationBlock: { tx, block throws(CancellationError) in
                 try recipientStore.enumerateAllSignalRecipients(tx: tx, block: block)
             },
@@ -211,7 +209,8 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
                     recipient: recipient,
                     tx: context.tx,
                 ),
-                isBlocked: blockedRecipientIds.contains(recipient.id),
+                isBlocked: recipient.isBlocked,
+                blockedAt: recipient.blockedAt,
                 isWhitelisted: recipient.isWhitelisted,
                 isStoryHidden: isStoryHidden,
                 visibility: { () -> BackupProto_Contact.Visibility in
@@ -298,8 +297,7 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
         /// like `OWSUserProfile`. If, in the future, we have an enforced 1:1
         /// relationship between `SignalRecipient` and `OWSUserProfile`, we can
         /// remove this code.
-        try context.bencher.wrapEnumeration(
-            tx: context.tx,
+        try context.wrapEnumeration(
             enumerationBlock: { tx, block throws(CancellationError) in
                 try profileManager.enumerateUserProfiles(tx: tx, block: block)
             },
@@ -353,6 +351,7 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
                     nicknameRecord: nil, // Only contacts with SignalRecipients can have nicknames.
                     aciContactShareName: nil, // Only contacts with SignalRecipients can have shared names.
                     isBlocked: false, // Only contacts with SignalRecipients can be blocked.
+                    blockedAt: .unspecified,
                     isWhitelisted: false, // Only contacts with SignalRecipients can be whitelisted.
                     isStoryHidden: false, // Can't have a story if there's no recipient.
                     visibility: .visible, // Can't have hidden if there's no recipient.
@@ -370,7 +369,7 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
                     identity: nil,
                     signalAccount: nil,
                     defaultAvatarColor: self.avatarDefaultColorManager.defaultColor(
-                        useCase: .contactWithoutRecipient(address: contactAddress.asInteropAddress()),
+                        useCase: .contactWithoutRecipient(address: contactAddress.asSignalServiceAddress()),
                         tx: context.tx,
                     ),
                     keyTransparencyBlob: nil, // Can't do Key Transparency without a recipient
@@ -430,6 +429,7 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
             nicknameRecord: nil, // Only contacts with SignalRecipients can have nicknames.
             aciContactShareName: nil, // Only contacts with SignalRecipients can have shared names.
             isBlocked: false, // only contacts with SignalRecipients can be blocked.
+            blockedAt: .unspecified,
             isWhitelisted: false, // only contacts with SignalRecipients can be whitelisted.
             // If there's no recipient, neither can be hidden
             isStoryHidden: false,
@@ -439,7 +439,7 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
             identity: nil,
             signalAccount: nil,
             defaultAvatarColor: avatarDefaultColorManager.defaultColor(
-                useCase: .contactWithoutRecipient(address: address.asInteropAddress()),
+                useCase: .contactWithoutRecipient(address: address.asSignalServiceAddress()),
                 tx: context.tx,
             ),
             keyTransparencyBlob: nil,
@@ -449,8 +449,9 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
         let recipientId = context.recipientContext.assignRecipientId(to: recipientAddress)
 
         let maybeError: BackupArchive.ArchiveFrameError?
-        maybeError = Self.writeFrameToStream(
-            stream,
+        maybeError = context.writeFrame(
+            toStream: stream,
+            flush: .afterWrite,
             frameBencher: frameBencher,
             frameBuilder: {
                 var recipient = BackupProto_Recipient()
@@ -477,6 +478,7 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
         nicknameRecord: NicknameRecord?,
         aciContactShareName: AciContactShareName?,
         isBlocked: Bool,
+        blockedAt: BlockedTimestamp,
         isWhitelisted: Bool,
         isStoryHidden: Bool,
         visibility: BackupProto_Contact.Visibility,
@@ -489,6 +491,7 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
     ) -> BackupProto_Contact {
         var contact = BackupProto_Contact()
         contact.blocked = isBlocked
+        contact.blockedAtTimestamp = blockedAt.asMilliseconds
         contact.profileSharing = isWhitelisted
         contact.hideStory = isStoryHidden
         contact.visibility = visibility
@@ -647,7 +650,6 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
         }
         context[recipient.recipientId] = .contact(backupContactAddress)
 
-        // Stop early if this is the local user. That shouldn't happen.
         let profileInsertableAddress: OWSUserProfile.InsertableAddress
         if let serviceId = backupContactAddress.aci ?? backupContactAddress.pni {
             profileInsertableAddress = OWSUserProfile.insertableAddress(
@@ -662,6 +664,7 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
         } else {
             return restoreFrameError(.developerError(OWSAssertionError("How did we have no identifiers after constructing a backup contact address?")))
         }
+        // Stop early if this is the local user. That shouldn't happen.
         switch profileInsertableAddress {
         case .localUser:
             return restoreFrameError(.invalidProtoData(.otherContactWithLocalIdentifiers))
@@ -788,7 +791,11 @@ public class BackupArchiveContactRecipientArchiver: BackupArchiveProtoStreamWrit
         }
 
         if contactProto.blocked {
-            blockingManager.addBlockedAddress(recipient.address, tx: context.tx)
+            blockingManager.addBlockedRecipient(
+                &recipient,
+                blockedAt: BlockedTimestamp(clamping: contactProto.blockedAtTimestamp),
+                tx: context.tx,
+            )
         }
 
         func addHiddenRecipient(isHiddenInKnownMessageRequestState: Bool) {

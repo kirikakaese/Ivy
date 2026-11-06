@@ -167,8 +167,22 @@ public extension GroupsV2Impl {
                         blockingManager: SSKEnvironment.shared.blockingManagerRef,
                         groupsV2: SSKEnvironment.shared.groupsV2Ref,
                         profileManager: SSKEnvironment.shared.profileManagerRef,
+                        threadMuteManager: DependenciesBridge.shared.threadMuteManager,
+                        unreadReminderManager: DependenciesBridge.shared.unreadReminderManager,
                     )
-                    _ = recordUpdater.mergeRecord(groupRecord, transaction: tx)
+                    switch recordUpdater.mergeRecord(groupRecord, transaction: tx) {
+                    case .merged(needsUpdate: true, let mergedMasterKeyData):
+                        do {
+                            let mergedMasterKey = try GroupMasterKey(contents: mergedMasterKeyData)
+                            SSKEnvironment.shared.storageServiceManagerRef.recordPendingUpdates(
+                                updatedGroupV2MasterKeys: [mergedMasterKey],
+                            )
+                        } catch {
+                            owsFailDebug("invalid master key: \(error)")
+                        }
+                    case .merged(needsUpdate: false, _), .invalid:
+                        break
+                    }
                 }
 
                 self.storageServiceGroupsToRestore.removeValue(forKey: key, tx: tx)

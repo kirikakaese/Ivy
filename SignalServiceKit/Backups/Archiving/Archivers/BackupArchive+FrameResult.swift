@@ -7,14 +7,14 @@ import Foundation
 
 extension BackupArchive {
     /// Represents the result of archiving a single frame.
-    public enum ArchiveSingleFrameResult<SuccessType> {
+    enum ArchiveSingleFrameResult<SuccessType> {
         case success(SuccessType)
         case failure(ArchiveFrameError)
     }
 
     /// Represents the result of archiving multiple frames of the same type at
     /// once.
-    public enum ArchiveMultiFrameResult {
+    enum ArchiveMultiFrameResult {
         case success
         /// We managed to write some frames, but failed for others.
         /// Note that some errors _may_ be terminal; the caller should check.
@@ -27,7 +27,7 @@ extension BackupArchive {
     /// Represents the result of restoring a single frame.
     /// - Note
     /// Frames are always restored individually.
-    public enum RestoreFrameResult {
+    enum RestoreFrameResult {
         case success
         /// There was an unrecognized enum (or oneOf) for which we skip restoring this frame
         /// but we should proceed restoring other frames.
@@ -43,7 +43,7 @@ extension BackupArchive {
         case failure([RestoreFrameError])
     }
 
-    public class UnrecognizedEnumError: BackupArchive.LoggableError {
+    class UnrecognizedEnumError: BackupArchive.LoggableError {
 
         private let enumType: Any.Type
 
@@ -55,32 +55,5 @@ extension BackupArchive {
         var callsiteLogString: String { "" }
         var collapseKey: String? { typeLogString }
         var logLevel: BackupArchive.LogLevel { .warning }
-    }
-}
-
-// MARK: -
-
-public protocol BackupArchiveProtoStreamWriter {}
-
-extension BackupArchiveProtoStreamWriter {
-
-    /**
-     * Helper function to build a frame and write the proto to the backup file in one action
-     * with standard error handling.
-     */
-    static func writeFrameToStream(
-        _ stream: BackupArchiveOutputStream,
-        frameBencher: BackupArchive.Bencher.FrameBencher,
-        frameBuilder: () -> BackupProto_Frame,
-    ) -> BackupArchive.ArchiveFrameError? {
-        let frame = frameBuilder()
-        frameBencher.didProcessFrame(frame)
-
-        do {
-            try stream.writeFrame(frame)
-            return nil
-        } catch {
-            return .archiveFrameError(.fileIOError(error))
-        }
     }
 }

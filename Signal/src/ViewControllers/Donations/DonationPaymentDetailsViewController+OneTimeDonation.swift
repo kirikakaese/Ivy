@@ -47,15 +47,17 @@ extension DonationPaymentDetailsViewController {
                                     paymentIntentId: confirmedIntent.paymentIntentId,
                                     amount: amount,
                                 )
-                                await db.awaitableWrite { transaction in
-                                    do {
-                                        try idealStore.setPendingOneTimeDonation(
-                                            donation: donation,
-                                            tx: transaction,
-                                        )
-                                    } catch {
-                                        owsFailDebug("[Donations] Failed to persist pending One-time iDEAL donation")
-                                    }
+                                await db.awaitableWrite { tx in
+                                    // Set the unclaimed iDEAL paymentID
+                                    idealStore.setDonationNeedsHandling(
+                                        isOneTime: true,
+                                        intentId: donation.paymentIntentId,
+                                        tx: tx,
+                                    )
+                                    idealStore.setPendingOneTimeDonation(
+                                        donation: donation,
+                                        tx: tx,
+                                    )
                                 }
                             } else {
                                 Logger.info("[Donations] One-time donation needed 3DS. Presenting...")
@@ -66,6 +68,19 @@ extension DonationPaymentDetailsViewController {
                             intentId = confirmedIntent.paymentIntentId
                         }
 
+                        if case .ideal = validForm.donationPaymentMethod {
+                            let hasDonationToClaim = await db.awaitableWrite { tx in
+                                idealStore.claimDonationHandling(
+                                    isOneTime: true,
+                                    intentId: intentId,
+                                    tx: tx,
+                                )
+                            }
+                            if !hasDonationToClaim {
+                                Logger.info("[Donations] One-time iDEAL donation already handled. Continuing")
+                                return
+                            }
+                        }
                         Logger.info("[Donations] Creating and redeeming one-time boost receipt")
                         try await DonationViewsUtil.redeemOneTimeDonation(
                             paymentIntentId: intentId,

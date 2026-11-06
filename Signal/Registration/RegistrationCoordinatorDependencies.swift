@@ -40,6 +40,7 @@ public struct RegistrationCoordinatorDependencies {
     let registrationWebSocketManager: any RegistrationWebSocketManager
     public let remoteConfigManager: any RemoteConfigManager
     public let securityScopedBookmarkAccess: SecurityScopedBookmarkAccess
+    let serviceProvider: any ServiceProvider
     public let sessionManager: RegistrationSessionManager
     public let signalService: OWSSignalServiceProtocol
     public let storageServiceManager: RegistrationCoordinatorImpl.Shims.StorageServiceManager
@@ -49,8 +50,6 @@ public struct RegistrationCoordinatorDependencies {
     public let timeoutProvider: RegistrationCoordinatorImpl.Shims.TimeoutProvider
     public let tsAccountManager: TSAccountManager
     public let udManager: RegistrationCoordinatorImpl.Shims.UDManager
-    public let usernameApiClient: any RegistrationCoordinatorImpl.Shims.UsernameApiClient
-    public let usernameLinkManager: UsernameLinkManager
 
     public static func from(_ object: NSObject) -> RegistrationCoordinatorDependencies {
         return RegistrationCoordinatorDependencies(
@@ -91,6 +90,7 @@ public struct RegistrationCoordinatorDependencies {
             ),
             remoteConfigManager: SSKEnvironment.shared.remoteConfigManagerRef,
             securityScopedBookmarkAccess: SecurityScopedBookmarkAccessImpl(),
+            serviceProvider: DependenciesBridge.shared.chatConnectionManager,
             sessionManager: DependenciesBridge.shared.registrationSessionManager,
             signalService: SSKEnvironment.shared.signalServiceRef,
             storageServiceManager: RegistrationCoordinatorImpl.Wrappers.StorageServiceManager(SSKEnvironment.shared.storageServiceManagerRef),
@@ -100,8 +100,6 @@ public struct RegistrationCoordinatorDependencies {
             timeoutProvider: RegistrationCoordinatorImpl.Wrappers.TimeoutProvider(),
             tsAccountManager: DependenciesBridge.shared.tsAccountManager,
             udManager: RegistrationCoordinatorImpl.Wrappers.UDManager(SSKEnvironment.shared.udManagerRef),
-            usernameApiClient: RegistrationCoordinatorImpl.Wrappers.UsernameApiClient(DependenciesBridge.shared.usernameApiClient),
-            usernameLinkManager: DependenciesBridge.shared.usernameLinkManager,
         )
     }
 }

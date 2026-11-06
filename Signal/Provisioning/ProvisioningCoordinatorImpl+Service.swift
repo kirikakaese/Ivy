@@ -24,9 +24,9 @@ extension ProvisioningCoordinatorImpl {
             aciPreKeyBundle: RegistrationPreKeyUploadBundle,
             pniPreKeyBundle: RegistrationPreKeyUploadBundle?,
             authPassword: String,
-            accountAttributes: AccountAttributes,
+            deviceAttributes: DeviceAttributes,
             apnRegistrationId: RegistrationRequestFactory.ApnRegistrationId?,
-            signalService: OWSSignalServiceProtocol,
+            networkManager: any NetworkManagerProtocol,
         ) async -> VerifySecondaryDeviceResponse {
             let request = ProvisioningRequestFactory.verifySecondaryDeviceRequest(
                 verificationCode: verificationCode,
@@ -34,12 +34,12 @@ extension ProvisioningCoordinatorImpl {
                 aciPreKeyBundle: aciPreKeyBundle,
                 pniPreKeyBundle: pniPreKeyBundle,
                 authPassword: authPassword,
-                attributes: accountAttributes,
+                attributes: deviceAttributes,
                 apnRegistrationId: apnRegistrationId,
             )
 
             do {
-                let response = try await signalService.urlSessionForMainSignalService().performRequest(request)
+                let response = try await networkManager.asyncRequest(request)
                 return handleVerifySecondaryDeviceResponse(
                     statusCode: response.responseStatusCode,
                     bodyData: response.responseBodyData,
@@ -87,23 +87,6 @@ extension ProvisioningCoordinatorImpl {
             case .none, .unexpectedError:
                 return .genericError(OWSAssertionError("Unknown status code"))
             }
-        }
-
-        static func makeUpdateSecondaryDeviceCapabilitiesRequest(
-            capabilities: AccountAttributes.Capabilities,
-            auth: ChatServiceAuth,
-            networkManager: any NetworkManagerProtocol,
-            tsAccountManager: TSAccountManager,
-        ) async throws {
-            let request = AccountAttributesRequestFactory(
-                tsAccountManager: tsAccountManager,
-            ).updateLinkedDeviceCapabilitiesRequest(
-                capabilities,
-                auth: auth,
-            )
-
-            // Don't care what the response is.
-            _ = try await networkManager.asyncRequest(request)
         }
     }
 }

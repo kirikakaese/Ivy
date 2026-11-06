@@ -453,11 +453,15 @@ extension MediaGalleryFileCell: CVComponentDelegate {
 
     func didTapSendMessage(toAci aci: Aci, sharedName: OWSContactName) {}
 
+    func didTapAddToGroup(aci: Aci, sharedName: OWSContactName) {}
+
     func didTapSendInvite(toContactShare contactShare: ContactShareViewModel) {}
 
     func didTapAddToContacts(contactShare: ContactShareViewModel) {}
 
     func didTapStickerPack(_ stickerPackInfo: StickerPackInfo) {}
+
+    func didTapSticker(_ stickerMetadata: any StickerMetadata) {}
 
     func didTapGroupInviteLink(url: PossibleGroupInviteLinkUrl) {}
 

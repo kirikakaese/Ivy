@@ -130,7 +130,7 @@ public class EditContactShareNameViewController: OWSTableViewController2, Contac
             "CONTACT_SHARE_EDIT_NAME_VIEW_TITLE",
             comment: "Title for the 'edit contact share name' view.",
         )
-        navigationItem.leftBarButtonItem = .cancelButton(poppingFrom: navigationController)
+        navigationItem.leftBarButtonItem = .cancelButton(dismissingFrom: self)
         navigationItem.rightBarButtonItem = .doneButton { [weak self] in
             self?.didPressDone()
         }
@@ -149,6 +149,7 @@ public class EditContactShareNameViewController: OWSTableViewController2, Contac
         let tableItems: [OWSTableItem] = allNameFieldViews().map { nameFieldView in
             return OWSTableItem(customCellBlock: {
                 let cell = OWSTableItem.newCell()
+                cell.contentView.autoSetDimension(.height, toSize: 52, relation: .greaterThanOrEqual)
                 cell.contentView.addSubview(nameFieldView)
                 nameFieldView.autoPinHeightToSuperview(withMargin: 10)
                 nameFieldView.autoPinWidthToSuperviewMargins()
@@ -183,7 +184,7 @@ public class EditContactShareNameViewController: OWSTableViewController2, Contac
         )
         editingDelegate.editContactShareNameView(self, didFinishWith: newName)
 
-        navigationController?.popViewController(animated: true)
+        dismiss(animated: true)
     }
 
     // MARK: - ContactNameFieldViewDelegate

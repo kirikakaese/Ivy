@@ -1207,6 +1207,16 @@ extension MessageDetailViewController: CVComponentDelegate {
         contactShareViewHelper.sendMessage(toAci: aci, sharedName: sharedName)
     }
 
+    func didTapAddToGroup(aci: Aci, sharedName: OWSContactName) {
+        guard let groupThread = thread as? TSGroupThread else {
+            owsFailDebug("Not a group thread.")
+            return
+        }
+        contactShareViewHelper.addToGroup(aci: aci, sharedName: sharedName, groupThread: groupThread, fromViewController: self) { [weak self] in
+            self?.refreshContentForDatabaseUpdate(forceImmediately: true)
+        }
+    }
+
     func didTapSendInvite(toContactShare contactShare: ContactShareViewModel) {
         contactShareViewHelper.showInviteContact(contactShare: contactShare, from: self)
     }
@@ -1219,6 +1229,8 @@ extension MessageDetailViewController: CVComponentDelegate {
         let packView = StickerPackViewController(stickerPackInfo: stickerPackInfo)
         packView.present(from: self, animated: true)
     }
+
+    func didTapSticker(_ stickerMetadata: any StickerMetadata) {}
 
     func didTapPayment(_ payment: PaymentsHistoryItem) {}
 

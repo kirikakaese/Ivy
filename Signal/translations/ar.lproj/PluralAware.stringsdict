@@ -2380,6 +2380,30 @@
 حاوِل مُجدَّدًا بعد %1$d ساعة.</string>
 		</dict>
 	</dict>
+	<key>STICKER_PACK_STICKER_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>%1$d مُلصَقات</string>
+			<key>one</key>
+			<string>%1$d مُلصَق</string>
+			<key>two</key>
+			<string>%1$d مُلصَقين</string>
+			<key>few</key>
+			<string>%1$d مُلصَقات</string>
+			<key>many</key>
+			<string>%1$d مُلصَق</string>
+			<key>other</key>
+			<string>%1$d مُلصَق</string>
+		</dict>
+	</dict>
 	<key>STORY_REPLIES_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -2522,6 +2546,30 @@
 			<string>&lt;bold&gt;%1$d&lt;/bold&gt; مُشَاهدةً</string>
 			<key>other</key>
 			<string>&lt;bold&gt;%1$d&lt;/bold&gt; مُشَاهدةٍ</string>
+		</dict>
+	</dict>
+	<key>THREAD_DETAILS_MEMBERS_AND_INVITED_%ld</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>ld</string>
+			<key>zero</key>
+			<string>%2$@ (+%1$ld مدعوون)</string>
+			<key>one</key>
+			<string>%2$@ (+%1$ld مدعو)</string>
+			<key>two</key>
+			<string>%2$@ (+%1$ld مدعوان)</string>
+			<key>few</key>
+			<string>%2$@ (+%1$ld مدعوون)</string>
+			<key>many</key>
+			<string>%2$@ (+%1$ld مدعوًا)</string>
+			<key>other</key>
+			<string>%2$@ (+%1$ld مدعوٍ)</string>
 		</dict>
 	</dict>
 	<key>THREAD_DETAILS_MORE_MUTUAL_GROUP_%3$ld</key>
@@ -2690,6 +2738,126 @@
 			<string>يجب أن تبدأ أسماء المُستخدِمين بـ %1$d رمزًا على الأقل</string>
 			<key>other</key>
 			<string>يجب أن تبدأ أسماء المُستخدِمين بـ %1$d رمزٍ على الأقل</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__mentions_many</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>%1$d إشارة إليك من طرف %2$@ وآخرين</string>
+			<key>one</key>
+			<string>%1$d إشارة إليك من طرف %2$@ وآخرين</string>
+			<key>two</key>
+			<string>%1$d إشارتان إليك من طرف %2$@ وآخرين</string>
+			<key>few</key>
+			<string>%1$d إشارات إليك من طرف %2$@ وآخرين</string>
+			<key>many</key>
+			<string>%1$d إشارة إليك من طرف %2$@ وآخرين</string>
+			<key>other</key>
+			<string>%1$d إشارة إليك من طرف %2$@ وآخرين</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__mentions_two</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>%1$d إشارة إليك من طرف %2$@ و%3$@</string>
+			<key>one</key>
+			<string>%1$d إشارة إليك من طرف %2$@ و%3$@</string>
+			<key>two</key>
+			<string>%1$d إشارتان إليك من طرف %2$@ و%3$@</string>
+			<key>few</key>
+			<string>%1$d إشارات إليك من طرف %2$@ و%3$@</string>
+			<key>many</key>
+			<string>%1$d إشارة إليك من طرف %2$@ و%3$@</string>
+			<key>other</key>
+			<string>%1$d إشارة إليك من طرف %2$@ و%3$@</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__messages</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>%1$d رسالة غير مقروءة</string>
+			<key>one</key>
+			<string>%1$d رسالة غير مقروءة</string>
+			<key>two</key>
+			<string>%1$d رسالتين غير مقروءتين</string>
+			<key>few</key>
+			<string>%1$d رسائل غير مقروءة</string>
+			<key>many</key>
+			<string>%1$d رسالة غير مقروءة</string>
+			<key>other</key>
+			<string>%1$d رسالة غير مقروءة</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__replies_many</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>%1$d ردّ من طرف %2$@ وآخرين</string>
+			<key>one</key>
+			<string>%1$d ردّ من طرف %2$@ وآخرين</string>
+			<key>two</key>
+			<string>%1$d ردّان من طرف %2$@ وآخرين</string>
+			<key>few</key>
+			<string>%1$d ردود من طرف %2$@ وآخرين</string>
+			<key>many</key>
+			<string>%1$d ردّ من طرف %2$@ وآخرين</string>
+			<key>other</key>
+			<string>%1$d ردّ من طرف %2$@ وآخرين</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__replies_two</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>%1$d ردّ من طرف %2$@ و%3$@</string>
+			<key>one</key>
+			<string>%1$d ردّ من طرف %2$@ و%3$@</string>
+			<key>two</key>
+			<string>%1$d ردّان من طرف %2$@ و%3$@</string>
+			<key>few</key>
+			<string>%1$d ردود من طرف %2$@ و%3$@</string>
+			<key>many</key>
+			<string>%1$d ردّ من طرف %2$@ و%3$@</string>
+			<key>other</key>
+			<string>%1$d ردّ من طرف %2$@ و%3$@</string>
 		</dict>
 	</dict>
 </dict>

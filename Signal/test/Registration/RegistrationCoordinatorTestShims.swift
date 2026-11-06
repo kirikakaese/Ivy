@@ -25,7 +25,6 @@ extension RegistrationCoordinatorImpl {
         public typealias StorageServiceManager = _RegistrationCoordinator_StorageServiceManagerMock
         public typealias TimeoutProvider = _RegistrationCoordinator_TimeoutProviderMock
         public typealias UDManager = _RegistrationCoordinator_UDManagerMock
-        public typealias UsernameApiClient = _RegistrationCoordinator_UsernameApiClientMock
     }
 }
 
@@ -183,12 +182,12 @@ public class _RegistrationCoordinator_PreKeyManagerMock: PreKeyManager {
         return await createPreKeysMocks.removeFirst()(identity)
     }
 
-    public typealias FinalizePreKeyBundleMock = (OWSIdentity, Bool) async -> Void
+    public typealias FinalizePreKeyBundleMock = (OWSIdentity) async -> Void
     private var finalizePreKeyBundleMocks = [FinalizePreKeyBundleMock]()
     public func addFinalizePreKeyBundleMock(_ mock: @escaping FinalizePreKeyBundleMock) { finalizePreKeyBundleMocks.append(mock) }
-    public func finalizeRegistrationPreKeyBundle(_ bundle: RegistrationPreKeyUploadBundle, uploadDidSucceed: Bool) async {
+    public func finalizeRegistrationPreKeyBundle(_ bundle: RegistrationPreKeyUploadBundle) async {
         run.addObservedStep(.finalizePreKeys)
-        await finalizePreKeyBundleMocks.removeFirst()(bundle.identity, uploadDidSucceed)
+        await finalizePreKeyBundleMocks.removeFirst()(bundle.identity)
     }
 
     public func setIsChangingNumber(_ isChangingNumber: Bool) {
@@ -351,16 +350,5 @@ public class _RegistrationCoordinator_UDManagerMock: _RegistrationCoordinator_UD
 
     public func shouldAllowUnrestrictedAccessLocal(transaction: DBReadTransaction) -> Bool {
         return shouldAllowUnrestrictedAccessLocalMock()
-    }
-}
-
-// MARK: UsernameApiClient
-
-public class _RegistrationCoordinator_UsernameApiClientMock: _RegistrationCoordinator_UsernameApiClientShim {
-    public init() {}
-
-    public var confirmReservedUsernameMocks = [(reservedUsername: Usernames.HashedUsername, encryptedUsernameForLink: Data, chatServiceAuth: ChatServiceAuth) async throws -> Usernames.ApiClientConfirmationResult]()
-    public func confirmReservedUsername(reservedUsername: Usernames.HashedUsername, encryptedUsernameForLink: Data, chatServiceAuth: ChatServiceAuth) async throws -> Usernames.ApiClientConfirmationResult {
-        return try await confirmReservedUsernameMocks.removeFirst()(reservedUsername, encryptedUsernameForLink, chatServiceAuth)
     }
 }

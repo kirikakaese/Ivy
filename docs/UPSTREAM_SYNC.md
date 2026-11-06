@@ -1,6 +1,6 @@
 # Merging upstream releases
 
-Ivy tracks stable releases of [Signal-iOS](https://github.com/signalapp/Signal-iOS). Upstream history is kept, so each release is brought in with a normal `git merge`.
+Ivy tracks stable releases of [Signal-iOS](https://github.com/signalapp/Signal-iOS). Ivy started from a snapshot of 8.32.0.1910 without upstream's history; the merge of 8.35.1.1964 has the upstream release as its second parent, so from then on each release is brought in with a normal `git merge`.
 
 Merge every upstream stable release, at least once a month. Signal-iOS builds expire about 90 days after release and the server stops accepting old client versions, so falling behind breaks the app.
 

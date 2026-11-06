@@ -1580,6 +1580,22 @@
 Покушајте поново за %1$d сата/и.</string>
 		</dict>
 	</dict>
+	<key>STICKER_PACK_STICKER_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Налепница: %1$d</string>
+			<key>other</key>
+			<string>Налепница: %1$d</string>
+		</dict>
+	</dict>
 	<key>STORY_REPLIES_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1674,6 +1690,22 @@
 			<string>Прегледа: &lt;bold&gt;%1$d&lt;/bold&gt;</string>
 			<key>other</key>
 			<string>Прегледа: &lt;bold&gt;%1$d&lt;/bold&gt;</string>
+		</dict>
+	</dict>
+	<key>THREAD_DETAILS_MEMBERS_AND_INVITED_%ld</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>ld</string>
+			<key>one</key>
+			<string>%2$@ (и још %1$ld позвана особа)</string>
+			<key>other</key>
+			<string>%2$@ (и још њих %1$ld позваних)</string>
 		</dict>
 	</dict>
 	<key>THREAD_DETAILS_MORE_MUTUAL_GROUP_%3$ld</key>
@@ -1786,6 +1818,86 @@
 			<string>Минималан број знакова који мора бити на почетку корисничког имена је %1$d</string>
 			<key>other</key>
 			<string>Минималан број знакова који мора бити на почетку корисничког имена је %1$d</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__mentions_many</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%2$@ и други су вас споменули %1$d пут(а)</string>
+			<key>other</key>
+			<string>%2$@ и други су вас споменули %1$d пут(а)</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__mentions_two</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%2$@ и %3$@ су вас споменули %1$d пут(а)</string>
+			<key>other</key>
+			<string>%2$@ и %3$@ су вас споменули %1$d пут(а)</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__messages</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Непрочитаних порука: %1$d</string>
+			<key>other</key>
+			<string>Непрочитаних порука: %1$d</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__replies_many</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d одговор(а) од корисника %2$@ и других</string>
+			<key>other</key>
+			<string>%1$d одговор(а) од корисника %2$@ и других</string>
+		</dict>
+	</dict>
+	<key>UnreadReminderJob__replies_two</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%1$#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d одговор(а) од корисника %2$@ и %3$@</string>
+			<key>other</key>
+			<string>%1$d одговор(а) од корисника %2$@ и %3$@</string>
 		</dict>
 	</dict>
 </dict>

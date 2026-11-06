@@ -9,6 +9,7 @@ public class AttachmentManagerImpl: AttachmentManager {
     private let attachmentStore: AttachmentStore
     private let backupAttachmentUploadScheduler: BackupAttachmentUploadScheduler
     private let dateProvider: DateProvider
+    private let localFileBackupAttachmentMetadataStore: LocalFileBackupAttachmentMetadataStore
     private let orphanedAttachmentCleaner: OrphanedAttachmentCleaner
     private let orphanedAttachmentStore: OrphanedAttachmentStore
     private let orphanedBackupAttachmentScheduler: OrphanedBackupAttachmentScheduler
@@ -21,6 +22,7 @@ public class AttachmentManagerImpl: AttachmentManager {
         attachmentStore: AttachmentStore,
         backupAttachmentUploadScheduler: BackupAttachmentUploadScheduler,
         dateProvider: @escaping DateProvider,
+        localFileBackupAttachmentMetadataStore: LocalFileBackupAttachmentMetadataStore,
         orphanedAttachmentCleaner: OrphanedAttachmentCleaner,
         orphanedAttachmentStore: OrphanedAttachmentStore,
         orphanedBackupAttachmentScheduler: OrphanedBackupAttachmentScheduler,
@@ -32,6 +34,7 @@ public class AttachmentManagerImpl: AttachmentManager {
         self.attachmentStore = attachmentStore
         self.backupAttachmentUploadScheduler = backupAttachmentUploadScheduler
         self.dateProvider = dateProvider
+        self.localFileBackupAttachmentMetadataStore = localFileBackupAttachmentMetadataStore
         self.orphanedAttachmentCleaner = orphanedAttachmentCleaner
         self.orphanedAttachmentStore = orphanedAttachmentStore
         self.orphanedBackupAttachmentScheduler = orphanedBackupAttachmentScheduler
@@ -199,10 +202,7 @@ public class AttachmentManagerImpl: AttachmentManager {
             mimeType: mimeType,
             contentType: contentType,
             encryptionKey: transitTierInfo.encryptionKey,
-            audioDetails: Attachment.AudioDetails(
-                pointerProto: proto,
-                contentType: contentType,
-            ),
+            audioDetails: Attachment.AudioDetails(pointerProto: proto),
             latestTransitTierInfo: transitTierInfo,
         )
         let sourceMediaSizePixels: CGSize?
@@ -340,10 +340,7 @@ public class AttachmentManagerImpl: AttachmentManager {
         }
 
         let contentType = Attachment.ContentType(mimeType: mimeType)
-        let audioDetails = Attachment.AudioDetails(
-            backupProto: proto,
-            contentType: contentType,
-        )
+        let audioDetails = Attachment.AudioDetails(backupProto: proto)
 
         var attachmentRecord: Attachment.Record
         if
@@ -406,6 +403,7 @@ public class AttachmentManagerImpl: AttachmentManager {
                         blurHash: proto.blurHash.nilIfEmpty,
                         mimeType: mimeType,
                         contentType: contentType,
+                        audioDetails: audioDetails,
                     )
                 }
             }
@@ -414,6 +412,7 @@ public class AttachmentManagerImpl: AttachmentManager {
                 blurHash: proto.blurHash.nilIfEmpty,
                 mimeType: mimeType,
                 contentType: contentType,
+                audioDetails: audioDetails,
             )
         }
 
@@ -457,7 +456,7 @@ public class AttachmentManagerImpl: AttachmentManager {
             if proto.locatorInfo.hasLocalKey {
                 localFileBackupStore.insertImportRecord(attachmentId: attachment.id, tx: tx)
 
-                localFileBackupStore.insertNewMetadataIfNeeded(
+                localFileBackupAttachmentMetadataStore.insertNewMetadataIfNeeded(
                     attachmentId: attachment.id,
                     unencryptedByteCount: proto.locatorInfo.size,
                     localKey: proto.locatorInfo.localKey,
@@ -710,7 +709,6 @@ public class AttachmentManagerImpl: AttachmentManager {
                 sourceType: .mediaTierFullsize,
                 priority: .backupRestore,
                 streamInfo: Attachment.StreamInfo(pendingAttachment: pendingAttachment),
-                audioDetails: nil,
                 // This is used for "last viewed" state which isn't used
                 // for oversize text so it doesn't really matter but give
                 // a real date anyway.

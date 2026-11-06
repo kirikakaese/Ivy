@@ -86,7 +86,7 @@ public class RecipientPickerViewController: OWSViewController, OWSNavigationChil
         view.addSubview(noSignalContactsView)
         noSignalContactsView.autoPinWidthToSuperview()
         noSignalContactsView.autoPinEdge(toSuperviewEdge: .top)
-        noSignalContactsView.autoPin(toBottomLayoutGuideOf: self, withInset: 0)
+        noSignalContactsView.autoPinEdge(toSuperviewSafeArea: .bottom)
 
         // Pull to Refresh
         let refreshControl = UIRefreshControl()
@@ -269,10 +269,9 @@ public class RecipientPickerViewController: OWSViewController, OWSNavigationChil
             // All Signal Connections that we believe are registered. In theory, this
             // should include your system contacts, the people you chat with, and Note to Self.
             let whitelistedAddresses = Set(SSKEnvironment.shared.profileManagerRef.allWhitelistedRegisteredAddresses(tx: tx))
-            let blockedAddresses = SSKEnvironment.shared.blockingManagerRef.blockedAddresses(transaction: tx)
             let hiddenAddresses = DependenciesBridge.shared.recipientHidingManager.hiddenAddresses(tx: tx)
 
-            var resolvedAddresses = Set(whitelistedAddresses).subtracting(blockedAddresses).subtracting(hiddenAddresses)
+            var resolvedAddresses = Set(whitelistedAddresses).subtracting(hiddenAddresses)
 
             guard let localIdentifiers = tsAccountManager.localIdentifiers(tx: tx) else {
                 Logger.error("No local identifiers")

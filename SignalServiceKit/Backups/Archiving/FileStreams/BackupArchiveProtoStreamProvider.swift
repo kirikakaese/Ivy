@@ -7,16 +7,10 @@ import LibSignalClient
 
 // MARK: -
 
-/// Creates streams for reading and writing to a plaintext Backup file on-disk.
+/// Creates streams for varint-prefixed, serialized-proto, plaintext Backup files.
 ///
-/// A Backup file is a sequence of concatenated serialized proto bytes delimited
-/// by varint byte sizes, which tell us how much to read into memory to
-/// deserialize the next proto. The streams provided by this type abstract over
-/// this serialized format, allowing callers instead to think in terms of
-/// "frames", or individual proto objects that we read or write individually.
-///
-/// - SeeAlso: ``BackupArchiveEncryptedProtoStreamProvider``
-public class BackupArchivePlaintextProtoStreamProvider {
+/// - SeeAlso `BackupArchiveEncryptedProtoStreamProvider`
+class BackupArchivePlaintextProtoStreamProvider {
     private let genericProtoStreamProvider: GenericProtoStreamProvider
 
     init() {
@@ -59,16 +53,12 @@ public class BackupArchivePlaintextProtoStreamProvider {
     }
 }
 
-/// Creates streams for reading and writing to an encrypted Backup file on-disk.
+// MARK: -
+
+/// Creates streams for varint-prefixed, serialized-proto, encrypted Backup files.
 ///
-/// A Backup file is a sequence of concatenated serialized proto bytes delimited
-/// by varint byte sizes, which tell us how much to read into memory to
-/// deserialize the next proto. The streams provided by this type abstract over
-/// this serialized format, allowing callers instead to think in terms of
-/// "frames", or individual proto objects that we read or write individually.
-///
-/// - SeeAlso: ``BackupArchivePlaintextProtoStreamProvider``
-public class BackupArchiveEncryptedProtoStreamProvider {
+/// - SeeAlso `BackupArchivePlaintextProtoStreamProvider`
+class BackupArchiveEncryptedProtoStreamProvider {
     private let genericProtoStreamProvider: GenericProtoStreamProvider
     private let logger = PrefixedLogger(prefix: "[Backups]")
 
@@ -84,6 +74,7 @@ public class BackupArchiveEncryptedProtoStreamProvider {
         encryptionMetadata: BackupExportPurpose.EncryptionMetadata,
         exportProgress: BackupArchiveExportProgress?,
         attachmentByteCounter: BackupArchiveAttachmentByteCounter,
+        estimatedUncompressedSize: UInt64?,
         tx: DBReadTransaction,
     ) throws -> (
         protoOutputStream: BackupArchiveProtoOutputStream,
@@ -92,9 +83,11 @@ public class BackupArchiveEncryptedProtoStreamProvider {
         let backupEncryptionKey = encryptionMetadata.encryptionKey
         do {
             let outputTrackingTransform = MetadataStreamTransform()
+            let gzipInputCountTracker = ByteCountStreamTransform()
 
             let transforms: [any StreamTransform] = [
-                try GzipStreamTransform(.compress),
+                gzipInputCountTracker,
+                try GzipStreamTransform(.compress, estimatedTotalUncompressedLength: estimatedUncompressedSize),
                 try EncryptingStreamTransform(
                     iv: Randomness.generateRandomBytes(UInt(Cryptography.Constants.aescbcIVLength)),
                     encryptionKey: backupEncryptionKey.aesKey,
@@ -122,6 +115,7 @@ public class BackupArchiveEncryptedProtoStreamProvider {
                         fileUrl: fileUrl,
                         digest: try outputTrackingTransform.digest(),
                         encryptedDataLength: UInt32(clamping: outputTrackingTransform.count),
+                        uncompressedDataLength: UInt32(clamping: gzipInputCountTracker.count),
                         remoteAttachmentByteSize: attachmentByteCounter.remoteAttachmentByteSize(),
                         localAttachmentByteSize: attachmentByteCounter.localAttachmentByteSize(),
                         nonceMetadata: encryptionMetadata.nonceMetadata,
@@ -302,7 +296,7 @@ private class InputProgressStreamTransform: StreamTransform {
         self.frameRestoreProgress = frameRestoreProgress
     }
 
-    func transform(data: Data) throws -> Data {
+    func transform(data: Data, options: Options) throws -> Data {
         frameRestoreProgress.didReadBytes(count: data.count)
         return data
     }

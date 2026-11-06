@@ -51,6 +51,16 @@ class DeviceTransferStatusViewController: HostingController<TransferWrapperView>
             }
         }
 
+        coordinator.transferStatusViewModel.choosePeerBlock = { [weak self] in
+            if
+                let self,
+                #available(iOS 26, *),
+                self.coordinator.supportsWifiAware
+            {
+                self.presentChooseDeviceToPairWithPrompt()
+            }
+        }
+
         coordinator.onSuccess = { [weak self] in
             let sheet = HeroSheetViewController(
                 hero: .image(UIImage(named: "transfer_complete")!),
@@ -122,11 +132,87 @@ class DeviceTransferStatusViewController: HostingController<TransferWrapperView>
         Task {
             do {
                 try await coordinator.reportTransferMethodChoice()
+                if
+                    #available(iOS 26, *),
+                    coordinator.supportsWifiAware
+                {
+                    presentChooseDeviceToPairWithPrompt()
+                }
                 try await coordinator.waitForTransferFromPeer(peer: nil)
             } catch {
                 coordinator.onFailure(error)
             }
         }
+    }
+
+    @available(iOS 26, *)
+    private func presentChooseDeviceToPairWithPrompt() {
+        let title: String
+        if coordinator.transferStatusViewModel.discoveredPeers.count > 1 {
+            title = OWSLocalizedString(
+                "INCOMING_DEVICE_TRANSFER_CHOOSE_EXITING_OLD_DEVICE_ACTION",
+                comment: "Title of action allowing user to connect to an existing device",
+            )
+        } else if let firstPeer = coordinator.transferStatusViewModel.discoveredPeers.first {
+            let format = OWSLocalizedString(
+                "INCOMING_DEVICE_TRANSFER_CHOOSE_SPECIFIC_OLD_DEVICE_ACTION",
+                comment: "Title of action allowing user to connect to an existing device",
+            )
+            title = String.localizedStringWithFormat(format, firstPeer.displayName)
+        } else {
+            // No devices found, return
+            return
+        }
+
+        let primaryButton = HeroSheetViewController.Button(
+            title: title,
+            style: .secondary,
+            action: .custom({ [weak self] sheet in
+                sheet.dismiss(animated: true) { [weak self] in
+                    self?.presentContinueOnOtherDevicePrompt()
+                }
+            }),
+        )
+
+        let sheet = HeroSheetViewController(
+            hero: .image(UIImage(resource: .transferConfirm)),
+            title: OWSLocalizedString(
+                "INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_TITLE",
+                comment: "Title of prompt asking user to select device transfer target.",
+            ),
+            body: HeroSheetViewController.Body([.text(.plain(OWSLocalizedString(
+                "INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_BODY",
+                comment: "Body of prompt asking user to select device transfer target.",
+            )))]),
+            primary: .button(primaryButton),
+            secondary: .custom({ heroSheetVC in
+                let hostingController = HostingController(
+                    wrappedView: DevicePairingView(
+                        .wifiAware(
+                            .connecting(
+                                to: .deviceTransferService,
+                                from: .allPairedDevices,
+                            ),
+                        ),
+                        label: {
+                            Button(OWSLocalizedString(
+                                "INCOMING_DEVICE_TRANSFER_CHOOSE_OLD_DEVICE_PAIR_NEW_ACTION",
+                                comment: "Title of action allowing user to pair a new device transfer peer.",
+                            )) {}
+                                .buttonStyle(Registration.UI.LargeSecondaryHeroButtonStyle())
+                                .allowsHitTesting(false) // necessary to let touches pass to DevicePairingView
+                        },
+                        fallback: {},
+                    ),
+                )
+                hostingController.view.backgroundColor = .clear
+                heroSheetVC.addChild(hostingController)
+                hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+                hostingController.didMove(toParent: self)
+                return hostingController.view
+            }),
+        )
+        present(sheet, animated: true)
     }
 
     private func presentContinueOnOtherDevicePrompt() {
@@ -177,13 +263,13 @@ struct TransferPairingView: View {
         let titleText: String
         if isNewDevice {
             titleText = OWSLocalizedString(
-                "DEVICE_TRANSFER_PAIR_NEW_DEVICE_TITLE",
-                comment: "Title of the device transfer screen for pairing a new device, from the new device",
+                "DEVICE_TRANSFER_PAIR_OLD_DEVICE_TITLE",
+                comment: "Title of the device transfer screen for pairing a new device, from the old device",
             )
         } else {
             titleText = OWSLocalizedString(
-                "DEVICE_TRANSFER_PAIR_OLD_DEVICE_TITLE",
-                comment: "Title of the device transfer screen for pairing a new device, from the old device",
+                "DEVICE_TRANSFER_PAIR_NEW_DEVICE_TITLE",
+                comment: "Title of the device transfer screen for pairing a new device, from the new device",
             )
         }
         return Text(titleText)
@@ -242,7 +328,7 @@ struct TransferPairingView: View {
                         .buttonStyle(Registration.UI.LargePrimaryButtonStyle())
                         .allowsHitTesting(false) // necessary to let touches pass to DevicePicker
                 } fallback: {}
-            } else {
+            } else if viewModel.discoveredPeers.isEmpty {
                 DevicePairingView(
                     .wifiAware(
                         .connecting(
@@ -258,6 +344,14 @@ struct TransferPairingView: View {
                         .buttonStyle(Registration.UI.LargePrimaryButtonStyle())
                         .allowsHitTesting(false) // necessary to let touches pass to DevicePairingView
                 } fallback: {}
+            } else {
+                Button(OWSLocalizedString(
+                    "DEVICE_TRANSFER_STATUS_NEW_DEVICE_PAIR_DEVICE",
+                    comment: "Title for paring an old device to transfer to.",
+                )) {
+                    viewModel.choosePeerBlock()
+                }
+                .buttonStyle(Registration.UI.LargePrimaryButtonStyle())
             }
 #endif
             Button(CommonStrings.cancelButton) {

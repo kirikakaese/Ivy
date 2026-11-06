@@ -56,10 +56,23 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
 
     func willEnterForeground() {
         Logger.info("")
+
+        // The disk may have filled while we were suspended, during which the
+        // periodic check can't run. Check before notifying observers, which
+        // may write to disk.
+        if
+            appReadiness.isAppReady,
+            !mainAppContext.isRunningTests
+        {
+            AppEnvironment.shared.lowDiskSpaceMonitoringManager.checkDiskSpaceNow()
+        }
+
+        mainAppContext.applicationWillEnterForeground()
     }
 
     func didBecomeActive() {
-        AssertIsOnMainThread()
+        mainAppContext.applicationDidBecomeActive()
+
         if CurrentAppContext().isRunningTests {
             return
         }
@@ -92,6 +105,8 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
 
         Logger.warn("")
 
+        mainAppContext.applicationWillResignActive()
+
         if didAppLaunchFail {
             return
         }
@@ -111,6 +126,8 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
 
     func didEnterBackground() {
         Logger.info("")
+
+        mainAppContext.applicationDidEnterBackground()
 
         if shouldKillAppWhenBackgrounded {
             owsFail("")
@@ -178,7 +195,7 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
         DebugLogger.configureSwiftLogging()
 
         Logger.warn("Launching…")
-        Logger.warn("applicationState: \(UIApplication.shared.applicationState.logString)")
+        Logger.warn("applicationState: \(mainAppContext.reportedApplicationState.logString)")
         defer { Logger.info("Launched.") }
 
         BenchEventStart(title: "Presenting HomeView", eventId: "AppStart", logInProduction: true)
@@ -198,6 +215,14 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
             deviceTransferRestore: deviceTransferRestore,
         ))
 
+        // Check before opening the database, which may itself write to disk.
+        if let additionalBytesRequiredToLaunch = LowDiskSpaceManager.additionalBytesRequiredToLaunch() {
+            handleLaunchFailure(.preflight(.lowStorageSpaceAvailable(
+                bytesRequired: additionalBytesRequiredToLaunch,
+            )))
+            return true
+        }
+
         // This *must* happen before we try and access or verify the database,
         // since we may be in a state where the database has been partially
         // restored from transfer (e.g. the key was replaced, but the database
@@ -211,7 +236,7 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
                 databaseFileUrl: SDSDatabaseStorage.grdbDatabaseFileUrl,
                 keychainStorage: keychainStorage,
             )
-        } catch KeychainError.notAllowed where UIApplication.shared.applicationState == .background {
+        } catch KeychainError.notAllowed where mainAppContext.isInBackground() {
             notifyThatPhoneMustBeUnlocked()
         } catch {
             // It's so corrupt that we can't even try to repair it.
@@ -381,7 +406,7 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
     /// this happens whenever a scene first connects, which may be long after
     /// the launch finished, or never.
     func connectUI(in windowScene: UIWindowScene) -> UIWindow {
-        Logger.info("applicationState: \(UIApplication.shared.applicationState.logString)")
+        Logger.info("applicationState: \(mainAppContext.reportedApplicationState.logString)")
 
         if let window {
             // Our scene was replaced with a new one. Keep the windows we have,
@@ -484,6 +509,7 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
         screenLockUI.startObserving()
     }
 
+    @MainActor
     private func setUpMainAppEnvironment(
         launchContext: LaunchContext,
     ) async -> (AppSetup.FinalContinuation, DeviceSleepBlockObject) {
@@ -1188,10 +1214,6 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
         appVersion: AppVersion,
         didDeviceTransferRestoreSucceed: Bool,
     ) -> LaunchPreflightError? {
-        if let additionalBytesRequiredToLaunch = LowDiskSpaceManager.additionalBytesRequiredToLaunch() {
-            return .lowStorageSpaceAvailable(bytesRequired: additionalBytesRequiredToLaunch)
-        }
-
         guard didDeviceTransferRestoreSucceed else {
             return .couldNotRestoreTransferredData
         }

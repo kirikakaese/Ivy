@@ -86,7 +86,6 @@ public class DependenciesBridge {
     public let backupSubscriptionManager: BackupSubscriptionManager
     public let backupTestFlightEntitlementManager: BackupTestFlightEntitlementManager
     public let badgeCountFetcher: BadgeCountFetcher
-    let blockedRecipientStore: BlockedRecipientStore
     public let callLinkStore: CallLinkRecordStore
     public let callRecordDeleteManager: any CallRecordDeleteManager
     public let callRecordMissedCallManager: CallRecordMissedCallManager
@@ -160,6 +159,7 @@ public class DependenciesBridge {
     public let pinnedThreadManager: PinnedThreadManager
     let pinnedThreadMerger: any PinnedThreadMerger
     let pinnedThreadStore: PinnedThreadStore
+    public let plaintextTakeoutManager: PlaintextTakeoutManager
     public let pollMessageManager: PollMessageManager
     public let preKeyManager: PreKeyManager
     public let privateStoryThreadDeletionManager: any PrivateStoryThreadDeletionManager
@@ -190,11 +190,11 @@ public class DependenciesBridge {
     public let svrLocalStorage: SVRLocalStorage
     public let threadReplyInfoStore: ThreadReplyInfoStore
     public let threadDeletionManager: ThreadDeletionManager
+    public let threadMuteManager: ThreadMuteManager
     public let threadStore: ThreadStore
     public let tsAccountManager: TSAccountManager
-    public let usernameApiClient: UsernameApiClient
+    public let unreadReminderManager: UnreadReminderManager
     public let usernameEducationManager: UsernameEducationManager
-    public let usernameLinkManager: UsernameLinkManager
     public let usernameLookupManager: UsernameLookupManager
     public let usernameValidationManager: UsernameValidationManager
     public let wallpaperImageStore: WallpaperImageStore
@@ -240,7 +240,6 @@ public class DependenciesBridge {
         backupSubscriptionManager: BackupSubscriptionManager,
         backupTestFlightEntitlementManager: BackupTestFlightEntitlementManager,
         badgeCountFetcher: BadgeCountFetcher,
-        blockedRecipientStore: BlockedRecipientStore,
         callLinkStore: CallLinkRecordStore,
         callRecordDeleteManager: CallRecordDeleteManager,
         callRecordMissedCallManager: CallRecordMissedCallManager,
@@ -313,6 +312,7 @@ public class DependenciesBridge {
         pinnedMessageExpirationJob: PinnedMessageExpirationJob,
         pinnedThreadManager: any PinnedThreadManager & PinnedThreadMerger,
         pinnedThreadStore: PinnedThreadStore,
+        plaintextTakeoutManager: PlaintextTakeoutManager,
         pollMessageManager: PollMessageManager,
         preKeyManager: PreKeyManager,
         privateStoryThreadDeletionManager: any PrivateStoryThreadDeletionManager,
@@ -343,11 +343,11 @@ public class DependenciesBridge {
         svrLocalStorage: SVRLocalStorage,
         threadReplyInfoStore: ThreadReplyInfoStore,
         threadDeletionManager: ThreadDeletionManager,
+        threadMuteManager: ThreadMuteManager,
         threadStore: ThreadStore,
         tsAccountManager: TSAccountManager,
-        usernameApiClient: UsernameApiClient,
+        unreadReminderManager: UnreadReminderManager,
         usernameEducationManager: UsernameEducationManager,
-        usernameLinkManager: UsernameLinkManager,
         usernameLookupManager: UsernameLookupManager,
         usernameValidationManager: UsernameValidationManager,
         wallpaperImageStore: WallpaperImageStore,
@@ -392,7 +392,6 @@ public class DependenciesBridge {
         self.backupSubscriptionManager = backupSubscriptionManager
         self.backupTestFlightEntitlementManager = backupTestFlightEntitlementManager
         self.badgeCountFetcher = badgeCountFetcher
-        self.blockedRecipientStore = blockedRecipientStore
         self.callLinkStore = callLinkStore
         self.callRecordDeleteManager = callRecordDeleteManager
         self.callRecordMissedCallManager = callRecordMissedCallManager
@@ -466,6 +465,7 @@ public class DependenciesBridge {
         self.pinnedThreadManager = pinnedThreadManager
         self.pinnedThreadMerger = pinnedThreadManager
         self.pinnedThreadStore = pinnedThreadStore
+        self.plaintextTakeoutManager = plaintextTakeoutManager
         self.pollMessageManager = pollMessageManager
         self.preKeyManager = preKeyManager
         self.privateStoryThreadDeletionManager = privateStoryThreadDeletionManager
@@ -496,11 +496,11 @@ public class DependenciesBridge {
         self.svrLocalStorage = svrLocalStorage
         self.threadReplyInfoStore = threadReplyInfoStore
         self.threadDeletionManager = threadDeletionManager
+        self.threadMuteManager = threadMuteManager
         self.threadStore = threadStore
         self.tsAccountManager = tsAccountManager
-        self.usernameApiClient = usernameApiClient
+        self.unreadReminderManager = unreadReminderManager
         self.usernameEducationManager = usernameEducationManager
-        self.usernameLinkManager = usernameLinkManager
         self.usernameLookupManager = usernameLookupManager
         self.usernameValidationManager = usernameValidationManager
         self.wallpaperImageStore = wallpaperImageStore
