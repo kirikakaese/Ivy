@@ -339,7 +339,7 @@ final class DebugLogs {
 
     /// Ivy: shares the packaged logs, for example to save them to Files.
     @MainActor
-    private func exportLogs(from viewController: UIViewController) async {
+    func exportLogs(from viewController: UIViewController) async {
         let zipFileUrl: URL
         do {
             zipFileUrl = try await packageLogs()
