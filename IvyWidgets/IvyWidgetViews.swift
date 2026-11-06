@@ -246,7 +246,7 @@ struct IvyWeekView: View {
                                 if day.items.isEmpty {
                                     Text(verbatim: "–").font(.caption).foregroundStyle(.tertiary)
                                 } else {
-                                    Text(day.items.prefix(2).map(Self.line).joined(separator: " · "))
+                                    Text(day.items.prefix(2).map { Self.line($0) }.joined(separator: " · "))
                                         .font(.caption).lineLimit(1)
                                 }
                             }
