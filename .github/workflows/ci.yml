@@ -113,20 +113,35 @@ jobs:
             ~/Library/Caches/org.signal.ringrtc
           key: deps-${{ hashFiles('Podfile.lock') }}
 
+      # Build products from another runner image (another macOS version)
+      # are rebuilt anyway, so each image keeps its own cache. GitHub rolls
+      # out new images over several days, with both versions in use.
+      - name: Note the runner image
+        run: echo "RUNNER_IMAGE=${ImageVersion:-unknown}" >> "$GITHUB_ENV"
+
       - name: Cache build products
         uses: actions/cache@v4
         with:
           path: ~/IvyDerivedData
-          key: derived-data-${{ matrix.platform }}-${{ github.head_ref || github.ref_name }}-${{ github.sha }}
+          key: derived-data-${{ matrix.platform }}-${{ env.RUNNER_IMAGE }}-${{ github.head_ref || github.ref_name }}-${{ github.sha }}
           restore-keys: |
-            derived-data-${{ matrix.platform }}-${{ github.head_ref || github.ref_name }}-
-            derived-data-${{ matrix.platform }}-main-
+            derived-data-${{ matrix.platform }}-${{ env.RUNNER_IMAGE }}-${{ github.head_ref || github.ref_name }}-
+            derived-data-${{ matrix.platform }}-${{ env.RUNNER_IMAGE }}-main-
 
       - name: Install dependencies
         run: make dependencies
 
       - name: Check that dependency install left tracked files unchanged
         run: git diff --exit-code
+
+      # The checkout and pod install give every file a new modification
+      # time, which would make Xcode rebuild everything despite the cache.
+      # Give unchanged files their recorded times back, and let Xcode ignore
+      # the new inodes of restored files.
+      - name: Make the build cache usable
+        run: |
+          python3 Scripts/ivy/ci_mtimes.py restore ~/IvyDerivedData/ivy-mtimes.json
+          defaults write com.apple.dt.XCBuild IgnoreFileSystemDeviceInodeChanges -bool YES
 
       - name: Show prebuilt libraries
         run: |
@@ -137,6 +152,10 @@ jobs:
 
       - name: Build and test (${{ env.MODE }})
         run: Scripts/ivy/ci-build.sh ${{ matrix.platform }} "$MODE"
+
+      - name: Record file times for the next run
+        if: always()
+        run: python3 Scripts/ivy/ci_mtimes.py save ~/IvyDerivedData/ivy-mtimes.json
 
       - name: Upload logs
         if: failure() || cancelled()

@@ -61,7 +61,7 @@ python3 -m unittest discover -s Scripts/ivy -p 'test_*.py'
 
 ## Continuous integration
 
-GitHub Actions checks every pull request (`.github/workflows/ci.yml`). Draft pull requests get a fast check that builds the app and all test bundles; pull requests that are ready for review, pushes to `main` and manual runs also run the full test suite. Build products are cached between runs.
+GitHub Actions checks every pull request (`.github/workflows/ci.yml`). Draft pull requests get a fast check that builds the app and all test bundles; pull requests that are ready for review, pushes to `main` and manual runs also run the full test suite. Build products are cached between runs. A fresh checkout gives every file a new modification time, which would make Xcode rebuild everything; `Scripts/ivy/ci_mtimes.py` records each file's content hash and time with the cached build products and gives unchanged files their old times back, so only what changed is rebuilt.
 
 If the tests stop making progress for ten minutes, CI prints which tests were running and where the test process is stuck, then stops the run.
 
