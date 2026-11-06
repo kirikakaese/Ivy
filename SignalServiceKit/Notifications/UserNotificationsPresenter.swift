@@ -12,14 +12,20 @@ public class UserNotificationConfig {
 
     class var allNotificationCategories: Set<UNNotificationCategory> {
         let categories = AppNotificationCategory.allCases.map { notificationCategory($0) }
-        return Set(categories) // Ivy: reminders, tasks and events
+        return Set(categories) // Ivy: reminders, tasks, events and messages with a date
             .union(IvyReminderNotifications.categories)
             .union(IvyTaskNotifications.categories)
             .union(IvyEventNotifications.categories)
+            .union(IvyNotificationActions.categories(messageActions: notificationActions(for: .incomingMessageWithActions_CanReply)))
     }
 
     class func notificationActions(for category: AppNotificationCategory) -> [UNNotificationAction] {
-        return category.actions.compactMap { notificationAction($0) }
+        let actions = category.actions.compactMap { notificationAction($0) }
+        // Ivy: a heart and a reminder on messages that can be replied to
+        if category == .incomingMessageWithActions_CanReply {
+            return actions + IvyNotificationActions.extraMessageActions
+        }
+        return actions
     }
 
     class func notificationCategory(_ category: AppNotificationCategory) -> UNNotificationCategory {
@@ -127,7 +133,12 @@ public class UserNotificationPresenter {
         }
 
         let content = UNMutableNotificationContent()
-        content.categoryIdentifier = category.rawValue
+        // Ivy: messages with an upcoming date offer accept and decline
+        content.categoryIdentifier = IvyNotificationActions.categoryIdentifier(
+            signalCategory: category.rawValue,
+            canReply: category == .incomingMessageWithActions_CanReply,
+            body: body,
+        )
         content.userInfo = userInfo.build()
         if let sound, sound != .standard(.none) {
             content.sound = sound.notificationSound(isQuiet: isMainAppAndActive)

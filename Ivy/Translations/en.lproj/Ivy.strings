@@ -1125,6 +1125,12 @@
 /* Footer of the 'Open at Login' switch on the Mac. */
 "NOTIFICATIONS_OPEN_AT_LOGIN_FOOTER" = "Ivy receives messages only while it is running. Open it at login so that messages arrive as soon as you log in to your Mac.";
 
+/* Notification action that reacts to the message with a heart. */
+"NOTIFICATION_REACT_HEART" = "React with ❤️";
+
+/* Notification action that sets a reminder for the message in one hour. */
+"NOTIFICATION_REMIND_IN_AN_HOUR" = "Remind Me in 1 Hour";
+
 /* Switch that lets Face ID or Touch ID unlock instead of the passcode. Embeds {{ Face ID or Touch ID }}. */
 "PASSCODE_ALLOW_BIOMETRY_FORMAT" = "Unlock with %@";
 
