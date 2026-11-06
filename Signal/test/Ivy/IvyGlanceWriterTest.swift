@@ -45,5 +45,6 @@ final class IvyGlanceWriterTest: XCTestCase {
         XCTAssertEqual(glance.today.first?.link, IvyLink.event(id: lunch.id).url)
         XCTAssertEqual(glance.tasks.map(\.title), ["Pay rent", "Taxes", "Read book"])
         XCTAssertEqual(glance.openTaskCount, 3)
+        XCTAssertEqual(glance.upcoming.map(\.title), ["Dentist"])
     }
 }

@@ -79,6 +79,34 @@ final class IvyGlanceTest: XCTestCase {
         XCTAssertEqual(glance.dueTaskCount(at: date(10), calendar: calendar), 2)
     }
 
+    func testDaysAheadAndOlderFiles() throws {
+        func item(_ id: String, start: Date, end: Date, allDay: Bool = false) -> IvyGlance.Item {
+            IvyGlance.Item(id: id, kind: .event, title: id, start: start, end: end, isAllDay: allDay, link: IvyLink.event(id: id).url)
+        }
+        let glance = IvyGlance(
+            writtenAt: date(8),
+            unreadCount: 0,
+            today: [item("lunch", start: date(12), end: date(13))],
+            tasks: [],
+            openTaskCount: 0,
+            upcoming: [
+                item("dentist", start: date(9, day: 19), end: date(10, day: 19)),
+                item("trip", start: date(0, day: 20), end: date(0, day: 21), allDay: true),
+            ],
+        )
+        let days = glance.days(count: 3, at: date(10), calendar: calendar)
+        XCTAssertEqual(days.map { $0.items.map(\.id) }, [["lunch"], ["dentist"], ["trip"]])
+        XCTAssertEqual(glance.days(count: 4, at: date(10), calendar: calendar).last?.items.map(\.id), ["trip"])
+
+        // A glance written before upcoming items existed still reads.
+        let old = #"{"writtenAt":0,"unreadCount":1,"today":[],"tasks":[],"openTaskCount":0}"#
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        let decoded = try decoder.decode(IvyGlance.self, from: Data(old.utf8))
+        XCTAssertEqual(decoded.unreadCount, 1)
+        XCTAssertEqual(decoded.upcoming, [])
+    }
+
     func testEncodingRoundTrip() throws {
         let glance = IvyGlance(
             writtenAt: Date(timeIntervalSince1970: 1_790_000_000),

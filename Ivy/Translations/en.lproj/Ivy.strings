@@ -2206,7 +2206,7 @@
 "WEEKLY_REVIEW_TITLE" = "Weekly Review";
 
 /* Description of the My Day widget in the widget gallery. */
-"WIDGET_DAY_DESCRIPTION" = "What's next today, tasks due and unread messages, on your Lock Screen.";
+"WIDGET_DAY_DESCRIPTION" = "What's next, tasks due and unread messages: today on the Lock Screen, the next days on the Home Screen.";
 
 /* Line in the My Day widget. Embeds {{ number of tasks due today }} and {{ number of unread messages }}. */
 "WIDGET_DAY_SUMMARY_FORMAT" = "%1$d due · %2$d unread";

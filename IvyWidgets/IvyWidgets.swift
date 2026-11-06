@@ -134,7 +134,7 @@ struct IvyDayWidget: Widget {
         }
         .configurationDisplayName(IvyLocalizedString("WIDGET_DAY_TITLE", comment: "Name of the lock screen widget with what's next today, due tasks and unread messages."))
         .description(IvyLocalizedString("WIDGET_DAY_DESCRIPTION", comment: "Description of the My Day widget in the widget gallery."))
-        .supportedFamilies([.accessoryRectangular])
+        .supportedFamilies([.accessoryRectangular, .systemMedium, .systemLarge])
     }
 }
 

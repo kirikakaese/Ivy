@@ -2206,7 +2206,7 @@
 "WEEKLY_REVIEW_TITLE" = "Wochenrückblick";
 
 /* Description of the My Day widget in the widget gallery. */
-"WIDGET_DAY_DESCRIPTION" = "Was heute als Nächstes ansteht, fällige Aufgaben und ungelesene Nachrichten auf dem Sperrbildschirm.";
+"WIDGET_DAY_DESCRIPTION" = "Was als Nächstes ansteht, fällige Aufgaben und ungelesene Nachrichten: heute auf dem Sperrbildschirm, die nächsten Tage auf dem Home-Bildschirm.";
 
 /* Line in the My Day widget. Embeds {{ number of tasks due today }} and {{ number of unread messages }}. */
 "WIDGET_DAY_SUMMARY_FORMAT" = "%1$d fällig · %2$d ungelesen";
