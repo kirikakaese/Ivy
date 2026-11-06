@@ -24,6 +24,12 @@ final class IvyHomeHeaderView: UIView {
 
     /// Opens the item on the card, or the calendar when nothing is next.
     var onOpenNextUp: ((IvyCalendarItem?) -> Void)?
+    /// Opens Ivy Status, from the line under the greeting.
+    var onOpenStatus: (() -> Void)?
+
+    /// The state of Ivy's services: green when all is well, the problem's
+    /// tone otherwise. Hidden without a push relay.
+    private let statusButton = UIButton(type: .system)
 
     private let dateLabel = UILabel()
     private let greetingLabel = UILabel()
@@ -81,10 +87,26 @@ final class IvyHomeHeaderView: UIView {
         card.accessibilityTraits = .button
         card.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(openNextUp)))
 
-        let stack = UIStackView(arrangedSubviews: [dateLabel, greetingLabel, tiles, card])
+        var statusConfiguration = UIButton.Configuration.filled()
+        statusConfiguration.cornerStyle = .capsule
+        statusConfiguration.imagePadding = 6
+        statusConfiguration.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 12, bottom: 7, trailing: 14)
+        statusConfiguration.titleLineBreakMode = .byTruncatingTail
+        statusConfiguration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+            var attributes = attributes
+            attributes.font = UIFont.dynamicTypeSubheadline.medium()
+            return attributes
+        }
+        statusButton.configuration = statusConfiguration
+        statusButton.contentHorizontalAlignment = .leading
+        statusButton.addAction(UIAction { [weak self] _ in self?.onOpenStatus?() }, for: .primaryActionTriggered)
+        statusButton.isHidden = true
+
+        let stack = UIStackView(arrangedSubviews: [dateLabel, greetingLabel, statusButton, tiles, card])
         stack.axis = .vertical
         stack.spacing = 2
-        stack.setCustomSpacing(16, after: greetingLabel)
+        stack.setCustomSpacing(12, after: greetingLabel)
+        stack.setCustomSpacing(16, after: statusButton)
         stack.setCustomSpacing(18, after: tiles)
         addSubview(stack)
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -131,6 +153,20 @@ final class IvyHomeHeaderView: UIView {
     }
 
     // MARK: -
+
+    /// Shows the state of Ivy's services; nil hides the line.
+    func updateStatus(_ status: (title: String, tone: IvyTone)?) {
+        guard let status else {
+            statusButton.isHidden = true
+            return
+        }
+        statusButton.isHidden = false
+        statusButton.configuration?.title = status.title
+        statusButton.configuration?.image = UIImage(systemName: "circle.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 8))
+        statusButton.configuration?.baseBackgroundColor = status.tone.background
+        statusButton.configuration?.baseForegroundColor = status.tone.strong
+        statusButton.accessibilityHint = IvyLocalizedString("SERVICE_STATUS_OPEN_BUTTON", comment: "Button on the chat list banner that opens the Ivy Status page.")
+    }
 
     func update(now: Date, nextUp: (item: IvyCalendarItem, following: IvyCalendarItem?)?, title: (IvyCalendarItem) -> String) {
         let dateFormatter = DateFormatter()

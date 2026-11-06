@@ -84,6 +84,31 @@ final class IvyHomeUITest: XCTestCase {
         XCTAssertTrue(IvyHomeHeaderView.when(later, now: now, calendar: calendar).contains("2"))
     }
 
+    @MainActor
+    func testTodayListsTheRestOfTodayAllDayFirst() {
+        let now = date(2026, 10, 30, 19)
+        func event(_ title: String, _ start: Date, _ end: Date) -> IvyCalendarItem {
+            IvyCalendarItem(kind: .event(IvyEvent(title: title, startAt: start, endAt: end)), start: start, end: end, isAllDay: false)
+        }
+        let past = event("past", date(2026, 10, 30, 9), date(2026, 10, 30, 10))
+        let running = event("running", date(2026, 10, 30, 18), date(2026, 10, 30, 20))
+        let later = event("later", date(2026, 10, 30, 21), date(2026, 10, 30, 22))
+        let tomorrow = event("tomorrow", date(2026, 10, 31, 9), date(2026, 10, 31, 10))
+        let allDay = IvyCalendarItem(kind: .event(IvyEvent(title: "all day", startAt: now, endAt: now)), start: date(2026, 10, 30), end: date(2026, 10, 30), isAllDay: true)
+
+        let today = IvyHomeViewController.todayItems([later, tomorrow, past, running, allDay], now: now, calendar: calendar)
+        XCTAssertEqual(today.map(title), ["all day", "running", "later"])
+    }
+
+    @MainActor
+    func testStatusLine() {
+        XCTAssertNil(IvyHomeViewController.statusLine(status: nil, hasRelay: false))
+        XCTAssertEqual(IvyHomeViewController.statusLine(status: nil, hasRelay: true)?.tone, .green)
+        let line = IvyHomeViewController.statusLine(status: .unreachable, hasRelay: true)
+        XCTAssertEqual(line?.title, IvyServiceStatus.unreachable.bannerTitle)
+        XCTAssertEqual(line?.tone, .brown)
+    }
+
     private func title(_ item: IvyCalendarItem) -> String {
         if case .event(let event) = item.kind {
             return event.title

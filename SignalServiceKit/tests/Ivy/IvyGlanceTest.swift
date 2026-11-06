@@ -55,6 +55,30 @@ final class IvyGlanceTest: XCTestCase {
         XCTAssertEqual(glance.todayRemaining(at: date(10, day: 19), calendar: calendar), [])
     }
 
+    func testNextTodayAndDueTasks() {
+        func item(_ id: String, kind: IvyGlance.Item.Kind = .event, start: Date?, end: Date?, allDay: Bool = false) -> IvyGlance.Item {
+            IvyGlance.Item(id: id, kind: kind, title: id, start: start, end: end, isAllDay: allDay, link: IvyLink.event(id: id).url)
+        }
+        let glance = IvyGlance(
+            writtenAt: date(8),
+            unreadCount: 4,
+            today: [
+                item("allDay", start: date(0), end: date(0), allDay: true),
+                item("meeting", start: date(14), end: date(15)),
+            ],
+            tasks: [
+                item("overdue", kind: .task, start: date(9, day: 17), end: date(9, day: 17)),
+                item("today", kind: .task, start: date(18), end: date(18)),
+                item("tomorrow", kind: .task, start: date(9, day: 19), end: date(9, day: 19)),
+                item("someday", kind: .task, start: nil, end: nil),
+            ],
+            openTaskCount: 4,
+        )
+        XCTAssertEqual(glance.nextToday(at: date(10), calendar: calendar)?.id, "meeting")
+        XCTAssertEqual(glance.nextToday(at: date(16), calendar: calendar)?.id, "allDay")
+        XCTAssertEqual(glance.dueTaskCount(at: date(10), calendar: calendar), 2)
+    }
+
     func testEncodingRoundTrip() throws {
         let glance = IvyGlance(
             writtenAt: Date(timeIntervalSince1970: 1_790_000_000),
