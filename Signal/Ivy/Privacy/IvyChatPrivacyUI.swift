@@ -234,7 +234,7 @@ enum IvyFolderTimerUI {
         for (thread, token) in changes {
             if let contactThread = thread as? TSContactThread {
                 databaseStorage.write { tx in
-                    GroupManager.localUpdateDisappearingMessageToken(token: token, inContactThread: contactThread, tx: tx)
+                    GroupManager.localUpdateDisappearingMessageToken(token: token.unversioned, inContactThread: contactThread, tx: tx)
                 }
             } else if let groupThread = thread as? TSGroupThread, let groupModel = groupThread.groupModel as? TSGroupModelV2 {
                 Task {
