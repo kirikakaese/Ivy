@@ -108,7 +108,7 @@ final class IvyGlanceWriter {
             guard !task.isDone, let dueAt = task.dueAt else { return false }
             return day.contains(dueAt)
         }
-        let today = IvyCalendar.items(events: events, tasks: dueToday, reminders: reminders, in: day, calendar: calendar).compactMap { item -> IvyGlance.Item? in
+        func glanceItem(_ item: IvyCalendarItem) -> IvyGlance.Item? {
             switch item.kind {
             case .event(let event):
                 return IvyGlance.Item(
@@ -142,6 +142,17 @@ final class IvyGlanceWriter {
                 )
             }
         }
+        let today = IvyCalendar.items(events: events, tasks: dueToday, reminders: reminders, in: day, calendar: calendar).compactMap(glanceItem)
+        // Events and reminders of the next days; tasks have their own list.
+        let upcomingStart = day.end
+        let upcomingEnd = calendar.date(byAdding: .day, value: IvyGlance.upcomingDays, to: upcomingStart) ?? upcomingStart
+        let upcoming = IvyCalendar.items(
+            events: events,
+            tasks: [],
+            reminders: reminders,
+            in: DateInterval(start: upcomingStart, end: upcomingEnd),
+            calendar: calendar,
+        ).compactMap(glanceItem)
         let open = tasks.filter { !$0.isDone }.sorted(by: IvyTask.areInIncreasingOrder)
         return IvyGlance(
             writtenAt: now,
@@ -159,6 +170,7 @@ final class IvyGlanceWriter {
                 )
             },
             openTaskCount: open.count,
+            upcoming: upcoming,
         )
     }
 }

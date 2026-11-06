@@ -50,13 +50,52 @@ public struct IvyGlance: Codable, Equatable, Sendable {
     /// Open tasks, soonest due first; tasks without a due date last.
     public var tasks: [Item]
     public var openTaskCount: Int
+    /// Events and reminders of the next days after today, earliest first,
+    /// for the larger "My Day" widgets.
+    public var upcoming: [Item]
 
-    public init(writtenAt: Date, unreadCount: Int, today: [Item], tasks: [Item], openTaskCount: Int) {
+    public init(writtenAt: Date, unreadCount: Int, today: [Item], tasks: [Item], openTaskCount: Int, upcoming: [Item] = []) {
         self.writtenAt = writtenAt
         self.unreadCount = unreadCount
         self.today = Array(today.prefix(Self.maxItems))
         self.tasks = Array(tasks.prefix(Self.maxItems))
         self.openTaskCount = openTaskCount
+        self.upcoming = Array(upcoming.prefix(Self.maxUpcomingItems))
+    }
+
+    /// Glances written before `upcoming` existed have none.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        writtenAt = try container.decode(Date.self, forKey: .writtenAt)
+        unreadCount = try container.decode(Int.self, forKey: .unreadCount)
+        today = try container.decode([Item].self, forKey: .today)
+        tasks = try container.decode([Item].self, forKey: .tasks)
+        openTaskCount = try container.decode(Int.self, forKey: .openTaskCount)
+        upcoming = try container.decodeIfPresent([Item].self, forKey: .upcoming) ?? []
+    }
+
+    /// How many days after today the glance looks ahead.
+    public static let upcomingDays = 7
+    public static let maxUpcomingItems = 24
+
+    /// Today and the following days, each with its items: today's that
+    /// haven't ended, then the upcoming ones. Days without items are kept.
+    public func days(count: Int, at now: Date, calendar: Calendar = .current) -> [(day: Date, items: [Item])] {
+        let start = calendar.startOfDay(for: now)
+        return (0..<max(count, 0)).compactMap { offset -> (day: Date, items: [Item])? in
+            guard let day = calendar.date(byAdding: .day, value: offset, to: start) else { return nil }
+            if offset == 0 {
+                return (day, todayRemaining(at: now, calendar: calendar))
+            }
+            let items = upcoming.filter { item in
+                guard let itemStart = item.start else { return false }
+                if item.isAllDay, let end = item.end, end > itemStart {
+                    return calendar.startOfDay(for: itemStart) <= day && day <= calendar.startOfDay(for: end)
+                }
+                return calendar.isDate(itemStart, inSameDayAs: day)
+            }
+            return (day, items)
+        }
     }
 
     public static let empty = IvyGlance(writtenAt: .distantPast, unreadCount: 0, today: [], tasks: [], openTaskCount: 0)
