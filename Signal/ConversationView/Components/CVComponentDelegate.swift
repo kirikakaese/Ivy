@@ -329,6 +329,8 @@ struct CVMessageAction: Equatable {
         case didTapViewPinnedMessage(pinnedMessageUniqueId: String)
         case didTapReleaseNotesAnnouncementAction(action: RemoteAnnouncementModel.Manifest.Action)
         case didTapViewStickerPack(stickerPackInfo: StickerPackInfo)
+        // Ivy: Zusagen / Absagen / Kalender under a message with a date.
+        case ivyDateReply(messageUniqueId: String, choice: IvyDateReplyButtons.Choice)
 
         struct BlockGroupRequest: Equatable {
             var secretParams: GroupSecretParams
@@ -414,6 +416,8 @@ struct CVMessageAction: Equatable {
                 delegate.didTapReleaseNotesAnnouncementAction(action: action)
             case .didTapViewStickerPack(let stickerPackInfo):
                 delegate.didTapStickerPack(stickerPackInfo)
+            case .ivyDateReply(let messageUniqueId, let choice):
+                (delegate as? ConversationViewController)?.ivyDidTapDateReply(messageUniqueId: messageUniqueId, choice: choice)
             }
         }
     }

@@ -540,6 +540,8 @@ public struct CVComponentState: Equatable {
 
     struct BottomButtons: Equatable {
         let actions: [CVMessageAction]
+        // Ivy: side by side instead of stacked (the date reply buttons).
+        var ivyIsRow = false
     }
 
     let bottomButtons: BottomButtons?
@@ -739,6 +741,7 @@ public struct CVComponentState: Equatable {
         var poll: Poll?
 
         var bottomButtonsActions = [CVMessageAction]()
+        var ivyBottomButtonsAreRow = false
         var bottomLabel: String?
 
         init(interaction: TSInteraction, itemBuildingContext: CVItemBuildingContext) {
@@ -751,7 +754,7 @@ public struct CVComponentState: Equatable {
         mutating func build() -> CVComponentState {
             var bottomButtons: BottomButtons?
             if !bottomButtonsActions.isEmpty {
-                bottomButtons = BottomButtons(actions: bottomButtonsActions)
+                bottomButtons = BottomButtons(actions: bottomButtonsActions, ivyIsRow: ivyBottomButtonsAreRow)
             }
 
             return CVComponentState(
@@ -1276,6 +1279,19 @@ private extension CVComponentState.Builder {
         }
 
         try buildBodyText(message: message)
+
+        // Ivy: Zusagen / Absagen / Kalender under messages that name a date.
+        if
+            bottomButtonsActions.isEmpty,
+            let ivyActions = IvyDateReplyButtons.actions(
+                for: message,
+                hasPendingMessageRequest: threadViewModel.hasPendingMessageRequest,
+                tx: transaction,
+            )
+        {
+            bottomButtonsActions = ivyActions
+            ivyBottomButtonsAreRow = ivyActions.count > 1
+        }
 
         if let outgoingMessage = message as? TSOutgoingMessage {
             let messageStatus: MessageReceiptStatus

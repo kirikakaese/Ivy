@@ -369,6 +369,27 @@
 /* Title of the settings for how Ivy is used by hand: reaction bar, gestures, message menu. */
 "CONTROLS_SETTINGS_TITLE" = "Bedienung";
 
+/* Button under a message with a date: accept, add it to the calendar and reply. */
+"DATE_REPLY_ACCEPT" = "Zusagen";
+
+/* Shown under a message with a date after accepting it, and in the reply that is sent. */
+"DATE_REPLY_ACCEPTED" = "Zugesagt";
+
+/* Toast after accepting a date: the event is now in the calendar. */
+"DATE_REPLY_ADDED_TOAST" = "In deinen Kalender eingetragen";
+
+/* Button under a message with a date: open a new calendar event for it. */
+"DATE_REPLY_CALENDAR" = "Kalender";
+
+/* Button under a message with a date: decline and reply. */
+"DATE_REPLY_DECLINE" = "Absagen";
+
+/* Shown under a message with a date after declining it, and in the reply that is sent. */
+"DATE_REPLY_DECLINED" = "Abgesagt";
+
+/* Switch in the chat settings that shows accept and decline buttons under messages with a date. */
+"DATE_REPLY_SETTING" = "Antwort-Buttons bei Terminen";
+
 /* Button below the debug log preview that exports the log. */
 "DEBUG_LOG_EXPORT_BUTTON" = "Exportieren";
 
