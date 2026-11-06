@@ -113,14 +113,20 @@ jobs:
             ~/Library/Caches/org.signal.ringrtc
           key: deps-${{ hashFiles('Podfile.lock') }}
 
+      # Build products from another runner image (another macOS version)
+      # are rebuilt anyway, so each image keeps its own cache. GitHub rolls
+      # out new images over several days, with both versions in use.
+      - name: Note the runner image
+        run: echo "RUNNER_IMAGE=${ImageVersion:-unknown}" >> "$GITHUB_ENV"
+
       - name: Cache build products
         uses: actions/cache@v4
         with:
           path: ~/IvyDerivedData
-          key: derived-data-${{ matrix.platform }}-${{ github.head_ref || github.ref_name }}-${{ github.sha }}
+          key: derived-data-${{ matrix.platform }}-${{ env.RUNNER_IMAGE }}-${{ github.head_ref || github.ref_name }}-${{ github.sha }}
           restore-keys: |
-            derived-data-${{ matrix.platform }}-${{ github.head_ref || github.ref_name }}-
-            derived-data-${{ matrix.platform }}-main-
+            derived-data-${{ matrix.platform }}-${{ env.RUNNER_IMAGE }}-${{ github.head_ref || github.ref_name }}-
+            derived-data-${{ matrix.platform }}-${{ env.RUNNER_IMAGE }}-main-
 
       - name: Install dependencies
         run: make dependencies
