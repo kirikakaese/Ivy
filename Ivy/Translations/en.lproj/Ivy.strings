@@ -1014,6 +1014,36 @@
 /* Shown when the user locks Ivy but Screen Lock is off. */
 "LOCK_NOW_NEEDS_SCREEN_LOCK" = "Turn on Screen Lock in Settings > Privacy to lock Ivy.";
 
+/* Mac menu command that looks for a newer Mac beta. */
+"MAC_BETA_CHECK_FOR_UPDATES" = "Check for Updates…";
+
+/* Shown when Ivy couldn't look for a newer Mac beta. */
+"MAC_BETA_UPDATE_CHECK_FAILED" = "Couldn't look for updates. Check your connection and try again.";
+
+/* Explains how to install the Mac beta by hand when the updater couldn't. */
+"MAC_BETA_UPDATE_FAILED_MESSAGE" = "Download the new beta from the releases page, quit Ivy and replace the app in your Applications folder.";
+
+/* Title when Ivy couldn't install the newer Mac beta by itself. */
+"MAC_BETA_UPDATE_FAILED_TITLE" = "Couldn't Update by Itself";
+
+/* Button that skips this Mac beta update until asked again. */
+"MAC_BETA_UPDATE_LATER" = "Later";
+
+/* Explains updating the Mac beta: Ivy restarts, and macOS may ask once to open it. */
+"MAC_BETA_UPDATE_MESSAGE" = "Ivy downloads the new version, replaces this one and restarts. Your data stays. Because the beta isn't signed, macOS may ask once more: then choose Open Anyway in System Settings › Privacy & Security.";
+
+/* Button that downloads and installs the newer Mac beta. */
+"MAC_BETA_UPDATE_NOW" = "Update Now";
+
+/* Button that opens the releases page with the Mac beta download. */
+"MAC_BETA_UPDATE_OPEN_RELEASES" = "Open Releases Page";
+
+/* Title when a newer Mac beta is out. Embeds {{ beta number }}. */
+"MAC_BETA_UPDATE_TITLE_FORMAT" = "Ivy Beta %d Is Available";
+
+/* Shown when the Mac beta is the newest one. Embeds {{ beta number }}. */
+"MAC_BETA_UP_TO_DATE_FORMAT" = "Ivy Beta %d is the newest version.";
+
 /* Stands for a message without text in the Mac's menu bar extra. */
 "MENU_BAR_ATTACHMENT" = "Attachment";
 

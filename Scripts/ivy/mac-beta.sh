@@ -65,6 +65,12 @@ APP="$STAGE/Ivy Beta.app"
 # an ad hoc signature can't have. The menu bar plugin stays.
 rm -rf "$APP/Contents/PlugIns/"*.appex "$APP/Contents/Extensions"
 
+# The beta's number, for its updater (IvyMacBetaUpdater). Builds by hand
+# have none and don't update themselves.
+if [ -n "${IVY_MAC_BETA_NUMBER:-}" ]; then
+  /usr/libexec/PlistBuddy -c "Add :IvyMacBetaNumber string $IVY_MAC_BETA_NUMBER" "$APP/Contents/Info.plist"
+fi
+
 # Sign everything again ad hoc. The app itself gets the App Sandbox (and
 # what Ivy needs inside it), so it has its own container like any Mac app;
 # entitlements that need a certificate are left out.

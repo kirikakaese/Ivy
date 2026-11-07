@@ -145,10 +145,29 @@ enum IvyKeyCommands {
             UIMenu(identifier: UIMenu.Identifier("ivy.find"), options: .displayInline, children: findCommands()),
             afterMenu: UIMenu.Identifier("ivy.zoom"),
         )
+        #if targetEnvironment(macCatalyst)
+        if IvyMacBetaUpdater.isAvailable {
+            let checkForUpdates = UICommand(
+                title: IvyLocalizedString("MAC_BETA_CHECK_FOR_UPDATES", comment: "Mac menu command that looks for a newer Mac beta."),
+                action: #selector(ConversationSplitViewController.ivyCheckForUpdates),
+            )
+            builder.insertSibling(
+                UIMenu(identifier: UIMenu.Identifier("ivy.updates"), options: .displayInline, children: [checkForUpdates]),
+                afterMenu: .about,
+            )
+        }
+        #endif
     }
 }
 
 extension ConversationSplitViewController {
+
+    @objc
+    func ivyCheckForUpdates() {
+        #if targetEnvironment(macCatalyst)
+        Task { await IvyMacBetaUpdater.check(userInitiated: true) }
+        #endif
+    }
 
     @objc
     func ivyShowHome() {

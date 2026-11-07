@@ -1014,6 +1014,36 @@
 /* Shown when the user locks Ivy but Screen Lock is off. */
 "LOCK_NOW_NEEDS_SCREEN_LOCK" = "Schalte die Bildschirmsperre unter Einstellungen > Datenschutz ein, um Ivy zu sperren.";
 
+/* Mac menu command that looks for a newer Mac beta. */
+"MAC_BETA_CHECK_FOR_UPDATES" = "Nach Updates suchen …";
+
+/* Shown when Ivy couldn't look for a newer Mac beta. */
+"MAC_BETA_UPDATE_CHECK_FAILED" = "Updates konnten nicht gesucht werden. Prüfe deine Verbindung und versuche es noch einmal.";
+
+/* Explains how to install the Mac beta by hand when the updater couldn't. */
+"MAC_BETA_UPDATE_FAILED_MESSAGE" = "Lade die neue Beta auf der Release-Seite herunter, beende Ivy und ersetze die App in deinem Programme-Ordner.";
+
+/* Title when Ivy couldn't install the newer Mac beta by itself. */
+"MAC_BETA_UPDATE_FAILED_TITLE" = "Update hat nicht geklappt";
+
+/* Button that skips this Mac beta update until asked again. */
+"MAC_BETA_UPDATE_LATER" = "Später";
+
+/* Explains updating the Mac beta: Ivy restarts, and macOS may ask once to open it. */
+"MAC_BETA_UPDATE_MESSAGE" = "Ivy lädt die neue Version, ersetzt diese und startet neu. Deine Daten bleiben. Weil die Beta nicht signiert ist, fragt macOS eventuell noch einmal: Dann in Systemeinstellungen › Datenschutz & Sicherheit „Dennoch öffnen“ wählen.";
+
+/* Button that downloads and installs the newer Mac beta. */
+"MAC_BETA_UPDATE_NOW" = "Jetzt aktualisieren";
+
+/* Button that opens the releases page with the Mac beta download. */
+"MAC_BETA_UPDATE_OPEN_RELEASES" = "Release-Seite öffnen";
+
+/* Title when a newer Mac beta is out. Embeds {{ beta number }}. */
+"MAC_BETA_UPDATE_TITLE_FORMAT" = "Ivy Beta %d ist verfügbar";
+
+/* Shown when the Mac beta is the newest one. Embeds {{ beta number }}. */
+"MAC_BETA_UP_TO_DATE_FORMAT" = "Ivy Beta %d ist die neueste Version.";
+
 /* Stands for a message without text in the Mac's menu bar extra. */
 "MENU_BAR_ATTACHMENT" = "Anhang";
 
