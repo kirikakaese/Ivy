@@ -4442,6 +4442,9 @@
 		D3EBBE0C2B051ECA5F34434F /* IvyNotificationActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F238BAA1E584445A19217B5 /* IvyNotificationActionHandler.swift */; };
 		AE03BB474BD81C84D24F2211 /* IvyPerformance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6353232D25B9DFA3E4990974 /* IvyPerformance.swift */; };
 		71DC44FA03A59701A37F8F61 /* ChatFolderExtrasCacheTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3AE5AEDA2047333E2033B37 /* ChatFolderExtrasCacheTest.swift */; };
+		276EC1DBB508DC510800A7C0 /* IvyMacBetaRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218EFCCB2F53118F2F14C53C /* IvyMacBetaRelease.swift */; };
+		A8CB995A16C73F40174214F7 /* IvyMacBetaUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9D4BD62D0491D2BC8FA17B /* IvyMacBetaUpdater.swift */; };
+		CF9198F9BF8380F7305E148D /* IvyMacBetaReleaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6934E6D9175D00DDFF509E7D /* IvyMacBetaReleaseTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -9185,6 +9188,9 @@
 		3F238BAA1E584445A19217B5 /* IvyNotificationActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyNotificationActionHandler.swift; sourceTree = "<group>"; };
 		6353232D25B9DFA3E4990974 /* IvyPerformance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyPerformance.swift; sourceTree = "<group>"; };
 		E3AE5AEDA2047333E2033B37 /* ChatFolderExtrasCacheTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatFolderExtrasCacheTest.swift; sourceTree = "<group>"; };
+		218EFCCB2F53118F2F14C53C /* IvyMacBetaRelease.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBetaRelease.swift; sourceTree = "<group>"; };
+		5B9D4BD62D0491D2BC8FA17B /* IvyMacBetaUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBetaUpdater.swift; sourceTree = "<group>"; };
+		6934E6D9175D00DDFF509E7D /* IvyMacBetaReleaseTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBetaReleaseTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16878,6 +16884,7 @@
 				BA4C0C122420E1745297E53C /* Writing */,
 				A6AE6AA73E6319BEA9238F83 /* Push */,
 				6353232D25B9DFA3E4990974 /* IvyPerformance.swift */,
+				218EFCCB2F53118F2F14C53C /* IvyMacBetaRelease.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16922,6 +16929,7 @@
 				7001E5E64BA1B27B4A29432B /* ChatFolderRulesTest.swift */,
 				AE0BFA41388727FE6D614740 /* IvyNotificationActionsTest.swift */,
 				E3AE5AEDA2047333E2033B37 /* ChatFolderExtrasCacheTest.swift */,
+				6934E6D9175D00DDFF509E7D /* IvyMacBetaReleaseTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16976,6 +16984,7 @@
 				1DA9ACDE67F0098536162A52 /* IvySettingsSearch.swift */,
 				629E49815A9C4D03799F7C22 /* IvyMoveFromSignal.swift */,
 				6534BCD42D5AA3D88CFB491F /* IvyProblemReport.swift */,
+				5B9D4BD62D0491D2BC8FA17B /* IvyMacBetaUpdater.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -20783,6 +20792,7 @@
 				36225541FAFBCA90DAC7F837 /* IvyDateReplyButtons.swift in Sources */,
 				E945EE11457ABE7575363773 /* IvyProblemReport.swift in Sources */,
 				D3EBBE0C2B051ECA5F34434F /* IvyNotificationActionHandler.swift in Sources */,
+				A8CB995A16C73F40174214F7 /* IvyMacBetaUpdater.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22197,6 +22207,7 @@
 				7A337D46BF41D66731C51FE0 /* ChatFolderRules.swift in Sources */,
 				FE1C19D9B9E1DEC2315F4C17 /* IvyNotificationActions.swift in Sources */,
 				AE03BB474BD81C84D24F2211 /* IvyPerformance.swift in Sources */,
+				276EC1DBB508DC510800A7C0 /* IvyMacBetaRelease.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22510,6 +22521,7 @@
 				35BE8C6EB85AB7D7725C13BD /* ChatFolderRulesTest.swift in Sources */,
 				383DB03342BA0A0C04E69215 /* IvyNotificationActionsTest.swift in Sources */,
 				71DC44FA03A59701A37F8F61 /* ChatFolderExtrasCacheTest.swift in Sources */,
+				CF9198F9BF8380F7305E148D /* IvyMacBetaReleaseTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23709,6 +23721,7 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				"TARGETED_DEVICE_FAMILY[sdk=macosx*]" = 6;
 				WRAPPER_EXTENSION = app;
 			};
 			name = "Testable Release";
@@ -23973,6 +23986,7 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				"TARGETED_DEVICE_FAMILY[sdk=macosx*]" = 6;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Profiling;
@@ -24350,6 +24364,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				"TARGETED_DEVICE_FAMILY[sdk=macosx*]" = 6;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -24389,6 +24404,7 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				"TARGETED_DEVICE_FAMILY[sdk=macosx*]" = 6;
 				WRAPPER_EXTENSION = app;
 			};
 			name = "App Store Release";

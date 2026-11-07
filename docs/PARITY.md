@@ -113,6 +113,12 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Lock a chat | 6d | done | done | done | Lock Chat in a chat's menu. Opening it asks for the Ivy passcode, or Face ID, Touch ID or the device passcode; it stays open until Ivy leaves the screen or locks. Notifications show the name only. Synced |
 | Disappearing messages per folder | 6d | done | done | done | Folder > Disappearing Messages: sets the timer on every chat in the folder and on chats added later; the change shows in each chat as usual. Groups need permission to change the timer. Synced |
 | Link previews per chat | 6d | done | done | done | Chat settings > Link Previews. Synced |
+| Report a problem | 6e | done | done | done | Shake the device or Settings > Help > Report a Problem; on the Mac Help > Report a Problem…. A screenshot of the screen, a text and the debug log; opens a prefilled GitHub issue (screenshot copied, log saved first) |
+| Accept or decline dates | 6e | done | done | done | Incoming messages from the last two days that name an upcoming date get Accept, Decline and Calendar in the bubble; accepting adds the event and sends a short quoted reply. Settings > Chats > Reply Buttons for Dates |
+| Home overview | 6e | done | done | done | State of Ivy's services under the greeting, the rest of today, open tasks, important unread messages |
+| My Day widget | 6e | done | done | in progress | Lock Screen (what's next, tasks due, unread) and Home Screen (3 days or the week). The Mac needs the signed app |
+| Notification actions | 6e | done | done | done | React with ❤️, remind in an hour; Accept and Decline on messages with an upcoming date |
+| Smart folders | 6e | done | done | done | Folder > Fill Automatically: chats that mention the user, have open tasks or a due reminder, are groups or have a word in their name; live preview. Ivy only, synced between Ivy devices |
 
 ## Release
 

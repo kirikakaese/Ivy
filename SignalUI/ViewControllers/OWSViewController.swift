@@ -304,7 +304,7 @@ open class OWSViewController: UIViewController {
 
         let isVerticalCompact = traitCollection.verticalSizeClass == .compact
         let isHorizontalCompact = traitCollection.horizontalSizeClass == .compact
-        let isiPad = traitCollection.userInterfaceIdiom == .pad
+        let isiPad = traitCollection.userInterfaceIdiom == .pad || traitCollection.userInterfaceIdiom == .mac // Ivy: Mac like iPad
 
         // Vertical
         if isVerticalCompact {

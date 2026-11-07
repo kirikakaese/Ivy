@@ -786,6 +786,9 @@
 /* Shown on Home when there are no events or reminders today. */
 "HOME_NOTHING_TODAY" = "Nothing planned today";
 
+/* Line on Home when the device has no network: airplane mode, or neither Wi-Fi nor mobile data. */
+"HOME_OFFLINE" = "Offline · airplane mode or no network";
+
 /* Item on Home that opens the calendar. */
 "HOME_OPEN_CALENDAR" = "Open Calendar";
 
@@ -1013,6 +1016,36 @@
 
 /* Shown when the user locks Ivy but Screen Lock is off. */
 "LOCK_NOW_NEEDS_SCREEN_LOCK" = "Turn on Screen Lock in Settings > Privacy to lock Ivy.";
+
+/* Mac menu command that looks for a newer Mac beta. */
+"MAC_BETA_CHECK_FOR_UPDATES" = "Check for Updates…";
+
+/* Shown when Ivy couldn't look for a newer Mac beta. */
+"MAC_BETA_UPDATE_CHECK_FAILED" = "Couldn't look for updates. Check your connection and try again.";
+
+/* Explains how to install the Mac beta by hand when the updater couldn't. */
+"MAC_BETA_UPDATE_FAILED_MESSAGE" = "Download the new beta from the releases page, quit Ivy and replace the app in your Applications folder.";
+
+/* Title when Ivy couldn't install the newer Mac beta by itself. */
+"MAC_BETA_UPDATE_FAILED_TITLE" = "Couldn't Update by Itself";
+
+/* Button that skips this Mac beta update until asked again. */
+"MAC_BETA_UPDATE_LATER" = "Later";
+
+/* Explains updating the Mac beta: Ivy restarts, and macOS may ask once to open it. */
+"MAC_BETA_UPDATE_MESSAGE" = "Ivy downloads the new version, replaces this one and restarts. Your data stays. Because the beta isn't signed, macOS may ask once more: then choose Open Anyway in System Settings › Privacy & Security.";
+
+/* Button that downloads and installs the newer Mac beta. */
+"MAC_BETA_UPDATE_NOW" = "Update Now";
+
+/* Button that opens the releases page with the Mac beta download. */
+"MAC_BETA_UPDATE_OPEN_RELEASES" = "Open Releases Page";
+
+/* Title when a newer Mac beta is out. Embeds {{ beta number }}. */
+"MAC_BETA_UPDATE_TITLE_FORMAT" = "Ivy Beta %d Is Available";
+
+/* Shown when the Mac beta is the newest one. Embeds {{ beta number }}. */
+"MAC_BETA_UP_TO_DATE_FORMAT" = "Ivy Beta %d is the newest version.";
 
 /* Stands for a message without text in the Mac's menu bar extra. */
 "MENU_BAR_ATTACHMENT" = "Attachment";
@@ -1623,6 +1656,9 @@
 /* Explanation under the button in Report a Problem: what happens with the text, screenshot and debug log. */
 "REPORT_PROBLEM_FOOTER" = "Opens a new issue on GitHub with your text and the app and iOS version. The screenshot is copied so you can paste it there, and the debug log is saved first (for example to Files) so you can attach it. Ivy sends nothing by itself.";
 
+/* Mac Help menu command that opens Report a Problem. */
+"REPORT_PROBLEM_MENU" = "Report a Problem…";
+
 /* Placeholder of the text field in Report a Problem. */
 "REPORT_PROBLEM_PLACEHOLDER" = "What happened?";
 
@@ -1707,11 +1743,23 @@
 /* Chat list banner title for a notice from Ivy Status. */
 "SERVICE_STATUS_NOTICE_TITLE" = "Notice from Ivy";
 
+/* Chat list banner text when the device is offline: messages arrive once it's back online. */
+"SERVICE_STATUS_OFFLINE_DETAIL" = "Messages arrive once you're back online.";
+
+/* Small heading above the chat list banner when the device has no network. */
+"SERVICE_STATUS_OFFLINE_HEADER" = "No Connection";
+
+/* Chat list banner text when the device has no network: airplane mode, or neither Wi-Fi nor mobile data. */
+"SERVICE_STATUS_OFFLINE_TITLE" = "Airplane mode or no network";
+
 /* Button on the chat list banner that opens the Ivy Status page. */
 "SERVICE_STATUS_OPEN_BUTTON" = "Ivy Status";
 
+/* Chat list banner text when the device is online but Ivy Push doesn't answer. */
+"SERVICE_STATUS_UNREACHABLE_DETAIL" = "You're online, but notifications may be late.";
+
 /* Chat list banner title when Ivy can't reach its push relay. */
-"SERVICE_STATUS_UNREACHABLE_TITLE" = "Can't reach Ivy Push";
+"SERVICE_STATUS_UNREACHABLE_TITLE" = "Ivy Push isn't answering";
 
 /* Header of the settings group about the app itself: appearance, start and tabs, controls. */
 "SETTINGS_GROUP_APP" = "App";

@@ -145,10 +145,43 @@ enum IvyKeyCommands {
             UIMenu(identifier: UIMenu.Identifier("ivy.find"), options: .displayInline, children: findCommands()),
             afterMenu: UIMenu.Identifier("ivy.zoom"),
         )
+        #if targetEnvironment(macCatalyst)
+        if IvyMacBetaUpdater.isAvailable {
+            let checkForUpdates = UICommand(
+                title: IvyLocalizedString("MAC_BETA_CHECK_FOR_UPDATES", comment: "Mac menu command that looks for a newer Mac beta."),
+                action: #selector(ConversationSplitViewController.ivyCheckForUpdates),
+            )
+            builder.insertSibling(
+                UIMenu(identifier: UIMenu.Identifier("ivy.updates"), options: .displayInline, children: [checkForUpdates]),
+                afterMenu: .about,
+            )
+        }
+        #endif
+        // There's no shake on the Mac, so Report a Problem is in the Help menu.
+        let reportProblem = UICommand(
+            title: IvyLocalizedString("REPORT_PROBLEM_MENU", comment: "Mac Help menu command that opens Report a Problem."),
+            action: #selector(ConversationSplitViewController.ivyReportProblem),
+        )
+        builder.insertChild(
+            UIMenu(identifier: UIMenu.Identifier("ivy.help"), options: .displayInline, children: [reportProblem]),
+            atStartOfMenu: .help,
+        )
     }
 }
 
 extension ConversationSplitViewController {
+
+    @objc
+    func ivyCheckForUpdates() {
+        #if targetEnvironment(macCatalyst)
+        Task { await IvyMacBetaUpdater.check(userInitiated: true) }
+        #endif
+    }
+
+    @objc
+    func ivyReportProblem() {
+        IvyProblemReport.present(capturing: view.window)
+    }
 
     @objc
     func ivyShowHome() {

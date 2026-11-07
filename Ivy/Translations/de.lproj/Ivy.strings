@@ -786,6 +786,9 @@
 /* Shown on Home when there are no events or reminders today. */
 "HOME_NOTHING_TODAY" = "Heute nichts geplant";
 
+/* Line on Home when the device has no network: airplane mode, or neither Wi-Fi nor mobile data. */
+"HOME_OFFLINE" = "Offline · Flugmodus oder kein Netz";
+
 /* Item on Home that opens the calendar. */
 "HOME_OPEN_CALENDAR" = "Kalender öffnen";
 
@@ -1013,6 +1016,36 @@
 
 /* Shown when the user locks Ivy but Screen Lock is off. */
 "LOCK_NOW_NEEDS_SCREEN_LOCK" = "Schalte die Bildschirmsperre unter Einstellungen > Datenschutz ein, um Ivy zu sperren.";
+
+/* Mac menu command that looks for a newer Mac beta. */
+"MAC_BETA_CHECK_FOR_UPDATES" = "Nach Updates suchen …";
+
+/* Shown when Ivy couldn't look for a newer Mac beta. */
+"MAC_BETA_UPDATE_CHECK_FAILED" = "Updates konnten nicht gesucht werden. Prüfe deine Verbindung und versuche es noch einmal.";
+
+/* Explains how to install the Mac beta by hand when the updater couldn't. */
+"MAC_BETA_UPDATE_FAILED_MESSAGE" = "Lade die neue Beta auf der Release-Seite herunter, beende Ivy und ersetze die App in deinem Programme-Ordner.";
+
+/* Title when Ivy couldn't install the newer Mac beta by itself. */
+"MAC_BETA_UPDATE_FAILED_TITLE" = "Update hat nicht geklappt";
+
+/* Button that skips this Mac beta update until asked again. */
+"MAC_BETA_UPDATE_LATER" = "Später";
+
+/* Explains updating the Mac beta: Ivy restarts, and macOS may ask once to open it. */
+"MAC_BETA_UPDATE_MESSAGE" = "Ivy lädt die neue Version, ersetzt diese und startet neu. Deine Daten bleiben. Weil die Beta nicht signiert ist, fragt macOS eventuell noch einmal: Dann in Systemeinstellungen › Datenschutz & Sicherheit „Dennoch öffnen“ wählen.";
+
+/* Button that downloads and installs the newer Mac beta. */
+"MAC_BETA_UPDATE_NOW" = "Jetzt aktualisieren";
+
+/* Button that opens the releases page with the Mac beta download. */
+"MAC_BETA_UPDATE_OPEN_RELEASES" = "Release-Seite öffnen";
+
+/* Title when a newer Mac beta is out. Embeds {{ beta number }}. */
+"MAC_BETA_UPDATE_TITLE_FORMAT" = "Ivy Beta %d ist verfügbar";
+
+/* Shown when the Mac beta is the newest one. Embeds {{ beta number }}. */
+"MAC_BETA_UP_TO_DATE_FORMAT" = "Ivy Beta %d ist die neueste Version.";
 
 /* Stands for a message without text in the Mac's menu bar extra. */
 "MENU_BAR_ATTACHMENT" = "Anhang";
@@ -1623,6 +1656,9 @@
 /* Explanation under the button in Report a Problem: what happens with the text, screenshot and debug log. */
 "REPORT_PROBLEM_FOOTER" = "Öffnet ein neues Issue auf GitHub mit deinem Text sowie der App- und iOS-Version. Der Screenshot wird kopiert, damit du ihn dort einfügen kannst, und das Debug-Protokoll wird vorher gesichert (zum Beispiel in Dateien), damit du es anhängen kannst. Ivy selbst sendet nichts.";
 
+/* Mac Help menu command that opens Report a Problem. */
+"REPORT_PROBLEM_MENU" = "Problem melden …";
+
 /* Placeholder of the text field in Report a Problem. */
 "REPORT_PROBLEM_PLACEHOLDER" = "Was ist passiert?";
 
@@ -1707,11 +1743,23 @@
 /* Chat list banner title for a notice from Ivy Status. */
 "SERVICE_STATUS_NOTICE_TITLE" = "Hinweis von Ivy";
 
+/* Chat list banner text when the device is offline: messages arrive once it's back online. */
+"SERVICE_STATUS_OFFLINE_DETAIL" = "Nachrichten kommen, sobald du wieder online bist.";
+
+/* Small heading above the chat list banner when the device has no network. */
+"SERVICE_STATUS_OFFLINE_HEADER" = "Keine Verbindung";
+
+/* Chat list banner text when the device has no network: airplane mode, or neither Wi-Fi nor mobile data. */
+"SERVICE_STATUS_OFFLINE_TITLE" = "Flugmodus oder kein Netz";
+
 /* Button on the chat list banner that opens the Ivy Status page. */
 "SERVICE_STATUS_OPEN_BUTTON" = "Ivy Status";
 
+/* Chat list banner text when the device is online but Ivy Push doesn't answer. */
+"SERVICE_STATUS_UNREACHABLE_DETAIL" = "Du bist online, aber Mitteilungen kommen eventuell verspätet.";
+
 /* Chat list banner title when Ivy can't reach its push relay. */
-"SERVICE_STATUS_UNREACHABLE_TITLE" = "Ivy Push nicht erreichbar";
+"SERVICE_STATUS_UNREACHABLE_TITLE" = "Ivy Push antwortet nicht";
 
 /* Header of the settings group about the app itself: appearance, start and tabs, controls. */
 "SETTINGS_GROUP_APP" = "App";

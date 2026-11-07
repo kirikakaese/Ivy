@@ -256,6 +256,12 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
     /// The line under the greeting: green while all is well, the problem
     /// in its tone otherwise. Without a push relay there is nothing to show.
     static func statusLine(status: IvyServiceStatus?, hasRelay: Bool) -> (title: String, tone: IvyTone)? {
+        if status?.level == .offline {
+            return (
+                IvyLocalizedString("HOME_OFFLINE", comment: "Line on Home when the device has no network: airplane mode, or neither Wi-Fi nor mobile data."),
+                .gray,
+            )
+        }
         guard hasRelay else {
             return nil
         }

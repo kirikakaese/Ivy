@@ -68,6 +68,9 @@ jobs:
         run: make dependencies
 
       - name: Build
+        env:
+          # Only released betas know their number and update themselves.
+          IVY_MAC_BETA_NUMBER: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.run_number || '' }}
         run: Scripts/ivy/mac-beta.sh build/mac-beta
 
       - name: Keep the build

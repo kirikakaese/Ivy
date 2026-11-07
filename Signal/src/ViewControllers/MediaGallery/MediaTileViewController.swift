@@ -469,7 +469,7 @@ class MediaTileViewController: UICollectionViewController, MediaGalleryDelegate,
                 // Note that adjustedContentInset is used because it seems to include the
                 // rounded corners of the device, whereas safeAreaInsets is not enough.
                 var result = collectionView.adjustedContentInset
-                if UIDevice.current.userInterfaceIdiom == .pad {
+                if UIDevice.current.isIPad { // Ivy: also the Mac
                     result.bottom = 8.0
                 }
                 result.right = 0
@@ -503,7 +503,7 @@ class MediaTileViewController: UICollectionViewController, MediaGalleryDelegate,
         let rightInset = 20.0 + scrollbarInsets.right
 
         // Set a minimum height for the handle. iOS has no API for this.
-        let minimumHandleHeight = UIDevice.current.userInterfaceIdiom == .pad ? 42.0 : 36.0
+        let minimumHandleHeight = UIDevice.current.isIPad ? 42.0 : 36.0 // Ivy: also the Mac
 
         // How much of the content is visible?
         let fractionVisible = visibleHeight / contentHeight
