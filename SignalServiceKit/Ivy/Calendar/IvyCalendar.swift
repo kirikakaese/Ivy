@@ -25,7 +25,7 @@ public struct IvyDetectedDate: Equatable, Sendable {
 public enum IvyDateDetection {
 
     /// Making a detector is expensive; matching with one is thread-safe.
-    nonisolated(unsafe) private static let dateDetector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
+    private static let dateDetector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
 
     /// Dates in `text`, in the order they appear. Only the device looks at
     /// the text.
