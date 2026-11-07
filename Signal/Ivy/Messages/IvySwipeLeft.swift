@@ -20,8 +20,10 @@ enum IvySwipeLeft: String, CaseIterable {
 
     static let defaultsKey = "IvySwipeLeft"
 
-    static func current(defaults: UserDefaults = .standard) -> IvySwipeLeft {
-        defaults.string(forKey: defaultsKey).flatMap(IvySwipeLeft.init(rawValue:)) ?? .star
+    static func current(defaults: UserDefaults = .standard, appliesHere: Bool = IvyHand.appliesHere) -> IvySwipeLeft {
+        // The Mac keeps Signal's swipe: message details.
+        guard appliesHere else { return .info }
+        return defaults.string(forKey: defaultsKey).flatMap(IvySwipeLeft.init(rawValue:)) ?? .star
     }
 
     static func set(_ action: IvySwipeLeft, defaults: UserDefaults = .standard) {

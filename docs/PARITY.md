@@ -119,6 +119,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | My Day widget | 6e | done | done | in progress | Lock Screen (what's next, tasks due, unread) and Home Screen (3 days or the week). The Mac needs the signed app |
 | Notification actions | 6e | done | done | done | React with ❤️, remind in an hour; Accept and Decline on messages with an upcoming date |
 | Smart folders | 6e | done | done | done | Folder > Fill Automatically: chats that mention the user, have open tasks or a due reminder, are groups or have a word in their name; live preview. Ivy only, synced between Ivy devices |
+| One-handed controls | 6e | done | done | – | Hand setting, reaction bar beside the menu, swipe left, menu flipped low on the screen, search and folders at the bottom. For touch screens; the Mac keeps Signal's layout and hides these settings |
 
 ## Release
 

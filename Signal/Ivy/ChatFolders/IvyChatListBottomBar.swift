@@ -13,8 +13,8 @@ import UIKit
 enum IvyChatListLayout {
     static let searchAtBottomKey = "IvyChatListSearchAtBottom"
 
-    static func searchAtBottom(defaults: UserDefaults = .standard) -> Bool {
-        defaults.bool(forKey: searchAtBottomKey)
+    static func searchAtBottom(defaults: UserDefaults = .standard, appliesHere: Bool = IvyHand.appliesHere) -> Bool {
+        appliesHere && defaults.bool(forKey: searchAtBottomKey)
     }
 
     static func setSearchAtBottom(_ on: Bool, defaults: UserDefaults = .standard) {

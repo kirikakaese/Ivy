@@ -56,14 +56,19 @@ enum IvySettingsIndex {
             page(OWSLocalizedString("SETTINGS_DATA", comment: "Label for the 'data' section of the app settings.")) { DataSettingsTableViewController() },
         ]
         result += IvySettingsPage.allCases.map { ivyPage in page(ivyPage.title) { ivyPage.makeViewController() } }
+        // The one-hand settings are only on touch screens.
+        if IvyHand.appliesHere {
+            result += [
+                item(IvyLocalizedString("HAND_TITLE", comment: "Header of the setting that chooses which hand Ivy is used with."), on: .controls),
+                item(IvyLocalizedString("REACTION_BAR_POSITION_TITLE", comment: "Header of the setting that chooses where the reaction bar goes when a message is held."), on: .controls),
+                item(IvyLocalizedString("SWIPE_LEFT_TITLE", comment: "Header of the setting that chooses what swiping a message left does."), on: .controls),
+                item(IvyLocalizedString("CHAT_LIST_SEARCH_BOTTOM", comment: "Switch that moves the chat list's search and folders to the bottom, above the tab bar."), on: .startAndTabs),
+            ]
+        }
         result += [
-            item(IvyLocalizedString("HAND_TITLE", comment: "Header of the setting that chooses which hand Ivy is used with."), on: .controls),
-            item(IvyLocalizedString("REACTION_BAR_POSITION_TITLE", comment: "Header of the setting that chooses where the reaction bar goes when a message is held."), on: .controls),
             item(IvyLocalizedString("DOUBLE_TAP_REACTION_TITLE", comment: "Header of the settings for reacting to a message by double-tapping it."), on: .controls),
-            item(IvyLocalizedString("SWIPE_LEFT_TITLE", comment: "Header of the setting that chooses what swiping a message left does."), on: .controls),
             item(IvyLocalizedString("MESSAGE_MENU_SETTINGS_TITLE", comment: "Title of the settings that choose which message menu actions show directly."), on: .controls),
             item(IvyLocalizedString("TIPS_SHOW_AGAIN", comment: "Item in chat settings that shows the first-time tips about reactions and the message menu again."), on: .controls),
-            item(IvyLocalizedString("CHAT_LIST_SEARCH_BOTTOM", comment: "Switch that moves the chat list's search and folders to the bottom, above the tab bar."), on: .startAndTabs),
             item(IvyLocalizedString("HOME_START_SECTION", comment: "Header of the setting that chooses which section the app opens with."), on: .startAndTabs),
             item(IvyLocalizedString("HOME_IMPORTANT_CHATS", comment: "Header of the chats whose unread messages Home shows as important."), on: .startAndTabs),
             item(IvyAppleSyncSettingsViewController.title, on: .calendarAndTasks),
