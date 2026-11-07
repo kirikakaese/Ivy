@@ -22,6 +22,17 @@ public final class IvyDataStore {
     private let database: DatabaseWriter
     let clock: IvyDataClock
 
+    /// Goes up with every change that is applied, so caches of what is read
+    /// from the store know when they're stale.
+    public var generation: UInt64 {
+        generationLock.lock()
+        defer { generationLock.unlock() }
+        return _generation
+    }
+
+    private var _generation: UInt64 = 0
+    private let generationLock = NSLock()
+
     /// Called with local edits, which then go to the user's other devices.
     var onLocalChanges: (([IvyDataChange]) -> Void)?
 
@@ -155,6 +166,9 @@ public final class IvyDataStore {
             return []
         }
         if !applied.isEmpty {
+            generationLock.lock()
+            _generation &+= 1
+            generationLock.unlock()
             let kinds = Set(applied.map(\.kind))
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: Self.dataDidChange, object: nil, userInfo: ["kinds": kinds])

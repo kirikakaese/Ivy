@@ -342,7 +342,7 @@ final class IvySidebarViewController: UIViewController, UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch dataSource.itemIdentifier(for: indexPath) {
         case .section(let tab):
-            homeVC.selectedHomeTab = tab
+            IvyPerformance.measure("switch section") { homeVC.selectedHomeTab = tab }
             if tab == .chatList, let allChats = state.allChatsFolder {
                 chatList.ivySelectChatFolder(allChats)
             }

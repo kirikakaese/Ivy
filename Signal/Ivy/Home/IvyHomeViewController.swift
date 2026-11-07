@@ -197,6 +197,10 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
     // MARK: - Contents
 
     private func reload() {
+        IvyPerformance.measure("Home reload") { reloadNow() }
+    }
+
+    private func reloadNow() {
         updateHeader()
         var sections = [Section]()
         if let today = todaySection() {

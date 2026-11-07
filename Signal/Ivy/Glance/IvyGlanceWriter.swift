@@ -51,6 +51,10 @@ final class IvyGlanceWriter {
     }
 
     private func write() {
+        IvyPerformance.measure("widget data") { writeNow() }
+    }
+
+    private func writeNow() {
         let reminders = IvyReminderManager.shared.openReminders()
         let chatNames = SSKEnvironment.shared.databaseStorageRef.read { tx in
             var names = [IvyChatReference: String]()
