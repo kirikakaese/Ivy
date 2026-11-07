@@ -129,7 +129,8 @@ public extension UIDevice {
 
     @objc
     var isIPad: Bool {
-        return userInterfaceIdiom == .pad
+        // Ivy: the Mac app uses the Mac interface; it lays out like the iPad.
+        return userInterfaceIdiom == .pad || userInterfaceIdiom == .mac
     }
 
     @objc
