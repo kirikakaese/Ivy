@@ -144,7 +144,7 @@ class CustomKeyboard: UIInputView {
                     owsFailDebug("Invalid size classes: H:\(horizontal), V:\(vertical)")
                     return nil
                 }
-            case .pad:
+            case .pad, .mac: // Ivy: the Mac app lays out like the iPad
                 return screenSize.isPortrait ? 337 : 422
             default:
                 owsFailDebug("Invalid userInterfaceIdiom: \(userInterfaceIdiom)")

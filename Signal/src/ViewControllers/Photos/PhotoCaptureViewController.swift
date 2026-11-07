@@ -525,7 +525,7 @@ class PhotoCaptureViewController: OWSViewController, OWSNavigationChildControlle
 
         if
             (traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular) ||
-            (traitCollection.userInterfaceIdiom == .pad)
+            (traitCollection.userInterfaceIdiom == .pad || traitCollection.userInterfaceIdiom == .mac) // Ivy: Mac like iPad
         {
             return viewAspectRatio > 9 / 16 ? .pad : .padNarrow
         }
