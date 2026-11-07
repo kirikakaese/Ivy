@@ -33,7 +33,9 @@ enum IvyFirstTimeTips {
     }
 
     /// True for the first few menus with a reaction bar.
-    static func takeBarTip(defaults: UserDefaults = .standard) -> Bool {
+    static func takeBarTip(defaults: UserDefaults = .standard, appliesHere: Bool = IvyHand.appliesHere) -> Bool {
+        // The tip is about the bar beside the menu, which the Mac doesn't have.
+        guard appliesHere else { return false }
         let count = defaults.integer(forKey: barTipKey)
         guard count < barTipTimes else { return false }
         defaults.set(count + 1, forKey: barTipKey)

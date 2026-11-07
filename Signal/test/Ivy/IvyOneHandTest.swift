@@ -17,17 +17,17 @@ final class IvyOneHandTest: XCTestCase {
 
     func testSwipeLeftStarsUntilChosen() throws {
         let defaults = try freshDefaults()
-        XCTAssertEqual(IvySwipeLeft.current(defaults: defaults), .star)
+        XCTAssertEqual(IvySwipeLeft.current(defaults: defaults, appliesHere: true), .star)
         IvySwipeLeft.set(.info, defaults: defaults)
-        XCTAssertEqual(IvySwipeLeft.current(defaults: defaults), .info)
+        XCTAssertEqual(IvySwipeLeft.current(defaults: defaults, appliesHere: true), .info)
         defaults.set("sideways", forKey: IvySwipeLeft.defaultsKey)
-        XCTAssertEqual(IvySwipeLeft.current(defaults: defaults), .star)
+        XCTAssertEqual(IvySwipeLeft.current(defaults: defaults, appliesHere: true), .star)
     }
 
     func testSearchAtTheBottomIsOptIn() throws {
         let defaults = try freshDefaults()
-        XCTAssertFalse(IvyChatListLayout.searchAtBottom(defaults: defaults))
+        XCTAssertFalse(IvyChatListLayout.searchAtBottom(defaults: defaults, appliesHere: true))
         IvyChatListLayout.setSearchAtBottom(true, defaults: defaults)
-        XCTAssertTrue(IvyChatListLayout.searchAtBottom(defaults: defaults))
+        XCTAssertTrue(IvyChatListLayout.searchAtBottom(defaults: defaults, appliesHere: true))
     }
 }

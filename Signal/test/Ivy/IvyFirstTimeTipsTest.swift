@@ -26,11 +26,11 @@ final class IvyFirstTimeTipsTest: XCTestCase {
 
     func testBarTipThreeTimesOrUntilClosed() throws {
         let defaults = try freshDefaults()
-        XCTAssertEqual((0..<5).map { _ in IvyFirstTimeTips.takeBarTip(defaults: defaults) }, [true, true, true, false, false])
+        XCTAssertEqual((0..<5).map { _ in IvyFirstTimeTips.takeBarTip(defaults: defaults, appliesHere: true) }, [true, true, true, false, false])
         IvyFirstTimeTips.reset(defaults: defaults)
-        XCTAssertTrue(IvyFirstTimeTips.takeBarTip(defaults: defaults))
+        XCTAssertTrue(IvyFirstTimeTips.takeBarTip(defaults: defaults, appliesHere: true))
         IvyFirstTimeTips.closeBarTip(defaults: defaults)
-        XCTAssertFalse(IvyFirstTimeTips.takeBarTip(defaults: defaults))
+        XCTAssertFalse(IvyFirstTimeTips.takeBarTip(defaults: defaults, appliesHere: true))
         XCTAssertTrue(IvyFirstTimeTips.isWelcomeDue(defaults: defaults))
     }
 }

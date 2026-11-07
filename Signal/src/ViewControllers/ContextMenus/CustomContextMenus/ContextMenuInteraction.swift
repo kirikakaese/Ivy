@@ -350,6 +350,7 @@ public class ChatHistoryContextMenuInteraction: ContextMenuInteraction {
         // Ivy: a message in the lower part of the screen gets the menu in
         // flipped order, the everyday actions nearest the thumb.
         let ivyFlipped: Bool = {
+            guard IvyHand.appliesHere else { return false } // Not on the Mac
             let view = targetedPreview.view
             guard let window = view.window else { return false }
             let frame = view.convert(view.bounds, to: window)

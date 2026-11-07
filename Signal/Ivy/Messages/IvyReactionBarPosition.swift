@@ -16,7 +16,18 @@ enum IvyHand: String, CaseIterable {
 
     static let defaultsKey = "IvyHand"
 
-    static func current(defaults: UserDefaults = .standard) -> IvyHand {
+    /// The one-hand settings are for touch screens; the Mac keeps Signal's
+    /// layout.
+    static var appliesHere: Bool {
+        #if targetEnvironment(macCatalyst)
+        return false
+        #else
+        return true
+        #endif
+    }
+
+    static func current(defaults: UserDefaults = .standard, appliesHere: Bool = IvyHand.appliesHere) -> IvyHand {
+        guard appliesHere else { return .right }
         if let saved = defaults.string(forKey: defaultsKey).flatMap(IvyHand.init(rawValue:)) {
             return saved
         }
@@ -55,16 +66,21 @@ enum IvyReactionBarPosition: String, CaseIterable {
         defaults.set(beside ? IvyReactionBarPosition.right.rawValue : IvyReactionBarPosition.bottom.rawValue, forKey: defaultsKey)
     }
 
-    static func current(defaults: UserDefaults = .standard) -> IvyReactionBarPosition {
+    static func current(defaults: UserDefaults = .standard, appliesHere: Bool = IvyHand.appliesHere) -> IvyReactionBarPosition {
         guard isBesideMenu(defaults: defaults) else { return .bottom }
-        return IvyHand.current(defaults: defaults) == .left ? .left : .right
+        return IvyHand.current(defaults: defaults, appliesHere: appliesHere) == .left ? .left : .right
     }
 
     /// The placement for a context menu opening now. In landscape on iPhone
     /// the actions sit beside the message, so the bar keeps Signal's place
     /// above it.
-    static func placementForContextMenu(isLandscapePhone: Bool = IvyReactionBarPosition.isLandscapePhone) -> IvyReactionBarPosition? {
-        isLandscapePhone ? nil : current()
+    static func placementForContextMenu(
+        isLandscapePhone: Bool = IvyReactionBarPosition.isLandscapePhone,
+        appliesHere: Bool = IvyHand.appliesHere,
+    ) -> IvyReactionBarPosition? {
+        // On the Mac the bar keeps Signal's place above the message.
+        guard appliesHere else { return nil }
+        return isLandscapePhone ? nil : current()
     }
 
     static var isLandscapePhone: Bool {

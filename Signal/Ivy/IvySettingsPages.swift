@@ -105,10 +105,15 @@ final class IvyControlsSettingsViewController: OWSTableViewController2 {
 
     private func updateTableContents() {
         let contents = OWSTableContents()
-        ivyAddHandSection(to: contents)
-        ivyAddReactionBarSection(to: contents)
+        // Hand, reaction bar position and swipe are for touch screens.
+        if IvyHand.appliesHere {
+            ivyAddHandSection(to: contents)
+            ivyAddReactionBarSection(to: contents)
+        }
         ivyAddDoubleTapSection(to: contents)
-        ivyAddSwipeLeftSection(to: contents)
+        if IvyHand.appliesHere {
+            ivyAddSwipeLeftSection(to: contents)
+        }
         ivyAddMessageMenuSection(to: contents)
 #if targetEnvironment(macCatalyst)
         let macSection = OWSTableSection()
