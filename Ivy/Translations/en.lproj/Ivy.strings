@@ -1623,6 +1623,9 @@
 /* Explanation under the button in Report a Problem: what happens with the text, screenshot and debug log. */
 "REPORT_PROBLEM_FOOTER" = "Opens a new issue on GitHub with your text and the app and iOS version. The screenshot is copied so you can paste it there, and the debug log is saved first (for example to Files) so you can attach it. Ivy sends nothing by itself.";
 
+/* Mac Help menu command that opens Report a Problem. */
+"REPORT_PROBLEM_MENU" = "Report a Problem…";
+
 /* Placeholder of the text field in Report a Problem. */
 "REPORT_PROBLEM_PLACEHOLDER" = "What happened?";
 
