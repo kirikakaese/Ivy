@@ -63,6 +63,10 @@ public struct ChatFolderExtras: Equatable, Sendable {
         guard let fields = store?.entity(kind: kind, id: folderId.hexadecimalString) else {
             return ChatFolderExtras()
         }
+        return extras(from: fields)
+    }
+
+    private static func extras(from fields: [String: String]) -> ChatFolderExtras {
         return ChatFolderExtras(
             emoji: IvyDataStore.decode(String.self, from: fields[Field.emoji]),
             color: IvyDataStore.decode(String.self, from: fields[Field.color]).flatMap(ChatFolderColor.init(rawValue:)),
@@ -74,18 +78,40 @@ public struct ChatFolderExtras: Equatable, Sendable {
         )
     }
 
+    /// Every folder's extras. The chat list asks for them on every update,
+    /// so they're read with one query and kept until the store changes.
     public static func fetchAll(store: IvyDataStore?) -> [Data: ChatFolderExtras] {
         guard let store else {
             return [:]
         }
+        let generation = store.generation
+        cacheLock.lock()
+        if let cache, cache.store === store, cache.generation == generation {
+            cacheLock.unlock()
+            return cache.extras
+        }
+        cacheLock.unlock()
+
         var result = [Data: ChatFolderExtras]()
-        for entityId in store.entities(kind: kind).keys {
+        for (entityId, fields) in store.entities(kind: kind) {
             if let id = Data(hex: entityId) {
-                result[id] = fetch(folderId: id, store: store)
+                result[id] = extras(from: fields)
             }
         }
+        cacheLock.lock()
+        cache = Cache(store: store, generation: generation, extras: result)
+        cacheLock.unlock()
         return result
     }
+
+    private struct Cache {
+        weak var store: IvyDataStore?
+        let generation: UInt64
+        let extras: [Data: ChatFolderExtras]
+    }
+
+    nonisolated(unsafe) private static var cache: Cache?
+    private static let cacheLock = NSLock()
 
     /// Saves the fields that differ from `old`, so that edits on another
     /// device to other fields are kept. A cleared field is saved as nil.

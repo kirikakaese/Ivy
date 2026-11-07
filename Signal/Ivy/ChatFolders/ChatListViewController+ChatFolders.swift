@@ -57,18 +57,67 @@ extension ChatListViewController {
 
     /// Shows, hides or refreshes the folders: in the sidebar when there is
     /// one, otherwise as chips above the chats.
+    /// What the folder bar shows, read from the database.
+    struct IvyChatFolderBarData {
+        let folders: [ChatFolder]
+        let chats: [ChatFolderChat]
+        let membership: ChatFolderMembership
+    }
+
+    static func ivyLoadChatFolderBarData(tx: DBReadTransaction) -> IvyChatFolderBarData {
+        let folders = ChatFolderManager.shared.folders(tx: tx)
+        // Counting unread chats is only needed with custom folders.
+        let chats = folders.contains { $0.kind == .custom } ? ChatFolderChats.inboxChats(tx: tx) : []
+        return IvyChatFolderBarData(folders: folders, chats: chats, membership: ChatFolderMembership.load(folders: folders, chats: chats, tx: tx))
+    }
+
+    /// Refreshes the folder bar soon, once for a burst of changes, reading
+    /// in the background. Every incoming message and read receipt changes
+    /// the chats, so reading each time on the main thread made the chat list
+    /// and conversations stutter.
+    func ivyScheduleChatFolderBarUpdate() {
+        guard !ivyFolderBarRefreshPending else {
+            return
+        }
+        ivyFolderBarRefreshPending = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+            DispatchQueue.global(qos: .userInitiated).async {
+                let data = IvyPerformance.measure("folder bar") {
+                    SSKEnvironment.shared.databaseStorageRef.read { tx in Self.ivyLoadChatFolderBarData(tx: tx) }
+                }
+                DispatchQueue.main.async {
+                    guard let self else { return }
+                    self.ivyFolderBarRefreshPending = false
+                    self.ivyUpdateChatFolderBar(with: data)
+                }
+            }
+        }
+    }
+
+    private static var ivyFolderBarRefreshKey: UInt8 = 0
+
+    private var ivyFolderBarRefreshPending: Bool {
+        get { objc_getAssociatedObject(self, &Self.ivyFolderBarRefreshKey) as? Bool ?? false }
+        set { objc_setAssociatedObject(self, &Self.ivyFolderBarRefreshKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    }
+
     func ivyUpdateChatFolderBar() {
         AssertIsOnMainThread()
         guard viewState.chatListMode == .inbox, isViewLoaded else {
             return
         }
+        let data = SSKEnvironment.shared.databaseStorageRef.read { tx in Self.ivyLoadChatFolderBarData(tx: tx) }
+        ivyUpdateChatFolderBar(with: data)
+    }
 
-        let (folders, chats, membership) = SSKEnvironment.shared.databaseStorageRef.read { tx in
-            let folders = chatFolderManager.folders(tx: tx)
-            // Counting unread chats is only needed with custom folders.
-            let chats = folders.contains { $0.kind == .custom } ? ChatFolderChats.inboxChats(tx: tx) : []
-            return (folders, chats, ChatFolderMembership.load(folders: folders, chats: chats, tx: tx))
+    private func ivyUpdateChatFolderBar(with data: IvyChatFolderBarData) {
+        AssertIsOnMainThread()
+        guard viewState.chatListMode == .inbox, isViewLoaded else {
+            return
         }
+        let folders = data.folders
+        let chats = data.chats
+        let membership = data.membership
         if let selectedId = viewState.ivyChatFolderId, !folders.contains(where: { $0.id == selectedId && $0.kind == .custom }) {
             viewState.ivyChatFolderId = nil
             loadCoordinator.loadIfNecessary()
@@ -125,7 +174,7 @@ extension ChatListViewController {
 
     /// Refreshes the unread counts after chats changed.
     func ivyChatsDidChange() {
-        ivyUpdateChatFolderBar()
+        ivyScheduleChatFolderBarUpdate()
     }
 
     private var ivyExistingChatFolderBar: ChatFolderBar? {

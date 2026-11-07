@@ -24,13 +24,13 @@ public struct IvyDetectedDate: Equatable, Sendable {
 
 public enum IvyDateDetection {
 
+    /// Making a detector is expensive; matching with one is thread-safe.
+    private static let dateDetector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
+
     /// Dates in `text`, in the order they appear. Only the device looks at
     /// the text.
     public static func dates(in text: String) -> [IvyDetectedDate] {
-        guard
-            !text.isEmpty,
-            let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
-        else {
+        guard !text.isEmpty, let detector = dateDetector else {
             return []
         }
         let range = NSRange(text.startIndex..., in: text)

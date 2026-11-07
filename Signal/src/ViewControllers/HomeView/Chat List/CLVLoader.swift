@@ -75,7 +75,7 @@ public class CLVLoader {
                 filterToVisible: true,
                 tx: transaction,
             ).map(\.uniqueId)
-            visibleThreadUniqueIds = ChatFolderChats.threadIds(
+            visibleThreadUniqueIds = IvyPerformance.measure("chat list folders") { ChatFolderChats.threadIds(
                 threadFinder.visibleInboxThreadUniqueIds(
                     filteredBy: viewInfo.inboxFilter,
                     requiredVisibleThreadIds: viewInfo.requiredVisibleThreadIds,
@@ -85,7 +85,7 @@ public class CLVLoader {
                 in: viewInfo.ivyChatFolder,
                 keeping: viewInfo.requiredVisibleThreadIds,
                 tx: transaction,
-            )
+            ) }
         }
 
         // Ivy: chats pinned in the folder first, chats with a due reminder at

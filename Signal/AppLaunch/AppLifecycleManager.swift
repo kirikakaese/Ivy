@@ -1589,24 +1589,26 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
             DispatchQueue.main.async {
                 SSKEnvironment.shared.contactManagerImplRef.fetchSystemContactsOnceIfAlreadyAuthorized()
                 // Ivy: reminders, tasks, events, stars, scheduled messages, Apple sync, widgets, text size, privacy, snoozed chats, quiet summary, weekly review, shared plans, shake to report a problem, and Ivy data from the user's other devices
-                IvyReminderManager.shared.start()
-                IvyTaskManager.shared.start()
-                IvyEventManager.shared.start()
-                IvyStarManager.shared.start()
-                IvyScheduledSender.shared.start()
-                IvyAppleSyncEngine.shared.start()
-                IvyGlanceWriter.shared.start()
-                IvyZoom.start()
-                IvyPrivacy.start()
-                IvySnoozedChats.shared.start()
-                IvyFocusUI.start()
-                IvyWeeklyReviewUI.start()
-                IvySharedPlansUI.start()
-                IvyProblemReport.start()
-                #if targetEnvironment(macCatalyst)
-                IvyMacBetaUpdater.start()
-                #endif
-                IvyData.shared?.sync.requestSnapshotIfNeeded()
+                IvyPerformance.measure("Ivy start") {
+                    IvyReminderManager.shared.start()
+                    IvyTaskManager.shared.start()
+                    IvyEventManager.shared.start()
+                    IvyStarManager.shared.start()
+                    IvyScheduledSender.shared.start()
+                    IvyAppleSyncEngine.shared.start()
+                    IvyGlanceWriter.shared.start()
+                    IvyZoom.start()
+                    IvyPrivacy.start()
+                    IvySnoozedChats.shared.start()
+                    IvyFocusUI.start()
+                    IvyWeeklyReviewUI.start()
+                    IvySharedPlansUI.start()
+                    IvyProblemReport.start()
+                    #if targetEnvironment(macCatalyst)
+                    IvyMacBetaUpdater.start()
+                    #endif
+                    IvyData.shared?.sync.requestSnapshotIfNeeded()
+                }
 
                 if !UIApplication.shared.isRegisteredForRemoteNotifications {
                     Logger.info("Retrying to register for remote notifications since user hasn't registered yet.")
