@@ -13,6 +13,8 @@ enum IvyTone {
     case brown
     case green
     case red
+    /// Neutral, for states that aren't a warning (being offline).
+    case gray
 
     /// Dots, bars and icons.
     var strong: UIColor {
@@ -21,6 +23,7 @@ enum IvyTone {
         case .brown: return Self.color(light: 0xC08A52, dark: 0xC79869)
         case .green: return Self.color(light: 0x4FA676, dark: 0x86C29E)
         case .red: return Self.color(light: 0xD0675E, dark: 0xDE8F87)
+        case .gray: return Self.color(light: 0x8E8E93, dark: 0x98989F)
         }
     }
 
@@ -31,6 +34,7 @@ enum IvyTone {
         case .brown: return UIColor(light: .Signal.label, dark: UIColor(rgbHex: 0xC79869))
         case .green: return UIColor(light: .Signal.label, dark: UIColor(rgbHex: 0x86C29E))
         case .red: return UIColor(light: .Signal.label, dark: UIColor(rgbHex: 0xDE8F87))
+        case .gray: return UIColor(light: .Signal.label, dark: UIColor(rgbHex: 0xD1D1D6))
         }
     }
 
@@ -41,6 +45,7 @@ enum IvyTone {
         case .brown: return Self.color(light: 0xFBF2E9, dark: 0x26221D)
         case .green: return Self.color(light: 0xEBF6EF, dark: 0x1C2520)
         case .red: return Self.color(light: 0xFCEDEB, dark: 0x2A1D1C)
+        case .gray: return Self.color(light: 0xF0F0F2, dark: 0x232326)
         }
     }
 
@@ -51,6 +56,7 @@ enum IvyTone {
         case .brown: return Self.color(light: 0xF4DDC7, dark: 0x392D22)
         case .green: return Self.color(light: 0xD3EBDC, dark: 0x26372D)
         case .red: return Self.color(light: 0xF6D5D1, dark: 0x422926)
+        case .gray: return Self.color(light: 0xE0E0E4, dark: 0x343438)
         }
     }
 
@@ -61,6 +67,7 @@ enum IvyTone {
         case .brown: return Self.color(light: 0x8A5A2B, dark: 0xC79869)
         case .green: return Self.color(light: 0x2B6B45, dark: 0x86C29E)
         case .red: return Self.color(light: 0xA8352F, dark: 0xDE8F87)
+        case .gray: return Self.color(light: 0x56565C, dark: 0xC7C7CC)
         }
     }
 

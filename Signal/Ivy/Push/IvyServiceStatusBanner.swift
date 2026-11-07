@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
+import Network
 import SignalServiceKit
 import SignalUI
 
@@ -35,6 +36,10 @@ final class IvyServiceStatusMonitor: NSObject {
     private var timer: Timer?
     private var isRefreshing = false
     private var isStarted = false
+    /// Whether the device has a network at all. Without one, Ivy says so
+    /// instead of reporting Ivy Push as unreachable.
+    private let pathMonitor = NWPathMonitor()
+    private(set) var isOffline = false
 
     private override init() {}
 
@@ -43,6 +48,11 @@ final class IvyServiceStatusMonitor: NSObject {
             return
         }
         isStarted = true
+        pathMonitor.pathUpdateHandler = { path in
+            let isOffline = path.status != .satisfied
+            Task { @MainActor in IvyServiceStatusMonitor.shared.networkDidChange(isOffline: isOffline) }
+        }
+        pathMonitor.start(queue: DispatchQueue(label: "IvyServiceStatus.path"))
         NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive), name: .OWSApplicationDidBecomeActive, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(willResignActive), name: .OWSApplicationWillResignActive, object: nil)
         if CurrentAppContext().isMainAppAndActive {
@@ -68,8 +78,24 @@ final class IvyServiceStatusMonitor: NSObject {
         }
     }
 
+    private func networkDidChange(isOffline: Bool) {
+        guard isOffline != self.isOffline else {
+            return
+        }
+        self.isOffline = isOffline
+        failures = 0
+        if isOffline {
+            timer?.invalidate()
+            timer = nil
+            status = .offline
+        } else {
+            status = nil
+            refresh()
+        }
+    }
+
     func refresh() {
-        guard !isRefreshing else {
+        guard !isRefreshing, !isOffline else {
             return
         }
         isRefreshing = true
@@ -85,6 +111,9 @@ final class IvyServiceStatusMonitor: NSObject {
                 failures = 0
                 schedule(after: Self.refreshInterval)
             } catch {
+                guard !isOffline else {
+                    return
+                }
                 // Offline, the relay can't be told apart from the internet.
                 if SSKEnvironment.shared.reachabilityManagerRef.isReachable {
                     failures += 1
@@ -124,6 +153,8 @@ extension IvyServiceStatus {
         switch level {
         case .unreachable:
             return IvyLocalizedString("SERVICE_STATUS_UNREACHABLE_TITLE", comment: "Chat list banner title when Ivy can't reach its push relay.")
+        case .offline:
+            return IvyLocalizedString("SERVICE_STATUS_OFFLINE_TITLE", comment: "Chat list banner text when the device has no network: airplane mode, or neither Wi-Fi nor mobile data.")
         case .down:
             return IvyLocalizedString("SERVICE_STATUS_DOWN_TITLE", comment: "Chat list banner title when Ivy Status reports an outage.")
         case .degraded:
@@ -141,7 +172,11 @@ extension IvyServiceStatus {
             lines.append(detail)
         } else {
             switch level {
-            case .unreachable, .down:
+            case .offline:
+                lines.append(IvyLocalizedString("SERVICE_STATUS_OFFLINE_DETAIL", comment: "Chat list banner text when the device is offline: messages arrive once it's back online."))
+            case .unreachable:
+                lines.append(IvyLocalizedString("SERVICE_STATUS_UNREACHABLE_DETAIL", comment: "Chat list banner text when the device is online but Ivy Push doesn't answer."))
+            case .down:
                 lines.append(IvyLocalizedString("SERVICE_STATUS_DOWN_DETAIL", comment: "Chat list banner text when instant notifications may not work."))
             case .degraded, .maintenance:
                 lines.append(IvyLocalizedString("SERVICE_STATUS_DEGRADED_DETAIL", comment: "Chat list banner text when notifications may be late."))
@@ -189,6 +224,7 @@ final class IvyServiceStatusBanner: UIView {
         switch level {
         case .down: return .red
         case .degraded, .unreachable: return .brown
+        case .offline: return .gray
         case .maintenance: return .blue
         case .notice: return .green
         }
@@ -270,8 +306,13 @@ final class IvyServiceStatusBanner: UIView {
             reportChange(nil)
             return
         }
-        let isCollapsed = monitor.isCollapsed
+        let isOffline = status.level == .offline
+        // Offline, the banner is short and has nothing to open or fold.
+        let isCollapsed = isOffline ? false : monitor.isCollapsed
         let tone = Self.tone(for: status.level)
+        headerLabel.text = isOffline
+            ? IvyLocalizedString("SERVICE_STATUS_OFFLINE_HEADER", comment: "Small heading above the chat list banner when the device has no network.")
+            : IvyLocalizedString("SERVICE_STATUS_BANNER_HEADER", comment: "Small heading above the chat list banner that reports a problem from Ivy Status.")
         backgroundView.backgroundColor = tone.background
 
         let text = NSMutableAttributedString(string: status.bannerTitle, attributes: [.font: UIFont.dynamicTypeSubheadline.semibold()])
@@ -290,7 +331,9 @@ final class IvyServiceStatusBanner: UIView {
             }
             button.configuration?.baseForegroundColor = tone.text
         }
-        detailsButton.isHidden = status.bannerDetail == nil
+        detailsButton.isHidden = status.bannerDetail == nil || isOffline
+        statusButton.isHidden = isOffline
+        buttons.isHidden = isOffline
         detailsButton.configuration?.title = isCollapsed
             ? IvyLocalizedString("SERVICE_STATUS_EXPAND", comment: "Button on the chat list banner that shows its details.")
             : IvyLocalizedString("SERVICE_STATUS_COLLAPSE", comment: "Button on the chat list banner that hides its details.")

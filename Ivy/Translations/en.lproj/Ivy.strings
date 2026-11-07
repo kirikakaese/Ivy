@@ -786,6 +786,9 @@
 /* Shown on Home when there are no events or reminders today. */
 "HOME_NOTHING_TODAY" = "Nothing planned today";
 
+/* Line on Home when the device has no network: airplane mode, or neither Wi-Fi nor mobile data. */
+"HOME_OFFLINE" = "Offline · airplane mode or no network";
+
 /* Item on Home that opens the calendar. */
 "HOME_OPEN_CALENDAR" = "Open Calendar";
 
@@ -1707,11 +1710,23 @@
 /* Chat list banner title for a notice from Ivy Status. */
 "SERVICE_STATUS_NOTICE_TITLE" = "Notice from Ivy";
 
+/* Chat list banner text when the device is offline: messages arrive once it's back online. */
+"SERVICE_STATUS_OFFLINE_DETAIL" = "Messages arrive once you're back online.";
+
+/* Small heading above the chat list banner when the device has no network. */
+"SERVICE_STATUS_OFFLINE_HEADER" = "No Connection";
+
+/* Chat list banner text when the device has no network: airplane mode, or neither Wi-Fi nor mobile data. */
+"SERVICE_STATUS_OFFLINE_TITLE" = "Airplane mode or no network";
+
 /* Button on the chat list banner that opens the Ivy Status page. */
 "SERVICE_STATUS_OPEN_BUTTON" = "Ivy Status";
 
+/* Chat list banner text when the device is online but Ivy Push doesn't answer. */
+"SERVICE_STATUS_UNREACHABLE_DETAIL" = "You're online, but notifications may be late.";
+
 /* Chat list banner title when Ivy can't reach its push relay. */
-"SERVICE_STATUS_UNREACHABLE_TITLE" = "Can't reach Ivy Push";
+"SERVICE_STATUS_UNREACHABLE_TITLE" = "Ivy Push isn't answering";
 
 /* Header of the settings group about the app itself: appearance, start and tabs, controls. */
 "SETTINGS_GROUP_APP" = "App";
