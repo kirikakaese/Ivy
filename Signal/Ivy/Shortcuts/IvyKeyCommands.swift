@@ -157,6 +157,15 @@ enum IvyKeyCommands {
             )
         }
         #endif
+        // There's no shake on the Mac, so Report a Problem is in the Help menu.
+        let reportProblem = UICommand(
+            title: IvyLocalizedString("REPORT_PROBLEM_MENU", comment: "Mac Help menu command that opens Report a Problem."),
+            action: #selector(ConversationSplitViewController.ivyReportProblem),
+        )
+        builder.insertChild(
+            UIMenu(identifier: UIMenu.Identifier("ivy.help"), options: .displayInline, children: [reportProblem]),
+            atStartOfMenu: .help,
+        )
     }
 }
 
@@ -167,6 +176,11 @@ extension ConversationSplitViewController {
         #if targetEnvironment(macCatalyst)
         Task { await IvyMacBetaUpdater.check(userInitiated: true) }
         #endif
+    }
+
+    @objc
+    func ivyReportProblem() {
+        IvyProblemReport.present(capturing: view.window)
     }
 
     @objc
