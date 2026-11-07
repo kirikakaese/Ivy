@@ -107,6 +107,16 @@ final class IvyHomeUITest: XCTestCase {
         let line = IvyHomeViewController.statusLine(status: .unreachable, hasRelay: true)
         XCTAssertEqual(line?.title, IvyServiceStatus.unreachable.bannerTitle)
         XCTAssertEqual(line?.tone, .brown)
+
+        // Offline is said as it is, with or without a relay, and isn't a
+        // problem of Ivy's services.
+        XCTAssertEqual(IvyHomeViewController.statusLine(status: .offline, hasRelay: false)?.tone, .gray)
+        XCTAssertEqual(
+            IvyHomeViewController.statusLine(status: .offline, hasRelay: true)?.title,
+            IvyLocalizedString("HOME_OFFLINE", comment: ""),
+        )
+        XCTAssertFalse(IvyServiceStatus.offline.isProblem)
+        XCTAssertTrue(IvyServiceStatus.unreachable.isProblem)
     }
 
     private func title(_ item: IvyCalendarItem) -> String {

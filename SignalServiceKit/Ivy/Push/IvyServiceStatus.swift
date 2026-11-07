@@ -16,6 +16,9 @@ public struct IvyServiceStatus: Equatable, Sendable {
         case down
         /// Ivy couldn't reach the relay while the device was online.
         case unreachable
+        /// The device has no network: airplane mode, or neither Wi-Fi nor
+        /// mobile data. Not a problem of Ivy's services.
+        case offline
     }
 
     public var level: Level
@@ -30,10 +33,12 @@ public struct IvyServiceStatus: Equatable, Sendable {
     /// stays collapsed.
     public var id: String
 
-    /// Problems show on the profile picture; notices only in the chat list.
-    public var isProblem: Bool { level != .notice }
+    /// Problems show on the profile picture; notices and being offline only
+    /// in the chat list.
+    public var isProblem: Bool { level != .notice && level != .offline }
 
     public static let unreachable = IvyServiceStatus(level: .unreachable, title: nil, detail: nil, components: [], id: "unreachable")
+    public static let offline = IvyServiceStatus(level: .offline, title: nil, detail: nil, components: [], id: "offline")
 
     // MARK: - Report
 
