@@ -87,8 +87,8 @@ extension ChatListViewController {
                 }
                 DispatchQueue.main.async {
                     guard let self else { return }
-                    ivyFolderBarRefreshPending = false
-                    ivyUpdateChatFolderBar(with: data)
+                    self.ivyFolderBarRefreshPending = false
+                    self.ivyUpdateChatFolderBar(with: data)
                 }
             }
         }
