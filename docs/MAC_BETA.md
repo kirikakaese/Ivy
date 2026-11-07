@@ -22,7 +22,11 @@ Signal does not support third-party clients. An account used with Ivy can be rat
 
 ## Update
 
-Quit Ivy Beta, replace the app in Applications with the new one, and open it. Your data stays. Each beta has a new signature, so macOS may ask once more to "Open Anyway".
+Ivy Beta updates itself. When it becomes active it looks for a newer "Ivy Mac beta" on the releases page (at most every six hours, or right away with Ivy › Check for Updates…) and offers it. "Update Now" downloads the zip, checks its SHA-256 against the release notes, replaces the app where it is and restarts it. Your data stays. Each beta has a new signature, so macOS may ask once more to "Open Anyway".
+
+To replace itself, the beta may write to `/Applications` and `~/Applications` (a sandbox exception in `Scripts/ivy/IvyMacBeta.entitlements`). If the app is elsewhere or the swap fails, Ivy opens the releases page instead: quit Ivy Beta, replace the app with the new one and open it.
+
+Betas built by hand or from pull requests don't know their number and don't update themselves.
 
 ## Messages and notifications
 

@@ -4440,6 +4440,9 @@
 		FE1C19D9B9E1DEC2315F4C17 /* IvyNotificationActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787B37365B010F665A22EA47 /* IvyNotificationActions.swift */; };
 		383DB03342BA0A0C04E69215 /* IvyNotificationActionsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0BFA41388727FE6D614740 /* IvyNotificationActionsTest.swift */; };
 		D3EBBE0C2B051ECA5F34434F /* IvyNotificationActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F238BAA1E584445A19217B5 /* IvyNotificationActionHandler.swift */; };
+		276EC1DBB508DC510800A7C0 /* IvyMacBetaRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218EFCCB2F53118F2F14C53C /* IvyMacBetaRelease.swift */; };
+		A8CB995A16C73F40174214F7 /* IvyMacBetaUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9D4BD62D0491D2BC8FA17B /* IvyMacBetaUpdater.swift */; };
+		CF9198F9BF8380F7305E148D /* IvyMacBetaReleaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6934E6D9175D00DDFF509E7D /* IvyMacBetaReleaseTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -9181,6 +9184,9 @@
 		787B37365B010F665A22EA47 /* IvyNotificationActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyNotificationActions.swift; sourceTree = "<group>"; };
 		AE0BFA41388727FE6D614740 /* IvyNotificationActionsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyNotificationActionsTest.swift; sourceTree = "<group>"; };
 		3F238BAA1E584445A19217B5 /* IvyNotificationActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyNotificationActionHandler.swift; sourceTree = "<group>"; };
+		218EFCCB2F53118F2F14C53C /* IvyMacBetaRelease.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBetaRelease.swift; sourceTree = "<group>"; };
+		5B9D4BD62D0491D2BC8FA17B /* IvyMacBetaUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBetaUpdater.swift; sourceTree = "<group>"; };
+		6934E6D9175D00DDFF509E7D /* IvyMacBetaReleaseTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBetaReleaseTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16873,6 +16879,7 @@
 				14EB1AE0CDD0E15DB5FE5654 /* Search */,
 				BA4C0C122420E1745297E53C /* Writing */,
 				A6AE6AA73E6319BEA9238F83 /* Push */,
+				218EFCCB2F53118F2F14C53C /* IvyMacBetaRelease.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16916,6 +16923,7 @@
 				A3608FA477A421B630684868 /* IvyDateRepliesTest.swift */,
 				7001E5E64BA1B27B4A29432B /* ChatFolderRulesTest.swift */,
 				AE0BFA41388727FE6D614740 /* IvyNotificationActionsTest.swift */,
+				6934E6D9175D00DDFF509E7D /* IvyMacBetaReleaseTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -16970,6 +16978,7 @@
 				1DA9ACDE67F0098536162A52 /* IvySettingsSearch.swift */,
 				629E49815A9C4D03799F7C22 /* IvyMoveFromSignal.swift */,
 				6534BCD42D5AA3D88CFB491F /* IvyProblemReport.swift */,
+				5B9D4BD62D0491D2BC8FA17B /* IvyMacBetaUpdater.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -20777,6 +20786,7 @@
 				36225541FAFBCA90DAC7F837 /* IvyDateReplyButtons.swift in Sources */,
 				E945EE11457ABE7575363773 /* IvyProblemReport.swift in Sources */,
 				D3EBBE0C2B051ECA5F34434F /* IvyNotificationActionHandler.swift in Sources */,
+				A8CB995A16C73F40174214F7 /* IvyMacBetaUpdater.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22190,6 +22200,7 @@
 				6BA235D5FCB0675B099E8905 /* IvyDateReplies.swift in Sources */,
 				7A337D46BF41D66731C51FE0 /* ChatFolderRules.swift in Sources */,
 				FE1C19D9B9E1DEC2315F4C17 /* IvyNotificationActions.swift in Sources */,
+				276EC1DBB508DC510800A7C0 /* IvyMacBetaRelease.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22502,6 +22513,7 @@
 				697D54D3C8CB49364A5A5832 /* IvyDateRepliesTest.swift in Sources */,
 				35BE8C6EB85AB7D7725C13BD /* ChatFolderRulesTest.swift in Sources */,
 				383DB03342BA0A0C04E69215 /* IvyNotificationActionsTest.swift in Sources */,
+				CF9198F9BF8380F7305E148D /* IvyMacBetaReleaseTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1603,6 +1603,9 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
                 IvyWeeklyReviewUI.start()
                 IvySharedPlansUI.start()
                 IvyProblemReport.start()
+                #if targetEnvironment(macCatalyst)
+                IvyMacBetaUpdater.start()
+                #endif
                 IvyData.shared?.sync.requestSnapshotIfNeeded()
 
                 if !UIApplication.shared.isRegisteredForRemoteNotifications {
