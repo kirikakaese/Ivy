@@ -95,6 +95,20 @@ def extract(archive, dest):
             tar.extractall(dest)
 
 
+def api_request(pin):
+    """A request for a pinned release asset through GitHub's API."""
+    headers = {"Accept": "application/vnd.github+json"}
+    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    release_url = f"https://api.github.com/repos/{pin['repository']}/releases/tags/{pin['tag']}"
+    with urllib.request.urlopen(urllib.request.Request(release_url, headers=headers), timeout=60) as response:
+        release = json.load(response)
+    asset = next(a for a in release["assets"] if a["name"] == pin["asset"])
+    headers["Accept"] = "application/octet-stream"
+    return urllib.request.Request(asset["url"], headers=headers)
+
+
 def download(pin, dest):
     """Downloads a pinned release asset to dest unless it is already there."""
     if os.path.exists(dest) and sha256(dest) == pin["sha256"]:
@@ -103,18 +117,20 @@ def download(pin, dest):
     print(f"downloading {url}")
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     tmp = dest + ".part"
-    # GitHub's downloads sometimes answer with a server error for a few
-    # minutes; try again a few times before giving up.
-    for attempt in range(5):
+    # GitHub's download links sometimes answer with a server error, for
+    # minutes or, for a single file, for good. Try again a few times,
+    # switching to the same file through the API, before giving up.
+    for attempt in range(6):
         try:
-            with urllib.request.urlopen(url, timeout=120) as response, open(tmp, "wb") as out:
+            request = urllib.request.Request(url) if attempt % 2 == 0 else api_request(pin)
+            with urllib.request.urlopen(request, timeout=120) as response, open(tmp, "wb") as out:
                 shutil.copyfileobj(response, out)
             break
         except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as error:
             status = getattr(error, "code", None)
-            if attempt == 4 or (status is not None and status < 500):
+            if attempt == 5 or (status is not None and status < 500):
                 raise
-            wait = 15 * 2 ** attempt
+            wait = 10 * (attempt + 1)
             print(f"download failed ({error}), trying again in {wait} s")
             time.sleep(wait)
     actual = sha256(tmp)
