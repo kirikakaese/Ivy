@@ -72,7 +72,13 @@ class ConversationSplitViewController: UISplitViewController, ConversationSplit 
 
         // Ivy: the sidebar sits next to the lists in the primary column.
         viewControllers = [IvyPrimaryViewController(homeVC: homeVC), detailPlaceholderVC]
-        primaryBackgroundStyle = .sidebar // Ivy
+        // Ivy: on the Mac, Ivy draws its own sidebar panel next to the list
+        // instead of the system's, which floated around both.
+#if targetEnvironment(macCatalyst)
+        primaryBackgroundStyle = .none
+#else
+        primaryBackgroundStyle = .sidebar
+#endif
 
         chatListNavController.delegate = self
         delegate = self
@@ -755,7 +761,7 @@ private class NoSelectedConversationViewController: OWSViewController {
         logoImageView.image = #imageLiteral(resourceName: "signal-logo-128").withRenderingMode(.alwaysTemplate)
         logoImageView.tintColor = UIColor.Signal.quaternaryLabel
         logoImageView.contentMode = .scaleAspectFit
-        logoImageView.autoSetDimension(.height, toSize: 112)
+        logoImageView.autoSetDimension(.height, toSize: UIDevice.current.userInterfaceIdiom == .mac ? 64 : 112) // Ivy: smaller on the Mac
         view.addSubview(logoImageView)
 
         // Ivy: the chat list floats over this view, so center the logo in
@@ -765,5 +771,18 @@ private class NoSelectedConversationViewController: OWSViewController {
             logoImageView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
             logoImageView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
         ])
+#if targetEnvironment(macCatalyst)
+        // Ivy: on the Mac a smaller logo, with a hint below it.
+        let hint = UILabel()
+        hint.text = IvyLocalizedString("MAC_NO_CHAT_SELECTED", comment: "Shown on the Mac where the conversation goes while no chat is open.") + "  ⌘N"
+        hint.font = .dynamicTypeSubheadlineClamped
+        hint.textColor = .Signal.tertiaryLabel
+        view.addSubview(hint)
+        hint.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            hint.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 14),
+            hint.centerXAnchor.constraint(equalTo: logoImageView.centerXAnchor),
+        ])
+#endif
     }
 }

@@ -810,6 +810,13 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
     private func updateLeftBarButtonItem() {
         guard viewState.chatListMode == .inbox, !viewState.multiSelectState.isActive else { return }
 
+#if targetEnvironment(macCatalyst)
+        // Ivy: on the Mac the title sits on the left and the profile
+        // picture is at the bottom of the sidebar.
+        if ivyMacUsesLeadingTitle() {
+            return
+        }
+#endif
         // Settings button.
         navigationItem.leftBarButtonItem = settingsBarButtonItem()
     }
@@ -829,6 +836,8 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         )
         rightBarButtonItems.append(compose)
 
+        // Ivy: no camera button on the Mac.
+#if !targetEnvironment(macCatalyst)
         let camera = UIBarButtonItem.button(icon: .buttonCamera) { [weak self] in
             self?.showCameraView()
         }
@@ -838,6 +847,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
             comment: "Accessibility hint describing what you can do with the camera button",
         )
         rightBarButtonItems.append(camera)
+#endif
 
         if let proxyButton = viewState.proxyButtonCreator.buildButton() {
             rightBarButtonItems.append(proxyButton)

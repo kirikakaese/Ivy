@@ -25,10 +25,24 @@ final class IvyPrimaryViewController: UIViewController {
 
     static var sidebarWidth: CGFloat {
 #if targetEnvironment(macCatalyst)
-        return 220
+        return 212
 #else
         return 260
 #endif
+    }
+
+    /// On the Mac the sidebar is a panel with this gap on every side.
+    static var sidebarInset: CGFloat {
+#if targetEnvironment(macCatalyst)
+        return 10
+#else
+        return 0
+#endif
+    }
+
+    /// The room the sidebar takes, with its gaps or its separator.
+    private var sidebarRoom: CGFloat {
+        Self.sidebarInset > 0 ? Self.sidebarWidth + 2 * Self.sidebarInset : Self.sidebarWidth + separatorWidth
     }
 
     /// Below this window width an iPad shows tabs instead.
@@ -49,7 +63,8 @@ final class IvyPrimaryViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .clear
+        // On the Mac the panel sits on the list's background.
+        view.backgroundColor = Self.sidebarInset > 0 ? Theme.backgroundColor : .clear
 
         addChild(sidebar)
         view.addSubview(sidebar.view)
@@ -66,10 +81,11 @@ final class IvyPrimaryViewController: UIViewController {
             subview.translatesAutoresizingMaskIntoConstraints = false
         }
         homeLeadingConstraint = homeVC.view.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+        let inset = Self.sidebarInset
         NSLayoutConstraint.activate([
-            sidebar.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            sidebar.view.topAnchor.constraint(equalTo: view.topAnchor),
-            sidebar.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            sidebar.view.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: inset),
+            sidebar.view.topAnchor.constraint(equalTo: view.topAnchor, constant: inset),
+            sidebar.view.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -inset),
             sidebar.view.widthAnchor.constraint(equalToConstant: Self.sidebarWidth),
             separator.leadingAnchor.constraint(equalTo: sidebar.view.trailingAnchor),
             separator.topAnchor.constraint(equalTo: view.topAnchor),
@@ -127,12 +143,13 @@ final class IvyPrimaryViewController: UIViewController {
         }
         isSidebarShown = shows
         sidebar.view.isHidden = !shows
-        separator.isHidden = !shows
-        homeLeadingConstraint.constant = shows ? Self.sidebarWidth + separatorWidth : 0
+        // The Mac's panel has a gap around it instead of a separator.
+        separator.isHidden = !shows || Self.sidebarInset > 0
+        homeLeadingConstraint.constant = shows ? sidebarRoom : 0
         // The list keeps its own background; only the sidebar is translucent.
         homeVC.view.backgroundColor = shows ? Theme.backgroundColor : nil
         homeVC.ivySetSidebarShown(shows)
-        (splitViewController as? ConversationSplitViewController)?.ivyUpdateColumnWidths(sidebarWidth: shows ? Self.sidebarWidth : 0)
+        (splitViewController as? ConversationSplitViewController)?.ivyUpdateColumnWidths(sidebarWidth: shows ? sidebarRoom : 0)
         homeVC.chatListViewController.ivyUpdateChatFolderBar()
     }
 

@@ -30,6 +30,10 @@ extension HomeTabBarController {
         if !shown {
             setTabBarHidden(false, animated: false)
         }
+#if targetEnvironment(macCatalyst)
+        // The profile picture moves between the sidebar and the bar.
+        chatListViewController.updateBarButtonItems()
+#endif
     }
 }
 
@@ -82,6 +86,12 @@ extension HomeTabViewController {
         else {
             return
         }
+#if targetEnvironment(macCatalyst)
+        // On the Mac the profile picture is at the bottom of the sidebar.
+        if ivyMacUsesLeadingTitle() {
+            return
+        }
+#endif
         navigationItem.leftBarButtonItem = createSettingsBarButtonItem(
             databaseStorage: SSKEnvironment.shared.databaseStorageRef,
             buildActions: { settingsAction in [settingsAction] },

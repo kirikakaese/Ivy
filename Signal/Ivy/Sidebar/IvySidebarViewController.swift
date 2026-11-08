@@ -73,14 +73,40 @@ final class IvySidebarViewController: UIViewController, UICollectionViewDelegate
     enum Style {
         /// Between the sidebar's edges and the rows.
         static let sideInset: CGFloat = 10
-        /// Inside a row, around its icon and title.
-        static let rowMargins = NSDirectionalEdgeInsets(top: 7, leading: 10, bottom: 7, trailing: 10)
+        /// Inside a row, around its icon and title. Rows are about 30 pt
+        /// high on the Mac, like Mail and Finder.
+        static var rowMargins: NSDirectionalEdgeInsets {
+#if targetEnvironment(macCatalyst)
+            NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
+#else
+            NSDirectionalEdgeInsets(top: 7, leading: 10, bottom: 7, trailing: 10)
+#endif
+        }
+        /// The Mac's sidebar panel.
+        static let panelCornerRadius: CGFloat = 12
         static let iconWidth: CGFloat = 22
         static let iconToText: CGFloat = 10
         static let cornerRadius: CGFloat = 8
+        /// Above the first row; the panel's own gap already sits above it
+        /// on the Mac.
+        static var firstSectionTop: CGFloat {
+#if targetEnvironment(macCatalyst)
+            8
+#else
+            16
+#endif
+        }
 
         static let background = UIColor { traits in
+#if targetEnvironment(macCatalyst)
+            // A panel a little lighter than the list next to it.
+            traits.userInterfaceStyle == .dark ? UIColor(rgbHex: 0x242624) : UIColor(rgbHex: 0xECEEEA)
+#else
             traits.userInterfaceStyle == .dark ? UIColor(rgbHex: 0x18181A) : UIColor(rgbHex: 0xF2F2F5)
+#endif
+        }
+        static let panelBorder = UIColor { traits in
+            traits.userInterfaceStyle == .dark ? UIColor(white: 1, alpha: 0.07) : UIColor(white: 0, alpha: 0.06)
         }
         static var selection: UIColor { UIColor.Signal.accent.withAlphaComponent(0.22) }
         static var highlight: UIColor { UIColor.Signal.secondaryFill }
@@ -109,17 +135,52 @@ final class IvySidebarViewController: UIViewController, UICollectionViewDelegate
         view.backgroundColor = Style.background
 
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: Self.layout())
-        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .clear
         collectionView.delegate = self
         collectionView.selectionFollowsFocus = true
         collectionView.showsVerticalScrollIndicator = false
         view.addSubview(collectionView)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
+#if targetEnvironment(macCatalyst)
+        // A rounded panel, with the profile and Settings at the bottom.
+        view.layer.cornerRadius = Style.panelCornerRadius
+        view.layer.cornerCurve = .continuous
+        view.layer.borderWidth = 1
+        view.layer.masksToBounds = true
+        updatePanelBorder()
+        let profile = IvySidebarProfileRow { [weak self] in
+            self?.chatList.showAppSettings()
+        }
+        view.addSubview(profile)
+        profile.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            profile.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
+            profile.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            profile.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            profile.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+        if #available(iOS 17, *) {
+            registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (self: Self, _) in
+                self.updatePanelBorder()
+            }
+        }
+#else
+        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+#endif
 
         configureDataSource()
         reload(animated: false)
 
         NotificationCenter.default.addObserver(self, selector: #selector(stateDidChange), name: IvySidebarState.didChange, object: nil)
+    }
+
+    private func updatePanelBorder() {
+        view.layer.borderColor = Style.panelBorder.resolvedColor(with: traitCollection).cgColor
     }
 
     @objc
@@ -138,7 +199,7 @@ final class IvySidebarViewController: UIViewController, UICollectionViewDelegate
             let section = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: environment)
             section.interGroupSpacing = 2
             section.contentInsets = NSDirectionalEdgeInsets(
-                top: sectionIndex == 0 ? 16 : 22,
+                top: sectionIndex == 0 ? Style.firstSectionTop : 22,
                 leading: Style.sideInset,
                 bottom: 8,
                 trailing: Style.sideInset,
