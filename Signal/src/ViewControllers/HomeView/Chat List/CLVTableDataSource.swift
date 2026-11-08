@@ -321,6 +321,13 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
         label.font = UIFont.dynamicTypeHeadline
         label.textColor = .Signal.label
         label.text = title
+#if targetEnvironment(macCatalyst)
+        // Ivy: small gray labels on the Mac.
+        // Lined up with the profile pictures below.
+        container.layoutMargins = UIEdgeInsets(top: 12, leading: 8, bottom: 4, trailing: 16)
+        label.font = UIFont.dynamicTypeFootnoteClamped.semibold()
+        label.textColor = .Signal.secondaryLabel
+#endif
 
         return container
     }

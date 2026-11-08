@@ -149,7 +149,16 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
     }
 
     // This value is now larger than AvatarBuilder.standardAvatarSizePoints.
+    // Ivy: smaller on the Mac, where the list is a narrow column.
+#if targetEnvironment(macCatalyst)
+    private static let avatarSize: UInt = 40
+    private static let avatarSizeClass: ConversationAvatarView.Configuration.SizeClass = .forty
+    private static let rowVerticalMargin: CGFloat = 8
+#else
     private static let avatarSize: UInt = 56
+    private static let avatarSizeClass: ConversationAvatarView.Configuration.SizeClass = .fiftySix
+    private static let rowVerticalMargin: CGFloat = 12
+#endif
     private static let muteIconSize: CGFloat = 16
 
     // MARK: -
@@ -364,7 +373,7 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
         spoilerConfigBuilder.animationManager = spoilerAnimationManager
 
         owsAssertDebug(avatarView == nil, "ChatListCell.configure without prior reset called")
-        avatarView = ConversationAvatarView(sizeClass: .fiftySix, localUserDisplayMode: .noteToSelf, useAutolayout: true)
+        avatarView = ConversationAvatarView(sizeClass: Self.avatarSizeClass, localUserDisplayMode: .noteToSelf, useAutolayout: true) // Ivy
         avatarView?.updateWithSneakyTransactionIfNecessary({ config in
             if configuration.thread.isReleaseNotesThread {
                 config.dataSource = .asset(avatar: AvatarBuilder.releaseNotesIcon(), badge: nil)
@@ -592,7 +601,9 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
             axis: .vertical,
             alignment: .fill,
             spacing: 1,
-            layoutMargins: UIEdgeInsets(top: 7, leading: 0, bottom: 9, trailing: 0),
+            layoutMargins: rowVerticalMargin < 12 // Ivy: tighter on the Mac
+                ? UIEdgeInsets(top: 4, leading: 0, bottom: 6, trailing: 0)
+                : UIEdgeInsets(top: 7, leading: 0, bottom: 9, trailing: 0),
         )
     }
 
@@ -600,7 +611,7 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
         ManualStackView.Config(
             axis: .horizontal,
             alignment: .center,
-            spacing: 12,
+            spacing: avatarSize < 56 ? 10 : 12, // Ivy
             layoutMargins: .zero,
         )
     }
@@ -610,7 +621,7 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
             axis: .horizontal,
             alignment: .center,
             spacing: 0,
-            layoutMargins: UIEdgeInsets(hMargin: 0, vMargin: 12),
+            layoutMargins: UIEdgeInsets(hMargin: 0, vMargin: rowVerticalMargin), // Ivy
         )
     }
 

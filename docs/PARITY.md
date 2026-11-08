@@ -120,6 +120,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Notification actions | 6e | done | done | done | React with ❤️, remind in an hour; Accept and Decline on messages with an upcoming date |
 | Smart folders | 6e | done | done | done | Folder > Fill Automatically: chats that mention the user, have open tasks or a due reminder, are groups or have a word in their name; live preview. Ivy only, synced between Ivy devices |
 | One-handed controls | 6e | done | done | – | Hand setting, reaction bar beside the menu, swipe left, menu flipped low on the screen, search and folders at the bottom. For touch screens; the Mac keeps Signal's layout and hides these settings |
+| Mac window layout | 6e | – | done | – | Sidebar as its own panel with even gaps, profile and Settings at its bottom, title on the left of the list, no camera button, 40 pt avatars, small gray section labels, hint in the empty conversation area. Only the Mac; iPhone and iPad keep their layout |
 
 ## Release
 

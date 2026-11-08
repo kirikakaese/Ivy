@@ -1047,6 +1047,9 @@
 /* Shown when the Mac beta is the newest one. Embeds {{ beta number }}. */
 "MAC_BETA_UP_TO_DATE_FORMAT" = "Ivy Beta %d is the newest version.";
 
+/* Shown on the Mac where the conversation goes while no chat is open. */
+"MAC_NO_CHAT_SELECTED" = "Choose a chat";
+
 /* Stands for a message without text in the Mac's menu bar extra. */
 "MENU_BAR_ATTACHMENT" = "Attachment";
 
@@ -1784,6 +1787,9 @@
 
 /* Button in the sidebar that makes a new chat folder. */
 "SIDEBAR_NEW_FOLDER" = "New Folder";
+
+/* Under the user's name at the bottom of the Mac sidebar, which opens the profile and Settings. */
+"SIDEBAR_PROFILE_DETAIL" = "Profile & Settings";
 
 /* Menu command that shows the sidebar. */
 "SIDEBAR_SHOW" = "Show Sidebar";

@@ -130,6 +130,9 @@ jobs:
 
       - name: Install dependencies
         run: make dependencies
+        env:
+          # For release downloads through the API when a link fails.
+          GH_TOKEN: ${{ github.token }}
 
       - name: Check that dependency install left tracked files unchanged
         run: git diff --exit-code
