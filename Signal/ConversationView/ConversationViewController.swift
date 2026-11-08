@@ -355,8 +355,11 @@ public final class ConversationViewController: OWSViewController {
         configureGestureRecognizersIfNeeded()
         ivyGuardLockedChat() // Ivy: locked chats ask to be opened
         // Ivy: the top bar blurs the messages behind it from the start,
-        // not only after the list has scrolled.
+        // not only after the list has scrolled. Not on the Mac, where the
+        // blur is redrawn across the whole width on every scroll step.
+#if !targetEnvironment(macCatalyst)
         setContentScrollView(collectionView, for: .top)
+#endif
         // Ivy: and while the chat slides in, before the system's blur starts.
         ivyCoverTopBarWhileOpening()
 
