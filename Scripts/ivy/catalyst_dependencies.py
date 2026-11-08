@@ -27,6 +27,8 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import time
+import urllib.error
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -101,8 +103,20 @@ def download(pin, dest):
     print(f"downloading {url}")
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     tmp = dest + ".part"
-    with urllib.request.urlopen(url) as response, open(tmp, "wb") as out:
-        shutil.copyfileobj(response, out)
+    # GitHub's downloads sometimes answer with a server error for a few
+    # minutes; try again a few times before giving up.
+    for attempt in range(5):
+        try:
+            with urllib.request.urlopen(url, timeout=120) as response, open(tmp, "wb") as out:
+                shutil.copyfileobj(response, out)
+            break
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as error:
+            status = getattr(error, "code", None)
+            if attempt == 4 or (status is not None and status < 500):
+                raise
+            wait = 15 * 2 ** attempt
+            print(f"download failed ({error}), trying again in {wait} s")
+            time.sleep(wait)
     actual = sha256(tmp)
     if actual != pin["sha256"]:
         os.remove(tmp)
