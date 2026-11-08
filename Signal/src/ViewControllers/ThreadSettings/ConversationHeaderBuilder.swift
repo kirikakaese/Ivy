@@ -571,10 +571,14 @@ struct ConversationHeaderBuilder {
         }
         let button = UIButton(configuration: config, primaryAction: action)
         // Ivy: a button doesn't grow with a title that wraps, so a long name's
-        // second line ran into the description below it.
+        // second line ran into the description below it. Only where the
+        // label is inside the button: on the Mac it isn't, and tying the two
+        // together crashed when opening a chat's info.
         if let titleLabel = button.titleLabel {
             titleLabel.numberOfLines = 0
-            button.heightAnchor.constraint(greaterThanOrEqualTo: titleLabel.heightAnchor).isActive = true
+            if titleLabel.isDescendant(of: button) {
+                button.heightAnchor.constraint(greaterThanOrEqualTo: titleLabel.heightAnchor).isActive = true
+            }
         }
         return button
     }
