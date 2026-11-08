@@ -130,6 +130,21 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
 
     private static let unfairLock = UnfairLock()
 
+    // Ivy: detectors built so far, by whether they link and find dates.
+    // Only used while holding `unfairLock`. Date detection can be switched
+    // off in Settings, so that is part of the key.
+    private nonisolated(unsafe) static var ivyDetectors = [String: NSDataDetector]()
+
+    private static func cachedDataDetector(shouldAllowLinkification: Bool) -> NSDataDetector? {
+        let key = "\(shouldAllowLinkification)-\(shouldDetectDates)"
+        if let detector = ivyDetectors[key] {
+            return detector
+        }
+        let detector = buildDataDetector(shouldAllowLinkification: shouldAllowLinkification)
+        ivyDetectors[key] = detector
+        return detector
+    }
+
     public static func detectItems(
         text: DisplayableText,
         hasPendingMessageRequest: Bool,
@@ -148,7 +163,9 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
                 return []
             }
 
-            let dataDetector = buildDataDetector(shouldAllowLinkification: shouldAllowLinkification)
+            // Ivy: reuse the detector instead of building one per message,
+            // which made scrolling through chats stutter.
+            let dataDetector = cachedDataDetector(shouldAllowLinkification: shouldAllowLinkification)
 
             func detectItems(plaintext: String) -> [CVTextLabel.Item] {
                 return TextCheckingDataItem.detectedItems(in: plaintext, using: dataDetector).compactMap {
