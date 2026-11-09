@@ -24,6 +24,15 @@ class ComposeViewController: RecipientPickerContainerViewController {
         addRecipientPicker()
 
         navigationItem.rightBarButtonItem = .cancelButton(dismissingFrom: self)
+
+#if targetEnvironment(macCatalyst)
+        // Ivy: on the Mac the title in the middle and the search field below
+        // it, instead of the search squeezed into the title row.
+        if #available(iOS 16, *) {
+            navigationItem.style = .navigator
+            navigationItem.preferredSearchBarPlacement = .stacked
+        }
+#endif
     }
 
     /// Presents the conversation for the given address and dismisses this

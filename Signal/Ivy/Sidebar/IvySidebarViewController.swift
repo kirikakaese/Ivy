@@ -82,13 +82,10 @@ final class IvySidebarViewController: UIViewController, UICollectionViewDelegate
             NSDirectionalEdgeInsets(top: 7, leading: 10, bottom: 7, trailing: 10)
 #endif
         }
-        /// The Mac's sidebar panel.
-        static let panelCornerRadius: CGFloat = 12
         static let iconWidth: CGFloat = 24
         static let iconToText: CGFloat = 10
         static let cornerRadius: CGFloat = 8
-        /// Above the first row; the panel's own gap already sits above it
-        /// on the Mac.
+        /// Above the first row, below the window's title bar on the Mac.
         static var firstSectionTop: CGFloat {
 #if targetEnvironment(macCatalyst)
             8
@@ -99,14 +96,11 @@ final class IvySidebarViewController: UIViewController, UICollectionViewDelegate
 
         static let background = UIColor { traits in
 #if targetEnvironment(macCatalyst)
-            // A panel a little lighter than the list next to it.
+            // A little lighter than the list next to it.
             traits.userInterfaceStyle == .dark ? UIColor(rgbHex: 0x242624) : UIColor(rgbHex: 0xECEEEA)
 #else
             traits.userInterfaceStyle == .dark ? UIColor(rgbHex: 0x18181A) : UIColor(rgbHex: 0xF2F2F5)
 #endif
-        }
-        static let panelBorder = UIColor { traits in
-            traits.userInterfaceStyle == .dark ? UIColor(white: 1, alpha: 0.07) : UIColor(white: 0, alpha: 0.06)
         }
         static var selection: UIColor { UIColor.Signal.accent.withAlphaComponent(0.22) }
         static var highlight: UIColor { UIColor.Signal.secondaryFill }
@@ -147,13 +141,7 @@ final class IvySidebarViewController: UIViewController, UICollectionViewDelegate
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
 #if targetEnvironment(macCatalyst)
-        // A rounded panel, with the profile and Settings at the bottom.
-        view.layer.cornerRadius = Style.panelCornerRadius
-        view.layer.cornerCurve = .continuous
-        view.layer.borderWidth = 1
-        view.layer.masksToBounds = true
-        updatePanelBorder()
-        // Shown from the sidebar, which is always on screen, whichever
+        // The profile and Settings at the bottom. Shown from the sidebar, which is always on screen, whichever
         // section is open.
         let profile = IvySidebarProfileRow { [weak self] in
             self?.presentFormSheet(AppSettingsViewController.inModalNavigationController(), animated: true)
@@ -166,11 +154,6 @@ final class IvySidebarViewController: UIViewController, UICollectionViewDelegate
             profile.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             profile.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
-        if #available(iOS 17, *) {
-            registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (self: Self, _) in
-                self.updatePanelBorder()
-            }
-        }
 #else
         collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 #endif
@@ -179,10 +162,6 @@ final class IvySidebarViewController: UIViewController, UICollectionViewDelegate
         reload(animated: false)
 
         NotificationCenter.default.addObserver(self, selector: #selector(stateDidChange), name: IvySidebarState.didChange, object: nil)
-    }
-
-    private func updatePanelBorder() {
-        view.layer.borderColor = Style.panelBorder.resolvedColor(with: traitCollection).cgColor
     }
 
     @objc

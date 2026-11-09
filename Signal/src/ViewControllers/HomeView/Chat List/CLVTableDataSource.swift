@@ -324,7 +324,9 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
 #if targetEnvironment(macCatalyst)
         // Ivy: small gray labels on the Mac.
         // Lined up with the profile pictures below.
-        container.layoutMargins = UIEdgeInsets(top: 12, leading: 8, bottom: 4, trailing: 16)
+        container.preservesSuperviewLayoutMargins = false
+        container.insetsLayoutMarginsFromSafeArea = false
+        container.layoutMargins = UIEdgeInsets(top: 12, leading: ChatListViewController.ivyMacMargin, bottom: 4, trailing: ChatListViewController.ivyMacMargin)
         label.font = UIFont.dynamicTypeFootnoteClamped.semibold()
         label.textColor = .Signal.secondaryLabel
 #endif
