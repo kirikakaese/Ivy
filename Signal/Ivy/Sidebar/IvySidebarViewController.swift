@@ -84,7 +84,7 @@ final class IvySidebarViewController: UIViewController, UICollectionViewDelegate
         }
         /// The Mac's sidebar panel.
         static let panelCornerRadius: CGFloat = 12
-        static let iconWidth: CGFloat = 22
+        static let iconWidth: CGFloat = 24
         static let iconToText: CGFloat = 10
         static let cornerRadius: CGFloat = 8
         /// Above the first row; the panel's own gap already sits above it
@@ -230,6 +230,9 @@ final class IvySidebarViewController: UIViewController, UICollectionViewDelegate
         content.imageProperties.preferredSymbolConfiguration = UIImage.SymbolConfiguration(textStyle: .body, scale: .medium)
         content.imageProperties.tintColor = iconColor
         content.imageProperties.reservedLayoutSize = CGSize(width: Style.iconWidth, height: 0)
+        // Wide symbols (the chat bubbles, the phone) are scaled down to fit
+        // the column, so every icon is centered on the same line.
+        content.imageProperties.maximumSize = CGSize(width: Style.iconWidth - 2, height: Style.iconWidth - 4)
         content.imageToTextPadding = Style.iconToText
         content.directionalLayoutMargins = Style.rowMargins
         return content

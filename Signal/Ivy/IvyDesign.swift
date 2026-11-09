@@ -117,6 +117,11 @@ final class IvySectionHeaderView: UITableViewHeaderFooterView {
         titleLabel.textColor = .Signal.label
         titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.numberOfLines = 0
+#if targetEnvironment(macCatalyst)
+        // Small gray labels on the Mac, like "Fixiert" in Chats.
+        titleLabel.font = UIFont.dynamicTypeFootnoteClamped.semibold()
+        titleLabel.textColor = .Signal.secondaryLabel
+#endif
         detailLabel.font = .dynamicTypeSubheadline
         detailLabel.textColor = .Signal.secondaryLabel
         detailLabel.adjustsFontForContentSizeCategory = true
@@ -138,8 +143,8 @@ final class IvySectionHeaderView: UITableViewHeaderFooterView {
         self.leading = leading
         self.trailing = trailing
         NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 18),
-            stack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: UIDevice.current.userInterfaceIdiom == .mac ? 16 : 18),
+            stack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: UIDevice.current.userInterfaceIdiom == .mac ? -6 : -8),
             leading,
             trailing,
         ])
@@ -151,7 +156,12 @@ final class IvySectionHeaderView: UITableViewHeaderFooterView {
     }
 
     func configure(title: String, detail: String? = nil, detailColor: UIColor = .Signal.secondaryLabel, actionTitle: String? = nil, action: (() -> Void)? = nil) {
+#if targetEnvironment(macCatalyst)
+        titleLabel.text = title.localizedUppercase
+        accessibilityLabel = title
+#else
         titleLabel.text = title
+#endif
         detailLabel.text = detail
         detailLabel.textColor = detailColor
         detailLabel.isHidden = detail == nil

@@ -419,6 +419,18 @@ class AppSettingsViewController: OWSTableViewController2 {
                 self?.navigationController?.pushViewController(vc, animated: true)
             },
         ))
+#if targetEnvironment(macCatalyst)
+        // Ivy: the Mac beta's updates.
+        if IvyMacBetaUpdater.isAvailable {
+            section3.add(.disclosureItem(
+                icon: .refresh,
+                withText: IvyMacUpdatesViewController.title,
+                actionBlock: { [weak self] in
+                    self?.navigationController?.pushViewController(IvyMacUpdatesViewController(), animated: true)
+                },
+            ))
+        }
+#endif
         section3.add(.item(
             icon: .settingsInvite,
             name: OWSLocalizedString("SETTINGS_INVITE_TITLE", comment: "Settings table view cell label"),

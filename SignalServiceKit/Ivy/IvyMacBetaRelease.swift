@@ -12,6 +12,8 @@ public struct IvyMacBetaRelease: Equatable, Sendable {
     public let zipURL: URL
     /// The SHA-256 of the zip, from the release notes.
     public let sha256: String
+    /// What changed since the beta before, from the release notes.
+    public var changes: [String] = []
 
     public static let assetName = "Ivy-Mac-Beta.zip"
     public static let releasesURL = URL(string: "https://api.github.com/repos/kirikakaese/Ivy/releases?per_page=20")!
@@ -42,7 +44,9 @@ public struct IvyMacBetaRelease: Equatable, Sendable {
             else {
                 return nil
             }
-            return IvyMacBetaRelease(number: number, zipURL: asset.browser_download_url, sha256: sha256)
+            var result = IvyMacBetaRelease(number: number, zipURL: asset.browser_download_url, sha256: sha256)
+            result.changes = changes(inNotes: release.body ?? "")
+            return result
         }.max { $0.number < $1.number }
     }
 
@@ -52,6 +56,25 @@ public struct IvyMacBetaRelease: Equatable, Sendable {
             return nil
         }
         return String(notes[range].suffix(64))
+    }
+
+    /// The lines of the "Changes:" list in the release notes.
+    static func changes(inNotes notes: String) -> [String] {
+        var lines = notes.components(separatedBy: .newlines).makeIterator()
+        while let line = lines.next() {
+            if line.trimmingCharacters(in: .whitespaces) == "Changes:" {
+                break
+            }
+        }
+        var changes: [String] = []
+        while let line = lines.next() {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            guard trimmed.hasPrefix("- ") else {
+                break
+            }
+            changes.append(String(trimmed.dropFirst(2)))
+        }
+        return changes
     }
 
     /// This beta's number, written into its Info.plist when it is built;
