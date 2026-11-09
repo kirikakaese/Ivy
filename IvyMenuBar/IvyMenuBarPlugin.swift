@@ -125,6 +125,14 @@ final class IvyMenuBarPlugin: NSObject, NSMenuDelegate {
         }
     }
 
+    /// The Dock icon chosen in Ivy's settings, as PNG data; empty data goes
+    /// back to the app's own icon. Only while Ivy runs: the app bundle
+    /// itself stays untouched, so its signature stays valid.
+    @objc(setAppIconWithData:)
+    func setAppIcon(data: NSData) {
+        NSApp.applicationIconImage = data.length == 0 ? nil : NSImage(data: data as Data)
+    }
+
     @objc(updateWithGlance:)
     func update(glanceData: NSData) {
         let decoder = JSONDecoder()

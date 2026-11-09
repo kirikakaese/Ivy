@@ -7,8 +7,8 @@ import SignalServiceKit
 import SignalUI
 
 final class AppearanceSettingsTableViewController: OWSTableViewController2 {
-    // Ivy: set to true once Ivy provides its own alternate app icons.
-    private static let showsAppIconSetting = false
+    // Ivy: Ivy's own app icons (IvyAppIcons).
+    private static var showsAppIconSetting: Bool { IvyAppIcons.isAvailable }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,8 +65,9 @@ final class AppearanceSettingsTableViewController: OWSTableViewController2 {
                     },
                     actionBlock: { [weak self] in
                         guard let self else { return }
-                        let vc = AppIconSettingsTableViewController()
-                        vc.iconDelegate = self
+                        // Ivy: Ivy's icons, with pride versions.
+                        let vc = IvyAppIconViewController()
+                        vc.onChange = { [weak self] in self?.updateTableContents() }
                         self.navigationController?.pushViewController(vc, animated: true)
                     },
                 ),
@@ -83,7 +84,7 @@ final class AppearanceSettingsTableViewController: OWSTableViewController2 {
     }
 
     private func buildCurrentAppIconView() -> UIView {
-        let image = UIImage(resource: UIApplication.shared.currentAppIcon.previewImageResource)
+        let image = IvyAppIcons.current.previewImage // Ivy
         let imageView = UIImageView(image: image)
         imageView.autoSetDimensions(to: .square(24))
         // 60x60 icons have corner radius 12

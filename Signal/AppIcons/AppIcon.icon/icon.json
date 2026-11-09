@@ -1,63 +1,95 @@
 {
-  "color-space-for-untagged-svg-colors" : "display-p3",
-  "fill-specializations" : [
+  "color-space-for-untagged-svg-colors": "display-p3",
+  "groups": [
     {
-      "value" : {
-        "linear-gradient" : [
-          "display-p3:0.25098,0.61176,0.40000,1.00000",
-          "srgb:0.12157,0.41961,0.25098,1.00000"
-        ]
-      }
-    },
-    {
-      "appearance" : "dark",
-      "value" : "system-dark"
-    }
-  ],
-  "groups" : [
-    {
-      "blur-material" : null,
-      "hidden" : false,
-      "layers" : [
+      "layers": [
         {
-          "fill-specializations" : [
+          "glass": false,
+          "image-name": "ivy-veins.svg",
+          "name": "veins",
+          "fill": {
+            "solid": "srgb:0.05490,0.30196,0.16863,1.00000"
+          },
+          "opacity-specializations": [
             {
-              "appearance" : "dark",
-              "value" : {
-                "linear-gradient" : [
-                  "display-p3:0.36078,0.75294,0.50196,1.00000",
-                  "srgb:0.18824,0.58039,0.34510,1.00000"
+              "value": 0.5
+            },
+            {
+              "appearance": "tinted",
+              "value": 0.3
+            }
+          ]
+        },
+        {
+          "image-name": "ivy-leaf.svg",
+          "name": "leaf",
+          "fill-specializations": [
+            {
+              "value": {
+                "linear-gradient": [
+                  "srgb:0.65882,0.94118,0.76078,1.00000",
+                  "srgb:0.13333,0.52549,0.30588,1.00000"
                 ]
               }
             },
             {
-              "appearance" : "tinted",
-              "value" : {
-                "linear-gradient" : [
+              "appearance": "tinted",
+              "value": {
+                "linear-gradient": [
                   "gray:1.00000,1.00000",
-                  "gray:0.69955,1.00000"
+                  "gray:0.75000,1.00000"
                 ]
               }
             }
-          ],
-          "hidden" : false,
-          "image-name" : "logo.svg",
-          "name" : "logo"
+          ]
+        },
+        {
+          "image-name": "ivy-stem.svg",
+          "name": "stem",
+          "fill-specializations": [
+            {
+              "value": {
+                "linear-gradient": [
+                  "srgb:0.96863,0.95294,0.90980,1.00000",
+                  "srgb:0.89412,0.86275,0.77647,1.00000"
+                ]
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "linear-gradient": [
+                  "gray:0.95000,1.00000",
+                  "gray:0.80000,1.00000"
+                ]
+              }
+            }
+          ]
         }
       ],
-      "lighting" : "individual",
-      "shadow" : {
-        "kind" : "neutral",
-        "opacity" : 0.5
+      "lighting": "individual",
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.5
       },
-      "specular" : true,
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.4
+      "specular": true,
+      "translucency": {
+        "enabled": true,
+        "value": 0.2
       }
     }
   ],
-  "supported-platforms" : {
-    "squares" : "shared"
-  }
+  "supported-platforms": {
+    "squares": "shared"
+  },
+  "fill-specializations": [
+    {
+      "value": {
+        "linear-gradient": [
+          "srgb:0.08627,0.25098,0.16471,1.00000",
+          "srgb:0.04314,0.12941,0.08627,1.00000"
+        ]
+      }
+    }
+  ]
 }

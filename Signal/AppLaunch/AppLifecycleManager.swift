@@ -1604,6 +1604,7 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
                     IvyWeeklyReviewUI.start()
                     IvySharedPlansUI.start()
                     IvyProblemReport.start()
+                    IvyAppIcons.start()
                     #if targetEnvironment(macCatalyst)
                     IvyMacBetaUpdater.start()
                     #endif
