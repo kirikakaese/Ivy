@@ -71,7 +71,7 @@ extension UIColor.Signal {
     // Ivy: the accent color is Ivy green instead of Signal's ultramarine,
     // or the colour chosen in Settings > Appearance.
     public static var ultramarine: UIColor {
-        IvyAppearance.accentColor
+        IvyAppearance.dynamic { IvyAppearance.accentColor }
     }
 
     public static var red: UIColor {
@@ -191,7 +191,11 @@ extension UIColor.Signal {
 
     // MARK: Background
 
-    public static var background: UIColor {
+    // Ivy: worked out when drawn, so a change of the kind of dark mode
+    // reaches views that are already on screen.
+    public static var background: UIColor { IvyAppearance.dynamic { ivyBaseBackground } }
+
+    private static var ivyBaseBackground: UIColor {
         UIColor.byUserInterfaceLevel(
             base: UIColor.byRGBHex(
                 light: 0xFFFFFF,
@@ -211,7 +215,11 @@ extension UIColor.Signal {
         return UIColor(light: .white, dark: .black)
     }
 
-    public static var secondaryBackground: UIColor {
+    // Ivy: worked out when drawn, so a change of the kind of dark mode
+    // reaches views that are already on screen.
+    public static var secondaryBackground: UIColor { IvyAppearance.dynamic { ivyBaseSecondaryBackground } }
+
+    private static var ivyBaseSecondaryBackground: UIColor {
         guard #available(iOS 16.0, *) else {
             return .secondarySystemBackground
         }
@@ -231,7 +239,11 @@ extension UIColor.Signal {
         )
     }
 
-    public static var tertiaryBackground: UIColor {
+    // Ivy: worked out when drawn, so a change of the kind of dark mode
+    // reaches views that are already on screen.
+    public static var tertiaryBackground: UIColor { IvyAppearance.dynamic { ivyBaseTertiaryBackground } }
+
+    private static var ivyBaseTertiaryBackground: UIColor {
         UIColor.byUserInterfaceLevel(
             base: UIColor.byRGBHex(
                 light: 0xFFFFFF,
@@ -260,7 +272,11 @@ extension UIColor.Signal {
 
     // MARK: Grouped Background
 
-    public static var groupedBackground: UIColor {
+    // Ivy: worked out when drawn, so a change of the kind of dark mode
+    // reaches views that are already on screen.
+    public static var groupedBackground: UIColor { IvyAppearance.dynamic { ivyBaseGroupedBackground } }
+
+    private static var ivyBaseGroupedBackground: UIColor {
         guard #available(iOS 16.0, *) else {
             return .systemGroupedBackground
         }
@@ -279,7 +295,11 @@ extension UIColor.Signal {
         )
     }
 
-    public static var secondaryGroupedBackground: UIColor {
+    // Ivy: worked out when drawn, so a change of the kind of dark mode
+    // reaches views that are already on screen.
+    public static var secondaryGroupedBackground: UIColor { IvyAppearance.dynamic { ivyBaseSecondaryGroupedBackground } }
+
+    private static var ivyBaseSecondaryGroupedBackground: UIColor {
         UIColor.byUserInterfaceLevel(
             base: UIColor.byRGBHex(
                 light: 0xFFFFFF,
@@ -294,7 +314,11 @@ extension UIColor.Signal {
         )
     }
 
-    public static var tertiaryGroupedBackground: UIColor {
+    // Ivy: worked out when drawn, so a change of the kind of dark mode
+    // reaches views that are already on screen.
+    public static var tertiaryGroupedBackground: UIColor { IvyAppearance.dynamic { ivyBaseTertiaryGroupedBackground } }
+
+    private static var ivyBaseTertiaryGroupedBackground: UIColor {
         guard #available(iOS 16.0, *) else {
             return .tertiarySystemGroupedBackground
         }

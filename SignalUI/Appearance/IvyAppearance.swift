@@ -98,6 +98,15 @@ public enum IvyAppearance {
         }
     }
 
+    /// A colour that asks `make` again each time it is drawn.
+    public static func dynamic(_ make: @escaping @Sendable () -> UIColor) -> UIColor {
+        UIColor { traits in make().resolvedColor(with: traits) }
+    }
+
+    /// Goes up with every change; windows carry it as a trait, so changing
+    /// it makes UIKit draw every colour again.
+    nonisolated(unsafe) public private(set) static var generation = 0
+
     private static let lock = NSLock()
     private nonisolated(unsafe) static var cached: Values?
 
@@ -117,6 +126,7 @@ public enum IvyAppearance {
         var new = cached ?? Values.load()
         change(&new)
         cached = new
+        generation += 1
         lock.unlock()
         store(UserDefaults.standard)
         DispatchQueue.main.async {
@@ -274,4 +284,14 @@ public enum IvyAppearance {
     public static var chatListSnippetLines: Int {
         values.density == .compact ? 1 : 2
     }
+}
+
+/// Carries `IvyAppearance.generation` on the windows. Colours depend on it,
+/// so a new value redraws them.
+@available(iOS 17, *)
+public struct IvyAppearanceTrait: UITraitDefinition {
+    public static let defaultValue = 0
+    public static let affectsColorAppearance = true
+    public static let identifier = "io.github.kirikakaese.ivy.appearance"
+    public static let name = "IvyAppearance"
 }
