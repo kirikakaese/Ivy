@@ -174,7 +174,9 @@ extension ConversationSplitViewController {
     @objc
     func ivyCheckForUpdates() {
         #if targetEnvironment(macCatalyst)
-        Task { await IvyMacBetaUpdater.check(userInitiated: true) }
+        // Settings > Updates, which looks right away.
+        IvyMacBetaUpdater.showUpdatesPage()
+        Task { await IvyMacBetaUpdater.check(userInitiated: true, quietly: true) }
         #endif
     }
 

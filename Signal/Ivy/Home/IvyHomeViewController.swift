@@ -118,7 +118,9 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        ivyUpdateProfileButton()
+        // On the Mac the greeting is the bar's title, in line with the other
+        // columns' titles.
+        ivyUpdateProfileButton(macTitle: IvyHomeHeaderView.greeting(at: Date()))
         reload()
     }
 

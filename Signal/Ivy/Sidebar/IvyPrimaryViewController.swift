@@ -34,7 +34,7 @@ final class IvyPrimaryViewController: UIViewController {
     /// On the Mac the sidebar is a panel with this gap on every side.
     static var sidebarInset: CGFloat {
 #if targetEnvironment(macCatalyst)
-        return 10
+        return 8
 #else
         return 0
 #endif

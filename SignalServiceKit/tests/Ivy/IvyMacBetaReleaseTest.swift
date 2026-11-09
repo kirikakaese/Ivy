@@ -35,6 +35,14 @@ final class IvyMacBetaReleaseTest: XCTestCase {
         XCTAssertEqual(newest.zipURL.absoluteString, "https://github.com/x/mac-beta-136/Ivy-Mac-Beta.zip")
     }
 
+    func testChangesComeFromTheNotes() throws {
+        let notes = "Mac beta built from abc.\n\nChanges:\n- Cleaner window\n- Fix a crash\n\nSHA-256: \(sha)\n"
+        XCTAssertEqual(IvyMacBetaRelease.changes(inNotes: notes), ["Cleaner window", "Fix a crash"])
+        XCTAssertEqual(IvyMacBetaRelease.changes(inNotes: "SHA-256: \(sha)"), [])
+        let json = try JSONSerialization.data(withJSONObject: [release("mac-beta-150", notes: notes)])
+        XCTAssertEqual(try XCTUnwrap(IvyMacBetaRelease.newest(inReleasesJSON: json)).changes, ["Cleaner window", "Fix a crash"])
+    }
+
     func testChecksumComesFromTheNotes() {
         XCTAssertEqual(IvyMacBetaRelease.sha256(inNotes: "SHA-256: \(sha)"), sha)
         XCTAssertNil(IvyMacBetaRelease.sha256(inNotes: "SHA-256: short"))

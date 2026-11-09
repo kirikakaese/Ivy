@@ -4446,6 +4446,7 @@
 		A8CB995A16C73F40174214F7 /* IvyMacBetaUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9D4BD62D0491D2BC8FA17B /* IvyMacBetaUpdater.swift */; };
 		CF9198F9BF8380F7305E148D /* IvyMacBetaReleaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6934E6D9175D00DDFF509E7D /* IvyMacBetaReleaseTest.swift */; };
 		B6DC32F5116335662A917BE5 /* IvySidebarProfileRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8198FDE736A0C8D07B54D87 /* IvySidebarProfileRow.swift */; };
+		CF45B3778C70BEA57D03782C /* IvyMacUpdatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77D0379294AC76D72AB36DF /* IvyMacUpdatesViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -9193,6 +9194,7 @@
 		5B9D4BD62D0491D2BC8FA17B /* IvyMacBetaUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBetaUpdater.swift; sourceTree = "<group>"; };
 		6934E6D9175D00DDFF509E7D /* IvyMacBetaReleaseTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBetaReleaseTest.swift; sourceTree = "<group>"; };
 		D8198FDE736A0C8D07B54D87 /* IvySidebarProfileRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySidebarProfileRow.swift; sourceTree = "<group>"; };
+		C77D0379294AC76D72AB36DF /* IvyMacUpdatesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacUpdatesViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16987,6 +16989,7 @@
 				629E49815A9C4D03799F7C22 /* IvyMoveFromSignal.swift */,
 				6534BCD42D5AA3D88CFB491F /* IvyProblemReport.swift */,
 				5B9D4BD62D0491D2BC8FA17B /* IvyMacBetaUpdater.swift */,
+				C77D0379294AC76D72AB36DF /* IvyMacUpdatesViewController.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -20797,6 +20800,7 @@
 				D3EBBE0C2B051ECA5F34434F /* IvyNotificationActionHandler.swift in Sources */,
 				A8CB995A16C73F40174214F7 /* IvyMacBetaUpdater.swift in Sources */,
 				B6DC32F5116335662A917BE5 /* IvySidebarProfileRow.swift in Sources */,
+				CF45B3778C70BEA57D03782C /* IvyMacUpdatesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
