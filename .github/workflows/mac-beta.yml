@@ -98,13 +98,14 @@ jobs:
           TAG="mac-beta-${{ github.run_number }}"
           SHORT_SHA="$(git rev-parse --short HEAD)"
           # The pull requests merged since the last beta, for the updater's
-          # "what's new". Each merge commit's second line is the PR title.
+          # "what's new". Each pull request's merge commit has the PR title on
+          # its second line; other merges (main into a branch) are skipped.
           PREVIOUS=$(gh api "repos/${{ github.repository }}/releases?per_page=20" \
             --jq '[.[] | select(.tag_name | startswith("mac-beta-"))][0].target_commitish // empty' || true)
           CHANGES=""
           if [ -n "$PREVIOUS" ]; then
             CHANGES=$(gh api "repos/${{ github.repository }}/compare/${PREVIOUS}...${{ github.sha }}" \
-              --jq '.commits[] | select(.parents | length > 1) | .commit.message | split("\n") | map(select(length > 0)) | .[1] // empty' \
+              --jq '.commits[] | select(.parents | length > 1) | .commit.message | select(startswith("Merge pull request")) | split("\n") | map(select(length > 0)) | .[1] // empty' \
               | head -n 15 | sed 's/^/- /' || true)
           fi
           if [ -n "$CHANGES" ]; then
