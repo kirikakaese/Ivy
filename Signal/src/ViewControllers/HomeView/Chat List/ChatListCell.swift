@@ -149,16 +149,28 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
     }
 
     // This value is now larger than AvatarBuilder.standardAvatarSizePoints.
-    // Ivy: smaller on the Mac, where the list is a narrow column.
+    // Ivy: smaller on the Mac, where the list is a narrow column, and after
+    // the density chosen in Settings > Appearance.
+    private static var isMac: Bool {
 #if targetEnvironment(macCatalyst)
-    private static let avatarSize: UInt = 40
-    private static let avatarSizeClass: ConversationAvatarView.Configuration.SizeClass = .forty
-    private static let rowVerticalMargin: CGFloat = 8
+        true
 #else
-    private static let avatarSize: UInt = 56
-    private static let avatarSizeClass: ConversationAvatarView.Configuration.SizeClass = .fiftySix
-    private static let rowVerticalMargin: CGFloat = 12
+        false
 #endif
+    }
+    private static var avatarSize: UInt { IvyAppearance.chatListAvatarSize(isMac: isMac) }
+    private static var avatarSizeClass: ConversationAvatarView.Configuration.SizeClass {
+        switch avatarSize {
+        case 32: return .thirtyTwo
+        case 40: return .forty
+        case 44: return .fortyFour
+        case 48: return .fortyEight
+        case 64: return .sixtyFour
+        default: return .fiftySix
+        }
+    }
+    private static var rowVerticalMargin: CGFloat { IvyAppearance.chatListVerticalMargin(isMac: isMac) }
+    private static var snippetLines: Int { IvyAppearance.chatListSnippetLines }
     private static let muteIconSize: CGFloat = 16
 
     // MARK: -
@@ -286,7 +298,7 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
         let snippetLineHeight = CGFloat(ceil(snippetLabelConfig.font.semibold().lineHeight * 1.2))
 
         // Use a fixed size for the snippet label and its wrapper.
-        let bottomRowWrapperSize = CGSize(width: 0, height: snippetLineHeight * 2)
+        let bottomRowWrapperSize = CGSize(width: 0, height: snippetLineHeight * CGFloat(snippetLines)) // Ivy: density
         var bottomRowStackSubviewInfos: [ManualStackSubviewInfo] = [
             bottomRowWrapperSize.asManualSubviewInfo(),
         ]
@@ -464,7 +476,7 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
             let snippetSize = self.snippetLabel.sizeThatFits(view.bounds.size)
             if
                 DebugFlags.internalLogging,
-                snippetSize.height > snippetLineHeight * 2
+                snippetSize.height > snippetLineHeight * CGFloat(Self.snippetLines)
             {
                 owsFailDebug("view: \(view.bounds.size), snippetSize: \(snippetSize), snippetLineHeight: \(snippetLineHeight), snippetLabelConfig: \(snippetLabelConfig)")
             }
@@ -946,7 +958,7 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
             displayConfig: displayConfig,
             font: snippetFont,
             textColor: snippetColor,
-            numberOfLines: 2,
+            numberOfLines: snippetLines, // Ivy: density
             lineBreakMode: .byTruncatingTail,
         )
     }

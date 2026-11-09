@@ -39,6 +39,69 @@
 /* Item that lists the licenses of the libraries Ivy uses. */
 "ABOUT_THIRD_PARTY_LICENSES" = "Lizenzen von Drittanbietern";
 
+/* Accent colour: blue. */
+"ACCENT_BLUE" = "Blau";
+
+/* Accent colour: coral. */
+"ACCENT_CORAL" = "Koralle";
+
+/* Accent colour: gold. */
+"ACCENT_GOLD" = "Gold";
+
+/* Accent colour that follows the app icon. */
+"ACCENT_ICON" = "Wie Symbol";
+
+/* Accent colour: moss green. */
+"ACCENT_MOSS" = "Moos";
+
+/* Accent colour: orange. */
+"ACCENT_ORANGE" = "Orange";
+
+/* Accent colour: teal. */
+"ACCENT_PETROL" = "Petrol";
+
+/* Accent colour: pink. */
+"ACCENT_PINK" = "Pink";
+
+/* Accent colour: violet. */
+"ACCENT_VIOLET" = "Violett";
+
+/* Header of the accent colour choice in Settings > Appearance. */
+"APPEARANCE_ACCENT" = "Akzentfarbe";
+
+/* Switch in Settings > Appearance: a coloured chat folder lends the app its colour while it is open. */
+"APPEARANCE_ACCENT_FOLDER" = "Akzent passend zum Ordner";
+
+/* Footer under the accent colour switches in Settings > Appearance. */
+"APPEARANCE_ACCENT_FOOTER" = "Ohne „Eigene Nachrichten“ behalten sie die Farbe des Chats. Mit „Akzent passend zum Ordner“ färbt ein geöffneter farbiger Ordner die App in seiner Farbe.";
+
+/* Switch in Settings > Appearance: the user's own messages use the accent colour. */
+"APPEARANCE_ACCENT_OWN_BUBBLES" = "Eigene Nachrichten in Akzentfarbe";
+
+/* Setting in Settings > Appearance: the shape of message bubbles. */
+"APPEARANCE_BUBBLE_SHAPE" = "Bubble-Form";
+
+/* Switch in Settings > Appearance: messages in a row get a smaller corner where they meet. */
+"APPEARANCE_BUBBLE_TAIL" = "Kleine Ecke zwischen Nachrichten";
+
+/* Setting in Settings > Appearance: which kind of dark mode. */
+"APPEARANCE_DARK_STYLE" = "Dunkler Modus";
+
+/* Footer under the dark mode, density and bubble settings. */
+"APPEARANCE_DARK_STYLE_FOOTER" = "Schwarz passt zu OLED-Bildschirmen, Gedimmt ist ein weiches Grau für abends.";
+
+/* Setting in Settings > Appearance: how dense the chat list is. */
+"APPEARANCE_DENSITY" = "Chatliste";
+
+/* Name of the sample chat in the accent colour preview. */
+"APPEARANCE_PREVIEW_CHAT" = "Lesekreis";
+
+/* Incoming sample message in the accent colour preview. */
+"APPEARANCE_PREVIEW_INCOMING" = "Kommst du morgen?";
+
+/* Outgoing sample message in the accent colour preview. */
+"APPEARANCE_PREVIEW_OUTGOING" = "Ja, bin um 18 Uhr da";
+
 /* Item that opens the system settings to allow access to Apple Calendar or Reminders. */
 "APPLE_SYNC_ALLOW_ACCESS" = "Zugriff in den Einstellungen erlauben";
 
@@ -86,6 +149,15 @@
 
 /* Backup settings: the user's paid backup plan was bought in Signal's own app, which Ivy uses but can't manage. */
 "BACKUP_PLAN_MANAGED_IN_SIGNAL" = "Dein Abo wurde in der Signal-App abgeschlossen. Ivy nutzt es mit; verlängern oder verwalten kannst du es in Signal.";
+
+/* Bubble shape: round. */
+"BUBBLE_ROUND" = "Rund";
+
+/* Bubble shape: softly rounded, the default. */
+"BUBBLE_SOFT" = "Weich";
+
+/* Bubble shape: nearly square. */
+"BUBBLE_SQUARE" = "Eckig";
 
 /* Shown in the calendar when nothing is planned for the shown dates. */
 "CALENDAR_EMPTY" = "Nichts geplant.";
@@ -405,6 +477,15 @@
 /* Title of the settings for how Ivy is used by hand: reaction bar, gestures, message menu. */
 "CONTROLS_SETTINGS_TITLE" = "Bedienung";
 
+/* Kind of dark mode: black, for OLED screens. */
+"DARK_STYLE_BLACK" = "Schwarz";
+
+/* Kind of dark mode: today's dark grey and black. */
+"DARK_STYLE_DARK" = "Dunkel";
+
+/* Kind of dark mode: soft grey. */
+"DARK_STYLE_DIMMED" = "Gedimmt";
+
 /* Button under a message with a date: accept, add it to the calendar and reply. */
 "DATE_REPLY_ACCEPT" = "Zusagen";
 
@@ -482,6 +563,15 @@
 
 /* Title of the confirmation before deleting all data from the decoy mode. */
 "DECOY_WIPE_CONFIRM_TITLE" = "Alle Daten löschen?";
+
+/* Chat list density: airy, with more space. */
+"DENSITY_AIRY" = "Luftig";
+
+/* Chat list density: compact. */
+"DENSITY_COMPACT" = "Kompakt";
+
+/* Chat list density: normal. */
+"DENSITY_NORMAL" = "Normal";
 
 /* Item that chooses the emoji a double tap reacts with. */
 "DOUBLE_TAP_REACTION_EMOJI" = "Reagieren mit";

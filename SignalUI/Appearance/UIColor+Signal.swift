@@ -68,14 +68,10 @@ extension UIColor.Signal {
 
     // MARK: Accent
 
-    // Ivy: the accent color is Ivy green instead of Signal's ultramarine.
+    // Ivy: the accent color is Ivy green instead of Signal's ultramarine,
+    // or the colour chosen in Settings > Appearance.
     public static var ultramarine: UIColor {
-        UIColor.byRGBHex(
-            light: 0x2E7D4F,
-            lightHighContrast: 0x1D5C38,
-            dark: 0x3A9A62,
-            darkHighContrast: 0x5CC08A,
-        )
+        IvyAppearance.accentColor
     }
 
     public static var red: UIColor {
@@ -199,11 +195,11 @@ extension UIColor.Signal {
         UIColor.byUserInterfaceLevel(
             base: UIColor.byRGBHex(
                 light: 0xFFFFFF,
-                dark: 0x000000,
+                dark: IvyAppearance.dark(0x000000), // Ivy: kind of dark mode
             ),
             elevated: UIColor.byRGBHex(
                 light: 0xFFFFFF,
-                dark: 0x1C1C1E,
+                dark: IvyAppearance.dark(0x1C1C1E), // Ivy: kind of dark mode
                 darkHighContrast: 0x343438,
             ),
         )
@@ -223,13 +219,13 @@ extension UIColor.Signal {
             base: UIColor.byRGBHex(
                 light: 0xEFEFF0,
                 lightHighContrast: 0xE4E4E7,
-                dark: 0x1C1C1E,
+                dark: IvyAppearance.dark(0x1C1C1E), // Ivy: kind of dark mode
                 darkHighContrast: 0x343438,
             ),
             elevated: UIColor.byRGBHex(
                 light: 0xEFEFF0,
                 lightHighContrast: 0xE4E4E7,
-                dark: 0x2C2C2E,
+                dark: IvyAppearance.dark(0x2C2C2E), // Ivy: kind of dark mode
                 darkHighContrast: 0x444447,
             ),
         )
@@ -239,12 +235,12 @@ extension UIColor.Signal {
         UIColor.byUserInterfaceLevel(
             base: UIColor.byRGBHex(
                 light: 0xFFFFFF,
-                dark: 0x2C2C2E,
+                dark: IvyAppearance.dark(0x2C2C2E), // Ivy: kind of dark mode
                 darkHighContrast: 0x444447,
             ),
             elevated: UIColor.byRGBHex(
                 light: 0xFFFFFF,
-                dark: 0x3A3A3C,
+                dark: IvyAppearance.dark(0x3A3A3C), // Ivy: kind of dark mode
                 darkHighContrast: 0x545457,
             ),
         )
@@ -272,12 +268,12 @@ extension UIColor.Signal {
             base: UIColor.byRGBHex(
                 light: 0xEFEFF0,
                 lightHighContrast: 0xE4E4E7,
-                dark: 0x000000,
+                dark: IvyAppearance.dark(0x000000), // Ivy: kind of dark mode
             ),
             elevated: UIColor.byRGBHex(
                 light: 0xEFEFF0,
                 lightHighContrast: 0xE4E4E7,
-                dark: 0x1C1C1E,
+                dark: IvyAppearance.dark(0x1C1C1E), // Ivy: kind of dark mode
                 darkHighContrast: 0x343438,
             ),
         )
@@ -287,12 +283,12 @@ extension UIColor.Signal {
         UIColor.byUserInterfaceLevel(
             base: UIColor.byRGBHex(
                 light: 0xFFFFFF,
-                dark: 0x1C1C1E,
+                dark: IvyAppearance.dark(0x1C1C1E), // Ivy: kind of dark mode
                 darkHighContrast: 0x343438,
             ),
             elevated: UIColor.byRGBHex(
                 light: 0xFFFFFF,
-                dark: 0x2C2C2E,
+                dark: IvyAppearance.dark(0x2C2C2E), // Ivy: kind of dark mode
                 darkHighContrast: 0x444447,
             ),
         )
@@ -306,13 +302,13 @@ extension UIColor.Signal {
             base: UIColor.byRGBHex(
                 light: 0xEFEFF0,
                 lightHighContrast: 0xE4E4E7,
-                dark: 0x2C2C2E,
+                dark: IvyAppearance.dark(0x2C2C2E), // Ivy: kind of dark mode
                 darkHighContrast: 0x444447,
             ),
             elevated: UIColor.byRGBHex(
                 light: 0xEFEFF0,
                 lightHighContrast: 0xE4E4E7,
-                dark: 0x3A3A3C,
+                dark: IvyAppearance.dark(0x3A3A3C), // Ivy: kind of dark mode
                 darkHighContrast: 0x545457,
             ),
         )
