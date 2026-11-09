@@ -62,6 +62,14 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         tableView.allowsSelectionDuringEditing = true
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.selectionFollowsFocus = false
+#if targetEnvironment(macCatalyst)
+        // Ivy: one margin for the title, the search field, the section labels
+        // and the chats, instead of the Mac's wider defaults.
+        tableView.preservesSuperviewLayoutMargins = false
+        tableView.insetsLayoutMarginsFromSafeArea = false
+        tableView.cellLayoutMarginsFollowReadableWidth = false
+        tableView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: Self.ivyMacMargin, bottom: 0, trailing: Self.ivyMacMargin)
+#endif
 
         if let filterControl {
             filterControl.clearAction = .disableChatListFilter(target: self)

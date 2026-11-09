@@ -113,23 +113,24 @@ extension UIViewController {
     func ivyMacUsesLeadingTitle(_ explicitTitle: String? = nil) -> Bool {
 #if targetEnvironment(macCatalyst)
         guard (tabBarController as? HomeTabBarController)?.ivyIsSidebarShown == true, let title = explicitTitle ?? navigationItem.title ?? title else {
-            if navigationItem.titleView is IvyHiddenTitleView {
-                navigationItem.titleView = nil
+            if #available(iOS 16, *), navigationItem.style == .browser {
+                navigationItem.style = .navigator
             }
             return false
         }
-        let label = UILabel()
-        label.text = title
-        label.font = UIFont.dynamicTypeTitle3Clamped.bold()
-        label.textColor = .Signal.label
-        label.accessibilityTraits = .header
-        let item = UIBarButtonItem(customView: label)
-        if #available(iOS 26, *) {
-            item.hidesSharedBackground = true
+        // The title on the left of the bar, where the Mac puts it, at the
+        // same margin as the search field and the list below.
+        navigationItem.title = title
+        navigationItem.leftBarButtonItem = nil
+        navigationItem.titleView = nil
+        if #available(iOS 16, *) {
+            navigationItem.style = .browser
         }
-        navigationItem.leftBarButtonItem = item
-        // An empty view hides the title in the middle.
-        navigationItem.titleView = IvyHiddenTitleView()
+        if let bar = navigationController?.navigationBar {
+            bar.preservesSuperviewLayoutMargins = false
+            bar.insetsLayoutMarginsFromSafeArea = false
+            bar.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: ChatListViewController.ivyMacMargin, bottom: 0, trailing: ChatListViewController.ivyMacMargin)
+        }
         return true
 #else
         return false
@@ -137,6 +138,7 @@ extension UIViewController {
     }
 }
 
-/// Stands in for the title in the middle of the bar while it shows on the
-/// left.
-private final class IvyHiddenTitleView: UIView {}
+extension ChatListViewController {
+    /// The Mac's margin on the left and right of the lists and their bars.
+    static let ivyMacMargin: CGFloat = 16
+}

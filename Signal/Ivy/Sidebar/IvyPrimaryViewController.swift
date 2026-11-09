@@ -31,14 +31,10 @@ final class IvyPrimaryViewController: UIViewController {
 #endif
     }
 
-    /// On the Mac the sidebar is a panel with this gap on every side.
-    static var sidebarInset: CGFloat {
-#if targetEnvironment(macCatalyst)
-        return 8
-#else
-        return 0
-#endif
-    }
+    /// A gap around the sidebar. None: on the Mac it runs the full height of
+    /// the window, so the close, minimize and zoom buttons sit inside it
+    /// where macOS puts them.
+    static var sidebarInset: CGFloat { 0 }
 
     /// The room the sidebar takes, with its gaps or its separator.
     private var sidebarRoom: CGFloat {
