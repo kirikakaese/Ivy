@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
+import LocalAuthentication
 import SignalServiceKit
 import UIKit
 
@@ -51,6 +52,11 @@ open class ScreenLockViewController: UIViewController {
 
         view.backgroundColor = UIColor.Signal.background
 
+#if targetEnvironment(macCatalyst)
+        // Ivy: on the Mac, the app icon with a title and a normal-sized
+        // button on a soft glow, instead of a logo and a full-width bar.
+        ivyBuildMacLayout()
+#else
         view.addSubview(imageViewLogo)
         imageViewLogo.autoHCenterInSuperview()
         imageViewLogo.autoVCenterInSuperview()
@@ -61,6 +67,7 @@ open class ScreenLockViewController: UIViewController {
         view.addSubview(buttonUnlockUI)
         buttonUnlockUI.autoPinWidthToSuperview(withMargin: 50)
         buttonUnlockUI.autoPinBottomToSuperviewMargin(withInset: 65)
+#endif
 
         updateUIWithState(.screenProtection)
     }
@@ -89,6 +96,110 @@ open class ScreenLockViewController: UIViewController {
         }
 
         buttonUnlockUI.isHidden = !shouldHaveScreenLock
+        ivyMacLockTexts.forEach { $0.isHidden = !shouldHaveScreenLock } // Ivy
+    }
+
+    // MARK: - Ivy: Mac layout
+
+    private var ivyMacLockTexts: [UIView] = []
+    private let ivyGlowLayer = CAGradientLayer()
+
+    override open func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        ivyGlowLayer.frame = view.bounds
+    }
+
+#if targetEnvironment(macCatalyst)
+    // Return unlocks too.
+    override open var keyCommands: [UIKeyCommand]? {
+        guard !buttonUnlockUI.isHidden else { return super.keyCommands }
+        return [UIKeyCommand(input: "\r", modifierFlags: [], action: #selector(ivyReturnPressed))]
+    }
+
+    override open var canBecomeFirstResponder: Bool { true }
+
+    override open func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        becomeFirstResponder()
+    }
+#endif
+
+    @objc
+    private func ivyReturnPressed() {
+        unlockUIButtonTapped()
+    }
+
+    private func ivyBuildMacLayout() {
+        view.backgroundColor = UIColor(rgbHex: 0x111311)
+        ivyGlowLayer.type = .radial
+        ivyGlowLayer.colors = [UIColor(rgbHex: 0x1D3A2A).cgColor, UIColor(rgbHex: 0x111311).cgColor]
+        ivyGlowLayer.startPoint = CGPoint(x: 0.5, y: 0)
+        ivyGlowLayer.endPoint = CGPoint(x: 1.1, y: 0.9)
+        view.layer.insertSublayer(ivyGlowLayer, at: 0)
+
+        // The app icon: the leaf on a green rounded square.
+        let icon = UIView()
+        icon.layer.cornerRadius = 18
+        icon.layer.cornerCurve = .continuous
+        icon.backgroundColor = UIColor(rgbHex: 0x2F8F5B)
+        icon.layer.shadowColor = UIColor(rgbHex: 0x1F6B43).cgColor
+        icon.layer.shadowOpacity = 0.45
+        icon.layer.shadowRadius = 15
+        icon.layer.shadowOffset = CGSize(width: 0, height: 10)
+        imageViewLogo.image = imageViewLogo.image?.withRenderingMode(.alwaysTemplate)
+        imageViewLogo.tintColor = .white
+        imageViewLogo.contentMode = .scaleAspectFit
+        icon.addSubview(imageViewLogo)
+        imageViewLogo.autoCenterInSuperview()
+        imageViewLogo.autoSetDimensions(to: .square(46))
+        icon.autoSetDimensions(to: .square(76))
+
+        let title = UILabel()
+        title.text = IvyLocalizedString("LOCK_SCREEN_TITLE", comment: "Title of the Mac's lock screen while Ivy is locked.")
+        title.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        title.textColor = .white
+        let subtitle = UILabel()
+        subtitle.text = IvyLocalizedString("LOCK_SCREEN_SUBTITLE", comment: "Line under the title of the Mac's lock screen.")
+        subtitle.font = UIFont.systemFont(ofSize: 13)
+        subtitle.textColor = UIColor(white: 1, alpha: 0.62)
+        subtitle.numberOfLines = 0
+        subtitle.textAlignment = .center
+
+        var configuration = UIButton.Configuration.filled()
+        configuration.baseBackgroundColor = UIColor(rgbHex: 0x3FB26F)
+        configuration.baseForegroundColor = UIColor(rgbHex: 0x08150D)
+        configuration.cornerStyle = .medium
+        configuration.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 18, bottom: 7, trailing: 18)
+        configuration.imagePadding = 8
+        // The biometry type is only known after asking whether it can be used.
+        let context = LAContext()
+        _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+        let usesTouchID = context.biometryType == .touchID
+        configuration.image = UIImage(systemName: usesTouchID ? "touchid" : "lock.open")
+        configuration.attributedTitle = AttributedString(
+            usesTouchID
+                ? IvyLocalizedString("LOCK_SCREEN_UNLOCK_TOUCH_ID", comment: "Button on the Mac's lock screen that unlocks Ivy with Touch ID.")
+                : OWSLocalizedString("SCREEN_LOCK_UNLOCK_SIGNAL", comment: "Label for button on lock screen that lets users unlock Signal."),
+            attributes: AttributeContainer([.font: UIFont.systemFont(ofSize: 13, weight: .semibold)]),
+        )
+        buttonUnlockUI.configuration = configuration
+
+        let hint = UILabel()
+        hint.text = IvyLocalizedString("LOCK_SCREEN_RETURN_HINT", comment: "Small hint under the unlock button on the Mac's lock screen: pressing Return also unlocks.")
+        hint.font = UIFont.systemFont(ofSize: 11.5)
+        hint.textColor = UIColor(white: 1, alpha: 0.4)
+
+        let stack = UIStackView(arrangedSubviews: [icon, title, subtitle, buttonUnlockUI, hint])
+        stack.axis = .vertical
+        stack.alignment = .center
+        stack.spacing = 12
+        stack.setCustomSpacing(18, after: icon)
+        stack.setCustomSpacing(20, after: subtitle)
+        stack.setCustomSpacing(8, after: buttonUnlockUI)
+        view.addSubview(stack)
+        stack.autoCenterInSuperview()
+        stack.autoPinWidthToSuperview(withMargin: 40, relation: .lessThanOrEqual)
+        ivyMacLockTexts = [title, subtitle, hint]
     }
 
     override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {

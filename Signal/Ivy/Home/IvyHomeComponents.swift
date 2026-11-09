@@ -60,7 +60,7 @@ final class IvyHomeHeaderView: UIView {
 
         let tone = IvyTone.blue
         card.backgroundColor = tone.background
-        card.layer.cornerRadius = 22
+        card.layer.cornerRadius = Self.isMac ? 12 : 22
         card.layer.cornerCurve = .continuous
         cardCaption.font = UIFont.dynamicTypeFootnote.semibold()
         cardCaption.textColor = tone.strong
@@ -82,7 +82,7 @@ final class IvyHomeHeaderView: UIView {
         cardStack.setCustomSpacing(6, after: cardCaption)
         cardStack.setCustomSpacing(10, after: cardDetail)
         card.addSubview(cardStack)
-        cardStack.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 16, left: 18, bottom: 16, right: 18))
+        cardStack.autoPinEdgesToSuperviewEdges(with: Self.isMac ? UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 16) : UIEdgeInsets(top: 16, left: 18, bottom: 16, right: 18))
         card.isAccessibilityElement = true
         card.accessibilityTraits = .button
         card.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(openNextUp)))
@@ -108,6 +108,14 @@ final class IvyHomeHeaderView: UIView {
         stack.setCustomSpacing(12, after: greetingLabel)
         stack.setCustomSpacing(16, after: statusButton)
         stack.setCustomSpacing(18, after: tiles)
+        if Self.isMac {
+            // The greeting is the bar's title on the Mac (see
+            // IvyHomeViewController), so the date leads straight to the
+            // quick actions.
+            greetingLabel.isHidden = true
+            stack.setCustomSpacing(12, after: dateLabel)
+            stack.setCustomSpacing(14, after: tiles)
+        }
         addSubview(stack)
         stack.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -123,8 +131,40 @@ final class IvyHomeHeaderView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    static var isMac: Bool { UIDevice.current.userInterfaceIdiom == .mac }
+
+    /// On the Mac: equal tiles with the icon and a short label inside, all in
+    /// one size.
+    private func buildMacQuickActions() {
+        for quickAction in quickActions {
+            var configuration = UIButton.Configuration.gray()
+            configuration.image = UIImage(systemName: quickAction.systemImage, withConfiguration: UIImage.SymbolConfiguration(pointSize: 15, weight: .regular))
+            configuration.imagePlacement = .top
+            configuration.imagePadding = 5
+            configuration.attributedTitle = AttributedString(quickAction.title, attributes: AttributeContainer([
+                .font: UIFont.systemFont(ofSize: 11.5),
+                .foregroundColor: UIColor.Signal.secondaryLabel,
+            ]))
+            configuration.titleLineBreakMode = .byTruncatingTail
+            configuration.baseForegroundColor = .Signal.accent
+            configuration.background.cornerRadius = 10
+            configuration.cornerStyle = .fixed
+            configuration.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 4, bottom: 8, trailing: 4)
+            let button = UIButton(configuration: configuration, primaryAction: UIAction { _ in quickAction.action() })
+            button.accessibilityLabel = quickAction.title
+            button.toolTip = quickAction.title
+            button.heightAnchor.constraint(equalToConstant: 58).isActive = true
+            tiles.addArrangedSubview(button)
+        }
+    }
+
     private func buildQuickActions() {
         tiles.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        if Self.isMac {
+            tiles.spacing = 8
+            buildMacQuickActions()
+            return
+        }
         for quickAction in quickActions {
             var configuration = UIButton.Configuration.gray()
             configuration.image = UIImage(systemName: quickAction.systemImage, withConfiguration: UIImage.SymbolConfiguration(textStyle: .title3))
@@ -257,7 +297,7 @@ final class IvyImportantCell: UITableViewCell {
 
     static let reuseIdentifier = "IvyImportantCell"
 
-    private let avatarView = ConversationAvatarView(sizeClass: .fortyEight, localUserDisplayMode: .asUser)
+    private let avatarView = ConversationAvatarView(sizeClass: IvyHomeHeaderView.isMac ? .thirtyTwo : .fortyEight, localUserDisplayMode: .asUser)
     private let nameLabel = UILabel()
     private let timeLabel = UILabel()
     private let previewLabel = UILabel()
@@ -291,11 +331,20 @@ final class IvyImportantCell: UITableViewCell {
         row.axis = .horizontal
         row.alignment = .center
         row.spacing = 12
+        // Compact one-line rows on the Mac; the reason goes beside the time.
+        let isMac = IvyHomeHeaderView.isMac
+        if isMac {
+            tagRow.isHidden = true
+            previewLabel.numberOfLines = 1
+            row.spacing = 10
+            nameLabel.font = UIFont.dynamicTypeSubheadlineClamped.semibold()
+            previewLabel.font = .dynamicTypeFootnoteClamped
+        }
         contentView.addSubview(row)
         row.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            row.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            row.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
+            row.topAnchor.constraint(equalTo: contentView.topAnchor, constant: isMac ? 8 : 12),
+            row.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: isMac ? -8 : -12),
             row.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
             row.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
         ])
@@ -314,6 +363,11 @@ final class IvyImportantCell: UITableViewCell {
         }
         nameLabel.text = chatName
         timeLabel.text = DateUtil.formatDynamicDateShort(date).formatted
+        if IvyHomeHeaderView.isMac {
+            let time = NSMutableAttributedString(string: reason + " · ", attributes: [.foregroundColor: tone.strong])
+            time.append(NSAttributedString(string: DateUtil.formatDynamicDateShort(date).formatted))
+            timeLabel.attributedText = time
+        }
         let preview = NSMutableAttributedString()
         if let sender {
             preview.append(NSAttributedString(string: sender + ": ", attributes: [.font: UIFont.dynamicTypeSubheadline.semibold()]))

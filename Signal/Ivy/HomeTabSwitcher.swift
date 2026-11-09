@@ -33,6 +33,9 @@ extension HomeTabBarController {
 #if targetEnvironment(macCatalyst)
         // The profile picture moves between the sidebar and the bar.
         chatListViewController.updateBarButtonItems()
+        if callsListViewController.isViewLoaded {
+            callsListViewController.updateBarButtonItems()
+        }
 #endif
     }
 }
@@ -79,7 +82,7 @@ extension HomeTabViewController {
 
     /// The profile picture that opens Settings, as on Chats and Calls. Only
     /// on a section's first page, not when the page is shown as a sheet.
-    func ivyUpdateProfileButton() {
+    func ivyUpdateProfileButton(macTitle: String? = nil) {
         guard
             navigationController?.viewControllers.first === self,
             navigationController?.presentingViewController == nil
@@ -88,7 +91,7 @@ extension HomeTabViewController {
         }
 #if targetEnvironment(macCatalyst)
         // On the Mac the profile picture is at the bottom of the sidebar.
-        if ivyMacUsesLeadingTitle() {
+        if ivyMacUsesLeadingTitle(macTitle) {
             return
         }
 #endif

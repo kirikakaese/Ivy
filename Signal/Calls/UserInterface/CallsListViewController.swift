@@ -176,6 +176,16 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
             navigationItem.rightBarButtonItem = newCallButton()
         }
 
+#if targetEnvironment(macCatalyst)
+        // Ivy: on the Mac, "Anrufe" on the left like "Chats", and All /
+        // Missed as a slim control above the list.
+        if !tableView.isEditing, ivyMacUsesLeadingTitle(HomeTabBarController.Tabs.calls.ivyTitle) {
+            ivySetFilterAboveList(true)
+            return
+        }
+        ivySetFilterAboveList(false)
+#endif
+
         if splitViewController?.isCollapsed == false {
             navigationItem.titleView = sidebarFilterPickerContainer
         } else {
@@ -479,6 +489,42 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
         sidebarFilterPicker.autoPinHeightToSuperview(relation: .lessThanOrEqual)
         return container
     }()
+
+#if targetEnvironment(macCatalyst)
+    // MARK: Ivy: filter above the list
+
+    private lazy var ivyFilterHeader: UIView = {
+        let header = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 40))
+        header.autoresizingMask = [.flexibleWidth]
+        header.preservesSuperviewLayoutMargins = true
+        return header
+    }()
+
+    private func ivySetFilterAboveList(_ shows: Bool) {
+        guard shows else {
+            if tableView.tableHeaderView === ivyFilterHeader {
+                tableView.tableHeaderView = nil
+                filterPicker.removeFromSuperview()
+            }
+            return
+        }
+        // The picker may have been the title in the middle before.
+        if filterPicker.superview !== ivyFilterHeader {
+            filterPicker.removeFromSuperview()
+            ivyFilterHeader.addSubview(filterPicker)
+            filterPicker.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                filterPicker.leadingAnchor.constraint(equalTo: ivyFilterHeader.layoutMarginsGuide.leadingAnchor),
+                filterPicker.trailingAnchor.constraint(equalTo: ivyFilterHeader.layoutMarginsGuide.trailingAnchor),
+                filterPicker.centerYAnchor.constraint(equalTo: ivyFilterHeader.centerYAnchor),
+            ])
+        }
+        if tableView.tableHeaderView !== ivyFilterHeader {
+            ivyFilterHeader.frame.size.width = tableView.bounds.width
+            tableView.tableHeaderView = ivyFilterHeader
+        }
+    }
+#endif
 
     // MARK: Search bar
 

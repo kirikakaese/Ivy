@@ -147,6 +147,72 @@
 /* Title of the settings for syncing with Apple Calendar and Apple Reminders. */
 "APPLE_SYNC_TITLE" = "Apple Calendar and Reminders";
 
+/* Name of the brown and orange app icon. */
+"APP_ICON_AUTUMN" = "Autumn";
+
+/* Name of the app icon with the bisexual flag. */
+"APP_ICON_BI" = "Bi";
+
+/* Name of the app icon with a leaf in a speech bubble. */
+"APP_ICON_CHAT" = "Chat Leaf";
+
+/* Under the name of the app icon in use, on the App Icon page. */
+"APP_ICON_CURRENT" = "Current icon";
+
+/* Name of the dark green app icon. */
+"APP_ICON_DARK" = "Dark";
+
+/* Name of the app icon with two glass leaves. */
+"APP_ICON_GLASS" = "Glass";
+
+/* Header of Ivy's earlier app icon designs. */
+"APP_ICON_GROUP_CLASSIC" = "Classic";
+
+/* Header of the pride app icons. */
+"APP_ICON_GROUP_PRIDE" = "Pride";
+
+/* Name of the app icon with a white leaf. */
+"APP_ICON_LEAF" = "Leaf";
+
+/* Name of the app icon with the lesbian flag. */
+"APP_ICON_LESBIAN" = "Lesbian";
+
+/* Name of the light cream app icon. */
+"APP_ICON_LIGHT" = "Light";
+
+/* Under the current app icon on the Mac: the icon changes in the Dock while Ivy runs. */
+"APP_ICON_MAC_FOOTER" = "The icon changes in the Dock while Ivy is open.";
+
+/* Name of the black app icon. */
+"APP_ICON_MIDNIGHT" = "Midnight";
+
+/* Name of the mint green app icon. */
+"APP_ICON_MINT" = "Mint";
+
+/* Name of the app icon with the non-binary flag. */
+"APP_ICON_NONBINARY" = "Non-binary";
+
+/* Name of the app icon with the pansexual flag. */
+"APP_ICON_PAN" = "Pan";
+
+/* Switch on the App Icon page: show the rainbow icon in June. */
+"APP_ICON_PRIDE_IN_JUNE" = "Pride Icon in June";
+
+/* Footer under the pride in June switch. */
+"APP_ICON_PRIDE_IN_JUNE_FOOTER" = "In June the rainbow icon is shown, then yours again.";
+
+/* Name of the app icon with the progress pride flag. */
+"APP_ICON_PROGRESS" = "Progress";
+
+/* Name of the app icon with the rainbow pride flag. */
+"APP_ICON_RAINBOW" = "Rainbow";
+
+/* Name of the app icon with the transgender flag. */
+"APP_ICON_TRANS" = "Trans";
+
+/* Name of the app icon with an ivy vine. */
+"APP_ICON_VINE" = "Vine";
+
 /* Backup settings: the user's paid backup plan was bought in Signal's own app, which Ivy uses but can't manage. */
 "BACKUP_PLAN_MANAGED_IN_SIGNAL" = "Your paid plan was bought in the Signal app. Ivy uses it too; renew or manage it in Signal.";
 
@@ -1107,6 +1173,18 @@
 /* Shown when the user locks Ivy but Screen Lock is off. */
 "LOCK_NOW_NEEDS_SCREEN_LOCK" = "Turn on Screen Lock in Settings > Privacy to lock Ivy.";
 
+/* Small hint under the unlock button on the Mac's lock screen: pressing Return also unlocks. */
+"LOCK_SCREEN_RETURN_HINT" = "or press Return";
+
+/* Line under the title of the Mac's lock screen. */
+"LOCK_SCREEN_SUBTITLE" = "Unlock Ivy to see your chats.";
+
+/* Title of the Mac's lock screen while Ivy is locked. */
+"LOCK_SCREEN_TITLE" = "Ivy is locked";
+
+/* Button on the Mac's lock screen that unlocks Ivy with Touch ID. */
+"LOCK_SCREEN_UNLOCK_TOUCH_ID" = "Unlock with Touch ID";
+
 /* Mac menu command that looks for a newer Mac beta. */
 "MAC_BETA_CHECK_FOR_UPDATES" = "Check for Updates…";
 
@@ -1139,6 +1217,48 @@
 
 /* Shown on the Mac where the conversation goes while no chat is open. */
 "MAC_NO_CHAT_SELECTED" = "Choose a chat";
+
+/* Switch on the Updates page: look for a newer Mac beta automatically. */
+"MAC_UPDATES_AUTOMATIC" = "Check for Updates Automatically";
+
+/* Beside the installed Mac beta on the Updates page: a newer one is out. */
+"MAC_UPDATES_AVAILABLE" = "Update available";
+
+/* Shown on the Updates page while Ivy looks for a newer Mac beta. */
+"MAC_UPDATES_CHECKING" = "Checking…";
+
+/* Button on the Updates page that looks for a newer Mac beta now. */
+"MAC_UPDATES_CHECK_NOW" = "Check Now";
+
+/* Shown on the Updates page while the new Mac beta downloads. Embeds {{ percent }}. */
+"MAC_UPDATES_DOWNLOADING_FORMAT" = "Downloading… %d %%";
+
+/* Beside the installed Mac beta on the Updates page: looking for a newer one failed. */
+"MAC_UPDATES_FAILED" = "Couldn't check";
+
+/* Button on the Updates page that downloads the new Mac beta, installs it and restarts Ivy. */
+"MAC_UPDATES_INSTALL" = "Install and Restart";
+
+/* Row on the Updates page: the installed Mac beta. */
+"MAC_UPDATES_INSTALLED" = "Installed";
+
+/* The installed Mac beta and app version. Embeds {{ beta number }} and {{ version }}. */
+"MAC_UPDATES_INSTALLED_FORMAT" = "Mac beta %1$@ · %2$@";
+
+/* Shown on the Updates page while the new Mac beta is put in place. */
+"MAC_UPDATES_INSTALLING" = "Installing…";
+
+/* Under the check button on the Updates page. Embeds {{ date and time }}. */
+"MAC_UPDATES_LAST_CHECK_FORMAT" = "Last checked: %@";
+
+/* Header on the Updates page above a newer Mac beta. */
+"MAC_UPDATES_NEW_VERSION" = "New Version";
+
+/* Title of the Mac beta's Updates page in Settings. */
+"MAC_UPDATES_TITLE" = "Updates";
+
+/* Beside the installed Mac beta on the Updates page: it is the newest. */
+"MAC_UPDATES_UP_TO_DATE" = "Up to date";
 
 /* Stands for a message without text in the Mac's menu bar extra. */
 "MENU_BAR_ATTACHMENT" = "Attachment";
@@ -1382,6 +1502,9 @@
 
 /* Shown after entering a wrong Ivy passcode. */
 "PASSCODE_WRONG" = "Wrong passcode.";
+
+/* Before the sender's name in the bar with a chat's pinned messages on the Mac. */
+"PINNED_BANNER_LABEL" = "Pinned";
 
 /* Context menu action that moves a pinned chat down. */
 "PINNED_CHAT_MOVE_DOWN" = "Move Down";
