@@ -122,6 +122,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | One-handed controls | 6e | done | done | – | Hand setting, reaction bar beside the menu, swipe left, menu flipped low on the screen, search and folders at the bottom. For touch screens; the Mac keeps Signal's layout and hides these settings |
 | Mac window layout | 6e | – | done | – | Sidebar as its own panel with even gaps, profile and Settings at its bottom, title on the left of the list, no camera button, 40 pt avatars, small gray section labels, hint in the empty conversation area; lock screen with the app icon and a Touch ID button; window buttons inside the sidebar panel; Start, Anrufe and pinned messages tidied; Settings > Updates with what changed and download progress. Only the Mac; iPhone and iPad keep their layout |
 | App icon picker | 6e | done | done | – | Settings › Darstellung › App-Symbol: Ivy i in five colours, seven pride flags, four classic designs; optional pride icon in June. iPhone uses alternate icons; the Mac sets the Dock icon while Ivy runs |
+| Appearance options | 6e | done | done | – | Settings › Darstellung: accent colour (nine colours or following the app icon) with a preview, own messages in the accent, accent from the open chat folder, dark mode Dunkel/Schwarz/Gedimmt, chat list density, bubble shape and corner |
 
 ## Release
 

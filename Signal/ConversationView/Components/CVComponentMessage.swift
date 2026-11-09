@@ -469,8 +469,9 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
 
     private var sendFailureBadgeSize: CGFloat { conversationStyle.hasWallpaper ? 40 : 24 }
 
-    public static let bubbleSharpCornerRadius: CGFloat = 4
-    public static let bubbleWideCornerRadius: CGFloat = 18
+    // Ivy: from the bubble shape in Settings > Appearance.
+    public static var bubbleSharpCornerRadius: CGFloat { IvyAppearance.bubbleSharpCornerRadius }
+    public static var bubbleWideCornerRadius: CGFloat { IvyAppearance.bubbleWideCornerRadius }
 
     public func configureForRendering(
         componentView: CVComponentView,

@@ -279,7 +279,11 @@ public struct ConversationStyle {
 
     /// - Returns: Background style for outgoing message bubble in the current chat.
     public var bubbleChatColorOutgoing: ColorOrGradientValue {
-        chatColorValue
+        // Ivy: the accent colour, when chosen in Settings > Appearance.
+        if IvyAppearance.colorsOwnBubbles {
+            return .solidColor(color: UIColor.Signal.accent.resolvedColor(with: UITraitCollection(userInterfaceStyle: Theme.isDarkThemeEnabled ? .dark : .light)))
+        }
+        return chatColorValue
     }
 
     public var bubbleChatColorReleaseNotes: ColorOrGradientValue {

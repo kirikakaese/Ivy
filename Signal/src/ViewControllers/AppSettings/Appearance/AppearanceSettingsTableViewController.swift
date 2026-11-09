@@ -26,6 +26,7 @@ final class AppearanceSettingsTableViewController: OWSTableViewController2 {
 
     private func updateTableContents() {
         let contents = OWSTableContents()
+        ivyAddAccentSection(to: contents) // Ivy: accent colour first
 
         let firstSection = OWSTableSection()
         firstSection.add(OWSTableItem.disclosureItem(
@@ -75,6 +76,7 @@ final class AppearanceSettingsTableViewController: OWSTableViewController2 {
         }
 
         contents.add(firstSection)
+        ivyAddLayoutSections(to: contents) // Ivy: dark mode, chat list, bubbles
 
         // TODO iOS 13 – maybe expose the preferred language settings here to match android
         // It not longer seems to exist in iOS 13.1 so not sure if Apple got rid of it

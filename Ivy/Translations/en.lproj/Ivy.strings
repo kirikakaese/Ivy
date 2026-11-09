@@ -39,6 +39,69 @@
 /* Item that lists the licenses of the libraries Ivy uses. */
 "ABOUT_THIRD_PARTY_LICENSES" = "Third-Party Licenses";
 
+/* Accent colour: blue. */
+"ACCENT_BLUE" = "Blue";
+
+/* Accent colour: coral. */
+"ACCENT_CORAL" = "Coral";
+
+/* Accent colour: gold. */
+"ACCENT_GOLD" = "Gold";
+
+/* Accent colour that follows the app icon. */
+"ACCENT_ICON" = "Like Icon";
+
+/* Accent colour: moss green. */
+"ACCENT_MOSS" = "Moss";
+
+/* Accent colour: orange. */
+"ACCENT_ORANGE" = "Orange";
+
+/* Accent colour: teal. */
+"ACCENT_PETROL" = "Teal";
+
+/* Accent colour: pink. */
+"ACCENT_PINK" = "Pink";
+
+/* Accent colour: violet. */
+"ACCENT_VIOLET" = "Violet";
+
+/* Header of the accent colour choice in Settings > Appearance. */
+"APPEARANCE_ACCENT" = "Accent Colour";
+
+/* Switch in Settings > Appearance: a coloured chat folder lends the app its colour while it is open. */
+"APPEARANCE_ACCENT_FOLDER" = "Accent from Chat Folder";
+
+/* Footer under the accent colour switches in Settings > Appearance. */
+"APPEARANCE_ACCENT_FOOTER" = "When own messages are off, they keep each chat's colour. With the folder switch on, an open folder that has a colour lends the app that colour.";
+
+/* Switch in Settings > Appearance: the user's own messages use the accent colour. */
+"APPEARANCE_ACCENT_OWN_BUBBLES" = "Own Messages in Accent Colour";
+
+/* Setting in Settings > Appearance: the shape of message bubbles. */
+"APPEARANCE_BUBBLE_SHAPE" = "Bubble Shape";
+
+/* Switch in Settings > Appearance: messages in a row get a smaller corner where they meet. */
+"APPEARANCE_BUBBLE_TAIL" = "Small Corner Between Messages";
+
+/* Setting in Settings > Appearance: which kind of dark mode. */
+"APPEARANCE_DARK_STYLE" = "Dark Mode";
+
+/* Footer under the dark mode, density and bubble settings. */
+"APPEARANCE_DARK_STYLE_FOOTER" = "Black suits OLED screens; Dimmed is a soft grey for evenings.";
+
+/* Setting in Settings > Appearance: how dense the chat list is. */
+"APPEARANCE_DENSITY" = "Chat List";
+
+/* Name of the sample chat in the accent colour preview. */
+"APPEARANCE_PREVIEW_CHAT" = "Book Club";
+
+/* Incoming sample message in the accent colour preview. */
+"APPEARANCE_PREVIEW_INCOMING" = "Are you coming tomorrow?";
+
+/* Outgoing sample message in the accent colour preview. */
+"APPEARANCE_PREVIEW_OUTGOING" = "Yes, I'll be there at 6";
+
 /* Item that opens the system settings to allow access to Apple Calendar or Reminders. */
 "APPLE_SYNC_ALLOW_ACCESS" = "Allow Access in Settings";
 
@@ -152,6 +215,15 @@
 
 /* Backup settings: the user's paid backup plan was bought in Signal's own app, which Ivy uses but can't manage. */
 "BACKUP_PLAN_MANAGED_IN_SIGNAL" = "Your paid plan was bought in the Signal app. Ivy uses it too; renew or manage it in Signal.";
+
+/* Bubble shape: round. */
+"BUBBLE_ROUND" = "Round";
+
+/* Bubble shape: softly rounded, the default. */
+"BUBBLE_SOFT" = "Soft";
+
+/* Bubble shape: nearly square. */
+"BUBBLE_SQUARE" = "Square";
 
 /* Shown in the calendar when nothing is planned for the shown dates. */
 "CALENDAR_EMPTY" = "Nothing planned.";
@@ -471,6 +543,15 @@
 /* Title of the settings for how Ivy is used by hand: reaction bar, gestures, message menu. */
 "CONTROLS_SETTINGS_TITLE" = "Controls";
 
+/* Kind of dark mode: black, for OLED screens. */
+"DARK_STYLE_BLACK" = "Black";
+
+/* Kind of dark mode: today's dark grey and black. */
+"DARK_STYLE_DARK" = "Dark";
+
+/* Kind of dark mode: soft grey. */
+"DARK_STYLE_DIMMED" = "Dimmed";
+
 /* Button under a message with a date: accept, add it to the calendar and reply. */
 "DATE_REPLY_ACCEPT" = "Accept";
 
@@ -548,6 +629,15 @@
 
 /* Title of the confirmation before deleting all data from the decoy mode. */
 "DECOY_WIPE_CONFIRM_TITLE" = "Delete All Data?";
+
+/* Chat list density: airy, with more space. */
+"DENSITY_AIRY" = "Airy";
+
+/* Chat list density: compact. */
+"DENSITY_COMPACT" = "Compact";
+
+/* Chat list density: normal. */
+"DENSITY_NORMAL" = "Normal";
 
 /* Item that chooses the emoji a double tap reacts with. */
 "DOUBLE_TAP_REACTION_EMOJI" = "React With";

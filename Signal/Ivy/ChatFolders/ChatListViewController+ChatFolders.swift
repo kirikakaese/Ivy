@@ -125,6 +125,9 @@ extension ChatListViewController {
 
         var counts = ChatFolderChats.unreadCounts(folders: folders, chats: chats, membership: membership)
         let extras = ChatFolderExtras.fetchAll(store: IvyData.shared?.store)
+        // The open folder's colour becomes the accent, when asked for in
+        // Settings > Appearance.
+        IvyAppearance.setFolderAccent(viewState.ivyChatFolderId.flatMap { extras[$0]?.color }.map { ChatFolderBar.uiColor(for: $0) })
         // "All chats" doesn't count the chats that show only in their folder.
         let onlyThere = folders.filter { extras[$0.id]?.showsOnlyHere == true }
         if !onlyThere.isEmpty, let allChats = folders.first(where: { $0.kind == .allChats }) {
