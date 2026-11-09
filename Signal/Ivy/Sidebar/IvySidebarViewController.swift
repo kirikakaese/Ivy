@@ -153,8 +153,10 @@ final class IvySidebarViewController: UIViewController, UICollectionViewDelegate
         view.layer.borderWidth = 1
         view.layer.masksToBounds = true
         updatePanelBorder()
+        // Shown from the sidebar, which is always on screen, whichever
+        // section is open.
         let profile = IvySidebarProfileRow { [weak self] in
-            self?.chatList.showAppSettings()
+            self?.presentFormSheet(AppSettingsViewController.inModalNavigationController(), animated: true)
         }
         view.addSubview(profile)
         profile.translatesAutoresizingMaskIntoConstraints = false

@@ -68,7 +68,8 @@ final class IvySidebarProfileRow: UIControl {
         accessibilityTraits = .button
         accessibilityHint = CommonStrings.openAppSettingsButton
         toolTip = CommonStrings.openAppSettingsButton
-        addAction(UIAction { [weak self] _ in self?.action() }, for: .primaryActionTriggered)
+        // A plain control sends no primary action on the Mac, only clicks.
+        addAction(UIAction { [weak self] _ in self?.action() }, for: .touchUpInside)
 
         NotificationCenter.default.addObserver(self, selector: #selector(update), name: UserProfileNotifications.localProfileDidChange, object: nil)
         update()
