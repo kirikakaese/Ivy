@@ -89,16 +89,20 @@ public class RecipientPickerViewController: OWSViewController, OWSNavigationChil
         noSignalContactsView.autoPinEdge(toSuperviewSafeArea: .bottom)
 
         // Pull to Refresh
-        let refreshControl = UIRefreshControl()
-        refreshControl.tintColor = .gray
-        refreshControl.addAction(
-            UIAction { [weak self] action in
-                guard let self, let refreshControl = action.sender as? UIRefreshControl else { return }
-                self.pullToRefreshPerformed(refreshControl)
-            },
-            for: .valueChanged,
-        )
-        tableView.refreshControl = refreshControl
+        // Ivy: not on the Mac, where the system doesn't allow it and the new
+        // chat screen crashed.
+        if UIDevice.current.userInterfaceIdiom != .mac {
+            let refreshControl = UIRefreshControl()
+            refreshControl.tintColor = .gray
+            refreshControl.addAction(
+                UIAction { [weak self] action in
+                    guard let self, let refreshControl = action.sender as? UIRefreshControl else { return }
+                    self.pullToRefreshPerformed(refreshControl)
+                },
+                for: .valueChanged,
+            )
+            tableView.refreshControl = refreshControl
+        }
 
         updateTableContents()
 

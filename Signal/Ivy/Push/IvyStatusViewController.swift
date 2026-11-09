@@ -87,9 +87,12 @@ final class IvyStatusViewController: UIViewController, UITableViewDataSource, UI
         tableView.estimatedSectionHeaderHeight = 52
         tableView.backgroundColor = .clear
         tableView.tableHeaderView = hero
-        let refreshControl = UIRefreshControl()
-        refreshControl.addAction(UIAction { [weak self] _ in self?.refresh() }, for: .valueChanged)
-        tableView.refreshControl = refreshControl
+        // Pull to refresh doesn't exist on the Mac; the system stops the app.
+        if UIDevice.current.userInterfaceIdiom != .mac {
+            let refreshControl = UIRefreshControl()
+            refreshControl.addAction(UIAction { [weak self] _ in self?.refresh() }, for: .valueChanged)
+            tableView.refreshControl = refreshControl
+        }
         view.addSubview(tableView)
         tableView.autoPinEdgesToSuperviewEdges()
 
