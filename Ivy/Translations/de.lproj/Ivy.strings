@@ -84,6 +84,72 @@
 /* Title of the settings for syncing with Apple Calendar and Apple Reminders. */
 "APPLE_SYNC_TITLE" = "Apple Kalender und Erinnerungen";
 
+/* Name of the brown and orange app icon. */
+"APP_ICON_AUTUMN" = "Herbst";
+
+/* Name of the app icon with the bisexual flag. */
+"APP_ICON_BI" = "Bi";
+
+/* Name of the app icon with a leaf in a speech bubble. */
+"APP_ICON_CHAT" = "Sprechblatt";
+
+/* Under the name of the app icon in use, on the App Icon page. */
+"APP_ICON_CURRENT" = "Aktuelles Symbol";
+
+/* Name of the dark green app icon. */
+"APP_ICON_DARK" = "Dunkel";
+
+/* Name of the app icon with two glass leaves. */
+"APP_ICON_GLASS" = "Glas";
+
+/* Header of Ivy's earlier app icon designs. */
+"APP_ICON_GROUP_CLASSIC" = "Klassisch";
+
+/* Header of the pride app icons. */
+"APP_ICON_GROUP_PRIDE" = "Pride";
+
+/* Name of the app icon with a white leaf. */
+"APP_ICON_LEAF" = "Blatt";
+
+/* Name of the app icon with the lesbian flag. */
+"APP_ICON_LESBIAN" = "Lesbisch";
+
+/* Name of the light cream app icon. */
+"APP_ICON_LIGHT" = "Hell";
+
+/* Under the current app icon on the Mac: the icon changes in the Dock while Ivy runs. */
+"APP_ICON_MAC_FOOTER" = "Das Symbol ändert sich im Dock, solange Ivy geöffnet ist.";
+
+/* Name of the black app icon. */
+"APP_ICON_MIDNIGHT" = "Mitternacht";
+
+/* Name of the mint green app icon. */
+"APP_ICON_MINT" = "Mint";
+
+/* Name of the app icon with the non-binary flag. */
+"APP_ICON_NONBINARY" = "Nichtbinär";
+
+/* Name of the app icon with the pansexual flag. */
+"APP_ICON_PAN" = "Pan";
+
+/* Switch on the App Icon page: show the rainbow icon in June. */
+"APP_ICON_PRIDE_IN_JUNE" = "Im Juni automatisch Pride";
+
+/* Footer under the pride in June switch. */
+"APP_ICON_PRIDE_IN_JUNE_FOOTER" = "Im Juni wird das Regenbogen-Symbol verwendet, danach wieder dein eigenes.";
+
+/* Name of the app icon with the progress pride flag. */
+"APP_ICON_PROGRESS" = "Progress";
+
+/* Name of the app icon with the rainbow pride flag. */
+"APP_ICON_RAINBOW" = "Regenbogen";
+
+/* Name of the app icon with the transgender flag. */
+"APP_ICON_TRANS" = "Trans";
+
+/* Name of the app icon with an ivy vine. */
+"APP_ICON_VINE" = "Efeuranke";
+
 /* Backup settings: the user's paid backup plan was bought in Signal's own app, which Ivy uses but can't manage. */
 "BACKUP_PLAN_MANAGED_IN_SIGNAL" = "Dein Abo wurde in der Signal-App abgeschlossen. Ivy nutzt es mit; verlängern oder verwalten kannst du es in Signal.";
 

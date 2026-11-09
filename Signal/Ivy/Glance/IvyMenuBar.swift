@@ -25,6 +25,16 @@ final class IvyMenuBar: NSObject {
         #endif
     }
 
+    /// Sets the Dock icon from PNG data; nil goes back to the app's own.
+    func setAppIcon(_ pngData: Data?) {
+        #if targetEnvironment(macCatalyst)
+        guard let plugin = loadPlugin() else {
+            return
+        }
+        plugin.perform(NSSelectorFromString("setAppIconWithData:"), with: (pngData ?? Data()) as NSData)
+        #endif
+    }
+
     private func loadPlugin() -> NSObject? {
         if didTryLoading {
             return plugin

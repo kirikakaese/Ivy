@@ -4446,6 +4446,23 @@
 		A8CB995A16C73F40174214F7 /* IvyMacBetaUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B9D4BD62D0491D2BC8FA17B /* IvyMacBetaUpdater.swift */; };
 		CF9198F9BF8380F7305E148D /* IvyMacBetaReleaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6934E6D9175D00DDFF509E7D /* IvyMacBetaReleaseTest.swift */; };
 		B6DC32F5116335662A917BE5 /* IvySidebarProfileRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8198FDE736A0C8D07B54D87 /* IvySidebarProfileRow.swift */; };
+		7AADF1E0C0312802DA8B5190 /* AppIcon-ivy-autumn.icon in Resources */ = {isa = PBXBuildFile; fileRef = 536438DC717D3180E0B47C95 /* AppIcon-ivy-autumn.icon */; };
+		9F3036F57733A56A45169BEB /* AppIcon-ivy-bi.icon in Resources */ = {isa = PBXBuildFile; fileRef = E8EA22CDCED6DD21CF66D89C /* AppIcon-ivy-bi.icon */; };
+		EE8E891493A9E3AB4B9864E3 /* AppIcon-ivy-chat.icon in Resources */ = {isa = PBXBuildFile; fileRef = 863154ED714AF7EB7AA81832 /* AppIcon-ivy-chat.icon */; };
+		AFDF84BDAAC76ACC93A9054C /* AppIcon-ivy-glass.icon in Resources */ = {isa = PBXBuildFile; fileRef = 0856C78DFBDB1D5844620FA6 /* AppIcon-ivy-glass.icon */; };
+		8BFCCC877F149D4326883C0B /* AppIcon-ivy-leaf.icon in Resources */ = {isa = PBXBuildFile; fileRef = 1F535AB1DD0447BF8A82A878 /* AppIcon-ivy-leaf.icon */; };
+		996244171DA576437824E521 /* AppIcon-ivy-lesbian.icon in Resources */ = {isa = PBXBuildFile; fileRef = E36DA3A960E3E05E980F66F6 /* AppIcon-ivy-lesbian.icon */; };
+		CBC7895C5C4BB20C2CB4FDB5 /* AppIcon-ivy-light.icon in Resources */ = {isa = PBXBuildFile; fileRef = 730238129564CCB1643C32CA /* AppIcon-ivy-light.icon */; };
+		F5B703C2F4FED2D5EA59831E /* AppIcon-ivy-midnight.icon in Resources */ = {isa = PBXBuildFile; fileRef = A7F0BE4B862F7EB8B81B4C88 /* AppIcon-ivy-midnight.icon */; };
+		C2EFF19F63D7A07F46EA8926 /* AppIcon-ivy-mint.icon in Resources */ = {isa = PBXBuildFile; fileRef = D524155EE8517D6126E7964E /* AppIcon-ivy-mint.icon */; };
+		2E000D5C768D279D18AE3EAA /* AppIcon-ivy-nonbinary.icon in Resources */ = {isa = PBXBuildFile; fileRef = 0FEA1D56F9BF58EBEC767B32 /* AppIcon-ivy-nonbinary.icon */; };
+		46B2AC3E9FE9DA3D293AE6A5 /* AppIcon-ivy-pan.icon in Resources */ = {isa = PBXBuildFile; fileRef = BEC25E2D81ED46A5503A5319 /* AppIcon-ivy-pan.icon */; };
+		4201F575A4EAC97D90D69881 /* AppIcon-ivy-progress.icon in Resources */ = {isa = PBXBuildFile; fileRef = 699C84BD5324D2DCCA03E25F /* AppIcon-ivy-progress.icon */; };
+		A3B5CD154469153467EBEF3F /* AppIcon-ivy-rainbow.icon in Resources */ = {isa = PBXBuildFile; fileRef = 92D06B81C0D7DC4EE9BD9261 /* AppIcon-ivy-rainbow.icon */; };
+		1C283187B30B96EABD274FC7 /* AppIcon-ivy-trans.icon in Resources */ = {isa = PBXBuildFile; fileRef = D8ECEB8B1A1F541B27840B14 /* AppIcon-ivy-trans.icon */; };
+		3FA91780B5AE094079D7C413 /* AppIcon-ivy-vine.icon in Resources */ = {isa = PBXBuildFile; fileRef = 41085059FBB3A33E3C013453 /* AppIcon-ivy-vine.icon */; };
+		1DE365B0DE16003CED9C71C7 /* IvyAppIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = F237F128F97A2D9217C1A740 /* IvyAppIcons.swift */; };
+		FCCA30B8AB995EA41300E982 /* IvyAppIconsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AA75D6BE71B25B7D700838 /* IvyAppIconsTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -9193,6 +9210,23 @@
 		5B9D4BD62D0491D2BC8FA17B /* IvyMacBetaUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBetaUpdater.swift; sourceTree = "<group>"; };
 		6934E6D9175D00DDFF509E7D /* IvyMacBetaReleaseTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacBetaReleaseTest.swift; sourceTree = "<group>"; };
 		D8198FDE736A0C8D07B54D87 /* IvySidebarProfileRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvySidebarProfileRow.swift; sourceTree = "<group>"; };
+		536438DC717D3180E0B47C95 /* AppIcon-ivy-autumn.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-autumn.icon"; sourceTree = "<group>"; };
+		E8EA22CDCED6DD21CF66D89C /* AppIcon-ivy-bi.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-bi.icon"; sourceTree = "<group>"; };
+		863154ED714AF7EB7AA81832 /* AppIcon-ivy-chat.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-chat.icon"; sourceTree = "<group>"; };
+		0856C78DFBDB1D5844620FA6 /* AppIcon-ivy-glass.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-glass.icon"; sourceTree = "<group>"; };
+		1F535AB1DD0447BF8A82A878 /* AppIcon-ivy-leaf.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-leaf.icon"; sourceTree = "<group>"; };
+		E36DA3A960E3E05E980F66F6 /* AppIcon-ivy-lesbian.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-lesbian.icon"; sourceTree = "<group>"; };
+		730238129564CCB1643C32CA /* AppIcon-ivy-light.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-light.icon"; sourceTree = "<group>"; };
+		A7F0BE4B862F7EB8B81B4C88 /* AppIcon-ivy-midnight.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-midnight.icon"; sourceTree = "<group>"; };
+		D524155EE8517D6126E7964E /* AppIcon-ivy-mint.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-mint.icon"; sourceTree = "<group>"; };
+		0FEA1D56F9BF58EBEC767B32 /* AppIcon-ivy-nonbinary.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-nonbinary.icon"; sourceTree = "<group>"; };
+		BEC25E2D81ED46A5503A5319 /* AppIcon-ivy-pan.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-pan.icon"; sourceTree = "<group>"; };
+		699C84BD5324D2DCCA03E25F /* AppIcon-ivy-progress.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-progress.icon"; sourceTree = "<group>"; };
+		92D06B81C0D7DC4EE9BD9261 /* AppIcon-ivy-rainbow.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-rainbow.icon"; sourceTree = "<group>"; };
+		D8ECEB8B1A1F541B27840B14 /* AppIcon-ivy-trans.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-trans.icon"; sourceTree = "<group>"; };
+		41085059FBB3A33E3C013453 /* AppIcon-ivy-vine.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-vine.icon"; sourceTree = "<group>"; };
+		F237F128F97A2D9217C1A740 /* IvyAppIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAppIcons.swift; sourceTree = "<group>"; };
+		F0AA75D6BE71B25B7D700838 /* IvyAppIconsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAppIconsTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -12728,6 +12762,21 @@
 				B91751D42EC5545200FF7A9C /* AppIcon-white.icon */,
 				B91751D82EC5548500FF7A9C /* AppIcon-yellow.icon */,
 				B91751DA2EC5556B00FF7A9C /* AppIcon.icon */,
+				536438DC717D3180E0B47C95 /* AppIcon-ivy-autumn.icon */,
+				E8EA22CDCED6DD21CF66D89C /* AppIcon-ivy-bi.icon */,
+				863154ED714AF7EB7AA81832 /* AppIcon-ivy-chat.icon */,
+				0856C78DFBDB1D5844620FA6 /* AppIcon-ivy-glass.icon */,
+				1F535AB1DD0447BF8A82A878 /* AppIcon-ivy-leaf.icon */,
+				E36DA3A960E3E05E980F66F6 /* AppIcon-ivy-lesbian.icon */,
+				730238129564CCB1643C32CA /* AppIcon-ivy-light.icon */,
+				A7F0BE4B862F7EB8B81B4C88 /* AppIcon-ivy-midnight.icon */,
+				D524155EE8517D6126E7964E /* AppIcon-ivy-mint.icon */,
+				0FEA1D56F9BF58EBEC767B32 /* AppIcon-ivy-nonbinary.icon */,
+				BEC25E2D81ED46A5503A5319 /* AppIcon-ivy-pan.icon */,
+				699C84BD5324D2DCCA03E25F /* AppIcon-ivy-progress.icon */,
+				92D06B81C0D7DC4EE9BD9261 /* AppIcon-ivy-rainbow.icon */,
+				D8ECEB8B1A1F541B27840B14 /* AppIcon-ivy-trans.icon */,
+				41085059FBB3A33E3C013453 /* AppIcon-ivy-vine.icon */,
 			);
 			path = AppIcons;
 			sourceTree = "<group>";
@@ -16987,6 +17036,7 @@
 				629E49815A9C4D03799F7C22 /* IvyMoveFromSignal.swift */,
 				6534BCD42D5AA3D88CFB491F /* IvyProblemReport.swift */,
 				5B9D4BD62D0491D2BC8FA17B /* IvyMacBetaUpdater.swift */,
+				F237F128F97A2D9217C1A740 /* IvyAppIcons.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -17015,6 +17065,7 @@
 				7E2CCF1009C151B4B7FB8E03 /* IvySettingsSearchTest.swift */,
 				2F4EAFF18F982E35D4AF5F1F /* IvyChatSuggestionsTest.swift */,
 				E743847FC1561D1A8CEF286F /* IvyProblemReportTest.swift */,
+				F0AA75D6BE71B25B7D700838 /* IvyAppIconsTest.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -17984,6 +18035,21 @@
 				0A52FD63DD9411D8A7E0F69E /* Ivy.strings in Resources */,
 				78931767560915DCD604C9A3 /* IvyInfoPlist.strings in Resources */,
 				6CE18DBBC5F438379600860D /* AppShortcuts.strings in Resources */,
+				7AADF1E0C0312802DA8B5190 /* AppIcon-ivy-autumn.icon in Resources */,
+				9F3036F57733A56A45169BEB /* AppIcon-ivy-bi.icon in Resources */,
+				EE8E891493A9E3AB4B9864E3 /* AppIcon-ivy-chat.icon in Resources */,
+				AFDF84BDAAC76ACC93A9054C /* AppIcon-ivy-glass.icon in Resources */,
+				8BFCCC877F149D4326883C0B /* AppIcon-ivy-leaf.icon in Resources */,
+				996244171DA576437824E521 /* AppIcon-ivy-lesbian.icon in Resources */,
+				CBC7895C5C4BB20C2CB4FDB5 /* AppIcon-ivy-light.icon in Resources */,
+				F5B703C2F4FED2D5EA59831E /* AppIcon-ivy-midnight.icon in Resources */,
+				C2EFF19F63D7A07F46EA8926 /* AppIcon-ivy-mint.icon in Resources */,
+				2E000D5C768D279D18AE3EAA /* AppIcon-ivy-nonbinary.icon in Resources */,
+				46B2AC3E9FE9DA3D293AE6A5 /* AppIcon-ivy-pan.icon in Resources */,
+				4201F575A4EAC97D90D69881 /* AppIcon-ivy-progress.icon in Resources */,
+				A3B5CD154469153467EBEF3F /* AppIcon-ivy-rainbow.icon in Resources */,
+				1C283187B30B96EABD274FC7 /* AppIcon-ivy-trans.icon in Resources */,
+				3FA91780B5AE094079D7C413 /* AppIcon-ivy-vine.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20797,6 +20863,7 @@
 				D3EBBE0C2B051ECA5F34434F /* IvyNotificationActionHandler.swift in Sources */,
 				A8CB995A16C73F40174214F7 /* IvyMacBetaUpdater.swift in Sources */,
 				B6DC32F5116335662A917BE5 /* IvySidebarProfileRow.swift in Sources */,
+				1DE365B0DE16003CED9C71C7 /* IvyAppIcons.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20905,6 +20972,7 @@
 				2AAAA3663EF094A9F528BACB /* IvySettingsSearchTest.swift in Sources */,
 				C47F0A78F2A8C5E9AA950695 /* IvyChatSuggestionsTest.swift in Sources */,
 				D0854ACE19FF79B63B60069E /* IvyProblemReportTest.swift in Sources */,
+				FCCA30B8AB995EA41300E982 /* IvyAppIconsTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
