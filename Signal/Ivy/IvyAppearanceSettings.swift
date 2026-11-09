@@ -275,8 +275,14 @@ enum IvyAccentTint {
     }
 
     static func apply() {
+        // Switches made from now on; open settings pages are rebuilt.
+        UISwitch.appearance().onTintColor = UIColor.Signal.accent
         for window in UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).flatMap(\.windows) {
             window.tintColor = UIColor.Signal.accent
+            // Every colour on screen is drawn again.
+            if #available(iOS 17, *) {
+                window.traitOverrides[IvyAppearanceTrait.self] = IvyAppearance.generation
+            }
         }
     }
 }

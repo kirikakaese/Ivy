@@ -59,12 +59,16 @@ final class ChatFolderBar: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    private var accentGeneration = IvyAppearance.generation
+
     func update(items: [Item], selectedFolderId: Data?) {
-        guard items != self.items || selectedFolderId != self.selectedFolderId else {
+        // The accent colour can change without the folders changing.
+        guard items != self.items || selectedFolderId != self.selectedFolderId || accentGeneration != IvyAppearance.generation else {
             return
         }
         self.items = items
         self.selectedFolderId = selectedFolderId
+        accentGeneration = IvyAppearance.generation
         reloadButtons()
     }
 

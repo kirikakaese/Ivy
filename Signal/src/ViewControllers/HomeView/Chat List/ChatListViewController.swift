@@ -321,6 +321,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
 
         reloadTableDataAndResetCellContentCache()
         applyThemeToContextMenuAndToolbar()
+        ivyUpdateChatFolderBar() // Ivy: the folder bar follows the accent colour
     }
 
     override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
