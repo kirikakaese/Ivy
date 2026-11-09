@@ -4463,6 +4463,7 @@
 		3FA91780B5AE094079D7C413 /* AppIcon-ivy-vine.icon in Resources */ = {isa = PBXBuildFile; fileRef = 41085059FBB3A33E3C013453 /* AppIcon-ivy-vine.icon */; };
 		1DE365B0DE16003CED9C71C7 /* IvyAppIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = F237F128F97A2D9217C1A740 /* IvyAppIcons.swift */; };
 		FCCA30B8AB995EA41300E982 /* IvyAppIconsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AA75D6BE71B25B7D700838 /* IvyAppIconsTest.swift */; };
+		CF45B3778C70BEA57D03782C /* IvyMacUpdatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77D0379294AC76D72AB36DF /* IvyMacUpdatesViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -9227,6 +9228,7 @@
 		41085059FBB3A33E3C013453 /* AppIcon-ivy-vine.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-ivy-vine.icon"; sourceTree = "<group>"; };
 		F237F128F97A2D9217C1A740 /* IvyAppIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAppIcons.swift; sourceTree = "<group>"; };
 		F0AA75D6BE71B25B7D700838 /* IvyAppIconsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyAppIconsTest.swift; sourceTree = "<group>"; };
+		C77D0379294AC76D72AB36DF /* IvyMacUpdatesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IvyMacUpdatesViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -17037,6 +17039,7 @@
 				6534BCD42D5AA3D88CFB491F /* IvyProblemReport.swift */,
 				5B9D4BD62D0491D2BC8FA17B /* IvyMacBetaUpdater.swift */,
 				F237F128F97A2D9217C1A740 /* IvyAppIcons.swift */,
+				C77D0379294AC76D72AB36DF /* IvyMacUpdatesViewController.swift */,
 			);
 			path = Ivy;
 			sourceTree = "<group>";
@@ -20864,6 +20867,7 @@
 				A8CB995A16C73F40174214F7 /* IvyMacBetaUpdater.swift in Sources */,
 				B6DC32F5116335662A917BE5 /* IvySidebarProfileRow.swift in Sources */,
 				1DE365B0DE16003CED9C71C7 /* IvyAppIcons.swift in Sources */,
+				CF45B3778C70BEA57D03782C /* IvyMacUpdatesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

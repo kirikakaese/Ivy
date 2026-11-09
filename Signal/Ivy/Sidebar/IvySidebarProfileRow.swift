@@ -68,7 +68,8 @@ final class IvySidebarProfileRow: UIControl {
         accessibilityTraits = .button
         accessibilityHint = CommonStrings.openAppSettingsButton
         toolTip = CommonStrings.openAppSettingsButton
-        addAction(UIAction { [weak self] _ in self?.action() }, for: .primaryActionTriggered)
+        // A plain control sends no primary action on the Mac, only clicks.
+        addAction(UIAction { [weak self] _ in self?.action() }, for: .touchUpInside)
 
         NotificationCenter.default.addObserver(self, selector: #selector(update), name: UserProfileNotifications.localProfileDidChange, object: nil)
         update()
@@ -109,9 +110,9 @@ extension UIViewController {
     /// On the Mac, while the sidebar shows: the screen's title on the left
     /// of its bar, instead of the profile picture there and the title in
     /// the middle. Returns whether it did so.
-    func ivyMacUsesLeadingTitle() -> Bool {
+    func ivyMacUsesLeadingTitle(_ explicitTitle: String? = nil) -> Bool {
 #if targetEnvironment(macCatalyst)
-        guard (tabBarController as? HomeTabBarController)?.ivyIsSidebarShown == true, let title = navigationItem.title ?? title else {
+        guard (tabBarController as? HomeTabBarController)?.ivyIsSidebarShown == true, let title = explicitTitle ?? navigationItem.title ?? title else {
             if navigationItem.titleView is IvyHiddenTitleView {
                 navigationItem.titleView = nil
             }

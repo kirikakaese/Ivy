@@ -273,6 +273,19 @@ private class ConversationBannerView: UIView {
             _titleLabel.textColor = .Signal.label
             _titleLabel.numberOfLines = 1
             _titleLabel.text = text
+#if targetEnvironment(macCatalyst)
+            // Ivy: on the Mac a small filled pin and "Angeheftet" lead the
+            // sender's name, in place of the large pin button.
+            let pinned = NSMutableAttributedString()
+            if let pin = UIImage(systemName: "pin.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 9, weight: .semibold)) {
+                pinned.append(NSAttributedString(attachment: NSTextAttachment(image: pin.withTintColor(.Signal.accent, renderingMode: .alwaysOriginal))))
+                pinned.append(NSAttributedString(string: " "))
+            }
+            pinned.append(NSAttributedString(string: IvyLocalizedString("PINNED_BANNER_LABEL", comment: "Before the sender's name in the bar with a chat's pinned messages on the Mac.") + " · "))
+            pinned.addAttribute(.foregroundColor, value: UIColor.Signal.accent, range: NSRange(location: 0, length: pinned.length))
+            pinned.append(NSAttributedString(string: text, attributes: [.foregroundColor: UIColor.Signal.label]))
+            _titleLabel.attributedText = pinned
+#endif
             return _titleLabel
         }
 
@@ -451,12 +464,23 @@ private class ConversationBannerView: UIView {
 
             if configuration.totalPinnedMessageCount > 0 {
                 let button: UIButton
+#if targetEnvironment(macCatalyst)
+                // Ivy: a small chevron for the menu on the Mac; the pin is in
+                // the title.
+                button = UIButton(configuration: .plain())
+                button.configuration?.image = UIImage(systemName: "chevron.down", withConfiguration: UIImage.SymbolConfiguration(pointSize: 11, weight: .semibold))
+                // The Mac adds its own arrow to menu buttons; one is enough.
+                if #available(iOS 16, *) {
+                    button.configuration?.indicator = .none
+                }
+#else
                 if #available(iOS 26.0, *) {
                     button = UIButton(configuration: .clearGlass())
                 } else {
                     button = UIButton(configuration: .plain())
                 }
                 button.configuration?.image = .pin
+#endif
                 button.configuration?.cornerStyle = .capsule
                 button.configuration?.contentInsets = .init(margin: 6)
                 button.accessibilityLabel = OWSLocalizedString(
@@ -468,7 +492,7 @@ private class ConversationBannerView: UIView {
 
                 button.menu = pinMessageMenu()
                 button.showsMenuAsPrimaryAction = true
-                button.tintColor = .Signal.label
+                button.tintColor = UIDevice.current.userInterfaceIdiom == .mac ? .Signal.secondaryLabel : .Signal.label // Ivy
 
                 let buttonContainer = UIView.container()
                 buttonContainer.addSubview(button)

@@ -67,6 +67,62 @@ final class IvyMenuBarPlugin: NSObject, NSMenuDelegate {
         DistributedNotificationCenter.default().addObserver(forName: NSNotification.Name("com.apple.screenIsLocked"), object: nil, queue: .main, using: lock)
         NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.screensDidSleepNotification, object: nil, queue: .main, using: lock)
         NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.willSleepNotification, object: nil, queue: .main, using: lock)
+
+        startInsettingWindowButtons()
+    }
+
+    // MARK: - Window buttons
+
+    /// How far the close, minimize and zoom buttons move right, so they sit
+    /// inside the sidebar panel with the same gap as its rows instead of on
+    /// its edge.
+    private static let windowButtonInset: CGFloat = 9
+    private var windowButtonOrigins = [ObjectIdentifier: [NSPoint]]()
+
+    private func startInsettingWindowButtons() {
+        let names: [Notification.Name] = [
+            NSWindow.didBecomeKeyNotification,
+            NSWindow.didBecomeMainNotification,
+            NSWindow.didResizeNotification,
+            NSWindow.didEndLiveResizeNotification,
+            NSWindow.didExitFullScreenNotification,
+        ]
+        for name in names {
+            NotificationCenter.default.addObserver(forName: name, object: nil, queue: .main) { [weak self] notification in
+                guard let window = notification.object as? NSWindow else { return }
+                // After AppKit has laid out the title bar.
+                DispatchQueue.main.async { self?.insetWindowButtons(of: window) }
+            }
+        }
+        NSApp.windows.forEach(insetWindowButtons(of:))
+    }
+
+    /// Only the main window has the sidebar; it is the one that can't get
+    /// narrower than three columns. Chat windows keep the buttons where
+    /// they are.
+    private func insetWindowButtons(of window: NSWindow) {
+        guard
+            window.styleMask.contains(.titled),
+            !window.styleMask.contains(.fullScreen),
+            !(window is NSPanel),
+            window.contentMinSize.width >= 880 || window.minSize.width >= 880
+        else {
+            return
+        }
+        let buttons = [NSWindow.ButtonType.closeButton, .miniaturizeButton, .zoomButton].compactMap(window.standardWindowButton)
+        guard buttons.count == 3 else { return }
+        let key = ObjectIdentifier(window)
+        let current = buttons.map(\.frame.origin)
+        // AppKit puts the buttons back where it wants them on some layout
+        // passes; remember its positions, and move from those.
+        var origins = windowButtonOrigins[key] ?? current
+        if zip(current, origins).contains(where: { $0.x != $1.x + Self.windowButtonInset && $0.x != $1.x }) {
+            origins = current
+        }
+        windowButtonOrigins[key] = origins
+        for (button, origin) in zip(buttons, origins) {
+            button.setFrameOrigin(NSPoint(x: origin.x + Self.windowButtonInset, y: origin.y))
+        }
     }
 
     /// The Dock icon chosen in Ivy's settings, as PNG data; empty data goes
