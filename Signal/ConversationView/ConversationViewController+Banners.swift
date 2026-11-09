@@ -470,7 +470,9 @@ private class ConversationBannerView: UIView {
                 button = UIButton(configuration: .plain())
                 button.configuration?.image = UIImage(systemName: "chevron.down", withConfiguration: UIImage.SymbolConfiguration(pointSize: 11, weight: .semibold))
                 // The Mac adds its own arrow to menu buttons; one is enough.
-                button.configuration?.indicator = .none
+                if #available(iOS 16, *) {
+                    button.configuration?.indicator = .none
+                }
 #else
                 if #available(iOS 26.0, *) {
                     button = UIButton(configuration: .clearGlass())
