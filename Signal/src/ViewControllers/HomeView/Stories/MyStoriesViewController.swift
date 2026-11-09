@@ -35,7 +35,6 @@ class MyStoriesViewController: OWSViewController, FailedStorySendDisplayControll
     init(spoilerState: SpoilerRenderState) {
         self.spoilerState = spoilerState
         super.init()
-        hidesBottomBarWhenPushed = true
         DependenciesBridge.shared.databaseChangeObserver.appendDatabaseChangeDelegate(self)
     }
 
@@ -464,7 +463,7 @@ class SentStoryCell: UITableViewCell {
     override func updateConfiguration(using state: UICellConfigurationState) {
         var configuration = UIBackgroundConfiguration.clear()
         if state.isSelected || state.isHighlighted {
-            configuration.backgroundColor = Theme.tableCell2SelectedBackgroundColor
+            configuration.backgroundColor = OWSTableViewController2.cellSelectedBackgroundColor
             if useSidebarAppearance {
                 configuration.cornerRadius = 24
             }

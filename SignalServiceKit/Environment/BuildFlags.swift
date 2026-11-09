@@ -89,12 +89,12 @@ public enum BuildFlags {
     /// ACI share.
     public static let accountIdentifierSharingSend = build <= .internal
 
-    public static let phoneNumberlessCanLinkNewDevices = false
+    public static let phoneNumberlessCanLinkNewDevices = true
     public static let phoneNumberlessCanBeLinkedDevice = true
 
     public static let phoneNumberlessRegistration = build <= .dev
 
-    public static let stickerReply = build <= .dev
+    public static let stickerReply = true
 
     public static let screenshotBlocking = build <= .internal
 }
@@ -257,6 +257,12 @@ public enum DebugFlags {
     ]
 
     // MARK: - TestableFlag: Notifications
+
+    public static let clearNotificationsOnAppActivate = TestableFlag<Bool>(
+        build > .internal,
+        title: LocalizationNotNeeded("Clear notifications on app activate"),
+        details: LocalizationNotNeeded("Delivered notifications are cleared when the app becomes active."),
+    )
 
     public static let unreadReminderIntervalSecs = TestableFlag<Int>(
         0,

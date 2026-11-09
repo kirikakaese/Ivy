@@ -8,17 +8,12 @@ use_frameworks!
 
 source 'https://cdn.cocoapods.org/'
 
-pod 'SwiftProtobuf', "1.38.1"
-
-ENV['LIBSIGNAL_FFI_PREBUILD_CHECKSUM'] = '556a82414b545490085a0e21d94990788bdcbee4d769043f7889397872443faf'
-pod 'LibSignalClient', git: 'https://github.com/signalapp/libsignal.git', tag: 'v0.105.0', testspecs: ["Tests"]
-# pod 'LibSignalClient', path: '../libsignal', testspecs: ["Tests"]
-
 ENV['RINGRTC_PREBUILD_CHECKSUM'] = 'eb2579b7507ad206bec3b582e6d289793c77cdf2393722c96e1f61123040f88a'
 # ENV['RINGRTC_USE_FILE_BASED_CAMERA'] = '1'
 pod 'SignalRingRTC', git: 'https://github.com/signalapp/ringrtc', tag: 'v2.73.0', inhibit_warnings: true
 # pod 'SignalRingRTC', path: '../ringrtc', testspecs: ["Tests"]
 
+<<<<<<< HEAD
 # Ivy: Mac Catalyst builds of the prebuilt libraries (see Scripts/ivy/podfile.rb)
 require_relative 'Scripts/ivy/podfile'
 ivy_configure_environment
@@ -29,20 +24,14 @@ pod 'GRDB.swift/SQLCipher'
 pod 'SQLCipher', git: 'https://github.com/signalapp/sqlcipher.git', tag: 'v4.6.1-f_barrierfsync'
 # pod 'SQLCipher', path: '../sqlcipher'
 
+=======
+>>>>>>> upstream/8.36.0.1981
 ###
 # third party pods
 ####
 
-def ui_pods
-  pod 'LibMobileCoin/CoreHTTP', git: 'https://github.com/signalapp/libmobilecoin-ios-artifacts', tag: 'signal/6.0.2', submodules: true
-  pod 'MobileCoin/CoreHTTP', git: 'https://github.com/mobilecoinofficial/MobileCoin-Swift', tag: 'v6.0.3'
-end
-
 target 'Signal' do
   project 'Signal.xcodeproj', 'Debug' => :debug, 'Release' => :release
-
-  # Pods only available inside the main Signal app
-  ui_pods
 
   target 'SignalTests' do
     inherit! :search_paths
@@ -51,21 +40,13 @@ end
 
 # These extensions inherit all of the common pods
 
-target 'SignalShareExtension' do
-  ui_pods
-end
-
 target 'SignalUI' do
-  ui_pods
-
   target 'SignalUITests' do
     inherit! :search_paths
   end
 end
 
 target 'SignalServiceKit' do
-  pod 'CocoaLumberjack'
-
   target 'SignalServiceKitTests' do
     inherit! :search_paths
   end

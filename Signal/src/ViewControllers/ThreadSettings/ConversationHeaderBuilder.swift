@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalServiceKit
 import SignalUI
 public import UIKit
@@ -28,6 +27,11 @@ struct ConversationHeaderBuilder {
 
         static let renderLocalUserAsNoteToSelf = Options(rawValue: 1 << 5)
         static let noBackground = Options(rawValue: 1 << 6)
+    }
+
+    enum StatusPill {
+        case groupEnded
+        case notGroupMember
     }
 
     static func buildHeader(
@@ -93,18 +97,23 @@ struct ConversationHeaderBuilder {
         transaction: DBReadTransaction,
     ) -> UIView {
 
-        var isTerminated = false
-        if let groupModelV2 = groupThread.groupModel as? TSGroupModelV2 {
-            if groupModelV2.isTerminated {
-                isTerminated = true
-            }
+        let statusPill: StatusPill?
+        if
+            let groupModelV2 = groupThread.groupModel as? TSGroupModelV2,
+            groupModelV2.isTerminated
+        {
+            statusPill = .groupEnded
+        } else if !groupThread.groupModel.groupMembership.isLocalUserFullMember {
+            statusPill = .notGroupMember
+        } else {
+            statusPill = nil
         }
 
         var builder = ConversationHeaderBuilder(
             delegate: delegate,
             sizeClass: sizeClass,
             options: options,
-            isTerminatedGroup: isTerminated,
+            statusPill: statusPill,
             transaction: transaction,
         )
 
@@ -177,7 +186,7 @@ struct ConversationHeaderBuilder {
             delegate: delegate,
             sizeClass: sizeClass,
             options: options,
-            isTerminatedGroup: false,
+            statusPill: nil,
             transaction: transaction,
         )
 
@@ -244,7 +253,7 @@ struct ConversationHeaderBuilder {
             delegate: delegate,
             sizeClass: sizeClass,
             options: options,
-            isTerminatedGroup: false,
+            statusPill: nil,
             transaction: transaction,
         )
 
@@ -256,7 +265,7 @@ struct ConversationHeaderBuilder {
         delegate: ConversationHeaderDelegate,
         sizeClass: ConversationAvatarView.Configuration.SizeClass,
         options: Options,
-        isTerminatedGroup: Bool,
+        statusPill: StatusPill?,
         transaction: DBReadTransaction,
     ) {
 
@@ -265,10 +274,10 @@ struct ConversationHeaderBuilder {
         self.options = options
         self.transaction = transaction
 
-        addFirstSubviews(isTerminatedGroup: isTerminatedGroup, transaction: transaction)
+        addFirstSubviews(statusPill: statusPill, transaction: transaction)
     }
 
-    mutating func addFirstSubviews(isTerminatedGroup: Bool, transaction: DBReadTransaction) {
+    mutating func addFirstSubviews(statusPill: StatusPill?, transaction: DBReadTransaction) {
         let avatarView = buildAvatarView(transaction: transaction)
 
         let avatarWrapper = UIView.container()
@@ -279,8 +288,8 @@ struct ConversationHeaderBuilder {
         subviews.append(UIView.spacer(withHeight: 8))
         subviews.append(buildThreadNameLabel())
 
-        if isTerminatedGroup {
-            subviews.append(buildGroupTerminatedBanner())
+        if let statusPill {
+            subviews.append(buildStatusPill(statusPill))
             subviews.append(UIView.spacer(withHeight: 8))
         }
     }
@@ -426,7 +435,6 @@ struct ConversationHeaderBuilder {
         }
         button.isEnabled = isEnabled
         button.buttonBackgroundColor = delegate.tableViewController.cellBackgroundColor
-        button.selectedButtonBackgroundColor = delegate.tableViewController.cellSelectedBackgroundColor
 
         if maxIconButtonWidth < button.minimumWidth {
             maxIconButtonWidth = button.minimumWidth
@@ -440,7 +448,6 @@ struct ConversationHeaderBuilder {
         button.isEnabled = isEnabled
         button.menu = menu
         button.buttonBackgroundColor = delegate.tableViewController.cellBackgroundColor
-        button.selectedButtonBackgroundColor = delegate.tableViewController.cellSelectedBackgroundColor
 
         if maxIconButtonWidth < button.minimumWidth {
             maxIconButtonWidth = button.minimumWidth
@@ -466,7 +473,7 @@ struct ConversationHeaderBuilder {
             transaction: transaction,
         )
         previewView.font = .dynamicTypeSubheadlineClamped
-        previewView.textColor = Theme.secondaryTextAndIconColor
+        previewView.textColor = .Signal.secondaryLabel
         previewView.textAlignment = .center
         previewView.numberOfLines = 2
 
@@ -493,7 +500,7 @@ struct ConversationHeaderBuilder {
         hasSubtitleLabel = true
     }
 
-    func buildGroupTerminatedBanner() -> UIView {
+    func buildStatusPill(_ statusPill: StatusPill) -> UIView {
         let banner = UIView()
         let textStackView = UIStackView()
         textStackView.axis = .horizontal
@@ -507,11 +514,23 @@ struct ConversationHeaderBuilder {
         textLabel.font = .dynamicTypeSubheadlineClamped
         textLabel.textColor = UIColor.Signal.label
         textLabel.numberOfLines = 0
-        iconLabel.attributedText = SignalSymbol.groupXInline.attributedString(for: .subheadline, clamped: true)
-        textLabel.text = OWSLocalizedString(
-            "END_GROUP_BANNER_LABEL",
-            comment: "Label for a banner in group settings indicating that the group has been ended",
-        )
+
+        let symbol: SignalSymbol
+        switch statusPill {
+        case .groupEnded:
+            symbol = .groupXInline
+            textLabel.text = OWSLocalizedString(
+                "END_GROUP_BANNER_LABEL",
+                comment: "Label for a banner in group settings indicating that the group has been ended",
+            )
+        case .notGroupMember:
+            symbol = .groupWide
+            textLabel.text = OWSLocalizedString(
+                "GROUP_SETTINGS_NOT_MEMBER_BANNER_LABEL",
+                comment: "Label for a banner in group settings shown when the local user is not a member of the group",
+            )
+        }
+        iconLabel.attributedText = symbol.attributedString(for: .subheadline, clamped: true)
 
         textStackView.addArrangedSubview(iconLabel)
         textStackView.addArrangedSubview(textLabel)
@@ -687,10 +706,9 @@ struct ConversationHeaderBuilder {
 
         // Defaults need to be set *before* assigning the attributed text,
         // or the attributes will get overridden
-        label.textColor = Theme.secondaryTextAndIconColor
+        label.textColor = .Signal.secondaryLabel
         label.lineBreakMode = .byTruncatingTail
         label.font = .dynamicTypeSubheadlineClamped
-
         label.attributedText = attributedText
 
         return label
@@ -702,13 +720,11 @@ struct ConversationHeaderBuilder {
         header.alignment = .center
         header.layoutMargins = .init(top: 0, left: 0, bottom: 24, right: 0)
         header.isLayoutMarginsRelativeArrangement = true
-
         header.isUserInteractionEnabled = true
         header.accessibilityIdentifier = UIView.accessibilityIdentifier(in: delegate, name: "mainSectionHeader")
         if !options.contains(.noBackground) {
-            header.addBackgroundView(withBackgroundColor: delegate.tableViewController.tableBackgroundColor)
+            header.addBackgroundView(withBackgroundColor: OWSTableViewController2.tableBackgroundColor)
         }
-
         return header
     }
 }

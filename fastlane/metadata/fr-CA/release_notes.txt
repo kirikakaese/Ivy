@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Signal est désormais optimisé pour l'iPhone Duo : il vous suffit d'une mise à jour pour utiliser deux écrans. D'autres améliorations sont prévues pour bientôt.
+=======
+• Vous pouvez maintenant ajouter des stickers dans vos réponses aux messages. Une manière de plus d'exprimer vos émotions et réactions.
+• Après la mise à jour de la semaine dernière, plus rien ne nous arrête : de nouvelles améliorations sont disponibles pour l'iPhone Duo.
+>>>>>>> upstream/8.36.0.1981

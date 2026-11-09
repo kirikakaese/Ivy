@@ -437,7 +437,7 @@ public class RegistrationNavigationController: OWSNavigationController {
                     comment: "Error shown if an SMS/call service provider is unable to send a verification code to the provided number.",
                 )
             case .becameDeregistered(let localIdentifiers):
-                handleDeregistrationReset(localIdentifiers: localIdentifiers.wrappedValue)
+                handleDeregistrationReset(localIdentifiers: localIdentifiers)
                 return nil
             case .verificationCodeSubmissionUnavailable:
                 title = nil
@@ -477,7 +477,7 @@ public class RegistrationNavigationController: OWSNavigationController {
             return nil
         case .done:
             logger.info("Finished with registration!")
-            SignalApp.shared.showConversationSplitView()
+            SignalApp.shared.showHomeTabBarController()
             return nil
         }
     }
@@ -595,7 +595,7 @@ extension RegistrationNavigationController: RegistrationPhoneNumberPresenter {
             owsFailBeta("Unable to exit registration")
             return
         }
-        SignalApp.shared.showConversationSplitView()
+        SignalApp.shared.showHomeTabBarController()
     }
 
     func registerWithoutNumber() {
@@ -733,7 +733,7 @@ extension RegistrationNavigationController: RegistrationReglockTimeoutPresenter 
             return
         case .exitRegistration:
             logger.info("Exiting registration after reglock timeout")
-            SignalApp.shared.showConversationSplitView()
+            SignalApp.shared.showHomeTabBarController()
         case .restartRegistration(let nextStepGuarantee):
             pushNextController(nextStepGuarantee)
         }

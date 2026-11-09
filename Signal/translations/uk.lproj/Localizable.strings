@@ -4711,6 +4711,9 @@
 /* Title for the group name view. */
 "GROUP_NAME_VIEW_TITLE" = "Назва групи";
 
+/* Bottom bar label for group chats the local user is not a member of */
+"GROUP_NOT_MEMBER_BOTTOM_PANEL_LABEL" = "Ви не можете надсилати повідомлення в цій групі, бо ви не її учасник.";
+
 /* Message indicating that a remote user has accepted their invite. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_ACCEPTED_INVITE_FORMAT" = "Користувач %1$@ прийняв запрошення в групу.";
 
@@ -4812,6 +4815,9 @@
 
 /* The title for the 'group requests and invites' view. */
 "GROUP_REQUESTS_AND_INVITES_VIEW_TITLE" = "Запити і запрошення";
+
+/* Label for a banner in group settings shown when the local user is not a member of the group */
+"GROUP_SETTINGS_NOT_MEMBER_BANNER_LABEL" = "Ви не учасник цієї групи";
 
 /* Name for a group story on the stories list. Embeds {author's name}, {group name} */
 "GROUP_STORY_NAME_FORMAT" = "%1$@ у «%2$@»";
@@ -5007,6 +5013,15 @@
 
 /* An explanation of why the user cannot be removed on a linked device. */
 "HIDE_RECIPIENT_IMPOSSIBLE_BECAUSE_SYSTEM_CONTACT_ACTION_SHEET_EXPLANATION" = "Цю людину збережено в контактах вашого телефона. Видаліть її з контактів і спробуйте знову.";
+
+/* Displayed on Calls tab when the screen is large (eg iPad) and is split into two columns and nothing is selected. */
+"HOME_CALLS_TAB_PLACEHOLDER" = "Натисніть %1$@, щоб почати новий аудіо- чи відеовиклик.";
+
+/* Displayed on Chats tab when the screen is large (eg iPad) and is split into two columns and no chat is selected. */
+"HOME_CHATS_TAB_PLACEHOLDER" = "Виберіть чат чи торкніться %1$@, щоб почати спілкування.";
+
+/* Displayed on Stories tab when screen is large (eg iPad) and is split into two columns. */
+"HOME_STORIES_TAB_PLACEHOLDER" = "Торкніться, щоб переглянути історію.";
 
 /* Label for 'archived conversations' button. */
 "HOME_VIEW_ARCHIVED_CONVERSATIONS" = "Архівні чати";
@@ -5535,6 +5550,9 @@
 
 /* Alert Title */
 "LINKING_DEVICE_FAILED_TITLE" = "Не вдалося зв'язати пристрій";
+
+/* Shown when trying to link a device to an account but that device is out of date and must first update its version of Signal. */
+"LINKING_DEVICE_OUT_OF_DATE" = "На вашому другому пристрої встановлено стару версію Signal. Оновіть Signal на тому пристрої, щоб зв'язати його.";
 
 /* Progress label when the message loading has nearly completed during the device linking process */
 "LINKING_SYNCING_FINALIZING" = "Перенесення повідомлень майже завершено…";
@@ -6739,6 +6757,27 @@
 /* Title of the 'onboarding splash' view. */
 "ONBOARDING_SPLASH_TITLE" = "Не відмовляйте собі в конфіденційності.\nБудьте собою в кожному повідомленні.";
 
+/* Subtitle for action to verify with an authenticator as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_AUTHENTICATOR_APP_BODY" = "Введіть одноразовий код, згенерований автентифікатором";
+
+/* Title for action to verify with an authenticator as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_AUTHENTICATOR_APP_TITLE" = "Автентифікатор";
+
+/* Description for the 2fa screens shown during registration. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_BODY" = "Оберіть один з методів для підтвердження акаунту нижче.";
+
+/* Subtitle for action to verify with a passkey as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_PASSKEY_BODY" = "Торкніться, щоб використати збережені біометричні засоби захисту або ключ доступу FIDO2";
+
+/* Title for action to verify with a passkey as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_PASSKEY_TITLE" = "Ключ доступу";
+
+/* Description for the screen asking the user to verify their account with a passkey during registration. */
+"ONBOARDING_TWO_FACTOR_AUTH_PASSKEY_BODY" = "Щоб продовжити, підтвердьте дію за допомогою ключа доступу.";
+
+/* Title for the 2fa screens shown during registration. */
+"ONBOARDING_TWO_FACTOR_AUTH_TITLE" = "Двофакторна автентифікація";
+
 /* Label for the link that lets users change their phone number in the onboarding views. */
 "ONBOARDING_VERIFICATION_BACK_LINK" = "Неправильний номер?";
 
@@ -6822,6 +6861,12 @@
 
 /* Title of prompt notifying registration without restore completed on the new device. */
 "OUTGOING_DEVICE_REGISTRATION_COMPLETE_TITLE" = "Реєстрацію завершено";
+
+/* Body of prompt notifying connection failure during restore. */
+"OUTGOING_DEVICE_REGISTRATION_FAILED_CONNECTION_BODY" = "Виникла помилка з'єднання з пристроєм або минув час для з'єднання. Спробуйте ще раз.";
+
+/* Title of prompt notifying connection failure during restore. */
+"OUTGOING_DEVICE_REGISTRATION_FAILED_CONNECTION_TITLE" = "Не вдалося з'єднатися з мережею";
 
 /* Body of prompt notifying restore failed. */
 "OUTGOING_DEVICE_REGISTRATION_FAILED_RESTORE_BODY" = "Повідомлення про відновлення з другого пристрою містило некоректні або недійсні дані.  Будь ласка, спробуйте знову.";
@@ -7873,9 +7918,6 @@
 /* Message for an action sheet telling users how to use quick restore, when trying to open an external quick restore URL. */
 "QUICK_RESTORE_URL_OPENED_ACTION_SHEET_EXTERNAL_URL_MESSAGE" = "Щоб перенести акаунт на новий пристрій, виберіть «Продовжити» й зіскануйте QR-код камерою в Signal. Переконайтеся, що скануєте QR-коди, згенеровані безпосередньо Signal.";
 
-/* Label to show above a sticker used to reply to a message */
-"QUOTE_REPLY_STICKER" = "Відповідь";
-
 /* Accessibility label stating the author of the message to which you are replying. Embeds: {{ the author of the message to which you are replying }} {{ original message }}. */
 "QUOTED_REPLY_ACCESSIBILITY_LABEL_FORMAT" = "Відповідь користувачу %1$@. %2$@";
 
@@ -8042,10 +8084,17 @@
 "REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_ACTION" = "Інший спосіб реєстрації";
 
 /* Message body for a sheet asking users if they would rather use PIN/SMS for registration. */
+<<<<<<< HEAD
 "REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_MESSAGE" = "Ви можете зареєструвати акаунт, ввівши ваш PIN-код або код, який Signal надішле вам в SMS. Після реєстрації ви можете знову спробувати відновити дані з резервної копії за допомогою ключа відновлення.";
 
 /* Title for a sheet asking users if they would rather use PIN/SMS for registration. */
 "REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_TITLE" = "Підтвердити через SMS чи PIN-код?";
+=======
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_MESSAGE" = "Ви можете зареєструвати акаунт, ввівши свій PIN-код або код, який Signal надішле вам в SMS. Після реєстрації ви можете знову спробувати відновити дані з резервної копії за допомогою ключа відновлення.";
+
+/* Title for a sheet asking users if they would rather use PIN/SMS for registration. */
+"REGISTRATION_BACKUP_REGISTRATION_ERROR_INCORRECT_KEY_TRY_PIN_TITLE" = "Підтвердити через SMS або PIN-код?";
+>>>>>>> upstream/8.36.0.1981
 
 /* Body for a sheet warning users about a missing backup. */
 "REGISTRATION_BACKUP_RESTORE_ERROR_BACKUP_NOT_FOUND_BODY" = "Немає резервної копії, пов'язаної з цим ключем відновлення. Перевірте, чи правильно введено ключ.";
@@ -9164,7 +9213,11 @@
 "SETTINGS_CHATS_EXPORT_COMPLETE_SHEET_VIEW_IN_FILES_BUTTON" = "Переглянути у «Файлах»";
 
 /* Message for a sheet shown when the user starts exporting their chat history from Chats settings. */
+<<<<<<< HEAD
 "SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_MESSAGE" = "УВАГА! НЕ НАДСИЛАЙТЕ цей файл нікому. Історію чатів буде збережено на вашому пристрої, а інші застосунки можуть мати до неї доступ залежно від обраних дозволів на пристрої. Експорт з медіафайлами займає більше місця.";
+=======
+"SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_MESSAGE" = "УВАГА! НІКОМУ не надсилайте цей файл. Історію чатів буде збережено на вашому пристрої. Інші застосунки можуть мати до неї доступ залежно від обраних дозволів на пристрої. Експорт з медіафайлами займає більше місця.";
+>>>>>>> upstream/8.36.0.1981
 
 /* Title for a sheet shown when the user starts exporting their chat history from Chats settings. */
 "SETTINGS_CHATS_EXPORT_CONFIRMATION_SHEET_TITLE" = "Експортувати історію чатів?";
@@ -10316,29 +10369,38 @@
 /* Title for the 'available built-in stickers' section of the 'manage stickers' view. */
 "STICKERS_MANAGE_VIEW_AVAILABLE_BUILT_IN_PACKS_SECTION_TITLE" = "Серія «Художники Signal»";
 
+/* Subtitle for the section of known stickers in the manage stickers view */
+"STICKERS_MANAGE_VIEW_AVAILABLE_KNOWN_PACKS_SECTION_SUBTITLE" = "Коли хтось надсилає вам стікер, тут з'являється відповідний набір стікерів.";
+
 /* Title for the 'available known stickers' section of the 'manage stickers' view. */
-"STICKERS_MANAGE_VIEW_AVAILABLE_KNOWN_PACKS_SECTION_TITLE" = "Отримані cтікери";
+"STICKERS_MANAGE_VIEW_AVAILABLE_KNOWN_PACKS_SECTION_TITLE" = "Отримані від інших";
 
 /* Label indicating that one or more known sticker packs failed to load. */
 "STICKERS_MANAGE_VIEW_FAILED_KNOWN_PACKS" = "Не всі набори стікерів удалося завантажити";
 
-/* Title for the 'installed stickers' section of the 'manage stickers' view. */
-"STICKERS_MANAGE_VIEW_INSTALLED_PACKS_SECTION_TITLE" = "Встановлені стікери";
+/* An option in the sticker management screen allowing the user to select the filter option 'all'; i.e., 'unfiltered'. */
+"STICKERS_MANAGE_VIEW_FILTER_TAB_ALL" = "Усі";
+
+/* An option in the sticker management screen allowing the user to select the filter option 'my stickers'; i.e., their installed packs. */
+"STICKERS_MANAGE_VIEW_FILTER_TAB_MY_STICKERS" = "Мої стікери";
 
 /* Label indicating that one or more known sticker packs is loading. */
 "STICKERS_MANAGE_VIEW_LOADING_KNOWN_PACKS" = "Завантаження…";
 
 /* Label indicating that the user has no installed sticker packs. */
-"STICKERS_MANAGE_VIEW_NO_INSTALLED_PACKS" = "Немає встановлених стікерів";
+"STICKERS_MANAGE_VIEW_NO_INSTALLED_PACKS" = "Немає наборів стікерів.\nДодайте стікери, щоб надсилати їх друзям.";
 
-/* Label indicating that the user has no known sticker packs. */
-"STICKERS_MANAGE_VIEW_NO_KNOWN_PACKS" = "Тут будуть стікери зі вхідних повідомлень";
+/* Button to redirect back to the manage sticker 'all' section */
+"STICKERS_MANAGE_VIEW_NO_INSTALLED_PACKS_BUTTON" = "Додати стікери";
 
 /* Title for the 'manage stickers' view. */
 "STICKERS_MANAGE_VIEW_TITLE" = "Стікери";
 
+/* Default author for sticker packs. */
+"STICKERS_PACK_DEFAULT_AUTHOR" = "Автор невідомий";
+
 /* Default title for sticker packs. */
-"STICKERS_PACK_DEFAULT_TITLE" = "Набір стікерів";
+"STICKERS_PACK_DEFAULT_TITLE" = "Назва невідома";
 
 /* The default title for the 'sticker pack' view. */
 "STICKERS_PACK_VIEW_DEFAULT_TITLE" = "Набір стікерів";

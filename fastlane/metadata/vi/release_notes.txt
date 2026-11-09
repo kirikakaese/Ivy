@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Signal hiện đã được tối ưu hóa cho iPhone Duo.
+=======
+• Nhãn dán đã được hỗ trợ trong câu trả lời được trích dẫn.
+• Các cải tiến bổ sung cho iPhone Duo.
+>>>>>>> upstream/8.36.0.1981

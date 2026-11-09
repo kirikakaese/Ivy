@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Signal er nu optimeret til iPhone Duo, så du kan nøjes med at installere én opdatering for at være klar til to skærme. Der kommer også flere forbedringer fremover.
+=======
+• Klistermærker understøttes også i citerede svar, så du får endnu en måde at sætte et varigt præg på samtalen.
+• Efter sidste uges opdatering kan du se dette som en slags duet med endnu flere forbedringer til iPhone Duo.
+>>>>>>> upstream/8.36.0.1981

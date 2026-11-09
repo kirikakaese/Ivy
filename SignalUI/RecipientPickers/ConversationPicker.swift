@@ -221,11 +221,6 @@ open class ConversationPickerViewController: OWSTableViewController2 {
 
     // MARK: -
 
-    override open func themeDidChange() {
-        super.themeDidChange()
-        updateTableContents(shouldReload: false)
-    }
-
     override open func bottomFooter() -> UIView? { footerView }
 
     /// Manually observe `UITraitCollection` changes to manage `Theme`. This is
@@ -709,7 +704,7 @@ open class ConversationPickerViewController: OWSTableViewController2 {
             let secondMediaPreview = makeMediaPreview(secondAttachment)
         {
             let mediaPreviewBorder = UIView()
-            mediaPreviewBorder.backgroundColor = self.tableBackgroundColor
+            mediaPreviewBorder.backgroundColor = OWSTableViewController2.tableBackgroundColor
             mediaPreviewBorder.layer.masksToBounds = true
             mediaPreviewBorder.layer.cornerRadius = mediaPreview.layer.cornerRadius
             container.insertSubview(mediaPreviewBorder, belowSubview: mediaPreview)
@@ -811,12 +806,12 @@ open class ConversationPickerViewController: OWSTableViewController2 {
                         icon: .groupInfoShowAllMembers,
                         iconSize: AvatarBuilder.smallAvatarSizePoints,
                         innerIconSize: 20,
-                        iconTintColor: Theme.primaryTextColor,
+                        iconTintColor: .Signal.label,
                     )
 
                     let rowLabel = UILabel()
                     rowLabel.text = CommonStrings.seeAllButton
-                    rowLabel.textColor = Theme.primaryTextColor
+                    rowLabel.textColor = .Signal.label
                     rowLabel.font = OWSTableItem.primaryLabelFont
                     rowLabel.lineBreakMode = .byTruncatingTail
 

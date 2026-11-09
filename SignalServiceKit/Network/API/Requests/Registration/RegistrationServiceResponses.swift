@@ -10,38 +10,11 @@ public enum RegistrationServiceResponses {
 
     // MARK: - Registration Session Endpoints
 
-    public enum BeginSessionResponseCodes: Int, UnknownEnumCodable {
-        /// Success. Response body has `RegistrationSession` object.
-        case success = 200
-        case missingArgument = 400
-        case invalidArgument = 422
-        /// The caller is not permitted to create a verification session and must wait before trying again.
-        /// Response will include a 'retry-after' header.
-        case retry = 429
-        case unexpectedError = -1
-
-        public static var unknown: Self { .unexpectedError }
-    }
-
     public enum FetchSessionResponseCodes: Int, UnknownEnumCodable {
         /// Success. Response body has `RegistrationSession` object.
         case success = 200
         /// No session was found with the given ID. A new session should be initiated.
         case missingSession = 404
-        case unexpectedError = -1
-
-        public static var unknown: Self { .unexpectedError }
-    }
-
-    public enum FulfillChallengeResponseCodes: Int, UnknownEnumCodable {
-        /// Success. Response body has `RegistrationSession` object.
-        case success = 200
-        /// E.g. the challenge token provided did not match.
-        /// Response body has `RegistrationSession` object.
-        case notAccepted = 403
-        /// No session was found with the given ID. A new session should be initiated.
-        case missingSession = 404
-        case malformedRequest = 422
         case unexpectedError = -1
 
         public static var unknown: Self { .unexpectedError }
@@ -166,18 +139,6 @@ public enum RegistrationServiceResponses {
     }
 
     // MARK: - SVR2 Auth Check
-
-    public enum SVR2AuthCheckResponseCodes: Int, UnknownEnumCodable {
-        /// Success. Response body has `SVR2AuthCheckResponse` object.
-        case success = 200
-        /// The server couldn't parse the set of credentials.
-        case malformedRequest = 422
-        /// The POST request body is not valid JSON.
-        case invalidJSON = 400
-        case unexpectedError = -1
-
-        public static var unknown: Self { .unexpectedError }
-    }
 
     public struct SVR2AuthCheckResponse: Codable {
         public let matches: [String: Result]

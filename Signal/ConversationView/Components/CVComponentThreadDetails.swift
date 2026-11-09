@@ -3,20 +3,19 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import Lottie
 import SignalServiceKit
-public import SignalUI
+import SignalUI
 
-public class CVComponentThreadDetails: CVComponentBase, CVRootComponent {
+class CVComponentThreadDetails: CVComponentBase, CVRootComponent {
 
-    public var componentKey: CVComponentKey { .threadDetails }
+    var componentKey: CVComponentKey { .threadDetails }
 
-    public var cellReuseIdentifier: CVCellReuseIdentifier {
+    var cellReuseIdentifier: CVCellReuseIdentifier {
         CVCellReuseIdentifier.threadDetails
     }
 
-    public let isDedicatedCell = false
+    let isDedicatedCell = false
 
     private let threadDetails: CVComponentState.ThreadDetails
 
@@ -34,7 +33,7 @@ public class CVComponentThreadDetails: CVComponentBase, CVRootComponent {
         super.init(itemModel: itemModel)
     }
 
-    public func configureCellRootComponent(
+    func configureCellRootComponent(
         cellView: UIView,
         cellMeasurement: CVCellMeasurement,
         componentDelegate: CVComponentDelegate,
@@ -50,11 +49,11 @@ public class CVComponentThreadDetails: CVComponentBase, CVRootComponent {
         )
     }
 
-    public func buildComponentView(componentDelegate: CVComponentDelegate) -> CVComponentView {
+    func buildComponentView(componentDelegate: CVComponentDelegate) -> CVComponentView {
         CVComponentViewThreadDetails()
     }
 
-    override public func wallpaperBlurView(componentView: CVComponentView) -> CVWallpaperBlurView? {
+    override func wallpaperBlurView(componentView: CVComponentView) -> CVWallpaperBlurView? {
         guard let componentView = componentView as? CVComponentViewThreadDetails else {
             owsFailDebug("Unexpected componentView.")
             return nil
@@ -62,7 +61,7 @@ public class CVComponentThreadDetails: CVComponentBase, CVRootComponent {
         return componentView.wallpaperBlurView
     }
 
-    public func configureForRendering(
+    func configureForRendering(
         componentView componentViewParam: CVComponentView,
         cellMeasurement: CVCellMeasurement,
         componentDelegate: CVComponentDelegate,
@@ -696,7 +695,7 @@ public class CVComponentThreadDetails: CVComponentBase, CVRootComponent {
     private static let measurementKey_outerStack = "CVComponentThreadDetails.measurementKey_outerStack"
     private static let measurementKey_innerStack = "CVComponentThreadDetails.measurementKey_innerStack"
 
-    public func measure(maxWidth: CGFloat, measurementBuilder: CVCellMeasurement.Builder) -> CGSize {
+    func measure(maxWidth: CGFloat, measurementBuilder: CVCellMeasurement.Builder) -> CGSize {
         owsAssertDebug(maxWidth > 0)
 
         var innerSubviewInfos = [ManualStackSubviewInfo]()
@@ -786,7 +785,7 @@ public class CVComponentThreadDetails: CVComponentBase, CVRootComponent {
 
     // MARK: - Events
 
-    override public func handleTap(
+    override func handleTap(
         sender: UIGestureRecognizer,
         componentDelegate: CVComponentDelegate,
         componentView: CVComponentView,
@@ -855,7 +854,7 @@ public class CVComponentThreadDetails: CVComponentBase, CVRootComponent {
 
     // Used for rendering some portion of an Conversation View item.
     // It could be the entire item or some part thereof.
-    public class CVComponentViewThreadDetails: NSObject, CVComponentView {
+    class CVComponentViewThreadDetails: CVComponentView {
 
         fileprivate var avatarView: ConversationAvatarView?
 
@@ -888,17 +887,17 @@ public class CVComponentThreadDetails: CVComponentBase, CVRootComponent {
             return wallpaperBlurView
         }
 
-        public var isDedicatedCellView = false
+        var isDedicatedCellView = false
 
-        public var rootView: UIView {
+        var rootView: UIView {
             outerStackView
         }
 
         // MARK: -
 
-        public func setIsCellVisible(_ isCellVisible: Bool) {}
+        func setIsCellVisible(_ isCellVisible: Bool) {}
 
-        public func reset() {
+        func reset() {
             outerStackView.reset()
             innerStackView.reset()
             innerStackView.removeFromSuperview()
@@ -916,9 +915,9 @@ public class CVComponentThreadDetails: CVComponentBase, CVRootComponent {
         }
 
     }
-}
 
-extension CVComponentThreadDetails {
+    // MARK: -
+
     private static func buildReleaseNotesSafetySection(
         from releaseNotesThread: TSReleaseNotesThread,
         tx: DBReadTransaction,

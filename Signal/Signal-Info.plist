@@ -31,7 +31,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
+<<<<<<< HEAD
 	<string>$(IVY_UPSTREAM_MARKETING_VERSION)</string>
+=======
+	<string>8.36</string>
+>>>>>>> upstream/8.36.0.1981
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>

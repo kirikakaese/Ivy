@@ -541,7 +541,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
                                 ),
                                 image: image,
                                 handler: { [weak self] _ in
-                                    let backupSettingPageType: ShowAppSettingsMode.BackupSettingsPage = db.read { tx in
+                                    let backupSettingPageType: HomeTabBarController.ShowAppSettingsMode.BackupSettingsPage = db.read { tx in
                                         if failureStateManager.hasFailedRemoteBackup(tx: tx) {
                                             return .remote()
                                         } else if failureStateManager.hasFailedLocalBackup(tx: tx) {
@@ -857,12 +857,10 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
     }
 
     func showNewConversationView() {
-        AssertIsOnMainThread()
-
         Logger.info("")
 
         // Dismiss any message actions if they're presented
-        conversationSplitViewController?.selectedConversationViewController?.dismissMessageContextMenu(animated: true)
+        homeTabBarController?.selectedConversationViewController?.dismissMessageContextMenu(animated: true)
 
         let viewController = ComposeViewController()
         SSKEnvironment.shared.contactManagerImplRef.requestSystemContactsOnce { error in
@@ -881,12 +879,10 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
     }
 
     func showNewGroupView() {
-        AssertIsOnMainThread()
-
         Logger.info("")
 
         // Dismiss any message actions if they're presented
-        conversationSplitViewController?.selectedConversationViewController?.dismissMessageContextMenu(animated: true)
+        homeTabBarController?.selectedConversationViewController?.dismissMessageContextMenu(animated: true)
 
         let newGroupViewController = NewGroupMembersViewController()
         SSKEnvironment.shared.contactManagerImplRef.requestSystemContactsOnce { error in
@@ -902,6 +898,10 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
             let modal = OWSNavigationController(rootViewController: newGroupViewController)
             self.navigationController?.presentFormSheet(modal, animated: true)
         }
+    }
+
+    func showAppSettings(mode: HomeTabBarController.ShowAppSettingsMode? = nil, completion: (() -> Void)? = nil) {
+        homeTabBarController?.showAppSettingsWithMode(mode, completion: completion)
     }
 
     @objc
@@ -996,8 +996,9 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
 
     func isChatListTopmostViewController() -> Bool {
         guard
-            UIApplication.shared.frontmostViewController == self.conversationSplitViewController,
-            conversationSplitViewController?.selectedThread == nil,
+            UIApplication.shared.frontmostViewController == homeTabBarController,
+            homeTabBarController?.selectedHomeTab == .chatList,
+            homeTabBarController?.selectedThread == nil,
             presentedViewController == nil
         else { return false }
 
@@ -1404,6 +1405,7 @@ extension ChatListViewController: ChatListProxyButtonDelegate {
     }
 }
 
+<<<<<<< HEAD
 // MARK: -
 
 extension ChatListViewController {
@@ -1591,16 +1593,18 @@ extension ChatListViewController {
     }
 }
 
+=======
+>>>>>>> upstream/8.36.0.1981
 // MARK: - ThreadContextualActionProvider
 
 extension ChatListViewController: ThreadContextualActionProvider {
     func threadContextualActionShouldCloseThreadIfActive(threadViewModel: ThreadViewModel) {
-        if
-            let conversationSplitViewController,
-            conversationSplitViewController.selectedThread?.uniqueId == threadViewModel.threadUniqueId
-        {
-            conversationSplitViewController.closeSelectedConversation(animated: true)
-        }
+        guard
+            let homeTabBarController,
+            homeTabBarController.selectedThread?.uniqueId == threadViewModel.threadUniqueId
+        else { return }
+
+        homeTabBarController.closeSelectedConversation(animated: true)
     }
 
     func threadContextualActionDidComplete() {

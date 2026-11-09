@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Signal kini dioptimumkan untuk iPhone Duo.
+=======
+• Pelekat boleh digunakan dalam balasan yang dipetik.
+• Penambahbaikan tambahan untuk iPhone Duo.
+>>>>>>> upstream/8.36.0.1981

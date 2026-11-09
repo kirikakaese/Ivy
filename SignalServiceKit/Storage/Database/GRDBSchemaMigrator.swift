@@ -368,12 +368,12 @@ public class GRDBSchemaMigrator {
         case addAciContactShareNameTable
         case addAciContactShareNamesToSearchableName
         case addShouldNotifyForUnreadRemindersWhenMutedColumn
-        case disableUnreadRemindersForExistingUsers
         case migrateBlocked
         case addBlockedAt
         case migrateLegacyMentionNotificationMode
         case addLastSnapshotAt
         case removeLocalFileBackupLastEnumeratedAttachmentId
+        case addLocalKeyAndSizeToInstalledSticker
 
         // NOTE: Every time we add a migration id, consider
         // incrementing grdbSchemaVersionLatest.
@@ -501,11 +501,14 @@ public class GRDBSchemaMigrator {
 
         // Obsoleted by moveFromThreadAssociatedData
         case dataMigration_moveToThreadAssociatedData
+
+        // Obsoleted by disabling by default for all users.
+        case disableUnreadRemindersForExistingUsers
 #endif
     }
 
     public static let grdbSchemaVersionDefault: UInt = 0
-    public static let grdbSchemaVersionLatest: UInt = 164
+    public static let grdbSchemaVersionLatest: UInt = 165
 
     private class DatabaseMigratorWrapper {
         // Run with immediate (or disabled) foreign key checks so that pre-existing
@@ -5231,11 +5234,13 @@ public class GRDBSchemaMigrator {
         }
 
         migrator.registerMigration(.addRecoverablePlaceholderExpirationIndex) { tx in
+            // If this constants changes, you must add a new migration to rebuild the index.
+            assert(SDSRecordType.recoverableDecryptionPlaceholder.rawValue == 70)
             try tx.database.create(
                 index: "index_interactions_on_recoverable_placeholder_expiration",
                 on: "model_TSInteraction",
                 columns: ["receivedAtTimestamp"],
-                condition: Column("recordType") == SDSRecordType.recoverableDecryptionPlaceholder.rawValue,
+                condition: Column("recordType") == 70,
             )
 
             return .success(())
@@ -5270,7 +5275,7 @@ public class GRDBSchemaMigrator {
         }
 
         migrator.registerMigration(.addStoredReleaseNotesTable) { transaction in
-            try transaction.database.create(table: StoredReleaseNote.databaseTableName) { table in
+            try transaction.database.create(table: "StoredReleaseNote") { table in
                 table.column("uniqueId", .text).primaryKey().notNull()
             }
             return .success(())
@@ -5310,17 +5315,20 @@ public class GRDBSchemaMigrator {
         }
 
         migrator.registerMigration(.zeroOutCallExpirationColumns) { tx in
+            // If these constants change, this migration should not.
+            let callRecordType = 20 /* SDSRecordType.call.rawValue */
+            let groupCallRecordType = 65 /* SDSRecordType.groupCallMessage.rawValue */
             try tx.database.execute(sql: """
                 UPDATE model_TSInteraction
                 SET expiresInSeconds = 0, expireStartedAt = 0, expiresAt = 0
-                WHERE recordType IN (\(SDSRecordType.call.rawValue), \(SDSRecordType.groupCallMessage.rawValue))
+                WHERE recordType IN (\(callRecordType), \(groupCallRecordType))
                 AND expiresInSeconds IS NULL
             """)
             return .success(())
         }
 
         migrator.registerMigration(.addReleaseNotesCallToAction) { tx in
-            try tx.database.alter(table: StoredReleaseNote.databaseTableName) { (table: TableAlteration) -> Void in
+            try tx.database.alter(table: "StoredReleaseNote") { (table: TableAlteration) -> Void in
                 table.add(column: "interactionId", .integer)
                 table.add(column: "ctaId", .text)
                 table.add(column: "ctaText", .text)
@@ -5328,7 +5336,7 @@ public class GRDBSchemaMigrator {
 
             try tx.database.create(
                 index: "partial_index_StoredReleaseNote_on_interactionId",
-                on: StoredReleaseNote.databaseTableName,
+                on: "StoredReleaseNote",
                 columns: ["interactionId"],
                 condition: Column("interactionId") != nil,
             )
@@ -5666,7 +5674,7 @@ public class GRDBSchemaMigrator {
         }
 
         migrator.registerMigration(.addAciContactShareNameTable) { tx in
-            try tx.database.create(table: AciContactShareName.databaseTableName) { table in
+            try tx.database.create(table: "AciContactShareName") { table in
                 table.column("recipientRowID", .integer).primaryKey().notNull()
                     .references("model_SignalRecipient", column: "id", onDelete: .cascade)
                 table.column("givenName", .text)
@@ -5679,7 +5687,7 @@ public class GRDBSchemaMigrator {
         migrator.registerMigration(.addAciContactShareNamesToSearchableName) { tx in
             try tx.database.alter(table: "SearchableName") { table in
                 table.add(column: "aciContactShareNameRecipientId", .integer)
-                    .references(AciContactShareName.databaseTableName, column: "recipientRowID", onDelete: .cascade)
+                    .references("AciContactShareName", column: "recipientRowID", onDelete: .cascade)
             }
 
             return .success(())
@@ -5687,12 +5695,6 @@ public class GRDBSchemaMigrator {
 
         migrator.registerMigration(.addShouldNotifyForUnreadRemindersWhenMutedColumn) { tx in
             try addShouldNotifyForUnreadRemindersWhenMutedColumn(tx: tx)
-            return .success(())
-        }
-
-        migrator.registerMigration(.disableUnreadRemindersForExistingUsers) { tx in
-            // This used to disable unread reminders for existing installs,
-            // but now it's disabled by default for all users.
             return .success(())
         }
 
@@ -5736,6 +5738,14 @@ public class GRDBSchemaMigrator {
                 """,
             )
 
+            return .success(())
+        }
+
+        migrator.registerMigration(.addLocalKeyAndSizeToInstalledSticker) { tx in
+            try tx.database.alter(table: "model_InstalledSticker") {
+                $0.add(column: "localKey", .blob)
+                $0.add(column: "plaintextLength", .integer)
+            }
             return .success(())
         }
 
@@ -6030,11 +6040,14 @@ public class GRDBSchemaMigrator {
     // MARK: - Migrations
 
     static func backfillRecoverablePlaceholderErrorType(tx: DBWriteTransaction) throws {
+        // If these constants change in the future, this migration should not.
+        let errorType = 11 /* TSErrorMessageType.decryptionFailure */
+        let recordType = 70 /* SDSRecordType.recoverableDecryptionPlaceholder */
         try tx.database.execute(sql: """
         UPDATE model_TSInteraction
         INDEXED BY index_interactions_on_recoverable_placeholder_expiration
-        SET errorType = \(TSErrorMessageType.decryptionFailure.rawValue)
-        WHERE recordType = \(SDSRecordType.recoverableDecryptionPlaceholder.rawValue)
+        SET errorType = \(errorType)
+        WHERE recordType = \(recordType)
         """)
     }
 

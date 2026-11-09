@@ -8,7 +8,10 @@ import SafariServices
 import SignalServiceKit
 import SignalUI
 
-extension ConversationViewController: MessageRequestDelegate {
+extension ConversationViewController {
+
+    // MARK: - MessageRequestDelegate
+
     func messageRequestViewDidTapBlock() {
         AssertIsOnMainThread()
 
@@ -126,19 +129,19 @@ extension ConversationViewController: MessageRequestDelegate {
         let safariVC = SFSafariViewController(url: URL.Support.profilesAndMessageRequests)
         present(safariVC, animated: true)
     }
-}
 
-private extension ConversationViewController {
+    // MARK: -
+
     func declineMessageRequest(responseType: OutgoingMessageRequestResponseSyncMessage.ResponseType) {
         MessageRequestDecliner.declineMessageRequest(
             inThread: self.thread,
             responseType: responseType,
         )
         if responseType.shouldDeleteThread {
-            self.conversationSplitViewController?.closeSelectedConversation(animated: true)
+            homeTabBarController?.closeSelectedConversation(animated: true)
         }
         if responseType.shouldReportSpam {
-            self.presentToastCVC(
+            presentToastCVC(
                 ReportSpamUIUtils.successfulReportText(didBlock: responseType.shouldBlockThread),
             )
         }
@@ -267,11 +270,8 @@ private extension ConversationViewController {
             NotificationCenter.default.post(name: ChatListViewController.clearSearch, object: nil)
         }
     }
-}
 
-// MARK: - Action Sheets
-
-extension ConversationViewController {
+    // MARK: - Action Sheets
 
     func createBlockThreadActionSheet(sheetCompletion: ((Bool) -> Void)? = nil) -> ActionSheetController {
         Logger.info("")
@@ -397,16 +397,15 @@ extension ConversationViewController {
             declineMessageRequest: self.declineMessageRequest(responseType:),
         )
     }
-}
 
-extension ConversationViewController: NameCollisionResolutionDelegate {
+    // MARK: - NameCollisionResolutionDelegate
 
     func nameCollisionControllerDidComplete(_ controller: NameCollisionResolutionViewController, dismissConversationView: Bool) {
         if dismissConversationView {
             // This may have already been closed (e.g. if the user requested deletion), but
             // it's not guaranteed (e.g. the user blocked the request). Let's close it just
             // to be safe.
-            self.conversationSplitViewController?.closeSelectedConversation(animated: false)
+            homeTabBarController?.closeSelectedConversation(animated: false)
         } else {
             // Conversation view is being kept around. Update the banner state to account for any changes
             ensureBannerState()

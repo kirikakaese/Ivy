@@ -6,7 +6,11 @@ Ivy is not affiliated with, endorsed by or supported by Signal Messenger LLC or 
 
 ## License
 
-Ivy is based on [Signal-iOS](https://github.com/signalapp/Signal-iOS) (currently release 8.35.1.1964) and is licensed under the GNU Affero General Public License v3.0. See [LICENSE](LICENSE).
+<<<<<<< HEAD
+Ivy is based on [Signal-iOS](https://github.com/signalapp/Signal-iOS) (currently release 8.36.0.1981) and is licensed under the GNU Affero General Public License v3.0. See [LICENSE](LICENSE).
+=======
+Copyright 2013-2026 Signal Messenger, LLC
+>>>>>>> upstream/8.36.0.1981
 
 ## Documentation
 

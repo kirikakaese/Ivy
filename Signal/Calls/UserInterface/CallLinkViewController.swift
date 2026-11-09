@@ -4,14 +4,12 @@
 //
 
 import Combine
-import Foundation
 import SignalServiceKit
 import SignalUI
-import UIKit
 
 final class CallLinkViewController: OWSTableViewController2, DatabaseChangeDelegate, SendMessageDelegate {
     override var preferredNavigationBarStyle: OWSNavigationBarStyle { .solid }
-    override var navbarBackgroundColorOverride: UIColor? { tableBackgroundColor }
+    override var navbarBackgroundColorOverride: UIColor? { OWSTableViewController2.tableBackgroundColor }
 
     private var db: any DB { DependenciesBridge.shared.db }
     private var callLinkStore: CallLinkRecordStore { DependenciesBridge.shared.callLinkStore }

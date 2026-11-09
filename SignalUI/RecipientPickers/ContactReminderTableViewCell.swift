@@ -5,7 +5,7 @@
 
 import SignalServiceKit
 
-class ContactReminderTableViewCell: UITableViewCell {
+class ContactReminderTableViewCell: UITableViewCell, CustomBackgroundColorCell {
 
     private let learnMoreAction: () -> Void
     private let dismissAction: () -> Void
@@ -24,15 +24,11 @@ class ContactReminderTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private var textColor: UIColor {
-        Theme.isDarkThemeEnabled ? .ows_gray05 : .ows_gray90
-    }
-
     private lazy var messageLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.font = .dynamicTypeSubheadline
-        label.textColor = textColor
+        label.textColor = .Signal.label
         label.text = OWSLocalizedString(
             "LINKED_DEVICE_MANAGE_CONTACTS_BANNER",
             comment: "Shown in a banner when you tap the 'New Chat' icon at the top of the list of chats.",
@@ -49,7 +45,7 @@ class ContactReminderTableViewCell: UITableViewCell {
             ),
             for: .normal,
         )
-        button.setTitleColor(textColor, for: .normal)
+        button.setTitleColor(.Signal.label, for: .normal)
         button.titleLabel!.font = .dynamicTypeSubheadline.semibold()
         button.addAction(
             UIAction { [weak self] _ in self?.didTapLearnMore() },
@@ -62,14 +58,14 @@ class ContactReminderTableViewCell: UITableViewCell {
 
     private lazy var contactIcon: UIImageView = {
         let imageView = UIImageView()
-        imageView.setTemplateImageName("person-circle", tintColor: textColor)
+        imageView.setTemplateImageName("person-circle", tintColor: .Signal.label)
         imageView.autoSetDimensions(to: CGSize(square: 24))
         return imageView
     }()
 
     private lazy var closeButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTemplateImageName("x-20", tintColor: textColor)
+        button.setTemplateImageName("x-20", tintColor: .Signal.label)
         button.addAction(
             UIAction { [weak self] _ in self?.didTapDismiss() },
             for: .primaryActionTriggered,
@@ -101,14 +97,14 @@ class ContactReminderTableViewCell: UITableViewCell {
     private func didTapDismiss() {
         dismissAction()
     }
-}
 
-extension ContactReminderTableViewCell: CustomBackgroundColorCell {
-    func customBackgroundColor(forceDarkMode: Bool) -> UIColor {
-        (forceDarkMode || Theme.isDarkThemeEnabled) ? .ows_gray80 : .ows_gray12
+    // MARK: - CustomBackgroundColorCell
+
+    var customBackgroundColor: UIColor {
+        UIColor.Signal.tertiaryBackground
     }
 
-    func customSelectedBackgroundColor(forceDarkMode: Bool) -> UIColor {
-        customBackgroundColor(forceDarkMode: forceDarkMode)
+    var customSelectedBackgroundColor: UIColor {
+        customBackgroundColor
     }
 }

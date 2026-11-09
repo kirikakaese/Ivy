@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Signal artık iPhone Duo için de optimize edilmiştir. İleride ek iyileştirmeleri de açıklayacağız.
+=======
+• Çıkartmalar alıntılanmış yanıtlarda desteklenmektedir.
+• iPhone Duo için ek iyileştirmeler.
+>>>>>>> upstream/8.36.0.1981
