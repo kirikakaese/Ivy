@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Signal ist jetzt für iPhone Duo optimiert, sodass du mit einem einzigen Update gleich zwei Bildschirme abdecken kannst. Wir werden auch in Zukunft weitere Verbesserungen vornehmen.
+=======
+• Sticker werden in zitierten Antworten unterstützt – eine weitere Möglichkeit für dich, einen bleibenden Eindruck zu hinterlassen.
+• Nach dem Update von letzter Woche kommen hier weitere Verbesserungen für das iPhone Duo – sozusagen ein echtes Duett.
+>>>>>>> upstream/8.36.0.1981

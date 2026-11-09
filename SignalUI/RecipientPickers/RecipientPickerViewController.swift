@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import MessageUI
 public import SignalServiceKit
 import SwiftUI
@@ -101,8 +100,6 @@ public class RecipientPickerViewController: OWSViewController, OWSNavigationChil
         tableView.refreshControl = refreshControl
 
         updateTableContents()
-
-        applyTheme()
     }
 
     override public func viewWillAppear(_ animated: Bool) {
@@ -116,14 +113,9 @@ public class RecipientPickerViewController: OWSViewController, OWSNavigationChil
         showContactAppropriateViews()
     }
 
-    override public func themeDidChange() {
-        super.themeDidChange()
-        applyTheme()
-    }
-
     public var preferredNavigationBarStyle: OWSNavigationBarStyle { .solid }
 
-    public var navbarBackgroundColorOverride: UIColor? { tableViewController.tableBackgroundColor }
+    public var navbarBackgroundColorOverride: UIColor? { OWSTableViewController2.tableBackgroundColor }
 
     // MARK: Search
 
@@ -239,10 +231,6 @@ public class RecipientPickerViewController: OWSViewController, OWSNavigationChil
     private lazy var noSignalContactsView = createNoSignalContactsView()
 
     var tableView: UITableView { tableViewController.tableView }
-
-    private func applyTheme() {
-        tableViewController.tableView.sectionIndexColor = Theme.primaryTextColor
-    }
 
     // MARK: Context Menu
 
@@ -679,7 +667,7 @@ extension RecipientPickerViewController {
         stackView.layoutMargins = .init(margin: 20)
 
         let result = UIView()
-        result.backgroundColor = tableViewController.tableBackgroundColor
+        result.backgroundColor = OWSTableViewController2.tableBackgroundColor
         result.addSubview(stackView)
         stackView.autoPinWidthToSuperview()
         stackView.autoVCenterInSuperview()
@@ -1472,11 +1460,11 @@ extension RecipientPickerViewController {
 
 class ContactAccessLimitedReminderTableViewCell: UITableViewCell, CustomBackgroundColorCell {
 
-    func customBackgroundColor(forceDarkMode: Bool) -> UIColor {
-        Theme.isDarkThemeEnabled ? .ows_gray80 : .ows_gray05
+    var customBackgroundColor: UIColor {
+        UIColor(light: .ows_gray05, dark: .ows_gray80)
     }
 
-    func customSelectedBackgroundColor(forceDarkMode: Bool) -> UIColor {
-        customBackgroundColor(forceDarkMode: forceDarkMode)
+    var customSelectedBackgroundColor: UIColor {
+        customBackgroundColor
     }
 }

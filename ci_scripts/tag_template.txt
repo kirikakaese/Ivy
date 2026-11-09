@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 8.35.1.{build_number}
+=======
+8.36.0.{build_number}
+>>>>>>> upstream/8.36.0.1981

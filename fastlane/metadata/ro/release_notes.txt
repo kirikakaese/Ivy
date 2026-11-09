@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Signal este acum optimizat pentru iPhone Duo, așadar poți instala o actualizare, ca să te pregătești pentru două ecrane. Vom dezvălui și alte îmbunătățiri în viitor.
+=======
+• Abțibildurile sunt acceptate în răspunsurile citate, așa că ai la dispoziție o altă modalitate de a-ți sublinia ideea, care va rămâne vizibilă.
+• În urma actualizării de săptămâna trecută, consideră acest lucru ca fiind un „duet” care include îmbunătățiri suplimentare pentru iPhone Duo.
+>>>>>>> upstream/8.36.0.1981

@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Signal kini telah dioptimalkan untuk iPhone Duo.
+=======
+• Kini Anda dapat menggunakan stiker dalam balasan kutipan.
+• Peningkatan dan penyempurnaan tambahan untuk iPhone Duo.
+>>>>>>> upstream/8.36.0.1981

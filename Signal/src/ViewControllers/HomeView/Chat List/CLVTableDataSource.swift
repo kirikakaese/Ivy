@@ -118,7 +118,7 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
-        tableView.separatorColor = Theme.tableView2SeparatorColor
+        tableView.separatorColor = OWSTableViewController2.separatorColor
         tableView.register(ChatListCell.self)
         tableView.register(ArchivedConversationsCell.self)
         tableView.register(ChatListFilterFooterCell.self)
@@ -665,8 +665,8 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
         cell.useSidebarAppearance = useSideBarChatListCellAppearance
 
         if
-            let conversationSplitViewController = viewController?.conversationSplitViewController,
-            conversationSplitViewController.selectedThread?.uniqueId == contentToken.thread.uniqueId
+            let homeTabBarController = viewController?.homeTabBarController,
+            homeTabBarController.selectedThread?.uniqueId == contentToken.thread.uniqueId
         {
             tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         } else if !viewState.multiSelectState.isActive {

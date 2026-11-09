@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Ara, Signal està optimitzat per a iPhone Duo.
+=======
+• Ara pots afegir stickers a les respostes citades.
+• Millores addicionals per a iPhone Duo.
+>>>>>>> upstream/8.36.0.1981

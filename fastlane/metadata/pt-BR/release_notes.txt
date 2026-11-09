@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • O Signal agora está otimizado para o iPhone Duo. Assim, basta instalar uma atualização para usar as duas telas. Vamos revelar mais melhorias no futuro.
+=======
+• Agora é possível usar figurinhas nas respostas com citação, para você transmitir sua mensagem de um jeito ainda mais marcante.
+• Após as atualizações da semana passada, chegaram mais melhorias para o iPhone Duo!
+>>>>>>> upstream/8.36.0.1981

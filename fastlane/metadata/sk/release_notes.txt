@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Signal je teraz optimalizovaný pre iPhone Duo.
+=======
+Nálepky sú podporované v citovaných odpovediach.
+Ďalšie vylepšenia pre iPhone Duo.
+>>>>>>> upstream/8.36.0.1981

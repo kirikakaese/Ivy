@@ -17,7 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
+<<<<<<< HEAD
 	<string>$(IVY_UPSTREAM_MARKETING_VERSION)</string>
+=======
+	<string>8.36</string>
+>>>>>>> upstream/8.36.0.1981
 	<key>CFBundleVersion</key>
 	<string>$(IVY_UPSTREAM_BUILD_NUMBER).$(IVY_BUILD)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>

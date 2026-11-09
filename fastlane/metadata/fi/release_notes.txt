@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Signal on nyt optimoitu iPhone Duolle.
+=======
+• Tarroja tuetaan vastauksissa, joissa on lainaus.
+• Lisäparannuksia iPhone Duolle.
+>>>>>>> upstream/8.36.0.1981

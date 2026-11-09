@@ -8,7 +8,6 @@ public import SignalServiceKit
 public protocol StickerPackCollectionViewDelegate: StickerPickerDelegate {
     func stickerPreviewHostView() -> UIView?
     func stickerPreviewHasOverlay() -> Bool
-    func didRequestQuoteReplyPreview(for stickerMetadata: any StickerMetadata, stickerView: UIView)
 }
 
 public class StickerPackCollectionView: UICollectionView {
@@ -132,18 +131,27 @@ public class StickerPackCollectionView: UICollectionView {
     // MARK: Modes
 
     public func showInstalledPack(stickerPack: StickerPackRecord) {
-        stickerPackDataSource = InstalledStickerPackDataSource(stickerPackInfo: stickerPack.info)
+        stickerPackDataSource = InstalledStickerPackDataSource(
+            stickerPackInfo: stickerPack.info,
+            stickerManager: DependenciesBridge.shared.stickerManager,
+            db: DependenciesBridge.shared.db,
+        )
     }
 
     public func showUninstalledPack(stickerPack: StickerPackRecord) {
         stickerPackDataSource = TransientStickerPackDataSource(
             stickerPackInfo: stickerPack.info,
             shouldDownloadAllStickers: true,
+            stickerManager: DependenciesBridge.shared.stickerManager,
+            db: DependenciesBridge.shared.db,
         )
     }
 
     public func showRecents() {
-        stickerPackDataSource = RecentStickerPackDataSource()
+        stickerPackDataSource = RecentStickerPackDataSource(
+            stickerManager: DependenciesBridge.shared.stickerManager,
+            db: DependenciesBridge.shared.db,
+        )
     }
 
     public func showInstalledPackOrRecents(stickerPack: StickerPackRecord?) {
@@ -422,16 +430,7 @@ extension StickerPackCollectionView: UICollectionViewDelegate {
             owsFailDebug("Invalid index path: \(indexPath)")
             return
         }
-
-        if BuildFlags.stickerReply, let stickerDelegate, stickerDelegate.shouldShowStickerPreview() {
-            guard let stickerView = imageView(forStickerInfo: stickerInfo) else {
-                Logger.warn("Couldn't load sticker for display")
-                return
-            }
-            stickerDelegate.didRequestQuoteReplyPreview(for: stickerMetadata, stickerView: stickerView)
-        } else {
-            self.stickerDelegate?.didSelectSticker(stickerMetadata)
-        }
+        self.stickerDelegate?.didSelectSticker(stickerMetadata)
     }
 }
 

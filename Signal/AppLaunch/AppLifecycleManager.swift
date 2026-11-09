@@ -337,6 +337,7 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
             databaseStorage: databaseStorage,
             modelReadCaches: { SSKEnvironment.shared.modelReadCachesRef },
             tsAccountManager: { DependenciesBridge.shared.tsAccountManager },
+            stickerManager: { DependenciesBridge.shared.stickerManager },
         )
         databaseMigratorRunner.registerBGProcessingTask(appReadiness: appReadiness)
 
@@ -1705,7 +1706,7 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
             self.backgroundFetchHandle?.interrupt()
             let cronTask = self.cronTask.take()
             let startDate = MonotonicDate()
-            let isPastRegistration = SignalApp.shared.conversationSplitViewController != nil
+            let isPastRegistration = SignalApp.shared.homeTabBarController != nil
             let expirationJobTask = self.expirationJobTask
             self.backgroundFetchHandle = UIApplication.shared.beginBackgroundTask(
                 backgroundBlock: {
@@ -1917,6 +1918,10 @@ final class AppLifecycleManager: NSObject, UNUserNotificationCenterDelegate {
 
     private func clearAppropriateNotificationsAndRestoreBadgeCount() {
         AssertIsOnMainThread()
+
+        guard DebugFlags.clearNotificationsOnAppActivate.get() else {
+            return
+        }
 
         appReadiness.runNowOrWhenAppDidBecomeReadySync {
             let oldBadgeValue = UIApplication.shared.applicationIconBadgeNumber

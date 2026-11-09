@@ -14,19 +14,25 @@ PACKAGE_RESOLVED_PATH = WORKSPACE_PATH / "xcshareddata/swiftpm/Package.resolved"
 
 LICENSE_FILE_PATTERN = re.compile(r"^(LICEN[CS]E|COPYING)(\.(md|txt))?$", re.IGNORECASE)
 
+SWIFT_PACKAGE_LICENSE_PATHS = {
+    "mobilecoin-swift": {
+        "MobileCoin": "LICENSE",
+        "LibMobileCoin": "Vendor/libmobilecoin/LICENSE",
+    },
+}
+
 POD_TARGETS = [
     "Signal",
     "SignalNSE",
     "SignalServiceKit",
     "SignalServiceKitTests",
-    "SignalShareExtension",
     "SignalTests",
     "SignalUI",
     "SignalUITests",
 ]
 
 
-def get_pod_acknowledgements_paths():
+def get_pod_acknowledgements_paths(source_packages_path):
     paths = [
         PODS_PATH
         / "Target Support Files"
@@ -35,7 +41,7 @@ def get_pod_acknowledgements_paths():
         for target in POD_TARGETS
     ]
     paths += [
-        PODS_PATH / "LibSignalClient/acknowledgments/acknowledgments-ios.plist",
+        source_packages_path / "checkouts/libsignal/acknowledgments/acknowledgments-ios.plist",
         PODS_PATH / "SignalRingRTC/acknowledgments/acknowledgments.plist",
         PODS_PATH / "SignalRingRTC/out/release/acknowledgments-webrtc-ios.plist",
     ]
@@ -119,11 +125,20 @@ def get_swift_package_license_text(checkout_path):
     return license_paths[0].read_text(encoding="utf8")
 
 
-def get_swift_package_specifiers():
+def get_swift_package_name(checkout_path):
+    output = subprocess.run(
+        ["swift", "package", "dump-package", "--package-path", checkout_path],
+        capture_output=True,
+        encoding="utf8",
+        check=True,
+    ).stdout
+    return json.loads(output)["name"]
+
+
+def get_swift_package_specifiers(source_packages_path):
     with open(PACKAGE_RESOLVED_PATH, "r", encoding="utf8") as file:
         pins = json.load(file)["pins"]
 
-    source_packages_path = get_source_packages_path()
     workspace_state_path = source_packages_path / "workspace-state.json"
     with open(workspace_state_path, "r", encoding="utf8") as file:
         dependencies = {
@@ -138,15 +153,28 @@ def get_swift_package_specifiers():
             raise Exception(f"Unsupported kind for {identity}: {pin['kind']}")
 
         dependency = dependencies[identity]
-        specifiers.append(
-            {
-                "Type": "PSGroupSpecifier",
-                "Title": dependency["packageRef"]["name"],
-                "FooterText": get_swift_package_license_text(
-                    source_packages_path / "checkouts" / dependency["subpath"]
-                ),
-            }
-        )
+        checkout_path = source_packages_path / "checkouts" / dependency["subpath"]
+        license_paths = SWIFT_PACKAGE_LICENSE_PATHS.get(identity)
+        if license_paths is None:
+            specifiers.append(
+                {
+                    "Type": "PSGroupSpecifier",
+                    "Title": get_swift_package_name(checkout_path),
+                    "FooterText": get_swift_package_license_text(checkout_path),
+                }
+            )
+            continue
+
+        for title, license_path in license_paths.items():
+            specifiers.append(
+                {
+                    "Type": "PSGroupSpecifier",
+                    "Title": title,
+                    "FooterText": (checkout_path / license_path).read_text(
+                        encoding="utf8"
+                    ),
+                }
+            )
     return specifiers
 
 
@@ -175,14 +203,17 @@ def group_by_license(specifiers):
 
 
 def main():
-    specifier_groups = get_specifier_groups(get_pod_acknowledgements_paths())
+    source_packages_path = get_source_packages_path()
+    specifier_groups = get_specifier_groups(
+        get_pod_acknowledgements_paths(source_packages_path)
+    )
 
     header_specifier = specifier_groups[0][0]
     footer_specifier = specifier_groups[0][-1]
 
     specifiers = [s for group in specifier_groups for s in group[1:-1]]
     specifiers += get_third_party_specifiers()
-    specifiers += get_swift_package_specifiers()
+    specifiers += get_swift_package_specifiers(source_packages_path)
 
     final_specifiers = (
         [header_specifier] + group_by_license(specifiers) + [footer_specifier]

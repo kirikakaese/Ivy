@@ -26,7 +26,7 @@ class OutgoingDeviceTransferTask {
     private let newDeviceServiceBrowser: DeviceTransfer.OutgoingConnection
     private var notificationObservers: [NotificationCenter.Observer] = []
     private var messagesReceiverTask: Task<Void, Never>?
-    private var transferFinishedContinuation: CheckedContinuation<Void, Error>?
+    private var transferFinishedContinuation: DeferredContinuation<Void>?
 
     private let waitTask = AtomicValue<Task<Void, Error>?>(nil, lock: .init())
     private let sendTask = AtomicValue<Task<Void, Error>?>(nil, lock: .init())
@@ -113,6 +113,9 @@ class OutgoingDeviceTransferTask {
             ),
         )
 
+        let transferFinished = DeferredContinuation<Void>()
+        transferFinishedContinuation = transferFinished
+
         try await session.waitForConnection()
 
         logger.info("Begin receiving messages from new device")
@@ -133,7 +136,7 @@ class OutgoingDeviceTransferTask {
                     }
                 }
             } catch {
-                self.transferFinishedContinuation.take()?.resume(throwing: error)
+                transferFinished.resume(with: .failure(error))
             }
         }
 
@@ -178,6 +181,7 @@ class OutgoingDeviceTransferTask {
                     try await sendManifest(manifest: manifest, session: session)
                     try await sendAllFiles(manifest: manifest, session: session)
                 } catch where error is CancellationError {
+                    logger.info("Send task cancelled")
                     throw error
                 } catch {
                     if Task.isCancelled {
@@ -209,9 +213,7 @@ class OutgoingDeviceTransferTask {
         logger.info("Finished sending files to new device")
 
         // wait for message back from caller
-        try await withCheckedThrowingContinuation { continuation in
-            self.transferFinishedContinuation = continuation
-        }
+        try await transferFinished.wait()
     }
 
     func stop(error: Error?) async {
@@ -219,6 +221,7 @@ class OutgoingDeviceTransferTask {
     }
 
     private func didEnterBackground(_ notification: Notification) {
+        logger.info("App backgrounded; stopping transfer")
         // MCSession automatically disconnects when the app is backgrounded.
         // Send an explicit message to the peer (if connected) telling them
         // that's what happened.
@@ -353,6 +356,7 @@ class OutgoingDeviceTransferTask {
     }
 
     private func stopTransfer(error: Error? = nil, notifyRegState: Bool = true) async {
+        logger.info("Stopping transfer: \(error.map { "\($0)" } ?? "no error")")
         if let error {
             switch error {
             case DeviceTransfer.Error.otherDeviceTerminated:
@@ -385,6 +389,11 @@ class OutgoingDeviceTransferTask {
             }
         }
         transferInProgress = false
+
+        if let error {
+            // Only resume here if an error was encountered
+            transferFinishedContinuation?.resume(with: .failure(error))
+        }
     }
 
     private func failTransfer(_ error: DeviceTransfer.Error, _ reason: String) async {
@@ -417,7 +426,7 @@ class OutgoingDeviceTransferTask {
             SignalApp.shared.showTransferCompleteAndExit()
         }
 
-        transferFinishedContinuation.take()?.resume()
+        transferFinishedContinuation?.resume(with: .success(()))
     }
 
     // MANIFEST

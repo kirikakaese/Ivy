@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Signal er nå optimalisert for iPhone Duo.
+=======
+• Klistremerker støttes nå i siterte svar.
+• Enda flere forbedringer for iPhone Duo.
+>>>>>>> upstream/8.36.0.1981

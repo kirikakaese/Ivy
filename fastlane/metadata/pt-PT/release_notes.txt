@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • O Signal está agora otimizado para o iPhone Duo.
+=======
+• Os autocolantes são suportados em respostas citadas.
+• Melhorias adicionais para o iPhone Duo.
+>>>>>>> upstream/8.36.0.1981

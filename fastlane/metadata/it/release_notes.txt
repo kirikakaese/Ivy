@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Da oggi Signal è ottimizzato per iPhone Duo, così puoi installare un solo aggiornamento per goderti l'app aggiornata su due schermi. Nei prossimi mesi faremo uscire altri "doppi" aggiornamenti.
+=======
+• Gli sticker sono ora supportati nei messaggi citati, così avrai la risposta pronta a letteralmente qualsiasi tipo di messaggio.
+• Considera questo aggiornamento come la seconda metà dei miglioramenti introdotti la scorsa settimana per l'iPhone Duo.
+>>>>>>> upstream/8.36.0.1981

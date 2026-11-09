@@ -5,9 +5,8 @@
 
 import AVFAudio
 import LibSignalClient
-public import SignalServiceKit
+import SignalServiceKit
 import SignalUI
-public import UIKit
 
 extension ConversationViewController: MessageActionsDelegate {
     func messageActionsEditItem(_ itemViewModel: CVItemViewModelImpl) {
@@ -119,8 +118,6 @@ extension ConversationViewController: MessageActionsDelegate {
     }
 
     func prepareDetailViewForInteractivePresentation(_ itemViewModel: CVItemViewModelImpl) {
-        AssertIsOnMainThread()
-
         guard let message = itemViewModel.interaction as? TSMessage else {
             return owsFailDebug("Invalid interaction.")
         }
@@ -137,13 +134,11 @@ extension ConversationViewController: MessageActionsDelegate {
             thread: thread,
         )
         detailVC.detailDelegate = self
-        conversationSplitViewController?.navigationTransitionDelegate = detailVC
+        homeTabBarController?.navigationTransitionDelegate = detailVC
         panHandler.messageDetailViewController = detailVC
     }
 
     func showDetailView(_ itemViewModel: CVItemViewModelImpl) {
-        AssertIsOnMainThread()
-
         guard let message = itemViewModel.interaction as? TSMessage else {
             owsFailDebug("Invalid interaction.")
             return
@@ -168,9 +163,11 @@ extension ConversationViewController: MessageActionsDelegate {
                 thread: thread,
             )
             detailVC.detailDelegate = self
-            conversationSplitViewController?.navigationTransitionDelegate = detailVC
+            homeTabBarController?.navigationTransitionDelegate = detailVC
         }
-
+        // We don't create the navigation controller, therefore
+        // assign the delegate just before the transition start.
+        navigationController?.delegate = homeTabBarController
         navigationController?.pushViewController(detailVC, animated: true)
     }
 
@@ -178,7 +175,7 @@ extension ConversationViewController: MessageActionsDelegate {
         populateReplyForMessage(itemViewModel)
     }
 
-    public func populateReplyForMessage(_ itemViewModel: CVItemViewModelImpl) {
+    func populateReplyForMessage(_ itemViewModel: CVItemViewModelImpl) {
         AssertIsOnMainThread()
 
         guard let inputToolbar else {
@@ -502,7 +499,7 @@ extension ConversationViewController: MessageActionsDelegate {
         }
     }
 
-    public func handleActionUnpin(message: TSMessage, modalDelegate: UIViewController) {
+    func handleActionUnpin(message: TSMessage, modalDelegate: UIViewController) {
         let pinnedMessageManager = DependenciesBridge.shared.pinnedMessageManager
         let db = DependenciesBridge.shared.db
 
@@ -533,7 +530,7 @@ extension ConversationViewController: MessageActionsDelegate {
         }
     }
 
-    public func handleActionUnpinAsync(message: TSMessage) async {
+    func handleActionUnpinAsync(message: TSMessage) async {
         let pinnedMessageManager = DependenciesBridge.shared.pinnedMessageManager
         let db = DependenciesBridge.shared.db
 

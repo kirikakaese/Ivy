@@ -25,31 +25,29 @@ public class RegistrationSessionManagerMock: RegistrationSessionManager {
 
     // MARK: - BeginOrRestoreSession
 
-    private var beginSessionResponseMocks = [Registration.BeginSessionResponse]()
-    public func addBeginSessionResponseMock(_ mock: Registration.BeginSessionResponse) {
+    private var beginSessionResponseMocks = [() async throws -> RegistrationSession]()
+    public func addBeginSessionResponseMock(_ mock: @escaping () async throws -> RegistrationSession) {
         beginSessionResponseMocks.append(mock)
     }
 
-    public func beginOrRestoreSession(e164: E164, apnsToken: String?, logger: PrefixedLogger) async -> Registration.BeginSessionResponse {
+    public func beginOrRestoreSession(e164: E164, apnsToken: String?, logger: PrefixedLogger) async throws -> RegistrationSession {
         // TODO: Append step to known steps
-        return beginSessionResponseMocks.removeFirst()
+        return try await beginSessionResponseMocks.removeFirst()()
     }
 
     // MARK: - FulfillChallenge
 
-    private var fulfillChallengeResponseMocks = [Registration.UpdateSessionResponse]()
-    public var latestChallengeFulfillment: Registration.ChallengeFulfillment?
-    public func addFulfillChallengeResponseMock(_ mock: Registration.UpdateSessionResponse) {
+    private var fulfillChallengeResponseMocks = [(inout RegistrationSession, Registration.ChallengeFulfillment) async throws -> Void]()
+    public func addFulfillChallengeResponseMock(_ mock: @escaping (inout RegistrationSession, Registration.ChallengeFulfillment) async throws -> Void) {
         fulfillChallengeResponseMocks.append(mock)
     }
 
     public func fulfillChallenge(
-        for session: RegistrationSession,
+        for session: inout RegistrationSession,
         fulfillment: Registration.ChallengeFulfillment,
         logger: PrefixedLogger,
-    ) async -> Registration.UpdateSessionResponse {
-        latestChallengeFulfillment = fulfillment
-        return fulfillChallengeResponseMocks.removeFirst()
+    ) async throws {
+        try await fulfillChallengeResponseMocks.removeFirst()(&session, fulfillment)
     }
 
     // MARK: - RequestVerificationCode

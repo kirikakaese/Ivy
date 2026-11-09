@@ -3,14 +3,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-public import SignalServiceKit
-public import SignalUI
+import SignalServiceKit
+import SignalUI
 
-public class CVComponentFooter: CVComponentBase, CVComponent {
+class CVComponentFooter: CVComponentBase, CVComponent {
 
-    public var componentKey: CVComponentKey { .footer }
+    var componentKey: CVComponentKey { .footer }
 
-    public enum TimestampMode {
+    enum TimestampMode {
         case original
         case mostRecentEdit
     }
@@ -22,7 +22,7 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         static var size: CGSize { .init(width: 18, height: 12) }
     }
 
-    public enum TapForMoreState {
+    enum TapForMoreState {
         case none
         case tapForMore
         case undownloadableLongText
@@ -69,11 +69,11 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
 
     private let footerState: State
 
-    public var timestampText: String {
+    var timestampText: String {
         footerState.timestampText
     }
 
-    public var footerAccessibilityLabel: String? {
+    var footerAccessibilityLabel: String? {
         footerState.accessibilityLabel
     }
 
@@ -81,11 +81,11 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         footerState.statusIndicator
     }
 
-    public var tapForMoreState: TapForMoreState {
+    var tapForMoreState: TapForMoreState {
         footerState.tapForMoreState
     }
 
-    public var displayEditedLabel: Bool {
+    var displayEditedLabel: Bool {
         footerState.displayEditedLabel
     }
 
@@ -114,11 +114,11 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         super.init(itemModel: itemModel)
     }
 
-    public func buildComponentView(componentDelegate: CVComponentDelegate) -> CVComponentView {
+    func buildComponentView(componentDelegate: CVComponentDelegate) -> CVComponentView {
         CVComponentViewFooter()
     }
 
-    override public func wallpaperBlurView(componentView: CVComponentView) -> CVWallpaperBlurView? {
+    override func wallpaperBlurView(componentView: CVComponentView) -> CVWallpaperBlurView? {
         guard let componentView = componentView as? CVComponentViewFooter else {
             owsFailDebug("Unexpected componentView.")
             return nil
@@ -126,9 +126,9 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         return componentView.wallpaperBlurView
     }
 
-    public static let textViewVSpacing: CGFloat = 2
+    static let textViewVSpacing: CGFloat = 2
 
-    public func configureForRendering(
+    func configureForRendering(
         componentView componentViewParam: CVComponentView,
         cellMeasurement: CVCellMeasurement,
         componentDelegate: CVComponentDelegate,
@@ -303,7 +303,7 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         return MessageRecipientStatusUtils.recipientStatus(outgoingMessage: outgoingMessage, hasBodyAttachments: hasBodyAttachments)
     }
 
-    public static func timestampText(
+    static func timestampText(
         forInteraction interaction: TSInteraction,
         originalTimestamp: UInt64? = nil,
         shouldUseLongFormat: Bool,
@@ -462,7 +462,7 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         )
     }
 
-    public static func paymentMessageTimestampText(
+    static func paymentMessageTimestampText(
         forInteraction interaction: TSInteraction,
         paymentState: TSPaymentState,
         shouldUseLongFormat: Bool,
@@ -754,11 +754,11 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
     private static let measurementKey_innerStack = "CVComponentFooter.measurementKey_innerStack"
 
     // Extract the overall measurement for this component.
-    public static func footerMeasurement(measurementBuilder: CVCellMeasurement.Builder) -> CVCellMeasurement.Measurement? {
+    static func footerMeasurement(measurementBuilder: CVCellMeasurement.Builder) -> CVCellMeasurement.Measurement? {
         measurementBuilder.getMeasurement(key: measurementKey_outerStack)
     }
 
-    public func measure(maxWidth: CGFloat, measurementBuilder: CVCellMeasurement.Builder) -> CGSize {
+    func measure(maxWidth: CGFloat, measurementBuilder: CVCellMeasurement.Builder) -> CGSize {
         owsAssertDebug(maxWidth > 0)
 
         var outerSubviewInfos = [ManualStackSubviewInfo]()
@@ -842,7 +842,7 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
 
     // MARK: - Events
 
-    override public func handleTap(
+    override func handleTap(
         sender: UIGestureRecognizer,
         componentDelegate: CVComponentDelegate,
         componentView: CVComponentView,
@@ -895,7 +895,7 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
 
     // Used for rendering some portion of an Conversation View item.
     // It could be the entire item or some part thereof.
-    public class CVComponentViewFooter: NSObject, CVComponentView {
+    class CVComponentViewFooter: CVComponentView {
 
         fileprivate let outerStack = ManualStackView(name: "footer.outerStack")
         fileprivate let innerStack = ManualStackViewWithLayer(name: "footer.innerStack")
@@ -922,19 +922,19 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
             return wallpaperBlurView
         }
 
-        public var isDedicatedCellView = false
+        var isDedicatedCellView = false
 
-        public var rootView: UIView {
+        var rootView: UIView {
             outerStack
         }
 
-        override init() {
+        init() {
             timestampLabel.textAlignment = .trailing
         }
 
-        public func setIsCellVisible(_ isCellVisible: Bool) {}
+        func setIsCellVisible(_ isCellVisible: Bool) {}
 
-        public func reset() {
+        func reset() {
             outerStack.reset()
             innerStack.reset()
             innerStack.backgroundColor = nil
@@ -969,16 +969,14 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
             statusIndicatorImageView.layer.add(animation, forKey: "animation")
         }
     }
-}
 
-// MARK: -
+    // MARK: -
 
-private extension CVComponentFooter {
     /// Is this footer representing an SMS message we restored from a Backup?
     ///
     /// If so, we want to add some UI to indicate such, matching the UI for
     /// these on Android, where they originated.
-    var isRepresentingSmsMessageRestoredFromBackup: Bool {
+    private var isRepresentingSmsMessageRestoredFromBackup: Bool {
         if
             let message = interaction as? TSMessage,
             message.isSmsMessageRestoredFromBackup

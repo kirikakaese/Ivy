@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Signal je sada optimiziran za iPhone Duo.
+=======
+• Naljepnice su podržane u odgovorima na citirane poruke.
+• Dodatna poboljšanja za iPhone Duo.
+>>>>>>> upstream/8.36.0.1981

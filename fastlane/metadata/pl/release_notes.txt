@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Signal jest już gotowy na iPhone’a Duo. Wystarczy zainstalować najnowszą aktualizację, by korzystać z aplikacji na dwóch ekranach. Na tym nie koniec. Z czasem dodamy kolejne usprawnienia.
+=======
+• Naklejki są obsługiwane w cytowanych odpowiedziach, co pozwoli Ci zauważalnie podkreślać swoje wypowiedzi.
+• Po zeszłotygodniowej aktualizacji potraktuj tę wersję jako dopełnienie duetu, które wprowadza dodatkowe ulepszenia dla iPhone’a Duo.
+>>>>>>> upstream/8.36.0.1981
