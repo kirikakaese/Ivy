@@ -93,7 +93,12 @@ extension ConversationViewController {
         }
 
         let topMargin: CGFloat = if #available(iOS 26, *) { 0 } else { 8 }
-        let hMargin = OWSTableViewController2.cellHInnerMargin
+        var hMargin = OWSTableViewController2.cellHInnerMargin
+#if targetEnvironment(macCatalyst)
+        // Ivy: on the Mac the banners are docked under the top bar across
+        // the chat's whole width, not cards floating over the messages.
+        hMargin = 0
+#endif
         let bannersView = UIStackView(arrangedSubviews: banners)
         bannersView.axis = .vertical
         bannersView.alignment = .fill
@@ -655,7 +660,23 @@ private class ConversationBannerView: UIView {
         super.init(frame: .zero)
 
         let backgroundView: UIView
-        if #available(iOS 26, *) {
+        if Self.ivyIsDocked {
+            // Ivy: a plain strip in the chat's background with a line below
+            // it, so no message shows through.
+            let strip = UIVisualEffectView(effect: nil)
+            strip.contentView.backgroundColor = .Signal.background
+            let line = UIView()
+            line.backgroundColor = .separator
+            line.translatesAutoresizingMaskIntoConstraints = false
+            strip.contentView.addSubview(line)
+            NSLayoutConstraint.activate([
+                line.leadingAnchor.constraint(equalTo: strip.contentView.leadingAnchor),
+                line.trailingAnchor.constraint(equalTo: strip.contentView.trailingAnchor),
+                line.bottomAnchor.constraint(equalTo: strip.contentView.bottomAnchor),
+                line.heightAnchor.constraint(equalToConstant: 1 / max(traitCollection.displayScale, 1)),
+            ])
+            backgroundView = strip
+        } else if #available(iOS 26, *) {
             let glassEffect = UIGlassEffect(style: .regular)
             glassEffect.tintColor = .Signal.glassBackgroundTint
             backgroundView = UIVisualEffectView(effect: glassEffect)
@@ -764,7 +785,19 @@ private class ConversationBannerView: UIView {
         animator.startAnimation()
     }
 
+    /// Ivy: whether the banner is a strip docked under the top bar (the
+    /// Mac) instead of a floating card.
+    private static var ivyIsDocked: Bool {
+#if targetEnvironment(macCatalyst)
+        return true
+#else
+        return false
+#endif
+    }
+
     private func backgroundViewVisualEffect() -> UIVisualEffect? {
+        // Ivy: the docked strip has no effect to fade in.
+        if Self.ivyIsDocked { return nil }
         if #available(iOS 26, *) {
             let glassEffect = UIGlassEffect(style: .regular)
             glassEffect.tintColor = .Signal.glassBackgroundTint

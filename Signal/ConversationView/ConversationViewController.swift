@@ -254,6 +254,11 @@ public final class ConversationViewController: OWSViewController {
         self.collectionView.backgroundColor = .clear
         if #available(iOS 26, *) {
             self.collectionView.topEdgeEffect.style = .soft
+#if targetEnvironment(macCatalyst)
+            // Ivy: the Mac's top bar is solid (ivyInstallMacTopBar), so
+            // nothing needs softening behind it.
+            self.collectionView.topEdgeEffect.isHidden = true
+#endif
         }
 
         // To minimize time to initial apearance, we initially disable prefetching, but then
@@ -362,6 +367,9 @@ public final class ConversationViewController: OWSViewController {
 #endif
         // Ivy: and while the chat slides in, before the system's blur starts.
         ivyCoverTopBarWhileOpening()
+#if targetEnvironment(macCatalyst)
+        ivyInstallMacTopBar() // Ivy: a solid top bar on the Mac
+#endif
 
         ensureBannerState()
 

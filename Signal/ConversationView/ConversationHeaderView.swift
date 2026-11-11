@@ -52,6 +52,14 @@ class ConversationHeaderView: UIView {
     }()
 
     @available(iOS, deprecated: 26)
+    private static var ivyIsMac: Bool {
+#if targetEnvironment(macCatalyst)
+        return true
+#else
+        return false
+#endif
+    }
+
     private var useCompactVerticalLayout: Bool {
         // iPhones in portrait, iPads etc.
         if traitCollection.verticalSizeClass == .regular { return false }
@@ -64,6 +72,9 @@ class ConversationHeaderView: UIView {
     }
 
     private var avatarSizeClass: ConversationAvatarView.Configuration.SizeClass {
+        // Ivy: smaller in the Mac's top bar.
+        if Self.ivyIsMac { return .thirtyTwo }
+
         // One size for the navigation bar on iOS 26.
         if #available(iOS 26, *) { return .forty }
 
@@ -103,8 +114,17 @@ class ConversationHeaderView: UIView {
         rootStack.alignment = .center
         rootStack.spacing = 8
 
+        // Ivy: on the Mac the name and picture sit in a solid top bar (see
+        // IvyChatTopBarCover.swift), so they need no glass capsule of their
+        // own, and the text is the size of a Mac toolbar's.
+        if Self.ivyIsMac {
+            titleLabel.font = .systemFont(ofSize: 14, weight: .semibold)
+            subtitleLabel.font = .systemFont(ofSize: 11.5, weight: .regular)
+            subtitleLabel.textColor = .Signal.secondaryLabel
+        }
+
         let rootView: UIView
-        if #available(iOS 26, *) {
+        if #available(iOS 26, *), !Self.ivyIsMac {
             rootStack.directionalLayoutMargins = .init(top: 2, leading: 2, bottom: 2, trailing: 16)
             rootStack.heightAnchor.constraint(equalToConstant: 44).isActive = true
 

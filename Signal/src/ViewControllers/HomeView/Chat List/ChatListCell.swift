@@ -206,6 +206,11 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
             configuration.backgroundColor = Theme.tableCell2SelectedBackgroundColor
             if useSidebarAppearance {
                 configuration.cornerRadius = 24
+#if targetEnvironment(macCatalyst)
+                // Ivy: the Mac's rows are lower, so a smaller radius, close
+                // to the sidebar's.
+                configuration.cornerRadius = 10
+#endif
             }
         } else {
             configuration.backgroundColor = .Signal.background

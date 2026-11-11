@@ -65,3 +65,55 @@ extension ConversationViewController {
         }
     }
 }
+
+#if targetEnvironment(macCatalyst)
+
+/// The Mac's top bar of a chat: solid, in the chat's background, with a line
+/// below it. Without it the bar is clear glass and the messages, the pinned
+/// message and the day label show through and collide with the chat's name
+/// and the call button.
+final class IvyMacChatTopBar: UIView {
+
+    private let line = UIView()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        isUserInteractionEnabled = false
+        backgroundColor = .Signal.background
+        line.backgroundColor = .separator
+        addSubview(line)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let height = 1 / max(traitCollection.displayScale, 1)
+        line.frame = CGRect(x: 0, y: bounds.height - height, width: bounds.width, height: height)
+    }
+}
+
+extension ConversationViewController {
+
+    /// Puts the solid bar behind the navigation bar, above the messages.
+    /// Called from viewWillAppear; does nothing the second time.
+    func ivyInstallMacTopBar() {
+        guard !isInPreviewPlatter, !view.subviews.contains(where: { $0 is IvyMacChatTopBar }) else {
+            return
+        }
+        let bar = IvyMacChatTopBar()
+        view.insertSubview(bar, aboveSubview: collectionView)
+        bar.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            bar.topAnchor.constraint(equalTo: view.topAnchor),
+            bar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+        ])
+    }
+}
+
+#endif

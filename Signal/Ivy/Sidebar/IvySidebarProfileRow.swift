@@ -141,4 +141,12 @@ extension UIViewController {
 extension ChatListViewController {
     /// The Mac's margin on the left and right of the lists and their bars.
     static let ivyMacMargin: CGFloat = 16
+
+    /// How far a selected chat's highlight is from the column's edges, as in
+    /// the sidebar.
+    static let ivyMacHighlightInset: CGFloat = 10
+
+    /// From the highlight's edge to the pictures and the section labels, so
+    /// they start 18 pt from the column's edge.
+    static let ivyMacRowMargin: CGFloat = 8
 }
