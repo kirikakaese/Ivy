@@ -81,6 +81,14 @@ final class IvyHomeHeaderView: UIView {
         cardStack.spacing = 3
         cardStack.setCustomSpacing(6, after: cardCaption)
         cardStack.setCustomSpacing(10, after: cardDetail)
+        if Self.isMac {
+            // On the Mac the card is in the accent, like the selected
+            // section in the sidebar, not in a blue of its own.
+            card.backgroundColor = UIColor.Signal.accent.withAlphaComponent(0.16)
+            cardCaption.textColor = .Signal.accent
+            cardDetail.textColor = .Signal.secondaryLabel
+            cardThen.textColor = .Signal.secondaryLabel
+        }
         card.addSubview(cardStack)
         cardStack.autoPinEdgesToSuperviewEdges(with: Self.isMac ? UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 16) : UIEdgeInsets(top: 16, left: 18, bottom: 16, right: 18))
         card.isAccessibilityElement = true
@@ -133,35 +141,57 @@ final class IvyHomeHeaderView: UIView {
 
     static var isMac: Bool { UIDevice.current.userInterfaceIdiom == .mac }
 
-    /// On the Mac: equal tiles with the icon and a short label inside, all in
-    /// one size.
+    /// On the Mac: two rows of two buttons, each with its icon and its whole
+    /// label on one line. Four in a row left no room for the labels.
     private func buildMacQuickActions() {
+        tiles.axis = .vertical
+        tiles.distribution = .fill
+        tiles.spacing = 6
+        var row: UIStackView?
         for quickAction in quickActions {
             var configuration = UIButton.Configuration.gray()
-            configuration.image = UIImage(systemName: quickAction.systemImage, withConfiguration: UIImage.SymbolConfiguration(pointSize: 15, weight: .regular))
-            configuration.imagePlacement = .top
-            configuration.imagePadding = 5
+            configuration.image = UIImage(systemName: quickAction.systemImage, withConfiguration: UIImage.SymbolConfiguration(pointSize: 13, weight: .regular))
+            configuration.imagePlacement = .leading
+            configuration.imagePadding = 8
             configuration.attributedTitle = AttributedString(quickAction.title, attributes: AttributeContainer([
-                .font: UIFont.systemFont(ofSize: 11.5),
-                .foregroundColor: UIColor.Signal.secondaryLabel,
+                .font: UIFont.systemFont(ofSize: 13, weight: .medium),
+                .foregroundColor: UIColor.Signal.label,
             ]))
             configuration.titleLineBreakMode = .byTruncatingTail
             configuration.baseForegroundColor = .Signal.accent
-            configuration.background.cornerRadius = 10
+            configuration.background.cornerRadius = 8
             configuration.cornerStyle = .fixed
-            configuration.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 4, bottom: 8, trailing: 4)
+            configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 8)
             let button = UIButton(configuration: configuration, primaryAction: UIAction { _ in quickAction.action() })
+#if targetEnvironment(macCatalyst)
+            // The Mac's own button ignores the layout above and draws a
+            // small push button; the iPad's keeps it.
+            button.preferredBehavioralStyle = .pad
+#endif
+            button.contentHorizontalAlignment = .leading
             button.accessibilityLabel = quickAction.title
             button.toolTip = quickAction.title
-            button.heightAnchor.constraint(equalToConstant: 58).isActive = true
-            tiles.addArrangedSubview(button)
+            button.heightAnchor.constraint(equalToConstant: 32).isActive = true
+            if let current = row, current.arrangedSubviews.count < 2 {
+                current.addArrangedSubview(button)
+            } else {
+                let next = UIStackView(arrangedSubviews: [button])
+                next.axis = .horizontal
+                next.distribution = .fillEqually
+                next.spacing = 6
+                tiles.addArrangedSubview(next)
+                row = next
+            }
+        }
+        // An odd number leaves the last button at half width.
+        if let row, row.arrangedSubviews.count == 1 {
+            row.addArrangedSubview(UIView())
         }
     }
 
     private func buildQuickActions() {
         tiles.arrangedSubviews.forEach { $0.removeFromSuperview() }
         if Self.isMac {
-            tiles.spacing = 8
             buildMacQuickActions()
             return
         }
@@ -302,6 +332,7 @@ final class IvyImportantCell: UITableViewCell {
     private let timeLabel = UILabel()
     private let previewLabel = UILabel()
     private let tagLabel = IvyTagLabel()
+    private let reasonToolTip = UIToolTipInteraction()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -339,6 +370,9 @@ final class IvyImportantCell: UITableViewCell {
             row.spacing = 10
             nameLabel.font = UIFont.dynamicTypeSubheadlineClamped.semibold()
             previewLabel.font = .dynamicTypeFootnoteClamped
+            // The reason is an icon beside the time; hovering names it.
+            timeLabel.isUserInteractionEnabled = true
+            timeLabel.addInteraction(reasonToolTip)
         }
         contentView.addSubview(row)
         row.translatesAutoresizingMaskIntoConstraints = false
@@ -355,7 +389,7 @@ final class IvyImportantCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure(thread: TSThread, chatName: String, sender: String?, text: String, date: Date, reason: String, tone: IvyTone) {
+    func configure(thread: TSThread, chatName: String, sender: String?, text: String, date: Date, reason: String, reasonSymbol: String? = nil, tone: IvyTone) {
         SSKEnvironment.shared.databaseStorageRef.read { tx in
             avatarView.update(tx) { config in
                 config.dataSource = .thread(thread)
@@ -364,9 +398,23 @@ final class IvyImportantCell: UITableViewCell {
         nameLabel.text = chatName
         timeLabel.text = DateUtil.formatDynamicDateShort(date).formatted
         if IvyHomeHeaderView.isMac {
-            let time = NSMutableAttributedString(string: reason + " · ", attributes: [.foregroundColor: tone.strong])
+            // The reason's words took the room the chat's name needs, so
+            // on the Mac it's an icon in the reason's colour.
+            let time = NSMutableAttributedString()
+            let symbol = reasonSymbol.flatMap {
+                UIImage(systemName: $0, withConfiguration: UIImage.SymbolConfiguration(font: timeLabel.font, scale: .small))
+            }
+            if let symbol {
+                let icon = NSMutableAttributedString(attachment: NSTextAttachment(image: symbol.withRenderingMode(.alwaysTemplate)))
+                icon.addAttribute(.foregroundColor, value: tone.strong, range: NSRange(location: 0, length: icon.length))
+                time.append(icon)
+                time.append(NSAttributedString(string: " "))
+            } else {
+                time.append(NSAttributedString(string: reason + " · ", attributes: [.foregroundColor: tone.strong]))
+            }
             time.append(NSAttributedString(string: DateUtil.formatDynamicDateShort(date).formatted))
             timeLabel.attributedText = time
+            reasonToolTip.defaultToolTip = reason
         }
         let preview = NSMutableAttributedString()
         if let sender {

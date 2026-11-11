@@ -247,6 +247,12 @@ class ConversationSplitViewController: UISplitViewController, ConversationSplit 
             animated: animated,
         )
 
+        // Ivy: timed from here until the chat's messages show, and the part
+        // that blocks the window on its own.
+        IvyPerformance.openChat = IvyPerformance.begin("open chat until messages show", slowerThan: 0.1)
+        let ivyInterval = IvyPerformance.begin("open chat")
+        defer { ivyInterval.end() }
+
         let conversationViewController = SSKEnvironment.shared.databaseStorageRef.read { tx in
             return ConversationViewController.load(
                 threadViewModel: ThreadViewModel(

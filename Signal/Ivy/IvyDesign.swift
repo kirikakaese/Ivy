@@ -129,6 +129,11 @@ final class IvySectionHeaderView: UITableViewHeaderFooterView {
         actionButton.titleLabel?.font = .dynamicTypeSubheadline
         actionButton.titleLabel?.adjustsFontForContentSizeCategory = true
         actionButton.tintColor = .Signal.accent
+#if targetEnvironment(macCatalyst)
+        // The Mac's own button is a boxed push button that sits off the
+        // heading's line; the iPad's is plain text on its baseline.
+        actionButton.preferredBehavioralStyle = .pad
+#endif
         actionButton.setContentCompressionResistancePriority(.required, for: .horizontal)
         actionButton.addAction(UIAction { [weak self] _ in self?.action?() }, for: .primaryActionTriggered)
 

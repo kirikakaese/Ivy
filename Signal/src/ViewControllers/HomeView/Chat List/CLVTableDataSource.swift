@@ -614,7 +614,8 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
         case .localFileBackupExportProgressView:
             cell = viewController.viewState.localFileBackupExportProgressView.localFileBackupExportProgressViewCell
         case .pinned, .unpinned:
-            cell = buildConversationCell(tableView: tableView, indexPath: indexPath)
+            // Ivy: timed, to find rows that stall scrolling.
+            cell = IvyPerformance.measure("chat list row") { buildConversationCell(tableView: tableView, indexPath: indexPath) }
         case .archiveButton:
             cell = buildArchivedConversationsButtonCell(tableView: tableView, indexPath: indexPath)
         case .inboxFilterFooter:
