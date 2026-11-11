@@ -326,7 +326,7 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
         // Lined up with the profile pictures below.
         container.preservesSuperviewLayoutMargins = false
         container.insetsLayoutMarginsFromSafeArea = false
-        container.layoutMargins = UIEdgeInsets(top: 12, leading: ChatListViewController.ivyMacMargin, bottom: 4, trailing: ChatListViewController.ivyMacMargin)
+        container.layoutMargins = UIEdgeInsets(top: 12, leading: ChatListViewController.ivyMacRowMargin, bottom: 4, trailing: ChatListViewController.ivyMacRowMargin)
         label.font = UIFont.dynamicTypeFootnoteClamped.semibold()
         label.textColor = .Signal.secondaryLabel
 #endif

@@ -68,7 +68,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         tableView.preservesSuperviewLayoutMargins = false
         tableView.insetsLayoutMarginsFromSafeArea = false
         tableView.cellLayoutMarginsFollowReadableWidth = false
-        tableView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: Self.ivyMacMargin, bottom: 0, trailing: Self.ivyMacMargin)
+        tableView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: Self.ivyMacRowMargin, bottom: 0, trailing: Self.ivyMacRowMargin)
 #endif
 
         if let filterControl {
@@ -798,6 +798,11 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         }
         // We need to add/remove horizotal padding around table view...
         containerView.tableViewHorizontalInset = useSidebarChatListCellAppearance ? 16 : 0
+#if targetEnvironment(macCatalyst)
+        // Ivy: the selected chat's highlight starts where the sidebar's and
+        // the search field's do, 10 pt in.
+        containerView.tableViewHorizontalInset = useSidebarChatListCellAppearance ? Self.ivyMacHighlightInset : 0
+#endif
         // ... and tell ChatListCell to use rounded corners if there is non-zero padding.
         tableDataSource.useSideBarChatListCellAppearance = useSidebarChatListCellAppearance
     }

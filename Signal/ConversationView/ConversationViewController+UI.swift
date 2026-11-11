@@ -247,6 +247,12 @@ extension ConversationViewController {
                 }
             }
 
+#if targetEnvironment(macCatalyst)
+            // Ivy: plain icons in the Mac's solid top bar.
+            if #available(iOS 26, *) {
+                barButtons.forEach { $0.hidesSharedBackground = true }
+            }
+#endif
             navigationItem.rightBarButtonItems = barButtons
             return
         }
