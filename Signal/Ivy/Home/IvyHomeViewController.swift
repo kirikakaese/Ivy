@@ -569,6 +569,7 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
                 text: row.text,
                 date: row.date,
                 reason: Self.title(for: row.message.reason),
+                reasonSymbol: Self.symbol(for: row.message.reason),
                 tone: Self.tone(for: row.message.reason),
             )
             return cell
@@ -609,6 +610,7 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
             content.secondaryText = IvyTaskUI.subtitle(for: task, listName: listName)
             content.image = IvyTaskUI.checkboxImage(isDone: task.isDone)
             content.imageProperties.tintColor = .Signal.secondaryLabel
+            content.imageProperties.reservedLayoutSize = Self.rowImageSize
             cell.accessoryType = .none
             if task.isOverdue(at: Date()) {
                 content.secondaryTextProperties.color = IvyTone.red.strong
@@ -645,6 +647,13 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
             content = UIListContentConfiguration.cell()
             content.text = title
             content.textProperties.color = .Signal.accent
+            if IvyHomeHeaderView.isMac {
+                // An icon in the tasks' checkbox column, so the link starts
+                // where their titles do.
+                content.image = UIImage(systemName: "arrow.forward.circle")
+                content.imageProperties.tintColor = .Signal.accent
+                content.imageProperties.reservedLayoutSize = Self.rowImageSize
+            }
         }
         cell.contentConfiguration = content
         return cell
@@ -771,6 +780,21 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
     }
 
     // MARK: -
+
+    /// The room a row's leading icon takes, so rows with different icons
+    /// start their text on one line.
+    private static let rowImageSize = CGSize(width: 22, height: 22)
+
+    /// The icon that stands for the reason beside the time on the Mac.
+    static func symbol(for reason: IvyImportantMessage.Reason) -> String {
+        switch reason {
+        case .reminder: return "bell.fill"
+        case .mention: return "at"
+        case .reply: return "arrowshape.turn.up.left.fill"
+        case .importantChat: return "star.fill"
+        case .pinnedChat: return "pin.fill"
+        }
+    }
 
     static func title(for reason: IvyImportantMessage.Reason) -> String {
         switch reason {
