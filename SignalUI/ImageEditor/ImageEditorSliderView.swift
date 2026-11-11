@@ -13,6 +13,11 @@ class ImageEditorSlider: UISlider {
         super.init(frame: frame)
 
         semanticContentAttribute = .forceLeftToRight
+        // Ivy: the Mac's own slider refuses custom track colours and stops
+        // the app; the iPad's slider takes them.
+#if targetEnvironment(macCatalyst)
+        preferredBehavioralStyle = .pad
+#endif
         maximumTrackTintColor = .clear
         minimumTrackTintColor = .clear
 
