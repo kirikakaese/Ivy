@@ -151,6 +151,8 @@ extension ConversationViewController: UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         AssertIsOnMainThread()
 
+        IvyScrollHitches.shared.scrolled("chat scroll") // Ivy
+
         // Constantly try to update the lastKnownDistanceFromBottom.
         updateLastKnownDistanceFromBottom()
 

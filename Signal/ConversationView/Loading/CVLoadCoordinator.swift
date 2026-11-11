@@ -734,11 +734,14 @@ extension CVLoadCoordinator: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         let messageSwipeActionState = delegate.viewState.messageSwipeActionState
-        cell.configure(
-            renderItem: renderItem,
-            componentDelegate: componentDelegate,
-            messageSwipeActionState: messageSwipeActionState,
-        )
+        // Ivy: timed, to find messages that stall scrolling.
+        IvyPerformance.measure("chat message") {
+            cell.configure(
+                renderItem: renderItem,
+                componentDelegate: componentDelegate,
+                messageSwipeActionState: messageSwipeActionState,
+            )
+        }
         return cell
 
         //        // This must happen after load for display, since the tap
