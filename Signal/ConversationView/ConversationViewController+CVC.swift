@@ -195,6 +195,10 @@ extension ConversationViewController: CVLoadCoordinatorDelegate {
     ) {
         AssertIsOnMainThread()
 
+        // Ivy: timed, to find chat updates that stall.
+        let ivyInterval = IvyPerformance.begin("chat update")
+        defer { ivyInterval.end() }
+
         guard hasViewWillAppearEverBegun else {
             // It's safe to ignore updates before viewWillAppear
             // if called for the first time.
@@ -432,6 +436,9 @@ extension ConversationViewController: CVLoadCoordinatorDelegate {
         }
         updateViewToReflectLoad(loadedRenderState: self.renderState)
         loadDidLand()
+        // Ivy: the chat's messages now show.
+        IvyPerformance.openChat?.end()
+        IvyPerformance.openChat = nil
     }
 
     private func setHasAppliedFirstLoadIfNecessary() {

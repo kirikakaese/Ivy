@@ -73,6 +73,10 @@ extension ChatListViewController {
     fileprivate func applyLoadResult(_ loadResult: CLVLoadResult, animated: Bool) {
         AssertIsOnMainThread()
 
+        // Ivy: timed, to find chat list updates that stall.
+        let ivyInterval = IvyPerformance.begin("chat list update")
+        defer { ivyInterval.end() }
+
         switch loadResult {
         case .renderStateForReset(renderState: let renderState):
             let previousSelection = tableDataSource.selectedThreadUniqueIds(in: tableView)

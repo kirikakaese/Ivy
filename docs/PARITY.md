@@ -27,7 +27,7 @@ Status values: `planned`, `in progress`, `done`, `removed`, `disabled` (temporar
 | Stories | 2 | removed | removed | removed | Hidden; the synced account setting is left unchanged |
 | Payments | 2 | removed | removed | removed | Hidden; the profile keeps its payment address |
 | Donation prompts | 2 | removed | removed | removed | Settings rows, badge sheet button and donation megaphones |
-| Local-only diagnostics | 2 | done | done | done | Debug logs are exported, never uploaded |
+| Local-only diagnostics | 2 | done | done | done | Debug logs are exported, never uploaded. They note slow work ("Slow: … took N ms"): start, switching sections, the chat list, opening a chat, and frames dropped while a chat or the chat list scrolls |
 | About, license, privacy statement | 2 | done | done | done | Settings > Help > About Ivy; Help points to Ivy's issue tracker |
 
 ## Platform differences

@@ -1735,6 +1735,11 @@ extension ChatListViewController {
 }
 
 extension ChatListViewController: UIScrollViewDelegate {
+    // Ivy: counts the frames the chat list drops while it scrolls.
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        IvyScrollHitches.shared.scrolled("chat list scroll")
+    }
+
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         filterControl?.draggingWillBegin(in: scrollView)
         cancelSearch()
