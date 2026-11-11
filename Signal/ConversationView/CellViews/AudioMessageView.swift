@@ -99,6 +99,11 @@ class AudioMessageView: ManualStackView, CVAudioPlayerListener {
         setWaveformVisible(true)
         waveformContainer.addSubviewToFillSuperviewEdges(waveformProgress)
 
+        // Ivy: the Mac's own slider refuses a custom thumb and track colours
+        // and stops the app; the iPad's slider takes them.
+#if targetEnvironment(macCatalyst)
+        progressSlider.preferredBehavioralStyle = .pad
+#endif
         progressSlider.setThumbImage(Self.thumbImage(color: presentation.progressBarThumbColor()), for: .normal)
         progressSlider.minimumTrackTintColor = presentation.playedColor()
         progressSlider.maximumTrackTintColor = presentation.unplayedColor()

@@ -113,7 +113,12 @@ private final class MuteUntilPickerViewController: NavStackSheetViewController {
     private lazy var timePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .time
+        // Ivy: the Mac has no wheels; asking for them stops the app.
+#if targetEnvironment(macCatalyst)
+        picker.preferredDatePickerStyle = .compact
+#else
         picker.preferredDatePickerStyle = .wheels
+#endif
         picker.addTarget(self, action: #selector(pickerValueDidChange), for: .valueChanged)
         return picker
     }()

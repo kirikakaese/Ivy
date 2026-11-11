@@ -41,6 +41,8 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Limited contact access picker | Not shown; contact access is all or nothing |
 | Quick Look support check | Skipped; Quick Look shows a generic view for files it cannot render |
 | File protection classes | The strictest iOS classes are not available; FileVault encrypts the files instead |
+| Mute until a chosen time | The time is a compact field instead of wheels, which the Mac does not have |
+| Voice message, video and photo editor sliders | Use the iPad's slider, so they keep their own thumb and colours; the Mac's slider does not take them |
 
 ## Organization
 

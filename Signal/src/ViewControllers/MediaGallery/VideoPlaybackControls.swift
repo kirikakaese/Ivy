@@ -521,6 +521,11 @@ class PlayerProgressView: UIView {
     private lazy var slider: UISlider = {
         let slider = VideoPlaybackSlider()
         slider.semanticContentAttribute = .playback
+        // Ivy: the Mac's own slider refuses a custom thumb and track colours
+        // and stops the app; the iPad's slider takes them.
+#if targetEnvironment(macCatalyst)
+        slider.preferredBehavioralStyle = .pad
+#endif
         slider.setThumbImage(UIImage(), for: .normal)
         slider.setThumbImage(UIImage(), for: .highlighted)
         slider.minimumTrackTintColor = .Signal.label
