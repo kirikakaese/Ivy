@@ -105,8 +105,12 @@ def api_request(pin):
     with urllib.request.urlopen(urllib.request.Request(release_url, headers=headers), timeout=60) as response:
         release = json.load(response)
     asset = next(a for a in release["assets"] if a["name"] == pin["asset"])
-    headers["Accept"] = "application/octet-stream"
-    return urllib.request.Request(asset["url"], headers=headers)
+    # The API answers with a redirect to a signed link on another host. The
+    # token must not follow it there: that host refuses a second credential.
+    request = urllib.request.Request(asset["url"], headers={"Accept": "application/octet-stream"})
+    if token:
+        request.add_unredirected_header("Authorization", f"Bearer {token}")
+    return request
 
 
 def download(pin, dest):
@@ -121,15 +125,23 @@ def download(pin, dest):
     # minutes or, for a single file, for good. Try again a few times,
     # switching to the same file through the API, before giving up.
     for attempt in range(6):
+        direct = attempt % 2 == 0
         try:
-            request = urllib.request.Request(url) if attempt % 2 == 0 else api_request(pin)
+            request = urllib.request.Request(url) if direct else api_request(pin)
             with urllib.request.urlopen(request, timeout=120) as response, open(tmp, "wb") as out:
                 shutil.copyfileobj(response, out)
             break
         except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as error:
             status = getattr(error, "code", None)
-            if attempt == 5 or (status is not None and status < 500):
+            refused = status is not None and status < 500
+            # The download link carries no token, so a private repository
+            # answers it with "not found". The API request has the token:
+            # only its refusal is final.
+            if attempt == 5 or (refused and not direct):
                 raise
+            if refused:
+                print(f"download link refused ({error}), asking the API")
+                continue
             wait = 10 * (attempt + 1)
             print(f"download failed ({error}), trying again in {wait} s")
             time.sleep(wait)
