@@ -5,6 +5,7 @@
 
 import SignalServiceKit
 import SignalUI
+import UniformTypeIdentifiers
 
 #if targetEnvironment(macCatalyst)
 
@@ -60,6 +61,82 @@ private final class IvyClickLocation: UITapGestureRecognizer {
             return point
         }
         return sourceView.convert(point, to: view)
+    }
+}
+
+#endif
+
+// MARK: - Dropping files into a chat
+
+#if targetEnvironment(macCatalyst)
+
+/// Files, pictures and videos dragged from the Finder or another app can be
+/// dropped onto a chat's messages on the Mac. They go through the same
+/// preview as pasted ones before anything is sent. Text is left to the
+/// message field, which takes dropped text itself.
+extension ConversationViewController: UIDropInteractionDelegate {
+
+    /// Called from viewWillAppear; does nothing the second time.
+    func ivyInstallFileDrop() {
+        guard !isInPreviewPlatter, !collectionView.interactions.contains(where: { $0 is UIDropInteraction }) else {
+            return
+        }
+        collectionView.addInteraction(UIDropInteraction(delegate: self))
+    }
+
+    /// What a dropped item is sent as, or nil for things that aren't files.
+    private static func ivyDropType(of provider: NSItemProvider) -> TypedItemProvider.ItemType? {
+        if provider.hasItemConformingToTypeIdentifier(UTType.movie.identifier) { return .movie }
+        if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier) { return .image }
+        if provider.hasItemConformingToTypeIdentifier(UTType.pdf.identifier) { return .pdf }
+        if provider.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier) { return .fileUrl }
+        return nil
+    }
+
+    public func dropInteraction(_ interaction: UIDropInteraction, canHandle session: UIDropSession) -> Bool {
+        session.items.contains { Self.ivyDropType(of: $0.itemProvider) != nil }
+    }
+
+    public func dropInteraction(_ interaction: UIDropInteraction, sessionDidUpdate session: UIDropSession) -> UIDropProposal {
+        UIDropProposal(operation: .copy)
+    }
+
+    public func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
+        let items: [TypedItemProvider] = session.items.compactMap { item in
+            Self.ivyDropType(of: item.itemProvider).map { TypedItemProvider(itemProvider: item.itemProvider, itemType: $0) }
+        }
+        guard !items.isEmpty else { return }
+        let attachmentLimits = OutgoingAttachmentLimits.currentLimits()
+
+        ModalActivityIndicatorViewController.present(
+            fromViewController: self,
+            title: OWSLocalizedString(
+                "ATTACHMENT_PASTING",
+                comment: "Displayed in a full screen modal when app is processing media that was pasted into message compose field.",
+            ),
+            asyncBlock: { modal in
+                var attachments = [PreviewableAttachment]()
+                var firstError: Error?
+                for item in items {
+                    do {
+                        if case .other(let attachment) = try await item.buildAttachment(attachmentLimits: attachmentLimits) {
+                            attachments.append(attachment)
+                        }
+                    } catch {
+                        firstError = firstError ?? error
+                    }
+                }
+                let loaded = attachments
+                let failure = firstError
+                modal.dismiss {
+                    if loaded.isEmpty {
+                        self.showErrorAlert(attachmentError: failure as? SignalAttachmentError)
+                    } else {
+                        self.didPasteAttachments(loaded, attachmentLimits: attachmentLimits)
+                    }
+                }
+            },
+        )
     }
 }
 
