@@ -230,7 +230,7 @@ final class IvyForwardingNavigationController: OWSNavigationController {
 /// Settings on the Mac, like System Settings: the list of pages with its
 /// search field stays on the left, and the chosen page opens on the right
 /// with "Done" in its top corner.
-final class IvyMacSettingsPanesViewController: UIViewController, OWSNavigationChildController {
+final class IvyMacSettingsPanesViewController: UIViewController, OWSNavigationChildController, UIGestureRecognizerDelegate {
 
     static let listWidth: CGFloat = 260
     static let sheetSize = CGSize(width: 800, height: 640)
@@ -239,6 +239,9 @@ final class IvyMacSettingsPanesViewController: UIViewController, OWSNavigationCh
     private let detail = OWSNavigationController()
     private let settings = AppSettingsViewController()
     private let separator = UIView()
+    /// The row the pointer went down on, so the page it opens can be marked
+    /// in the list.
+    private var pressedRow: IndexPath?
 
     var prefersNavigationBarHidden: Bool { true }
 
@@ -247,7 +250,19 @@ final class IvyMacSettingsPanesViewController: UIViewController, OWSNavigationCh
         view.backgroundColor = .Signal.groupedBackground
 
         list.pushViewController(settings, animated: false)
-        list.onPush = { [weak self] page in self?.show(page) }
+        list.onPush = { [weak self] page in
+            self?.show(page)
+            self?.markOpenRow()
+        }
+
+        // Notes which row is pressed, without taking the press from the list.
+        let press = UILongPressGestureRecognizer(target: self, action: #selector(didPressList(_:)))
+        press.minimumPressDuration = 0
+        press.cancelsTouchesInView = false
+        press.delaysTouchesBegan = false
+        press.delaysTouchesEnded = false
+        press.delegate = self
+        settings.tableView.addGestureRecognizer(press)
 
         // The list keeps its title and search field; closing is on the page.
         settings.loadViewIfNeeded()
@@ -285,6 +300,33 @@ final class IvyMacSettingsPanesViewController: UIViewController, OWSNavigationCh
         // Opens on the first page, so the right pane is never empty.
         if detail.viewControllers.isEmpty {
             show(AppearanceSettingsTableViewController())
+        }
+    }
+
+    @objc
+    private func didPressList(_ press: UILongPressGestureRecognizer) {
+        guard press.state == .began else { return }
+        pressedRow = settings.tableView.indexPathForRow(at: press.location(in: settings.tableView))
+    }
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        true
+    }
+
+    /// Keeps the row whose page is open highlighted, as a list beside its
+    /// content does on the Mac. The list itself deselects a row as soon as
+    /// it's clicked, so this selects it again afterwards.
+    private func markOpenRow() {
+        let row = pressedRow
+        pressedRow = nil
+        DispatchQueue.main.async { [weak self] in
+            guard let tableView = self?.settings.tableView else { return }
+            for selected in tableView.indexPathsForSelectedRows ?? [] where selected != row {
+                tableView.deselectRow(at: selected, animated: false)
+            }
+            if let row, row.section < tableView.numberOfSections, row.row < tableView.numberOfRows(inSection: row.section) {
+                tableView.selectRow(at: row, animated: false, scrollPosition: .none)
+            }
         }
     }
 
