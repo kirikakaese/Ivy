@@ -228,6 +228,11 @@ public class OWSTableItem {
             )
 
             let cellSwitch = UISwitch()
+            // Ivy: a switch on the Mac too, in the accent, not a blue
+            // checkbox.
+#if targetEnvironment(macCatalyst)
+            cellSwitch.preferredStyle = .sliding
+#endif
             cellSwitch.isOn = isOn()
             cellSwitch.isEnabled = isEnabled()
             cellSwitch.accessibilityIdentifier = accessibilityIdentifier
