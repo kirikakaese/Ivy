@@ -867,6 +867,12 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
             rightBarButtonItems.append(proxyButton)
         }
 
+#if targetEnvironment(macCatalyst)
+        // Ivy: plain icons on the Mac, like the call button in a chat.
+        if #available(iOS 26, *) {
+            rightBarButtonItems.forEach { $0.hidesSharedBackground = true }
+        }
+#endif
         navigationItem.rightBarButtonItems = rightBarButtonItems
     }
 

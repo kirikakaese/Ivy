@@ -256,6 +256,12 @@ public class ConversationViewLayout: UICollectionViewLayout {
 
         let layoutInfo = ensureCurrentLayoutInfo()
 
+#if targetEnvironment(macCatalyst)
+        // Ivy: on the Mac the day labels stay in the list between the
+        // messages. A label stuck under the top bar sat on the first
+        // message there.
+        return layoutInfo
+#else
         guard let collectionView = self.collectionView else {
             owsFailDebug("Missing view.")
             return layoutInfo
@@ -482,6 +488,7 @@ public class ConversationViewLayout: UICollectionViewLayout {
             contentInset: contentInset,
         )
         return adjustedLayoutInfo
+#endif
     }
 
     override public class var layoutAttributesClass: AnyClass {
