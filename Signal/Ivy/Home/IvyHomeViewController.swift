@@ -487,7 +487,10 @@ final class IvyHomeViewController: UIViewController, HomeTabViewController, UITa
                 else {
                     return nil
                 }
-                let text = message.body?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
+                // The preview the notification shows: mentions as names and
+                // attachments described. The raw text has a placeholder
+                // where a mention is, so a message of mentions looked empty.
+                let text = message.notificationPreviewText(tx).trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty
                     ?? IvyLocalizedString("REMINDER_BODY_MESSAGE", comment: "Body of a reminder notification about a message without text.")
                 var sender: String?
                 if thread.isGroupThread, let incoming = message as? TSIncomingMessage {

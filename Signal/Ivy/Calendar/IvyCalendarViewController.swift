@@ -64,6 +64,12 @@ final class IvyCalendarViewController: UIViewController, HomeTabViewController, 
             navigationItem.leftBarButtonItem = .doneButton(dismissingFrom: self)
         }
         navigationItem.rightBarButtonItems = [addButton(), moreButton()]
+#if targetEnvironment(macCatalyst)
+        // Plain icons on the Mac, like the buttons of Chats and Anrufe.
+        if #available(iOS 26, *) {
+            navigationItem.rightBarButtonItems?.forEach { $0.hidesSharedBackground = true }
+        }
+#endif
 
         for (index, mode) in Self.shownModes.enumerated() {
             modeControl.insertSegment(withTitle: mode.title, at: index, animated: false)

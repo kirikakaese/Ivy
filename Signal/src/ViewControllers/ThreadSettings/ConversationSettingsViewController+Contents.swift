@@ -366,6 +366,11 @@ extension ConversationSettingsViewController {
                 self?.showMediaPageView(for: referencedAttachment)
             },
         )
+        // Ivy: the Mac's own button ignores a custom background, so the
+        // pictures didn't show and the card was empty.
+#if targetEnvironment(macCatalyst)
+        button.preferredBehavioralStyle = .pad
+#endif
         button.configuration?.cornerStyle = .fixed
         button.configuration?.background = {
             let imageView = createThumbnailView(for: referencedAttachment)
