@@ -53,8 +53,13 @@ public class CVLoader: NSObject {
             // open and to scroll.
             _ = CVComponentBodyText.ivyTakeDetectionMilliseconds()
             let ivyLoad = IvyPerformance.begin("chat load", slowerThan: 0.05)
+            // The load's steps: reading the messages, building what each
+            // shows, and measuring each one. Milliseconds since the start.
+            let ivyStart = DispatchTime.now().uptimeNanoseconds
+            var ivyRead = 0, ivyBuilt = 0, ivyMeasured = 0, ivyCount = 0
+            func ivyElapsed() -> Int { Int((DispatchTime.now().uptimeNanoseconds - ivyStart) / 1_000_000) }
             defer {
-                ivyLoad.end(detail: "\(CVComponentBodyText.ivyTakeDetectionMilliseconds()) ms of it finding links and dates\(loadRequest.isInitialLoad ? ", first load" : "")")
+                ivyLoad.end(detail: "\(ivyCount) messages: \(ivyRead) ms reading, \(ivyBuilt - ivyRead) ms building, \(ivyMeasured - ivyBuilt) ms measuring, \(CVComponentBodyText.ivyTakeDetectionMilliseconds()) ms of it finding links and dates\(loadRequest.isInitialLoad ? ", first load" : "")")
             }
             // To ensure coherency, the entire load should be done with a single transaction.
             let loadState: LoadState = try SSKEnvironment.shared.databaseStorageRef.read { transaction in
@@ -209,6 +214,8 @@ public class CVLoader: NSObject {
                     throw error
                 }
 
+                ivyRead = ivyElapsed()
+
                 let expandedInteractions = messageLoader.loadedDisplayableInteractions.flatMap { interaction in
                     if
                         let collapseSet = interaction as? CollapseSetInteraction,
@@ -226,12 +233,16 @@ public class CVLoader: NSObject {
                     localAci: localAci,
                 )
 
+                ivyBuilt = ivyElapsed()
+
                 let items = itemModels.compactMap { item in
                     Self.buildRenderItem(
                         itemBuildingContext: loadContext,
                         itemModel: item,
                     )
                 }
+                ivyMeasured = ivyElapsed()
+                ivyCount = items.count
 
                 return LoadState(
                     threadViewModel: threadViewModel,
