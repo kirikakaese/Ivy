@@ -369,6 +369,7 @@ public final class ConversationViewController: OWSViewController {
         ivyCoverTopBarWhileOpening()
 #if targetEnvironment(macCatalyst)
         ivyInstallMacTopBar() // Ivy: a solid top bar on the Mac
+        ivyInstallFileDrop() // Ivy: files can be dropped onto the chat
 #endif
 
         ensureBannerState()

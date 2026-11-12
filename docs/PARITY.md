@@ -55,6 +55,7 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | Suggested folders | 3a | done | done | done | Unread, 1:1 chats, groups |
 | Per-folder pins | 3b | done | done | done | Up to 4 per folder, above the other pinned chats |
 | Pinned chat reordering | 3a | done | done | done | Drag and drop, plus Move Up and Move Down |
+| Dropping files into a chat | 3a | – | – | done | Files, pictures and videos dragged from the Finder or another app onto a chat's messages open the same preview as pasted ones. iPhone and iPad use the attachment button and paste |
 | Ivy data store and device sync | 3b | done | done | done | Own SQLCipher database; end-to-end encrypted sync messages to the user's own devices, per-field last edit wins |
 | Ivy data export and import | 3b | done | done | done | Passphrase-encrypted file (PBKDF2, AES-GCM) |
 | Remind me in… (messages and chats) | 3b | done | done | done | Presets, custom date with repeat, notification actions, list, markers; shown in the calendar |
