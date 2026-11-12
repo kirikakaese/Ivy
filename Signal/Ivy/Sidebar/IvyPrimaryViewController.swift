@@ -195,6 +195,13 @@ extension ConversationSplitViewController {
         } else if command.action == #selector(ivyZoomReset) {
             command.attributes = IvyZoom.isActualSize ? .disabled : []
         }
+#if targetEnvironment(macCatalyst)
+        // The Chat menu's commands need an open chat.
+        let action: Selector? = command.action
+        if selectedThread == nil, action.map({ IvyKeyCommands.chatActions.contains($0) }) ?? false {
+            command.attributes = .disabled
+        }
+#endif
         if command.action == #selector(ivyToggleSidebar) {
             command.title = ivyPrimaryViewController?.isSidebarShown == true
                 ? IvyLocalizedString("SIDEBAR_HIDE", comment: "Menu command that hides the sidebar.")

@@ -565,17 +565,18 @@ class ConversationSplitViewController: UISplitViewController, ConversationSplit 
             keyCommands += chatListKeyCommands
         }
 #if targetEnvironment(macCatalyst)
-        // Ivy: new message, search and Settings from every section, not
-        // only from Chats, and mark the open chat as unread.
-        if homeVC.selectedHomeTab != .chatList {
-            keyCommands += [
-                UIKeyCommand(input: "n", modifierFlags: .command, action: #selector(ivyNewMessageFromAnySection)),
-                UIKeyCommand(input: "f", modifierFlags: .command, action: #selector(ivySearchChatsFromAnySection)),
-                UIKeyCommand(input: ",", modifierFlags: .command, action: #selector(ivyShowSettingsFromAnySection)),
-            ]
+        // Ivy: the commands that are in the Mac's menus get their shortcut
+        // there. What stays here has no menu item: searching the chats, from
+        // every section, and Control-Tab through the chats.
+        keyCommands.removeAll { command in
+            // Control-Tab shares its action with the menu's Next Chat and
+            // stays.
+            guard command.input != "\t" else { return false }
+            let action: Selector? = command.action
+            return action.map { IvyKeyCommands.menuActions.contains($0) } ?? false
         }
-        if selectedThread != nil {
-            keyCommands.append(UIKeyCommand(input: "u", modifierFlags: [.command, .control], action: #selector(ivyMarkSelectedChatUnread)))
+        if homeVC.selectedHomeTab != .chatList {
+            keyCommands.append(UIKeyCommand(input: "f", modifierFlags: .command, action: #selector(ivySearchChatsFromAnySection)))
         }
 #endif
         #if !targetEnvironment(macCatalyst)
@@ -857,26 +858,45 @@ extension ConversationSplitViewController {
     }
 
     @objc
-    fileprivate func ivyNewMessageFromAnySection() {
+    func ivyNewMessageFromAnySection() {
         homeVC.selectedHomeTab = .chatList
         homeVC.chatListViewController.showNewConversationView()
     }
 
     @objc
-    fileprivate func ivySearchChatsFromAnySection() {
+    func ivyNewGroupFromAnySection() {
+        homeVC.selectedHomeTab = .chatList
+        homeVC.chatListViewController.showNewGroupView()
+    }
+
+    /// Opens the open chat in a window of its own.
+    @objc
+    func ivyOpenSelectedChatInWindow() {
+        guard let thread = selectedThread else { return }
+        IvyChatWindows.open(threadUniqueId: thread.uniqueId)
+    }
+
+    /// Searches the messages of the open chat, as Search in its info does.
+    @objc
+    func ivySearchInSelectedChat() {
+        selectedConversationViewController?.conversationSettingsDidRequestConversationSearch()
+    }
+
+    @objc
+    func ivySearchChatsFromAnySection() {
         homeVC.selectedHomeTab = .chatList
         homeVC.chatListViewController.focusSearch()
     }
 
     @objc
-    fileprivate func ivyShowSettingsFromAnySection() {
+    func ivyShowSettingsFromAnySection() {
         presentFormSheet(AppSettingsViewController.inModalNavigationController(), animated: true)
     }
 
     /// Marks the open chat as unread and closes it, for coming back to it
     /// later. Left open, the chat would count as read again at once.
     @objc
-    fileprivate func ivyMarkSelectedChatUnread() {
+    func ivyMarkSelectedChatUnread() {
         guard let thread = selectedThread else { return }
         closeSelectedConversation(animated: false)
         SSKEnvironment.shared.databaseStorageRef.write { tx in

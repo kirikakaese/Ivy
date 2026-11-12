@@ -116,6 +116,102 @@ enum IvyKeyCommands {
         }
     }
 
+#if targetEnvironment(macCatalyst)
+    /// The commands of the Chat menu that need an open chat. They are
+    /// greyed out without one.
+    static let chatActions: [Selector] = [
+        #selector(ConversationSplitViewController.openConversationSettings),
+        #selector(ConversationSplitViewController.openAllMedia),
+        #selector(ConversationSplitViewController.ivySearchInSelectedChat),
+        #selector(ConversationSplitViewController.openAttachmentKeyboard),
+        #selector(ConversationSplitViewController.openStickerKeyboard),
+        #selector(ConversationSplitViewController.openGifSearch),
+        #selector(ConversationSplitViewController.focusInputToolbar),
+        #selector(ConversationSplitViewController.ivyOpenSelectedChatInWindow),
+        #selector(ConversationSplitViewController.ivyMarkSelectedChatUnread),
+        #selector(ConversationSplitViewController.archiveSelectedConversation),
+    ]
+
+    /// The split view's own key commands whose shortcut a menu item now
+    /// carries. It leaves these out, so a shortcut isn't defined twice.
+    static let menuActions: [Selector] = [
+        #selector(ConversationSplitViewController.openConversationSettings),
+        #selector(ConversationSplitViewController.openAllMedia),
+        #selector(ConversationSplitViewController.openStickerKeyboard),
+        #selector(ConversationSplitViewController.focusInputToolbar),
+        #selector(ConversationSplitViewController.archiveSelectedConversation),
+        #selector(ConversationSplitViewController.selectNextConversation(_:)),
+        #selector(ConversationSplitViewController.selectPreviousConversation),
+        #selector(ConversationSplitViewController.showNewConversationView),
+        #selector(ConversationSplitViewController.showAppSettings),
+    ]
+
+    /// The Chat menu, Settings in the app menu, and New Message and New
+    /// Group at the top of File. The chat's shortcuts existed, but no menu
+    /// showed them.
+    private static func buildChatMenus(_ builder: UIMenuBuilder) {
+        func command(_ title: String, _ action: Selector, _ input: String, _ modifiers: UIKeyModifierFlags) -> UIKeyCommand {
+            UIKeyCommand(title: title, action: action, input: input, modifierFlags: modifiers)
+        }
+        /// A command whose shortcut the system's own menus also use (Find
+        /// Next, Underline). It has no shortcut in the menu; the chat's own
+        /// key command still carries it.
+        func plain(_ title: String, _ action: Selector) -> UICommand {
+            UICommand(title: title, action: action)
+        }
+        func group(_ name: String, _ children: [UIMenuElement]) -> UIMenu {
+            UIMenu(identifier: UIMenu.Identifier("ivy.chat." + name), options: .displayInline, children: children)
+        }
+        let look = group("look", [
+            command(IvyLocalizedString("MENU_CHAT_INFO", comment: "Mac menu command that opens the open chat's info."), #selector(ConversationSplitViewController.openConversationSettings), "i", [.command, .shift]),
+            command(IvyLocalizedString("MENU_CHAT_ALL_MEDIA", comment: "Mac menu command that opens the open chat's media."), #selector(ConversationSplitViewController.openAllMedia), "m", [.command, .shift]),
+            plain(IvyLocalizedString("MENU_CHAT_SEARCH", comment: "Mac menu command that searches the messages of the open chat."), #selector(ConversationSplitViewController.ivySearchInSelectedChat)),
+        ])
+        let write = group("write", [
+            plain(IvyLocalizedString("MENU_CHAT_ATTACH", comment: "Mac menu command that opens the attachment picker of the open chat."), #selector(ConversationSplitViewController.openAttachmentKeyboard)),
+            command(IvyLocalizedString("MENU_CHAT_STICKERS", comment: "Mac menu command that opens the sticker picker of the open chat."), #selector(ConversationSplitViewController.openStickerKeyboard), "s", [.command, .shift]),
+            plain(IvyLocalizedString("MENU_CHAT_GIF", comment: "Mac menu command that opens the GIF search of the open chat."), #selector(ConversationSplitViewController.openGifSearch)),
+            command(IvyLocalizedString("MENU_CHAT_WRITE", comment: "Mac menu command that puts the cursor in the open chat's message field."), #selector(ConversationSplitViewController.focusInputToolbar), "t", [.command, .shift]),
+        ])
+        let manage = group("manage", [
+            command(IvyChatWindows.openInNewWindowTitle, #selector(ConversationSplitViewController.ivyOpenSelectedChatInWindow), "o", [.command, .alternate]),
+            command(IvyLocalizedString("MENU_CHAT_MARK_UNREAD", comment: "Mac menu command that marks the open chat as unread and closes it."), #selector(ConversationSplitViewController.ivyMarkSelectedChatUnread), "u", [.command, .control]),
+            command(IvyLocalizedString("MENU_CHAT_ARCHIVE", comment: "Mac menu command that archives the open chat."), #selector(ConversationSplitViewController.archiveSelectedConversation), "a", [.command, .shift]),
+        ])
+        let move = group("move", [
+            command(IvyLocalizedString("MENU_CHAT_NEXT", comment: "Mac menu command that opens the next chat in the list."), #selector(ConversationSplitViewController.selectNextConversation(_:)), UIKeyCommand.inputDownArrow, .alternate),
+            command(IvyLocalizedString("MENU_CHAT_PREVIOUS", comment: "Mac menu command that opens the previous chat in the list."), #selector(ConversationSplitViewController.selectPreviousConversation), UIKeyCommand.inputUpArrow, .alternate),
+        ])
+        builder.insertSibling(
+            UIMenu(
+                title: IvyLocalizedString("MENU_CHAT", comment: "Title of the Mac menu with the commands for the open chat."),
+                identifier: UIMenu.Identifier("ivy.chat"),
+                children: [look, write, manage, move],
+            ),
+            beforeMenu: .window,
+        )
+        builder.insertChild(
+            UIMenu(identifier: UIMenu.Identifier("ivy.newchat"), options: .displayInline, children: [
+                command(IvyLocalizedString("MENU_NEW_MESSAGE", comment: "Mac File menu command that starts a new message."), #selector(ConversationSplitViewController.ivyNewMessageFromAnySection), "n", .command),
+                plain(IvyLocalizedString("MENU_NEW_GROUP", comment: "Mac File menu command that starts a new group."), #selector(ConversationSplitViewController.ivyNewGroupFromAnySection)),
+            ]),
+            atStartOfMenu: .file,
+        )
+        // Settings in the app menu opens Ivy's settings. The system's own
+        // item, where there is one, opens an empty window of system
+        // settings, so Ivy's takes its place; otherwise it goes after About,
+        // with Check for Updates put between the two below.
+        let settings = UIMenu(identifier: UIMenu.Identifier("ivy.settings"), options: .displayInline, children: [
+            command(IvyLocalizedString("MENU_SETTINGS", comment: "Mac app menu command that opens Settings."), #selector(ConversationSplitViewController.ivyShowSettingsFromAnySection), ",", .command),
+        ])
+        if builder.menu(for: .preferences) != nil {
+            builder.replace(menu: .preferences, with: settings)
+        } else {
+            builder.insertSibling(settings, afterMenu: .about)
+        }
+    }
+#endif
+
     /// Adds the commands to the Mac's menus.
     static func build(_ builder: UIMenuBuilder) {
         guard builder.system == .main else {
@@ -146,6 +242,7 @@ enum IvyKeyCommands {
             afterMenu: UIMenu.Identifier("ivy.zoom"),
         )
         #if targetEnvironment(macCatalyst)
+        buildChatMenus(builder)
         if IvyMacBetaUpdater.isAvailable {
             let checkForUpdates = UICommand(
                 title: IvyLocalizedString("MAC_BETA_CHECK_FOR_UPDATES", comment: "Mac menu command that looks for a newer Mac beta."),

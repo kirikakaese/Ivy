@@ -69,6 +69,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         tableView.insetsLayoutMarginsFromSafeArea = false
         tableView.cellLayoutMarginsFollowReadableWidth = false
         tableView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: Self.ivyMacRowMargin, bottom: 0, trailing: Self.ivyMacRowMargin)
+        ivyInstallDoubleClickToOpenWindow() // Ivy: a double click opens the chat's own window
 #endif
 
         if let filterControl {
