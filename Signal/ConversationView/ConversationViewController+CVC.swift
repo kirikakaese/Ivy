@@ -402,6 +402,9 @@ extension ConversationViewController: CVLoadCoordinatorDelegate {
             loadCoordinator.enqueueReload()
 
             setHasAppliedFirstLoadIfNecessary()
+            // Ivy: the chat's messages show; this is the other way there.
+            IvyPerformance.openChat?.end(detail: "loaded before the chat appeared")
+            IvyPerformance.openChat = nil
         }
     }
 

@@ -42,11 +42,13 @@ public enum IvyPerformance {
         fileprivate let state: OSSignpostIntervalState
         fileprivate let threshold: TimeInterval
 
-        public func end() {
+        /// `detail` is only worked out when the line is logged.
+        public func end(detail: @autoclosure () -> String = "") {
             IvyPerformance.signposter.endInterval(name, state)
             let seconds = Double(DispatchTime.now().uptimeNanoseconds - start) / 1_000_000_000
             if seconds > threshold {
-                Logger.info("Slow: \(name) took \(Int(seconds * 1000)) ms")
+                let detail = detail()
+                Logger.info("Slow: \(name) took \(Int(seconds * 1000)) ms\(detail.isEmpty ? "" : ", " + detail)")
             }
         }
     }
