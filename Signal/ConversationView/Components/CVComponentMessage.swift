@@ -806,6 +806,16 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
                 } else {
                     reactionsFrame.x = min(leftAlignX, rightAlignX)
                 }
+#if targetEnvironment(macCatalyst)
+                // Ivy: on the Mac's wide bubbles the reactions sit under the
+                // edge the bubble starts from, by the sender, not at its far
+                // corner.
+                if isIncoming != CurrentAppContext().isRTL {
+                    reactionsFrame.x = leftAlignX
+                } else {
+                    reactionsFrame.x = rightAlignX
+                }
+#endif
                 reactionsRootView.frame = reactionsFrame
             }
         }

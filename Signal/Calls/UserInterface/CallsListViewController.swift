@@ -182,6 +182,12 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
         } else {
             navigationItem.leftBarButtonItem = profileBarButtonItem()
             navigationItem.rightBarButtonItem = newCallButton()
+#if targetEnvironment(macCatalyst)
+            // Ivy: a plain icon on the Mac, like the compose button.
+            if #available(iOS 26, *) {
+                navigationItem.rightBarButtonItem?.hidesSharedBackground = true
+            }
+#endif
         }
 
 #if targetEnvironment(macCatalyst)
