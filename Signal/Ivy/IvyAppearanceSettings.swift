@@ -241,6 +241,10 @@ extension AppearanceSettingsTableViewController {
         let button = UIButton(configuration: buttonConfiguration)
         button.isUserInteractionEnabled = false
         let toggle = UISwitch()
+#if targetEnvironment(macCatalyst)
+        toggle.preferredStyle = .sliding // a switch on the Mac too, not a checkbox
+        toggle.tintColor = accent
+#endif
         toggle.isOn = true
         toggle.onTintColor = accent
         toggle.isUserInteractionEnabled = false

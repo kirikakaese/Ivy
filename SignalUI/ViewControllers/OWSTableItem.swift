@@ -232,6 +232,10 @@ public class OWSTableItem {
             // checkbox.
 #if targetEnvironment(macCatalyst)
             cellSwitch.preferredStyle = .sliding
+            // The Mac's switch was gray when on; it takes its colour from
+            // these, not from the app-wide setting.
+            cellSwitch.onTintColor = .Signal.accent
+            cellSwitch.tintColor = .Signal.accent
 #endif
             cellSwitch.isOn = isOn()
             cellSwitch.isEnabled = isEnabled()

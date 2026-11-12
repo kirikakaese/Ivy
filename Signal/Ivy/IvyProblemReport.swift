@@ -194,6 +194,13 @@ final class IvyProblemReportViewController: UIViewController, UITextViewDelegate
         textView.accessibilityLabel = placeholder.text
         stack.addArrangedSubview(textView)
 
+#if targetEnvironment(macCatalyst)
+        // Switches on the Mac too, not checkboxes.
+        for toggle in [screenshotSwitch, logSwitch] {
+            toggle.preferredStyle = .sliding
+            toggle.onTintColor = .Signal.accent
+        }
+#endif
         if screenshot != nil {
             screenshotSwitch.isOn = true
             stack.addArrangedSubview(switchRow(

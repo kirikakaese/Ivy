@@ -232,8 +232,10 @@ final class IvyForwardingNavigationController: OWSNavigationController {
 /// with "Done" in its top corner.
 final class IvyMacSettingsPanesViewController: UIViewController, OWSNavigationChildController, UIGestureRecognizerDelegate {
 
-    static let listWidth: CGFloat = 260
-    static let sheetSize = CGSize(width: 800, height: 640)
+    /// Wide enough for the phone number and the status line in the
+    /// profile card at the top of the list.
+    static let listWidth: CGFloat = 300
+    static let sheetSize = CGSize(width: 860, height: 640)
 
     private let list = IvyForwardingNavigationController()
     private let detail = OWSNavigationController()

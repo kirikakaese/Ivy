@@ -129,10 +129,7 @@ extension UIViewController {
         if let bar = navigationController?.navigationBar {
             bar.preservesSuperviewLayoutMargins = false
             bar.insetsLayoutMarginsFromSafeArea = false
-            // The title came out 8 pt left of the pictures and labels in
-            // the list below it; the wider leading margin moves it onto
-            // their line.
-            bar.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: ChatListViewController.ivyMacMargin + 8, bottom: 0, trailing: ChatListViewController.ivyMacMargin)
+            bar.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: ChatListViewController.ivyMacMargin, bottom: 0, trailing: ChatListViewController.ivyMacMargin)
         }
         return true
 #else
