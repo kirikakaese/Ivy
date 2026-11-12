@@ -1287,6 +1287,51 @@
 /* Before the user's own last message in the Mac's menu bar extra. */
 "MENU_BAR_YOU_PREFIX" = "You:";
 
+/* Title of the Mac menu with the commands for the open chat. */
+"MENU_CHAT" = "Chat";
+
+/* Mac menu command that opens the open chat's media. */
+"MENU_CHAT_ALL_MEDIA" = "All Media";
+
+/* Mac menu command that archives the open chat. */
+"MENU_CHAT_ARCHIVE" = "Archive";
+
+/* Mac menu command that opens the attachment picker of the open chat. */
+"MENU_CHAT_ATTACH" = "Add Attachment";
+
+/* Mac menu command that opens the GIF search of the open chat. */
+"MENU_CHAT_GIF" = "Search GIFs";
+
+/* Mac menu command that opens the open chat's info. */
+"MENU_CHAT_INFO" = "Chat Info";
+
+/* Mac menu command that marks the open chat as unread and closes it. */
+"MENU_CHAT_MARK_UNREAD" = "Mark as Unread";
+
+/* Mac menu command that opens the next chat in the list. */
+"MENU_CHAT_NEXT" = "Next Chat";
+
+/* Mac menu command that opens the previous chat in the list. */
+"MENU_CHAT_PREVIOUS" = "Previous Chat";
+
+/* Mac menu command that searches the messages of the open chat. */
+"MENU_CHAT_SEARCH" = "Search in Chat";
+
+/* Mac menu command that opens the sticker picker of the open chat. */
+"MENU_CHAT_STICKERS" = "Stickers";
+
+/* Mac menu command that puts the cursor in the open chat's message field. */
+"MENU_CHAT_WRITE" = "Write Message";
+
+/* Mac File menu command that starts a new group. */
+"MENU_NEW_GROUP" = "New Group";
+
+/* Mac File menu command that starts a new message. */
+"MENU_NEW_MESSAGE" = "New Message";
+
+/* Mac app menu command that opens Settings. */
+"MENU_SETTINGS" = "Settings…";
+
 /* Switch in the chat settings that underlines dates and times in messages. */
 "MESSAGE_DETECTION_DATES" = "Detect Dates";
 
