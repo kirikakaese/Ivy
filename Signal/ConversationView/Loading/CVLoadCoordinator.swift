@@ -469,6 +469,13 @@ public class CVLoadCoordinator: NSObject {
     public func updateConversationStyle(_ conversationStyle: ConversationStyle) {
         AssertIsOnMainThread()
 
+        // Ivy: a chat that is laid out for one width and then another
+        // builds all its messages twice; the log says when that happens.
+        let ivyOldWidth = self.conversationStyle.viewWidth
+        if ivyOldWidth > 0, ivyOldWidth != conversationStyle.viewWidth {
+            Logger.info("Slow: chat built again, width \(Int(ivyOldWidth)) to \(Int(conversationStyle.viewWidth))")
+        }
+
         self.conversationStyle = conversationStyle
 
         // We need to kick off a reload cycle if conversationStyle changes.

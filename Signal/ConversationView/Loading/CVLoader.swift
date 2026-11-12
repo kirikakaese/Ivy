@@ -48,6 +48,14 @@ public class CVLoader: NSObject {
         }
 
         return firstly(on: CVUtils.workQueue(isInitialLoad: loadRequest.isInitialLoad)) { () -> CVUpdate in
+            // Ivy: timed, with the share that goes into finding links, dates
+            // and tasks in the messages, to see what makes a chat slow to
+            // open and to scroll.
+            _ = CVComponentBodyText.ivyTakeDetectionMilliseconds()
+            let ivyLoad = IvyPerformance.begin("chat load", slowerThan: 0.05)
+            defer {
+                ivyLoad.end(detail: "\(CVComponentBodyText.ivyTakeDetectionMilliseconds()) ms of it finding links and dates\(loadRequest.isInitialLoad ? ", first load" : "")")
+            }
             // To ensure coherency, the entire load should be done with a single transaction.
             let loadState: LoadState = try SSKEnvironment.shared.databaseStorageRef.read { transaction in
                 let thread = TSThread.fetchViaCache(uniqueId: threadUniqueId, transaction: transaction)
