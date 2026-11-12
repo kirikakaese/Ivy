@@ -101,6 +101,23 @@ open class OWSNavigationController: UINavigationController {
         fatalError("init(coder:) has not been implemented")
     }
 
+#if targetEnvironment(macCatalyst)
+    /// Ivy: closes this stack when it is a sheet. Not a sheet that must be
+    /// answered, and not while it shows something of its own on top.
+    @objc
+    private func ivyCloseOnEscape() {
+        guard
+            presentingViewController != nil,
+            presentedViewController == nil,
+            !isModalInPresentation,
+            topViewController?.isModalInPresentation != true
+        else {
+            return
+        }
+        dismiss(animated: true)
+    }
+#endif
+
     override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         if let delegateOrientations = self.delegate?.navigationControllerSupportedInterfaceOrientations?(self) {
             return delegateOrientations
@@ -118,6 +135,10 @@ open class OWSNavigationController: UINavigationController {
         if #available(iOS 26.0, *) {
             interactiveContentPopGestureRecognizer?.delegate = self
         }
+#if targetEnvironment(macCatalyst)
+        // Ivy: Escape closes a sheet on the Mac, as it does in every Mac app.
+        addKeyCommand(UIKeyCommand(input: UIKeyCommand.inputEscape, modifierFlags: [], action: #selector(ivyCloseOnEscape)))
+#endif
     }
 
     override open func viewWillAppear(_ animated: Bool) {
