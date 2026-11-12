@@ -223,6 +223,10 @@ public class NotificationActionHandler {
             owsFailDebug("Missing threadId for showMessage action.")
             return
         }
+#if targetEnvironment(macCatalyst)
+        // Ivy: on the Mac the window may be behind others or closed.
+        IvyChatWindows.activateMainWindow()
+#endif
         SignalApp.shared.presentConversationForThread(
             threadUniqueId: threadId,
             focusMessageId: userInfo.messageId,
@@ -235,6 +239,15 @@ public class NotificationActionHandler {
         // If this happens when the app is not visible we skip the animation so the thread
         // can be visible to the user immediately upon opening the app, rather than having to watch
         // it animate in from the homescreen.
+#if targetEnvironment(macCatalyst)
+        // Ivy: a chat that is open in a window of its own comes to the
+        // front there; otherwise the main window does, reopened if it was
+        // closed.
+        if IvyChatWindows.bringForwardWindow(ofThread: uniqueId) {
+            return
+        }
+        IvyChatWindows.activateMainWindow()
+#endif
         SignalApp.shared.presentConversationAndScrollToFirstUnreadMessage(
             threadUniqueId: uniqueId,
             animated: CurrentAppContext().isMainAppAndActiveIsolated,

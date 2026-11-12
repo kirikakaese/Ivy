@@ -107,6 +107,9 @@ class ConversationSplitViewController: UISplitViewController, ConversationSplit 
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+#if targetEnvironment(macCatalyst)
+        ivyReopenLastChatOnce() // Ivy: the Mac's window comes back with its chat
+#endif
 
         if let windowScene = view.window?.windowScene, windowScene.activationState == .foregroundActive {
             lastActiveInterfaceOrientation = windowScene.interfaceOrientation
@@ -138,6 +141,9 @@ class ConversationSplitViewController: UISplitViewController, ConversationSplit 
 
     func closeSelectedConversation(animated: Bool) {
         guard let selectedConversationViewController else { return }
+#if targetEnvironment(macCatalyst)
+        UserDefaults.standard.removeObject(forKey: Self.ivyLastChatKey) // Ivy
+#endif
 
         if isCollapsed {
             // If we're currently displaying the conversation in the primary nav controller, remove it
@@ -267,6 +273,10 @@ class ConversationSplitViewController: UISplitViewController, ConversationSplit 
         }
 
         selectedConversationViewController = conversationViewController
+#if targetEnvironment(macCatalyst)
+        // Ivy: remembered, so the window comes back with this chat.
+        UserDefaults.standard.set(threadUniqueId, forKey: Self.ivyLastChatKey)
+#endif
 
         let detailVC: UIViewController = {
             guard !isCollapsed else { return conversationViewController }
@@ -554,6 +564,20 @@ class ConversationSplitViewController: UISplitViewController, ConversationSplit 
         if homeVC.selectedHomeTab == .chatList {
             keyCommands += chatListKeyCommands
         }
+#if targetEnvironment(macCatalyst)
+        // Ivy: new message, search and Settings from every section, not
+        // only from Chats, and mark the open chat as unread.
+        if homeVC.selectedHomeTab != .chatList {
+            keyCommands += [
+                UIKeyCommand(input: "n", modifierFlags: .command, action: #selector(ivyNewMessageFromAnySection)),
+                UIKeyCommand(input: "f", modifierFlags: .command, action: #selector(ivySearchChatsFromAnySection)),
+                UIKeyCommand(input: ",", modifierFlags: .command, action: #selector(ivyShowSettingsFromAnySection)),
+            ]
+        }
+        if selectedThread != nil {
+            keyCommands.append(UIKeyCommand(input: "u", modifierFlags: [.command, .control], action: #selector(ivyMarkSelectedChatUnread)))
+        }
+#endif
         #if !targetEnvironment(macCatalyst)
         // Ivy: sections, new task and new event (menu commands on the Mac)
         keyCommands += IvyKeyCommands.commands()
@@ -792,3 +816,73 @@ private class NoSelectedConversationViewController: OWSViewController {
 #endif
     }
 }
+
+#if targetEnvironment(macCatalyst)
+
+// MARK: - Ivy: the Mac's window
+
+extension ConversationSplitViewController {
+
+    fileprivate static let ivyLastChatKey = "IvyMacLastChat"
+    private static var ivyDidReopenLastChat = false
+
+    /// Opens the chat that was open when Ivy quit, once per launch. Only on
+    /// Chats, so the section Ivy is set to start with stays. Not a chat
+    /// with unread messages: opening it would mark them read before they
+    /// were seen. Not a hidden chat.
+    fileprivate func ivyReopenLastChatOnce() {
+        guard !Self.ivyDidReopenLastChat else { return }
+        Self.ivyDidReopenLastChat = true
+        guard
+            selectedThread == nil,
+            homeVC.selectedHomeTab == .chatList,
+            let threadUniqueId = UserDefaults.standard.string(forKey: Self.ivyLastChatKey)
+        else {
+            return
+        }
+        let canReopen: Bool = SSKEnvironment.shared.databaseStorageRef.read { tx in
+            guard let thread = DependenciesBridge.shared.threadStore.fetchThread(uniqueId: threadUniqueId, tx: tx) else {
+                return false
+            }
+            if IvyHiddenChats.shared.isHidden(thread: thread) {
+                return false
+            }
+            return !ThreadViewModel(threadUniqueId: threadUniqueId, forChatList: true, transaction: tx).hasUnreadMessages
+        }
+        guard canReopen else {
+            UserDefaults.standard.removeObject(forKey: Self.ivyLastChatKey)
+            return
+        }
+        presentThread(threadUniqueId: threadUniqueId, action: .none, focusMessageId: nil, animated: false)
+    }
+
+    @objc
+    fileprivate func ivyNewMessageFromAnySection() {
+        homeVC.selectedHomeTab = .chatList
+        homeVC.chatListViewController.showNewConversationView()
+    }
+
+    @objc
+    fileprivate func ivySearchChatsFromAnySection() {
+        homeVC.selectedHomeTab = .chatList
+        homeVC.chatListViewController.focusSearch()
+    }
+
+    @objc
+    fileprivate func ivyShowSettingsFromAnySection() {
+        presentFormSheet(AppSettingsViewController.inModalNavigationController(), animated: true)
+    }
+
+    /// Marks the open chat as unread and closes it, for coming back to it
+    /// later. Left open, the chat would count as read again at once.
+    @objc
+    fileprivate func ivyMarkSelectedChatUnread() {
+        guard let thread = selectedThread else { return }
+        closeSelectedConversation(animated: false)
+        SSKEnvironment.shared.databaseStorageRef.write { tx in
+            thread.updateWith(isMarkedUnread: true, updateStorageService: true, transaction: tx)
+        }
+    }
+}
+
+#endif
