@@ -133,6 +133,14 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
             view.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
         ]
         NSLayoutConstraint.activate(tableViewHorizontalEdgeConstraints)
+#if targetEnvironment(macCatalyst)
+        // Ivy: the chat list's margins, so calls and chats line up when
+        // switching between them.
+        tableView.preservesSuperviewLayoutMargins = false
+        tableView.insetsLayoutMarginsFromSafeArea = false
+        tableView.cellLayoutMarginsFollowReadableWidth = false
+        tableView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: ChatListViewController.ivyMacRowMargin, bottom: 0, trailing: ChatListViewController.ivyMacRowMargin)
+#endif
         updateTableViewPaddingIfNeeded()
 
         view.addSubview(emptyStateMessageView)
@@ -1573,6 +1581,10 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
             guard oldValue != useSidebarCallListCellAppearance else { return }
             tableViewHorizontalEdgeConstraints.forEach {
                 $0.constant = useSidebarCallListCellAppearance ? 18 : 0
+#if targetEnvironment(macCatalyst)
+                // Ivy: the same edge as the chat list on the Mac.
+                $0.constant = useSidebarCallListCellAppearance ? ChatListViewController.ivyMacHighlightInset : 0
+#endif
             }
             tableView.reloadData()
         }
@@ -2367,13 +2379,22 @@ private extension CallsListViewController {
         // MARK: Subviews
 
         private lazy var avatarView = ConversationAvatarView(
-            sizeClass: .fortyFour,
+            sizeClass: Self.ivyIsMac ? .forty : .fortyFour, // Ivy: the chat list's size on the Mac
             localUserDisplayMode: .asUser,
         )
 
+        /// Ivy: on the Mac a call's row has the measures of a chat's row.
+        private static var ivyIsMac: Bool {
+#if targetEnvironment(macCatalyst)
+            return true
+#else
+            return false
+#endif
+        }
+
         private lazy var titleLabel: UILabel = {
             let label = UILabel()
-            label.font = .dynamicTypeHeadline
+            label.font = Self.ivyIsMac ? .dynamicTypeHeadlineClamped : .dynamicTypeHeadline
             label.textColor = .Signal.label
             return label
         }()
@@ -2493,7 +2514,7 @@ private extension CallsListViewController {
             ])
             leadingHStack.alignment = .center
             leadingHStack.axis = .horizontal
-            leadingHStack.spacing = 12
+            leadingHStack.spacing = Self.ivyIsMac ? 10 : 12
 
             trailingHStack.addArrangedSubview(timestampLabel)
             trailingHStack.axis = .horizontal
@@ -2510,7 +2531,7 @@ private extension CallsListViewController {
 
             contentView.addSubview(outerHStack)
             outerHStack.autoPinWidthToSuperviewMargins()
-            outerHStack.autoPinHeightToSuperview(withMargin: 14)
+            outerHStack.autoPinHeightToSuperview(withMargin: Self.ivyIsMac ? 8 : 14)
         }
 
         required init?(coder: NSCoder) {
@@ -2627,6 +2648,9 @@ private extension CallsListViewController {
                 configuration.backgroundColor = Theme.tableCell2SelectedBackgroundColor
                 if useSidebarAppearance {
                     configuration.cornerRadius = 36
+#if targetEnvironment(macCatalyst)
+                    configuration.cornerRadius = 10 // Ivy: as in the chat list
+#endif
                 }
             } else {
                 configuration.backgroundColor = .Signal.background
@@ -2712,9 +2736,16 @@ private extension CallsListViewController {
 
         private enum Constants {
             static let iconDimension: CGFloat = 24
+#if targetEnvironment(macCatalyst)
+            // Ivy: the icon under the pictures and the label under the names.
+            static let spacing: CGFloat = 18
+            static let hMargin: CGFloat = 16
+            static let vMargin: CGFloat = 10
+#else
             static let spacing: CGFloat = 18
             static let hMargin: CGFloat = 26
             static let vMargin: CGFloat = 15
+#endif
         }
 
         private lazy var iconView: UIImageView = {
@@ -2761,6 +2792,9 @@ private extension CallsListViewController {
                 configuration.backgroundColor = Theme.tableCell2SelectedBackgroundColor
                 if useSidebarAppearance {
                     configuration.cornerRadius = 36
+#if targetEnvironment(macCatalyst)
+                    configuration.cornerRadius = 10 // Ivy: as in the chat list
+#endif
                 }
             } else {
                 configuration.backgroundColor = .Signal.background
