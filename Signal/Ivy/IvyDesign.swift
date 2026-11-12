@@ -98,6 +98,9 @@ final class IvySectionHeaderView: UITableViewHeaderFooterView {
     private let titleLabel = UILabel()
     private let detailLabel = UILabel()
     private let actionButton = UIButton(type: .system)
+#if targetEnvironment(macCatalyst)
+    private let actionLabel = UILabel()
+#endif
     private var action: (() -> Void)?
     private var leading: NSLayoutConstraint?
     private var trailing: NSLayoutConstraint?
@@ -129,15 +132,27 @@ final class IvySectionHeaderView: UITableViewHeaderFooterView {
         actionButton.titleLabel?.font = .dynamicTypeSubheadline
         actionButton.titleLabel?.adjustsFontForContentSizeCategory = true
         actionButton.tintColor = .Signal.accent
-#if targetEnvironment(macCatalyst)
-        // The Mac's own button is a boxed push button that sits off the
-        // heading's line; the iPad's is plain text on its baseline.
-        actionButton.preferredBehavioralStyle = .pad
-#endif
         actionButton.setContentCompressionResistancePriority(.required, for: .horizontal)
         actionButton.addAction(UIAction { [weak self] _ in self?.action?() }, for: .primaryActionTriggered)
 
+#if targetEnvironment(macCatalyst)
+        // On the Mac the action is a label, not a button. The Mac's own
+        // button is a boxed push button that sits off the heading's line,
+        // and lining a button up on the heading's baseline ties the stack
+        // to the button's title label, which the Mac refuses: it stopped
+        // the app on Start and in the calendar.
+        actionLabel.font = .dynamicTypeSubheadline
+        actionLabel.adjustsFontForContentSizeCategory = true
+        actionLabel.textColor = .Signal.accent
+        actionLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        actionLabel.isUserInteractionEnabled = true
+        actionLabel.isAccessibilityElement = true
+        actionLabel.accessibilityTraits = .button
+        actionLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapAction)))
+        let stack = UIStackView(arrangedSubviews: [titleLabel, UIView(), detailLabel, actionLabel])
+#else
         let stack = UIStackView(arrangedSubviews: [titleLabel, UIView(), detailLabel, actionButton])
+#endif
         stack.axis = .horizontal
         stack.alignment = .firstBaseline
         stack.spacing = 8
@@ -160,6 +175,13 @@ final class IvySectionHeaderView: UITableViewHeaderFooterView {
         fatalError("init(coder:) has not been implemented")
     }
 
+#if targetEnvironment(macCatalyst)
+    @objc
+    private func didTapAction() {
+        action?()
+    }
+#endif
+
     func configure(title: String, detail: String? = nil, detailColor: UIColor = .Signal.secondaryLabel, actionTitle: String? = nil, action: (() -> Void)? = nil) {
 #if targetEnvironment(macCatalyst)
         titleLabel.text = title.localizedUppercase
@@ -172,6 +194,10 @@ final class IvySectionHeaderView: UITableViewHeaderFooterView {
         detailLabel.isHidden = detail == nil
         actionButton.setTitle(actionTitle, for: .normal)
         actionButton.isHidden = actionTitle == nil
+#if targetEnvironment(macCatalyst)
+        actionLabel.text = actionTitle
+        actionLabel.isHidden = actionTitle == nil
+#endif
         self.action = action
         accessibilityTraits = .header
     }
