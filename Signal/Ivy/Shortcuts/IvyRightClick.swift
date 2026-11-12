@@ -5,6 +5,7 @@
 
 import SignalServiceKit
 import SignalUI
+public import UIKit
 import UniformTypeIdentifiers
 
 #if targetEnvironment(macCatalyst)
