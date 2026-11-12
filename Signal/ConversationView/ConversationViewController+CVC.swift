@@ -908,7 +908,9 @@ extension ConversationViewController {
         guard let navigationController else {
             return false
         }
-        navigationController.view.layoutIfNeeded()
+        // Ivy: timed; this lays out the whole window ten times a second
+        // while a chat scrolls.
+        IvyPerformance.measure("chat scroll layout") { navigationController.view.layoutIfNeeded() }
         let navControllerSize = navigationController.view.frame.size
         let loadThreshold = navControllerSize.largerAxis * 3
         let distanceFromTop = collectionView.contentOffset.y
