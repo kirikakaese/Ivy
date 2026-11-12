@@ -52,6 +52,12 @@ public class CVComponentBottomButtons: CVComponentBase, CVComponent {
                 buttonView.backgroundColor = .Signal.ColorBase.button
                 buttonView.textColor = .Signal.ColorBase.labelPrimary
             }
+#if targetEnvironment(macCatalyst)
+            // Ivy: on the Mac the actions are quiet text in the bubble, not
+            // a row of filled pills that outweighs the message.
+            buttonView.backgroundColor = .clear
+            buttonView.textColor = isIncoming ? .Signal.accent : .Signal.ColorBase.labelPrimary
+#endif
             subviews.append(buttonView)
             componentView.buttonViews.append(buttonView)
         }
@@ -72,8 +78,17 @@ public class CVComponentBottomButtons: CVComponentBase, CVComponent {
             axis: isHorizontal ? .horizontal : .vertical,
             alignment: .fill,
             spacing: Self.buttonSpacing,
-            layoutMargins: .init(top: 6, leading: 12, bottom: 12, trailing: 12),
+            layoutMargins: Self.ivyStackMargins,
         )
+    }
+
+    /// Ivy: the Mac's text actions need less room around them than pills.
+    private static var ivyStackMargins: UIEdgeInsets {
+#if targetEnvironment(macCatalyst)
+        return .init(top: 0, leading: 12, bottom: 4, trailing: 12)
+#else
+        return .init(top: 6, leading: 12, bottom: 12, trailing: 12)
+#endif
     }
 
     fileprivate static var buttonHeight: CGFloat { CVMessageActionButton.buttonHeight }

@@ -53,6 +53,16 @@ enum IvyChatWindows {
         UIApplication.shared.requestSceneSessionActivation(mainSession, userActivity: nil, options: nil)
     }
 
+    /// Brings the window of a chat to the front, if it has one of its own.
+    static func bringForwardWindow(ofThread threadUniqueId: String) -> Bool {
+        let existing = UIApplication.shared.openSessions.first { session in
+            isChatWindow(session) && Self.threadUniqueId(of: session.stateRestorationActivity) == threadUniqueId
+        }
+        guard let existing else { return false }
+        UIApplication.shared.requestSceneSessionActivation(existing, userActivity: nil, options: nil)
+        return true
+    }
+
     /// Opens a chat in its own window, or brings its window to the front.
     static func open(threadUniqueId: String) {
         let existing = UIApplication.shared.openSessions.first { session in
@@ -128,7 +138,7 @@ final class IvyChatSceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
         windowScene.title = name
-        window.rootViewController = OWSNavigationController(rootViewController: conversation)
+        window.rootViewController = IvyChatWindowNavigationController(rootViewController: conversation)
         updateCover()
     }
 
@@ -218,4 +228,49 @@ extension ChatListViewController {
             IvyChatWindows.open(threadUniqueId: threadId)
         }
     }
+}
+
+/// The navigation stack of a chat's own window. The chat's shortcuts live
+/// on the main window's split view, so a chat window had none of them.
+final class IvyChatWindowNavigationController: OWSNavigationController {
+
+    private var conversation: ConversationViewController? {
+        viewControllers.first as? ConversationViewController
+    }
+
+    override var canBecomeFirstResponder: Bool { true }
+
+    override var keyCommands: [UIKeyCommand]? {
+        var commands = super.keyCommands ?? []
+        guard presentedViewController == nil, let conversation, !conversation.isPresentingContextMenu else {
+            return commands
+        }
+        commands += [
+            UIKeyCommand(input: "i", modifierFlags: [.command, .shift], action: #selector(ivyOpenChatInfo)),
+            UIKeyCommand(input: "m", modifierFlags: [.command, .shift], action: #selector(ivyOpenAllMedia)),
+            UIKeyCommand(input: "g", modifierFlags: [.command, .shift], action: #selector(ivyOpenGifSearch)),
+            UIKeyCommand(input: "u", modifierFlags: .command, action: #selector(ivyOpenAttachments)),
+            UIKeyCommand(input: "s", modifierFlags: [.command, .shift], action: #selector(ivyOpenStickers)),
+            UIKeyCommand(input: "t", modifierFlags: [.command, .shift], action: #selector(ivyFocusMessageField)),
+        ]
+        return commands
+    }
+
+    @objc
+    private func ivyOpenChatInfo() { conversation?.showConversationSettings() }
+
+    @objc
+    private func ivyOpenAllMedia() { conversation?.openAllMedia() }
+
+    @objc
+    private func ivyOpenGifSearch() { conversation?.openGifSearch() }
+
+    @objc
+    private func ivyOpenAttachments() { conversation?.openAttachmentKeyboard() }
+
+    @objc
+    private func ivyOpenStickers() { conversation?.openStickerKeyboard() }
+
+    @objc
+    private func ivyFocusMessageField() { conversation?.focusInputToolbar() }
 }

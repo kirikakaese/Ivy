@@ -135,6 +135,20 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
     // off in Settings, so that is part of the key.
     private nonisolated(unsafe) static var ivyDetectors = [String: NSDataDetector]()
 
+    // Ivy: how long finding links, dates and tasks took since it was last
+    // asked, so the log can say how much of a chat's load that is. Only
+    // used while holding `unfairLock`.
+    private nonisolated(unsafe) static var ivyDetectionNanoseconds: UInt64 = 0
+
+    /// The time spent in `detectItems` since the last call, in milliseconds.
+    static func ivyTakeDetectionMilliseconds() -> Int {
+        unfairLock.withLock {
+            let milliseconds = Int(ivyDetectionNanoseconds / 1_000_000)
+            ivyDetectionNanoseconds = 0
+            return milliseconds
+        }
+    }
+
     private static func cachedDataDetector(shouldAllowLinkification: Bool) -> NSDataDetector? {
         let key = "\(shouldAllowLinkification)-\(shouldDetectDates)"
         if let detector = ivyDetectors[key] {
@@ -162,6 +176,9 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
                 // Do not linkify if there is a pending message request.
                 return []
             }
+
+            let ivyStart = DispatchTime.now().uptimeNanoseconds
+            defer { ivyDetectionNanoseconds += DispatchTime.now().uptimeNanoseconds - ivyStart }
 
             // Ivy: reuse the detector instead of building one per message,
             // which made scrolling through chats stutter.
