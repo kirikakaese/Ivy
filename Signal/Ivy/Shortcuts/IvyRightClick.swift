@@ -5,8 +5,11 @@
 
 import SignalServiceKit
 import SignalUI
-public import UIKit
 import UniformTypeIdentifiers
+// Public only where the chat's drop delegate, which is Mac only, needs it.
+#if targetEnvironment(macCatalyst)
+public import UIKit
+#endif
 
 #if targetEnvironment(macCatalyst)
 
