@@ -9,7 +9,12 @@ import SignalUI
 class AppSettingsViewController: OWSTableViewController2 {
 
     class func inModalNavigationController() -> OWSNavigationController {
-        OWSNavigationController(rootViewController: AppSettingsViewController())
+        // Ivy: two panes on the Mac, the list beside the chosen page.
+#if targetEnvironment(macCatalyst)
+        return ivyMacSettings()
+#else
+        return OWSNavigationController(rootViewController: AppSettingsViewController())
+#endif
     }
 
     private var localUsernameState: Usernames.LocalUsernameState!

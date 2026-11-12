@@ -206,3 +206,114 @@ enum IvyEmptyState {
         return container
     }
 }
+
+// MARK: - Settings in two panes on the Mac
+
+#if targetEnvironment(macCatalyst)
+
+/// A navigation stack that hands the pages pushed onto it to someone else
+/// once it has its first one. The settings list pushes its pages onto its
+/// own stack; on the Mac they open in the pane beside it instead.
+final class IvyForwardingNavigationController: OWSNavigationController {
+
+    var onPush: ((UIViewController) -> Void)?
+
+    override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+        if let onPush, !viewControllers.isEmpty {
+            onPush(viewController)
+        } else {
+            super.pushViewController(viewController, animated: animated)
+        }
+    }
+}
+
+/// Settings on the Mac, like System Settings: the list of pages with its
+/// search field stays on the left, and the chosen page opens on the right
+/// with "Done" in its top corner.
+final class IvyMacSettingsPanesViewController: UIViewController, OWSNavigationChildController {
+
+    static let listWidth: CGFloat = 260
+    static let sheetSize = CGSize(width: 800, height: 640)
+
+    private let list = IvyForwardingNavigationController()
+    private let detail = OWSNavigationController()
+    private let settings = AppSettingsViewController()
+    private let separator = UIView()
+
+    var prefersNavigationBarHidden: Bool { true }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .Signal.groupedBackground
+
+        list.pushViewController(settings, animated: false)
+        list.onPush = { [weak self] page in self?.show(page) }
+
+        // The list keeps its title and search field; closing is on the page.
+        settings.loadViewIfNeeded()
+        settings.navigationItem.rightBarButtonItem = nil
+        if #available(iOS 16, *) {
+            settings.navigationItem.preferredSearchBarPlacement = .stacked
+        }
+
+        separator.backgroundColor = .separator
+        for child in [list, detail] as [UIViewController] {
+            addChild(child)
+            view.addSubview(child.view)
+            child.view.translatesAutoresizingMaskIntoConstraints = false
+            child.didMove(toParent: self)
+        }
+        view.addSubview(separator)
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            list.view.topAnchor.constraint(equalTo: view.topAnchor),
+            list.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            list.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            list.view.widthAnchor.constraint(equalToConstant: Self.listWidth),
+
+            separator.topAnchor.constraint(equalTo: view.topAnchor),
+            separator.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            separator.leadingAnchor.constraint(equalTo: list.view.trailingAnchor),
+            separator.widthAnchor.constraint(equalToConstant: 1 / max(traitCollection.displayScale, 1)),
+
+            detail.view.topAnchor.constraint(equalTo: view.topAnchor),
+            detail.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            detail.view.leadingAnchor.constraint(equalTo: separator.trailingAnchor),
+            detail.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
+
+        // Opens on the first page, so the right pane is never empty.
+        if detail.viewControllers.isEmpty {
+            show(AppearanceSettingsTableViewController())
+        }
+    }
+
+    /// Opens a page in the right pane, in place of the one that was there.
+    func show(_ page: UIViewController) {
+        loadViewIfNeeded()
+        // After the page has set up its own bar, so "Done" isn't replaced.
+        page.loadViewIfNeeded()
+        let done = UIBarButtonItem.doneButton { [weak self] in
+            self?.dismiss(animated: true)
+        }
+        page.navigationItem.rightBarButtonItems = [done] + (page.navigationItem.rightBarButtonItems ?? [])
+        detail.setViewControllers([page], animated: false)
+    }
+}
+
+extension AppSettingsViewController {
+
+    /// Settings as a sheet with two panes. Pages pushed onto the returned
+    /// stack open in the right pane.
+    static func ivyMacSettings() -> OWSNavigationController {
+        let panes = IvyMacSettingsPanesViewController()
+        let sheet = IvyForwardingNavigationController()
+        sheet.pushViewController(panes, animated: false)
+        sheet.onPush = { [weak panes] page in panes?.show(page) }
+        sheet.setNavigationBarHidden(true, animated: false)
+        sheet.preferredContentSize = IvyMacSettingsPanesViewController.sheetSize
+        return sheet
+    }
+}
+
+#endif
