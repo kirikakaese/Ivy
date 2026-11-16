@@ -2380,6 +2380,30 @@
 حاوِل مُجدَّدًا بعد %1$d ساعة.</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>لا يمكنك سوى إضافة %1$d مُلصَقات إلى المفضلة</string>
+			<key>one</key>
+			<string>لا يمكنك سوى إضافة %1$d مُلصَق إلى المفضلة</string>
+			<key>two</key>
+			<string>لا يمكنك سوى إضافة %1$d مُلصَقين إلى المفضلة</string>
+			<key>few</key>
+			<string>لا يمكنك سوى إضافة %1$d مُلصَقات إلى المفضلة</string>
+			<key>many</key>
+			<string>لا يمكنك سوى إضافة %1$d مُلصَقًا إلى المفضلة</string>
+			<key>other</key>
+			<string>لا يمكنك سوى إضافة %1$d مًلصَق إلى المفضلة</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

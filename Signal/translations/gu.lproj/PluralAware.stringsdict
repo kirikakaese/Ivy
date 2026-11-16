@@ -1580,6 +1580,22 @@
 %1$d કલાક પછી ફરી પ્રયાસ કરો.</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>તમે ફક્ત %1$d સ્ટીકર જ મનપસંદમાં ઉમેરી શકો છો</string>
+			<key>other</key>
+			<string>તમે ફક્ત %1$d સ્ટીકર જ મનપસંદમાં ઉમેરી શકો છો</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

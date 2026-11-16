@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • A Signal mostantól optimalizálva van iPhone Duóra.
+=======
+• Közvetlenül válaszolhatsz az üzenetekre matricával.
+• További fejlesztések az iPhone Duóhoz.
+>>>>>>> upstream/8.37.0.1993

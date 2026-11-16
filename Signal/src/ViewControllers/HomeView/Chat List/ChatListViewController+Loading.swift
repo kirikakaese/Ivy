@@ -3,11 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-public import SignalServiceKit
-import UIKit
+import SignalServiceKit
 
 extension ChatListViewController {
-    public var isViewVisible: Bool {
+    var isViewVisible: Bool {
         get { viewState.isViewVisible }
         set {
             if newValue != viewState.isViewVisible {
@@ -263,13 +262,14 @@ private enum CLVLoadType {
 
 // MARK: -
 
-public class CLVLoadCoordinator {
+@MainActor
+class CLVLoadCoordinator {
     private let filterStore: ChatListFilterStore
     private var loadInfoBuilder: CLVLoadInfoBuilder
 
-    public weak var viewController: ChatListViewController?
+    weak var viewController: ChatListViewController?
 
-    public init() {
+    init() {
         self.filterStore = ChatListFilterStore()
         self.loadInfoBuilder = CLVLoadInfoBuilder()
         self.loadInfoBuilder.shouldResetAll = true
@@ -280,6 +280,7 @@ public class CLVLoadCoordinator {
         let loadType: CLVLoadType
     }
 
+    @MainActor
     private class CLVLoadInfoBuilder {
         var shouldResetAll = false
         var updatedThreadIds = Set<String>()
@@ -331,22 +332,19 @@ public class CLVLoadCoordinator {
         }
     }
 
-    public func saveInboxFilter(_ inboxFilter: InboxFilter) {
+    func saveInboxFilter(_ inboxFilter: InboxFilter) {
         SSKEnvironment.shared.databaseStorageRef.asyncWrite { [filterStore] transaction in
             filterStore.setInboxFilter(inboxFilter, transaction: transaction)
         }
     }
 
-    public func scheduleHardReset() {
-        AssertIsOnMainThread()
-
+    func scheduleHardReset() {
         loadInfoBuilder.shouldResetAll = true
 
         loadIfNecessary()
     }
 
-    public func scheduleLoad(updatedThreadIds: some Collection<String>, animated: Bool = true) {
-        AssertIsOnMainThread()
+    func scheduleLoad(updatedThreadIds: some Collection<String>, animated: Bool = true) {
         owsAssertDebug(!updatedThreadIds.isEmpty)
 
         loadInfoBuilder.updatedThreadIds.formUnion(updatedThreadIds)
@@ -354,9 +352,7 @@ public class CLVLoadCoordinator {
         loadIfNecessary(suppressAnimations: !animated)
     }
 
-    public func ensureFirstLoad() {
-        AssertIsOnMainThread()
-
+    func ensureFirstLoad() {
         guard let viewController else {
             owsFailDebug("Missing viewController.")
             return
@@ -375,9 +371,7 @@ public class CLVLoadCoordinator {
     }
 
     @objc
-    public func applicationWillEnterForeground() {
-        AssertIsOnMainThread()
-
+    func applicationWillEnterForeground() {
         guard let viewController else {
             owsFailDebug("Missing viewController.")
             return
@@ -394,9 +388,7 @@ public class CLVLoadCoordinator {
         }
     }
 
-    public func loadIfNecessary(suppressAnimations: Bool = false, shouldForceLoad: Bool = false) {
-        AssertIsOnMainThread()
-
+    func loadIfNecessary(suppressAnimations: Bool = false, shouldForceLoad: Bool = false) {
         guard let viewController else {
             owsFailDebug("Missing viewController.")
             return
@@ -414,7 +406,7 @@ public class CLVLoadCoordinator {
                 inboxFilter: viewController.viewState.inboxFilter,
                 isMultiselectActive: viewController.viewState.multiSelectState.isActive,
                 lastSelectedThreadId: viewController.viewState.lastSelectedThreadId,
-                hasVisibleReminders: MainActor.assumeIsolated { viewController.viewState.reminderViews.hasVisibleReminders },
+                hasVisibleReminders: viewController.viewState.reminderViews.hasVisibleReminders,
                 shouldBackupDownloadProgressViewBeVisible: viewController.viewState.backupDownloadProgressView.shouldBeVisible,
                 shouldBackupExportProgressViewBeVisible: viewController.viewState.backupExportProgressView.shouldBeVisible,
                 shouldLocalFileBackupRestoreProgressViewBeVisible: viewController.viewState.localFileBackupRestoreProgressView.shouldBeVisible,

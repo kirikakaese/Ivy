@@ -1980,6 +1980,26 @@ Bandykite vėl po %1$d val.</string>
 Bandykite vėl po %1$d val.</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Prie mėgstamiausiųjų galite pridėti tik %1$d lipduką</string>
+			<key>few</key>
+			<string>Prie mėgstamiausiųjų galite pridėti tik %1$d lipdukus</string>
+			<key>many</key>
+			<string>Prie mėgstamiausiųjų galite pridėti tik %1$d lipduko</string>
+			<key>other</key>
+			<string>Prie mėgstamiausiųjų galite pridėti tik %1$d lipdukų</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

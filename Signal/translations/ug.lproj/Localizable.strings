@@ -3112,6 +3112,15 @@
 /* Toast message confirming the system contact was deleted. Embeds {{The name of the user who was deleted.}}. */
 "DELETE_CONTACT_CONFIRMATION_TOAST" = "%1$@ ئالاقىداشلىرىڭىزدىن ئۆچۈرىۋېتىلدى ۋە چىقىرىۋېتىلدى.";
 
+/* Message for a sheet confirming that the user, as a group admin, wants to delete messages for everyone. */
+"DELETE_FOR_EVERYONE_CONFIRMATION_SHEET_ADMIN_MESSAGE" = "گۇرۇپپا ئەزالىرى سىزنىڭ بۇ ئۇچۇرلارنى ئۆچۈرگەنلىكىڭىزنى كۆرىدۇ.";
+
+/* Message for a sheet confirming that the user wants to delete their message for everyone. */
+"DELETE_FOR_EVERYONE_CONFIRMATION_SHEET_MESSAGE" = "بۇ ئۇچۇر پاراڭ سەھىپىسىدىكى ھەممەيلەن ئۈچۈن ئۆچۈرۈلىدۇ. ئۇلار سىزنىڭ بىر ئۇچۇرنى ئۆچۈرگەنلىكىڭىزنى كۆرەلەيدۇ.";
+
+/* Title for a sheet confirming that the user wants to delete messages for everyone. */
+"DELETE_FOR_EVERYONE_CONFIRMATION_SHEET_TITLE" = "ھەممەيلەن ئۈچۈن ئۆچۈرەمسىز؟";
+
 /* Title for an action sheet button explaining that a message will be deleted. */
 "DELETE_FOR_ME_NOTE_TO_SELF_ACTION_SHEET_BUTTON_TITLE" = "ئۆچۈرۈش";
 
@@ -3202,18 +3211,6 @@
 /* The title for the device transfer 'choice' view 'transfer' option when linking a device */
 "DEVICE_TRANSFER_CHOICE_TRANSFER_LINKED_TITLE" = "باشقا  iPad تىن يۆتكەيدۇ";
 
-/* An error indicating that the other device closed signal mid-transfer and it could not complete */
-"DEVICE_TRANSFER_ERROR_BACKGROUNDED" = "پۇل يۆتكەشنى تاماملىيالمىدى. ئىككىلى ئۈسكۈنىدە Signal نىڭ بار بولۇشىغا كاپالەتلىك قىلىپ قايتا سىناڭ.";
-
-/* An error indicating that something went wrong with the transfer and it could not complete */
-"DEVICE_TRANSFER_ERROR_GENERIC" = "پۇل يۆتكەشنى تاماملىيالمىدى. ئۈسكۈنىلەرنى يېقىن كەلتۈرۈپ قايتا سىناڭ.";
-
-/* An error indicating that the user does not have enough free space on their device to complete the transfer */
-"DEVICE_TRANSFER_ERROR_NOT_ENOUGH_SPACE" = "يۆتكەشنى تاماملاشقا يېتەرلىك بوشلۇق يوق";
-
-/* An error indicating the user must update their device before trying to transfer. */
-"DEVICE_TRANSFER_ERROR_UNSUPPORTED_VERSION" = "‫Signal نىڭ ئەڭ يېڭى نەشرىگە يېڭىلاپ ئاندىن قايتا سىناڭ";
-
 /* Body of the device transfer screen for pairing a new device, from the new device */
 "DEVICE_TRANSFER_PAIR_NEW_DEVICE_MESSAGE" = "ھېساباتىڭىزنى يۆتكەش ئۈچۈن، بۇ ئۈسكۈنىنى كونا ئۈسكۈنىڭىز بىلەن جۈپلەڭ";
 
@@ -3225,12 +3222,6 @@
 
 /* Title of the device transfer screen for pairing a new device, from the old device */
 "DEVICE_TRANSFER_PAIR_OLD_DEVICE_TITLE" = "كونا ئۈسكۈنىڭىز بىلەن جۈپلەڭ";
-
-/* The explanation on the view that shows receiving progress */
-"DEVICE_TRANSFER_RECEIVING_EXPLANATION" = "ئىككى ئۈسكۈنىنى يېقىنلاشتۇرۇڭ. ئۈسكۈتە ۋە Signal ئوچۇق تۇرسۇن. يۆتكەنش نۇقتىدىن نۇقتىغا شىفىرلانغان.";
-
-/* The title on the view that shows receiving progress */
-"DEVICE_TRANSFER_RECEIVING_TITLE" = "مەلۇمات قوبۇللىنىۋاتىدۇ";
 
 /* Description in the progress view displayed during device transfer finalization. */
 "DEVICE_TRANSFER_STATUS_DEVICE_FINISHING" = "يۆتكەشنى تاماملاۋاتىدۇ…";
@@ -4711,6 +4702,9 @@
 /* Title for the group name view. */
 "GROUP_NAME_VIEW_TITLE" = "گۇرۇپپا ئىسمى";
 
+/* Bottom bar label for group chats the local user is not a member of */
+"GROUP_NOT_MEMBER_BOTTOM_PANEL_LABEL" = "بۇ گۇرۇپپىغا ئۇچۇر يوللىيالمايسىز، چۈنكى سىز بۇ گۇرۇپپىنىڭ ئەزاسى ئەمەس.";
+
 /* Message indicating that a remote user has accepted their invite. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_ACCEPTED_INVITE_FORMAT" = "گۇرۇپپىغا كىرىش تەكلىپىنى %1$@ قوبۇل قىلدى.";
 
@@ -4812,6 +4806,9 @@
 
 /* The title for the 'group requests and invites' view. */
 "GROUP_REQUESTS_AND_INVITES_VIEW_TITLE" = "ئىلتىماس ۋە تەكلىپ";
+
+/* Label for a banner in group settings shown when the local user is not a member of the group */
+"GROUP_SETTINGS_NOT_MEMBER_BANNER_LABEL" = "سىز گۇرۇپپىنىڭ ئەزاسى ئەمەس";
 
 /* Name for a group story on the stories list. Embeds {author's name}, {group name} */
 "GROUP_STORY_NAME_FORMAT" = "%1$@ دىن%2$@ غىچە";
@@ -5008,6 +5005,15 @@
 /* An explanation of why the user cannot be removed on a linked device. */
 "HIDE_RECIPIENT_IMPOSSIBLE_BECAUSE_SYSTEM_CONTACT_ACTION_SHEET_EXPLANATION" = "بۇ كىشى تېلېفونىڭىزدىكى ئالاقىداشلارغا ساقلاندى. ئۇلارنى تېلېفونىڭىزدىكى ئالاقىداشلاردىن ئۆچۈرۈپ، قايتا سىناڭ.";
 
+/* Displayed on Calls tab when the screen is large (eg iPad) and is split into two columns and nothing is selected. */
+"HOME_CALLS_TAB_PLACEHOLDER" = "%1$@نى چېكىپ يېڭى ئاۋازلىق ياكى سىنلىق چاقىرىقنى باشلاڭ.";
+
+/* Displayed on Chats tab when the screen is large (eg iPad) and is split into two columns and no chat is selected. */
+"HOME_CHATS_TAB_PLACEHOLDER" = "بىر سۆھبەتنى تاللاڭ ياكى %1$@نى چېكىپ ئۇچۇر ئەۋەتىشكە باشلاڭ.";
+
+/* Displayed on Stories tab when screen is large (eg iPad) and is split into two columns. */
+"HOME_STORIES_TAB_PLACEHOLDER" = "بىر ھېكايىنى كۆرۈش ئۈچۈن چېكىڭ.";
+
 /* Label for 'archived conversations' button. */
 "HOME_VIEW_ARCHIVED_CONVERSATIONS" = "ئارخىپلانغان پاراڭلار";
 
@@ -5052,6 +5058,9 @@
 
 /* Title for the conversation list's backup subscription not found locally context menu action. */
 "HOME_VIEW_TITLE_BACKUP_SUBSCRIPTION_NOT_FOUND_LOCALLY" = "زاپاسلاش مۇشتەرىلىكى تېپىلمىدى";
+
+/* Title for the 'donate' action in the context menu of the settings button on home view tabs. */
+"HOME_VIEW_TITLE_DONATE" = "‫Signal غا ئىئانە قىلىڭ";
 
 /* Title for the conversation list's failed to backup context menu action. */
 "HOME_VIEW_TITLE_FAILED_TO_BACKUP" = "زاپاسلاش مەغلۇب بولدى";
@@ -5534,7 +5543,10 @@
 "LINKED_DEVICES_TITLE" = "باغلانغان ئۈسكۈنىلەر";
 
 /* Alert Title */
-"LINKING_DEVICE_FAILED_TITLE" = "ئۈسكۈنە باغلاش مەغلۇب بولدى";
+"LINKING_DEVICE_FAILED_TITLE" = "ئۈسكۈنىنى ئۇلىغىلى بولمىدى";
+
+/* Shown when trying to link a device to an account but that device is out of date and must first update its version of Signal. */
+"LINKING_DEVICE_OUT_OF_DATE" = "سىزنىڭ يەنە بىر ئۈسكۈنىڭىز كونا نەشرىدىكى Signal نى ئىشلىتىۋېتىپتۇ. سىز ئۇ ئۈسكۈنىنى ئۇلاشتىن ئاۋۋال، ئۇنىڭدىكى Signalنىڭ نەشرىنى يېڭىلىشىڭىز كېرەك.";
 
 /* Progress label when the message loading has nearly completed during the device linking process */
 "LINKING_SYNCING_FINALIZING" = "ئۇچۇر يۆتكەشنى ئاخىرلاشتۇرۇش…";
@@ -5770,6 +5782,9 @@
 /* Accessibility prefix for member labels. */
 "MEMBER_LABEL_AX_PREFIX" = "ئەزا بەلگىسى: ";
 
+/* Accessibility label for the button that clears the member label text and emoji. */
+"MEMBER_LABEL_CLEAR_BUTTON_ACCESSIBILITY_LABEL" = "بەلگىنى تازىلاش";
+
 /* Button label on action sheet when attempting to change the group attributes access to 'administrator' and then continue */
 "MEMBER_LABEL_CLEAR_CHANGE_PERMISSION_CONTINUE" = "رۇخسەتنى ئۆزگەرتىش";
 
@@ -5781,6 +5796,9 @@
 
 /* Text for a button to set a member label */
 "MEMBER_LABEL_EDIT" = "بەلگىڭىزنى تەھرىرلەڭ";
+
+/* Accessibility label for the button that chooses an emoji for a member label. */
+"MEMBER_LABEL_EMOJI_BUTTON_ACCESSIBILITY_LABEL" = "emoji تاللاش";
 
 /* Error indicating member label could not save. */
 "MEMBER_LABEL_FAIL_TO_SAVE" = "ئەزا بەلگىسىنى ساقلىغىلى بولمىدى";
@@ -5821,17 +5839,11 @@
 /* Title for a view where users can edit and preview their member label. */
 "MEMBER_LABEL_VIEW_TITLE" = "ئەزا بەلگىسى";
 
-/* A one-time confirmation that you, as an admin, want to delete for everyone */
-"MESSAGE_ACTION_ADMIN_DELETE_FOR_EVERYONE_CONFIRMATION" = "Signal نىڭ ئەڭ يېڭى نەشىرىنى ئىشلىتىۋاتقان گۇرۇپپا ئەزالىرى، سىزنىڭ بۇ ئۇچۇرلارنى ئۆچۈرۈۋەتكىنىڭىزنى كۆرەلەيدۇ.";
-
 /* Action sheet button title */
 "MESSAGE_ACTION_COPY_TEXT" = "ئۇچۇر تېكىستىنى كۆچۈرۈڭ";
 
 /* The title for the action that deletes a message for all users in the conversation. */
 "MESSAGE_ACTION_DELETE_FOR_EVERYONE" = "ھەممەيلەن ئۈچۈن ئۆچۈرۈڭ";
-
-/* A one-time confirmation that you want to delete for everyone */
-"MESSAGE_ACTION_DELETE_FOR_EVERYONE_CONFIRMATION" = "ئەگەر پاراڭدىكى كىشىلەر Signal نىڭ يېقىنقى نەشرىنى ئىشلىتىۋاتقان بولسا، بۇ ئۇچۇر پاراڭدىكى ھەممەيلەن ئۈچۈن ئۆچۈرۈلىدۇ. ئۇلار سىزنىڭ ئۇچۇرنى ئۆچۈرگەنلىكىڭىزنى كۆرەلەيدۇ.";
 
 /* The title for the action sheet asking who the user wants to delete the message for. */
 "MESSAGE_ACTION_DELETE_FOR_TITLE" = "بۇ ئۇچۇرنى كىم ئۈچۈن ئۆچۈرمەكچىسىز؟";
@@ -6739,6 +6751,27 @@
 /* Title of the 'onboarding splash' view. */
 "ONBOARDING_SPLASH_TITLE" = "شەخسىي مەخپىيەتلىكىڭىزنى ئۆزىڭىز بىلەن بىرگە ساقلاڭ.\nھەر بىر ئۇچۇردا ئۆزىڭىز بولۇڭ.";
 
+/* Subtitle for action to verify with an authenticator as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_AUTHENTICATOR_APP_BODY" = "دەلىللىگۈچى ئەپىڭىز ھاسىل قىلغان، بىرلا قېتىم ئىشلىتىلىدىغان كودنى كىرگۈزۈڭ.";
+
+/* Title for action to verify with an authenticator as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_AUTHENTICATOR_APP_TITLE" = "دەلىللىگۈچى ئەپ";
+
+/* Description for the 2fa screens shown during registration. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_BODY" = "ھېساباتىڭىزنى دەلىللەش ئۈچۈن تۆۋەندىكىلەردىن بىر مېتودنى تاللاڭ.";
+
+/* Subtitle for action to verify with a passkey as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_PASSKEY_BODY" = "ساقىلىۋالغان بىئومېتىرىك ياكى FIDO2 كىرىش ئاچقۇچىنى، چېكىش ئارقىلىق ئىشلىتىڭ";
+
+/* Title for action to verify with a passkey as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_PASSKEY_TITLE" = "كىرىش ئاچقۇچى";
+
+/* Description for the screen asking the user to verify their account with a passkey during registration. */
+"ONBOARDING_TWO_FACTOR_AUTH_PASSKEY_BODY" = "داۋاملاشتۇرۇش ئۈچۈن، كىرىش ئاچقۇچىڭىز ئارقىلىق ھېساباتىڭىزنى دەلىللەڭ.";
+
+/* Title for the 2fa screens shown during registration. */
+"ONBOARDING_TWO_FACTOR_AUTH_TITLE" = "ئىككى قاتلىق دەلىللەش";
+
 /* Label for the link that lets users change their phone number in the onboarding views. */
 "ONBOARDING_VERIFICATION_BACK_LINK" = "خاتا نومۇرمۇ؟";
 
@@ -6822,6 +6855,12 @@
 
 /* Title of prompt notifying registration without restore completed on the new device. */
 "OUTGOING_DEVICE_REGISTRATION_COMPLETE_TITLE" = "تىزىملىتىش تاماملاندى";
+
+/* Body of prompt notifying connection failure during restore. */
+"OUTGOING_DEVICE_REGISTRATION_FAILED_CONNECTION_BODY" = "ئۈسكۈنىگە ئۇلاش مەغلۇب بولدى ياكى ئۇلىنىش ۋاقتى ئېشىپ كەتتى. قايتا سىناڭ.";
+
+/* Title of prompt notifying connection failure during restore. */
+"OUTGOING_DEVICE_REGISTRATION_FAILED_CONNECTION_TITLE" = "باغلىنالمىدى";
 
 /* Body of prompt notifying restore failed. */
 "OUTGOING_DEVICE_REGISTRATION_FAILED_RESTORE_BODY" = "باشقا ئۈسكۈنىدىن ئەسلىگە كەلتۈرمەكچى بولغان ئۇچۇرلار ئىناۋەتسىز ياكى ۋاقتى ئۆتكەن سانلىق مەلۇماتلارنى ئۆز ئىچىگە ئالغان.  قايتا سىناڭ.";
@@ -7873,9 +7912,6 @@
 /* Message for an action sheet telling users how to use quick restore, when trying to open an external quick restore URL. */
 "QUICK_RESTORE_URL_OPENED_ACTION_SHEET_EXTERNAL_URL_MESSAGE" = "بۇ ھېساباتنى يېڭى ئۈسكۈنىگە يۆتكەش ئۈچۈن «داۋاملاشتۇرۇش» نى چېكىپ، Signal كامېراسى ئارقىلىق QR كودىنى قايتا سكاننېرلاڭ. پەقەت Signal دىنلا كەلگەن QR كودىنى سكاننېرلاڭ.";
 
-/* Label to show above a sticker used to reply to a message */
-"QUOTE_REPLY_STICKER" = "جاۋاب";
-
 /* Accessibility label stating the author of the message to which you are replying. Embeds: {{ the author of the message to which you are replying }} {{ original message }}. */
 "QUOTED_REPLY_ACCESSIBILITY_LABEL_FORMAT" = "%1$@ غا جاۋاب قايتۇرۇۋاتىدۇ. %2$@";
 
@@ -8755,6 +8791,57 @@
 /* Label for button on lock screen that lets users unlock Signal. */
 "SCREEN_LOCK_UNLOCK_SIGNAL" = "Signal نى ئاجرىتىڭ";
 
+/* Title for a button in a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_BLOCKED_TOAST_OPTIONS_BUTTON_TITLE" = "تاللاشلار";
+
+/* Text for a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_BLOCKED_TOAST_TEXT" = "ئېكران رەسىمى تارتىش، «Siri AI نى چەكلەش» تەڭشىكى تەرىپىدىن توسۇپ قېلىندى";
+
+/* Title for a button in a sheet shown to confirm disabling screenshot blocking. */
+"SCREENSHOT_BLOCKING_DISABLE_CONFIRM_SHEET_ALLOW_BUTTON_TITLE" = "Siri AI غا رۇخسەت قىلىش";
+
+/* Message for a sheet shown to confirm disabling screenshot blocking. */
+"SCREENSHOT_BLOCKING_DISABLE_CONFIRM_SHEET_MESSAGE" = "رۇخسەت قىلىنغاندا، Siri AI بولسا Signal دىكى مەزمۇنلارنى ئاپتوماتىك تەكشۈرۈپ، شەخسىي مەخپىيەتلىككە كىرمەيدىغان مەزمۇنلاردىن پايدىلىنىشى مۇمكىن.";
+
+/* Title for a sheet shown to confirm disabling screenshot blocking. */
+"SCREENSHOT_BLOCKING_DISABLE_CONFIRM_SHEET_TITLE" = "Siri AI غا رۇخسەت قىلامسىز؟";
+
+/* Text for a toast shown after disabling screenshot blocking for ten minutes. */
+"SCREENSHOT_BLOCKING_DISABLED_TEN_MINUTES_TOAST_TEXT" = "«Siri AI نى چەكلەش» بولسا 10 مىنۇت تاقالدى";
+
+/* Text for a toast shown after disabling screenshot blocking. */
+"SCREENSHOT_BLOCKING_DISABLED_TOAST_TEXT" = "«Siri AI نى چەكلەش» تاقالدى";
+
+/* Title for a button that disables screenshot blocking, in a sheet shown from a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_OPTIONS_SHEET_DISABLE_BUTTON_TITLE" = "«Siri AI نى چەكلەش»نى تاقاش";
+
+/* Title for a button that temporarily disables screenshot blocking, in a sheet shown from a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_OPTIONS_SHEET_DISABLE_TEN_MINUTES_BUTTON_TITLE" = "10 مىنۇت تاقاپ قويۇش";
+
+/* Message for a sheet shown from a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_OPTIONS_SHEET_MESSAGE" = "بۇ Siri AI نىڭ Signal دىكى مەزمۇنلارنى ئاپتوماتىك تەكشۈرۈشىنىڭ ئالدىنى ئالىدۇ. بۇ يەنە ئەپ ئىچىدە ۋە ئەپ ئالماشتۇرغۇچتا ئېكران رەسىمى تارتىشىڭىزنى چەكلەيدۇ.";
+
+/* Title for a sheet shown from a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_OPTIONS_SHEET_TITLE" = "Siri AI نى چەكلەش ئوچۇق ھالەتتە";
+
+/* Option disabling screenshot blocking, in the menu of the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_MENU_DISABLED_OPTION" = "تاقاق";
+
+/* Option temporarily disabling screenshot blocking, in the menu of the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_MENU_DISABLED_TEN_MINUTES_OPTION" = "10 مىنۇت تاقالدى";
+
+/* Option enabling screenshot blocking, in the menu of the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_MENU_ENABLED_OPTION" = "ئاچ";
+
+/* Title for the menu of the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_MENU_TITLE" = "Siri AI نى چەكلەش";
+
+/* Label for the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_TITLE" = "Siri AI نى چەكلەش";
+
+/* Footer for the screenshot blocking section of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_SECTION_FOOTER" = "Siri AI نىڭ Signal دىكى مەزمۇنلارنى تەكشۈرۈشىدىن توسۇش. بۇ يەنە سىزنىڭ ئەپ ئىچىدە ۋە ئەپ ئالماشتۇرغۇچتا ئېكران رەسىمى تارتىشىڭىزنى چەكلەيدۇ.";
+
 /* Placeholder text indicating the user can search for contacts by name, username, or phone number. */
 "SEARCH_BY_NAME_OR_USERNAME_OR_NUMBER_PLACEHOLDER_TEXT" = "نام، ئىشلەتكۈچى نامى، تېلېفون";
 
@@ -9064,12 +9151,6 @@
 /* The title for the app icon section in the appearance settings. */
 "SETTINGS_APPEARANCE_APP_ICON" = "ئەپ سىنبەلگىسى";
 
-/* Footer for avatar section in appearance settings */
-"SETTINGS_APPEARANCE_AVATAR_FOOTER" = "ئەگەر بولسا تېلېفون ئالاقىداشلار رەسىمىنى كۆرسىتىڭ.";
-
-/* Title for switch to toggle preference between contact and profile avatars */
-"SETTINGS_APPEARANCE_AVATAR_PREFERENCE_LABEL" = "تېلېفون ئالاقىداشلار رەسىمىنى ئىشلىتىش";
-
 /* The title for the theme section in the appearance settings. */
 "SETTINGS_APPEARANCE_THEME_TITLE" = "تېما";
 
@@ -9180,6 +9261,15 @@
 
 /* Title for a progress modal shown while the user's chat history is being exported. */
 "SETTINGS_CHATS_EXPORT_PROGRESS_TITLE" = "پاراڭلارنى ئېكسپورتلاۋاتىدۇ…";
+<<<<<<< HEAD
+=======
+
+/* Footer below the switch in Chats settings that chooses between contact photos from the phone's address book and Signal profile photos. */
+"SETTINGS_CHATS_PREFER_ADDRESS_BOOK_PHOTOS_FOOTER" = "ئادرېس خاتىرىڭىزدە ئالاقىلاشقۇچىلارنىڭ سۈرەتلىرى بولسا شۇلارنى تاللاش.";
+
+/* Label for the switch in Chats settings that, when on, shows contact photos from the phone's address book instead of Signal profile photos. */
+"SETTINGS_CHATS_PREFER_ADDRESS_BOOK_PHOTOS_LABEL" = "ئالاقە دەپتىرىدىكى سۈرەتنى تاللاش";
+>>>>>>> upstream/8.37.0.1993
 
 /* No comment provided by engineer. */
 "SETTINGS_CLEAR_HISTORY" = "سۆھبەت خاتىرەسىنى تازىلا";
@@ -9454,8 +9544,7 @@
 /* Explanation for the button that resets all notification settings. */
 "SETTINGS_NOTIFICATIONS_RESET_FOOTER" = "پاراڭلىرىڭىزنىڭ كېيىن تەڭشەلگەن ھالىتىنى ئۆز ئىچىگە ئالغان ئۇقتۇرۇش تەڭشەكلىرىنى زاۋۇتتىن چىققان ھالەتكە قايتۇرۇش.";
 
-/* Label for the switch controlling whether reminders about unread messages are shown.
-   Label for the switch controlling whether reminders about unread messages in muted chats are shown. */
+/* Label for the switch controlling whether reminders about unread messages in muted chats are shown */
 "SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS" = "ئوقۇلمىغان ئۇچۇرلار ئەسكەرتىشلىرى";
 
 /* Explanation for the switch controlling whether reminders about unread messages are shown in this chat while it is muted. */
@@ -10064,6 +10153,15 @@
 /* No comment provided by engineer. */
 "SETTINGS_SCREEN_SECURITY" = "ئەپ ئالماشتۇرغۇچتا ئېكراننى يوشۇر";
 
+/* Message for a sheet shown when tapping the disabled screen security switch in privacy settings. */
+"SETTINGS_SCREEN_SECURITY_LOCKED_SHEET_MESSAGE" = "مەخپىيەتلىكىڭىزنى قوغداش ئۈچۈن، Siri AI نى چەكلەش ئىقتىدارى ئېچىلغاندا، ئەپ ئالماشتۇرغۇچتا ئېكرانىڭىز ھەمىشە يوشۇرۇن ھالەتتە تۇرىدۇ. Siri AI نى چەكلەش ئىقتىدارىنى ئۆچۈرۇش، بۇ تەڭشەكنى ئېچىۋېتىدۇ.";
+
+/* Title for a sheet shown when tapping the disabled screen security switch in privacy settings. */
+"SETTINGS_SCREEN_SECURITY_LOCKED_SHEET_TITLE" = "Siri AI نى چەكلەش ئوچۇق ھالەتتە";
+
+/* Title for a button in a sheet shown when tapping the disabled screen security switch in privacy settings. */
+"SETTINGS_SCREEN_SECURITY_LOCKED_SHEET_VIEW_SETTING_BUTTON_TITLE" = "تەڭشەكنى كۆرۈش";
+
 /* Footer for table section */
 "SETTINGS_SECTION_FOOTER_CALLING" = " iOS تېلېفون ئەپنىڭ «يېقىنقى» تىزىمىدا چاقىرىشنى كۆرسىتىدۇ.";
 
@@ -10259,6 +10357,15 @@
 /* Text for a toast confirming that the speakerphone has been turned on for a call. */
 "SPEAKERPHONE_ON_CONFIRMATION_TOAST_LABEL" = "كاناي ئوچۇق";
 
+/* Text shown in a toast confirming a sticker was added to favorites */
+"STICKER_ADDED_TO_FAVORITES_TOAST" = "چاپلاق، ياقتۇرغان تاللانمىلارغا قوشۇلدى";
+
+/* Label for button to add sticker to favorites */
+"STICKER_BUTTON_ADD_FAVORITES" = "ياقتۇرغان تاللانمىلارغا قوشۇش";
+
+/* Label for button to remove sticker from favorites */
+"STICKER_BUTTON_REMOVE_FAVORITES" = "ياقتۇرغان تاللانمىلاردىن چىقىرىۋېتىش";
+
 /* Title for a button to view a sticker pack */
 "STICKER_BUTTON_VIEW_PACK" = "چاپلاق بولىقىنى كۆرۈش";
 
@@ -10273,6 +10380,18 @@
 
 /* The name for the sticker category 'Recents' */
 "STICKER_CATEGORY_RECENTS_NAME" = "يېقىنقى";
+
+/* Button to confirm a user wants to remove a sticker */
+"STICKER_CONFIRM_REMOVE_BUTTON" = "چىقىرىۋەت";
+
+/* Toast shown when user tries to tap Favorites in sticker keyboard but has none */
+"STICKER_KEYBOARD_NO_FAVORITES_TOAST" = "چاپلاقنى بېسىپ تۇرۇپ، ياقتۇرغان تاللانمىلارغا قوشۇۋېلىڭ";
+
+/* Section header for favorites in the sticker keyboard */
+"STICKER_KEYBOARD_SECTION_HEADER_LABEL_FAVORITES" = "ياقتۇرغان تاللانمىلار";
+
+/* Section header for recents in the sticker keyboard */
+"STICKER_KEYBOARD_SECTION_HEADER_LABEL_RECENTS" = "يېقىندا ئىشلىتىلدى";
 
 /* Preview text shown in notifications and conversation list for sticker messages. */
 "STICKER_MESSAGE_PREVIEW" = "چاپلاق ئۇچۇرى";
@@ -10304,6 +10423,15 @@
 /* Label for a button on a sticker-pack share sheet that sends the pack in Signal. */
 "STICKER_PACK_SHARE_SHEET_SEND_IN_SIGNAL" = "Signal ئارقىلىق ئەۋەتىىش";
 
+/* Message for an action sheet asking the user to confirm if they want to remove a sticker from favorites */
+"STICKER_REMOVE_FROM_FAVORITES_CONFIRM_MESSAGE" = "بۇنى ئۇلىنىشسىز ياكى چاپلاق ئۇچۇرىسىز باشقىلارغا يوللىيالمايسىز ياكى ياقتۇرغان تاللانمىلارغا قوشالمايسىز.";
+
+/* Title for an action sheet asking the user to confirm if they want to remove a sticker from favorites */
+"STICKER_REMOVE_FROM_FAVORITES_CONFIRM_TITLE" = "ياقتۇرغان تاللانمىلاردىن چىقىرىۋېتەمسىز؟";
+
+/* Text shown in a toast confirming a sticker was removed from favorites */
+"STICKER_REMOVED_FROM_FAVORITES_TOAST" = "چاپلاق بولاقلىرى ياقتۇرغان تاللانمىلاردىن چىقىرىۋېتىلدى";
+
 /* Message when trying to show a sticker that has expired and is unavailable for download */
 "STICKER_UNAVAILABLE_MESSAGE_LABEL" = "چاپلاقنى ئىشلەتكىلى بولمايدۇ";
 
@@ -10313,32 +10441,59 @@
 /* Label for the 'install sticker pack' button. */
 "STICKERS_INSTALL_BUTTON" = "چاپلاقلارنى قوشۇش";
 
+/* Placeholder text for the search bar in the sticker pack management. */
+"STICKERS_MANAGE_SEARCH_BAR_PLACEHOLDER" = "چاپلاق ئىزدە";
+
+/* Label for a view explaining that no search results were found. Embeds {{ the search term }}. */
+"STICKERS_MANAGE_SEARCH_NO_RESULTS" = "«%1$@» ئۈچۈن ھېچقانداق نەتىجە تېپىلمىدى";
+
 /* Title for the 'available built-in stickers' section of the 'manage stickers' view. */
 "STICKERS_MANAGE_VIEW_AVAILABLE_BUILT_IN_PACKS_SECTION_TITLE" = "Signal ئارتىس يۈرۈشلۈكى";
 
+/* Subtitle for the section of known stickers in the manage stickers view */
+"STICKERS_MANAGE_VIEW_AVAILABLE_KNOWN_PACKS_SECTION_SUBTITLE" = "باشقىلار سىزگە بىر چىراي ئىپادە چاپلىقى ئەۋەتكەندە، چاپلاق بولىقى مۇشۇ يەردە كۆرۈنىدۇ.";
+
 /* Title for the 'available known stickers' section of the 'manage stickers' view. */
-"STICKERS_MANAGE_VIEW_AVAILABLE_KNOWN_PACKS_SECTION_TITLE" = "تاپشۇرۇۋالغان چىراي ئىپادىلىرى";
+"STICKERS_MANAGE_VIEW_AVAILABLE_KNOWN_PACKS_SECTION_TITLE" = "سىز بىلەن ھەمبەھىرلىگەن";
+
+/* The title for a context menu item that installs a sticker pack. */
+"STICKERS_MANAGE_VIEW_CONTEXT_MENU_ADD" = "قوشۇش";
+
+/* The title for a context menu item that copies the sticker pack link. */
+"STICKERS_MANAGE_VIEW_CONTEXT_MENU_COPY" = "ئۇلانما كۆچۈرۈش";
+
+/* The title for a context menu item that uninstalls a sticker pack. */
+"STICKERS_MANAGE_VIEW_CONTEXT_MENU_REMOVE" = "چىقىرىۋەت";
+
+/* The title for a context menu item that sends the sticker pack link to someone else. */
+"STICKERS_MANAGE_VIEW_CONTEXT_MENU_SEND" = "ئەۋەت";
 
 /* Label indicating that one or more known sticker packs failed to load. */
 "STICKERS_MANAGE_VIEW_FAILED_KNOWN_PACKS" = "بەزى چاپلاق بوغچىلىرىنى يۈكلىيەلمىدى";
 
-/* Title for the 'installed stickers' section of the 'manage stickers' view. */
-"STICKERS_MANAGE_VIEW_INSTALLED_PACKS_SECTION_TITLE" = "ئورنىتىلغان چىراي ئىپادىلىرى";
+/* An option in the sticker management screen allowing the user to select the filter option 'all'; i.e., 'unfiltered'. */
+"STICKERS_MANAGE_VIEW_FILTER_TAB_ALL" = "ھەممىسى";
+
+/* An option in the sticker management screen allowing the user to select the filter option 'my stickers'; i.e., their installed packs. */
+"STICKERS_MANAGE_VIEW_FILTER_TAB_MY_STICKERS" = "چىراي ئىپادە چاپلاقلىرىم";
 
 /* Label indicating that one or more known sticker packs is loading. */
 "STICKERS_MANAGE_VIEW_LOADING_KNOWN_PACKS" = "قاچىلىنىۋاتىدۇ…";
 
 /* Label indicating that the user has no installed sticker packs. */
-"STICKERS_MANAGE_VIEW_NO_INSTALLED_PACKS" = "چىراي ئىپادىسى ئورنىتىلمىغان";
+"STICKERS_MANAGE_VIEW_NO_INSTALLED_PACKS" = "چاپلاق بولاقلىرى يوق.\nدوستلىرىڭىزغا يوللايدىغان چاپلاقلارنى قوشۇڭ.";
 
-/* Label indicating that the user has no known sticker packs. */
-"STICKERS_MANAGE_VIEW_NO_KNOWN_PACKS" = "بۇ جايدا كەلگەن ئۇچۇرلاردىكى چىراي ئىپادىلىرى كۆرۈنىدۇ";
+/* Button to redirect back to the manage sticker 'all' section */
+"STICKERS_MANAGE_VIEW_NO_INSTALLED_PACKS_BUTTON" = "چاپلاقلارنى قوشۇش";
 
 /* Title for the 'manage stickers' view. */
 "STICKERS_MANAGE_VIEW_TITLE" = "چاپلاقلار";
 
+/* Default author for sticker packs. */
+"STICKERS_PACK_DEFAULT_AUTHOR" = "نامەلۇم ئاپتور";
+
 /* Default title for sticker packs. */
-"STICKERS_PACK_DEFAULT_TITLE" = "چاپلاق بوغچىسى";
+"STICKERS_PACK_DEFAULT_TITLE" = "نامەلۇم ماۋزۇ";
 
 /* The default title for the 'sticker pack' view. */
 "STICKERS_PACK_VIEW_DEFAULT_TITLE" = "چاپلاق بوغچىسى";
@@ -10873,9 +11028,6 @@
 
 /* Description of how and why Signal iOS uses Touch ID/Face ID/Phone Passcode to transfer your account to a new device. */
 "TRANSFER_ACCOUNT_AUTHENTICATION_REASON" = "ھېساباتىڭىزنى يۆتكەش ئۈچۈن دەلىللەڭ";
-
-/* Button for bottom sheet shown when device transfer completes on the receiving device. Tapping will terminate the Signal app and trigger a notification to relaunch. */
-"TRANSFER_COMPLETE_SHEET_BUTTON" = "Signalلنى تاقاڭ";
 
 /* Subtitle for bottom sheet shown when device transfer completes on the receiving device. */
 "TRANSFER_COMPLETE_SHEET_SUBTITLE" = "بۇ ئۈسكۈنىدىكى ھېساۋاتىڭىزنى ئىشلىتىشكە باشلاش ئۈچۈن، سىگنالنى تاقاپ قايتا ئېچىڭ.";

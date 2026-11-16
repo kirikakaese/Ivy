@@ -54,6 +54,7 @@ public class SUIEnvironment: NSObject {
             groupsV2: SSKEnvironment.shared.groupsV2Ref,
             linkPreviewSettingStore: DependenciesBridge.shared.linkPreviewSettingStore,
             tsAccountManager: DependenciesBridge.shared.tsAccountManager,
+            stickerDownloader: DependenciesBridge.shared.stickerDownloader,
         )
         self.paymentsRef = PaymentsImpl(appReadiness: appReadiness)
 

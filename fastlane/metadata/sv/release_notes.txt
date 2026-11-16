@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 • Signal är nu optimerat för iPhone Duo.
+=======
+• Stickers stöds i citerade svar.
+• Fler förbättringar för iPhone Duo.
+>>>>>>> upstream/8.37.0.1993

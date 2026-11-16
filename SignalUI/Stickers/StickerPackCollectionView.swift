@@ -8,7 +8,6 @@ public import SignalServiceKit
 public protocol StickerPackCollectionViewDelegate: StickerPickerDelegate {
     func stickerPreviewHostView() -> UIView?
     func stickerPreviewHasOverlay() -> Bool
-    func didRequestQuoteReplyPreview(for stickerMetadata: any StickerMetadata, stickerView: UIView)
 }
 
 public class StickerPackCollectionView: UICollectionView {
@@ -104,13 +103,16 @@ public class StickerPackCollectionView: UICollectionView {
     private let placeholderColor: UIColor
 
     private let storyStickerConfiguration: StoryStickerConfiguration
+    private let shouldShowSectionHeaders: Bool
 
     public init(
         placeholderColor: UIColor = .ows_gray45,
         storyStickerConfiguration: StoryStickerConfiguration = .hide,
+        shouldShowSectionHeaders: Bool,
     ) {
         self.placeholderColor = placeholderColor
         self.storyStickerConfiguration = storyStickerConfiguration
+        self.shouldShowSectionHeaders = shouldShowSectionHeaders
 
         super.init(frame: .zero, collectionViewLayout: StickerPackCollectionView.buildLayout())
 
@@ -132,30 +134,95 @@ public class StickerPackCollectionView: UICollectionView {
     // MARK: Modes
 
     public func showInstalledPack(stickerPack: StickerPackRecord) {
-        stickerPackDataSource = InstalledStickerPackDataSource(stickerPackInfo: stickerPack.info)
+        stickerPackDataSource = InstalledStickerPackDataSource(
+            stickerPackInfo: stickerPack.info,
+            stickerManager: DependenciesBridge.shared.stickerManager,
+            db: DependenciesBridge.shared.db,
+        )
     }
 
     public func showUninstalledPack(stickerPack: StickerPackRecord) {
         stickerPackDataSource = TransientStickerPackDataSource(
             stickerPackInfo: stickerPack.info,
             shouldDownloadAllStickers: true,
+            stickerDownloader: DependenciesBridge.shared.stickerDownloader,
+            stickerManager: DependenciesBridge.shared.stickerManager,
+            db: DependenciesBridge.shared.db,
         )
     }
 
     public func showRecents() {
-        stickerPackDataSource = RecentStickerPackDataSource()
+        stickerPackDataSource = RecentStickerPackDataSource(
+            stickerManager: DependenciesBridge.shared.stickerManager,
+            db: DependenciesBridge.shared.db,
+        )
     }
 
-    public func showInstalledPackOrRecents(stickerPack: StickerPackRecord?) {
-        if let stickerPack {
-            showInstalledPack(stickerPack: stickerPack)
-        } else {
+    public func showFavorites() {
+        stickerPackDataSource = FavoritesStickerPackDataSource(
+            stickerManager: DependenciesBridge.shared.stickerManager,
+            db: DependenciesBridge.shared.db,
+        )
+    }
+
+    public func showSelectedStickerPickerPage(stickerPickerPage: StickerPickerPage) {
+        switch (stickerPickerPage) {
+        case .favorites:
+            showFavorites()
+        case .recents:
             showRecents()
+        case .pack(let stickerPack):
+            showInstalledPack(stickerPack: stickerPack)
         }
     }
 
     public func show(dataSource: StickerPackDataSource) {
         stickerPackDataSource = dataSource
+    }
+
+    // MARK: - Bouncing sticker animation
+
+    // Store bouncingStickerInfo for the duration of the animation
+    // to prevent races between adding the animation to a cell and reloading
+    // cells, both of which happen quickly when favoriting a sticker.
+    private var bouncingStickerInfo: StickerInfo?
+
+    private static let bounceDuration: TimeInterval = 1.5
+
+    public func bounceSticker(_ stickerInfo: StickerInfo) {
+        guard !UIAccessibility.isReduceMotionEnabled else {
+            return
+        }
+
+        guard let index = stickerInfos.firstIndex(of: stickerInfo) else {
+            return
+        }
+        let indexPath = IndexPath(item: index, section: shouldShowStoryStickers ? 1 : 0)
+
+        // Layout before the scroll to make sure we scroll to the right place,
+        // and after to make sure the cell we scrolled to exists.
+        layoutIfNeeded()
+        scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+        layoutIfNeeded()
+
+        bouncingStickerInfo = stickerInfo
+        if let cell = cellForItem(at: indexPath) {
+            addBounceAnimation(to: cell)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.bounceDuration) { [weak self] in
+            self?.bouncingStickerInfo = nil
+        }
+    }
+
+    private func addBounceAnimation(to cell: UICollectionViewCell) {
+        let hopHeights: [CGFloat] = [14, 10, 6, 3]
+        let animation = CAKeyframeAnimation(keyPath: "transform.translation.y")
+        animation.values = [0] + hopHeights.flatMap { [-$0, 0] }
+        animation.timingFunctions = hopHeights.flatMap { _ in
+            [CAMediaTimingFunction(name: .easeOut), CAMediaTimingFunction(name: .easeIn)]
+        }
+        animation.duration = Self.bounceDuration
+        cell.contentView.layer.add(animation, forKey: "bounceSticker")
     }
 
     // MARK: Empty Content view
@@ -422,16 +489,7 @@ extension StickerPackCollectionView: UICollectionViewDelegate {
             owsFailDebug("Invalid index path: \(indexPath)")
             return
         }
-
-        if BuildFlags.stickerReply, let stickerDelegate, stickerDelegate.shouldShowStickerPreview() {
-            guard let stickerView = imageView(forStickerInfo: stickerInfo) else {
-                Logger.warn("Couldn't load sticker for display")
-                return
-            }
-            stickerDelegate.didRequestQuoteReplyPreview(for: stickerMetadata, stickerView: stickerView)
-        } else {
-            self.stickerDelegate?.didSelectSticker(stickerMetadata)
-        }
+        self.stickerDelegate?.didSelectSticker(stickerMetadata)
     }
 }
 
@@ -468,6 +526,13 @@ extension StickerPackCollectionView: UICollectionViewDataSource {
         guard let stickerInfo = stickerInfos[safe: indexPath.row] else {
             owsFailDebug("Invalid index path: \(indexPath)")
             return cell
+        }
+
+        // If bouncingStickerInfo is not nil, it means we started a bounce animation for this
+        // stickerInfo but may have reloaded the cell since then. Add the animation back to make
+        // sure it's user-visible.
+        if stickerInfo == bouncingStickerInfo {
+            addBounceAnimation(to: cell)
         }
 
         let cellView = reusableStickerView(forStickerInfo: stickerInfo)
@@ -516,18 +581,34 @@ extension StickerPackCollectionView: UICollectionViewDataSource {
     }
 
     private func headerText(for section: Int) -> String? {
-        guard shouldShowStoryStickers else { return nil }
-        if section == 0 {
-            return OWSLocalizedString(
-                "STICKER_CATEGORY_FEATURED_NAME",
-                comment: "The name for the sticker category 'Featured'",
-            )
-        } else {
-            return OWSLocalizedString(
-                "STICKER_CATEGORY_RECENTS_NAME",
-                comment: "The name for the sticker category 'Recents'",
-            )
+        if shouldShowStoryStickers {
+            if section == 0 {
+                return OWSLocalizedString(
+                    "STICKER_CATEGORY_FEATURED_NAME",
+                    comment: "The name for the sticker category 'Featured'",
+                )
+            } else {
+                return OWSLocalizedString(
+                    "STICKER_CATEGORY_RECENTS_NAME",
+                    comment: "The name for the sticker category 'Recents'",
+                )
+            }
+        } else if shouldShowSectionHeaders {
+            if stickerPackDataSource is FavoritesStickerPackDataSource {
+                return OWSLocalizedString(
+                    "STICKER_KEYBOARD_SECTION_HEADER_LABEL_FAVORITES",
+                    comment: "Section header for favorites in the sticker keyboard",
+                )
+            }
+            if stickerPackDataSource is RecentStickerPackDataSource {
+                return OWSLocalizedString(
+                    "STICKER_KEYBOARD_SECTION_HEADER_LABEL_RECENTS",
+                    comment: "Section header for recents in the sticker keyboard",
+                )
+            }
+            return stickerPackDataSource?.title
         }
+        return nil
     }
 }
 
@@ -561,10 +642,10 @@ private class StickerPickerHeaderView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        layoutMargins = UIEdgeInsets(hMargin: 16, vMargin: 0)
-
-        label.font = UIFont.dynamicTypeFootnoteClamped.semibold()
-        label.textColor = Theme.darkThemeSecondaryTextAndIconColor
+        directionalLayoutMargins = NSDirectionalEdgeInsets(hMargin: 0, vMargin: 12)
+        insetsLayoutMarginsFromSafeArea = false
+        label.font = UIFont.dynamicTypeSubheadline.semibold()
+        label.textColor = .Signal.label
         addSubview(label)
         label.autoPinEdgesToSuperviewMargins()
         label.setCompressionResistanceHigh()

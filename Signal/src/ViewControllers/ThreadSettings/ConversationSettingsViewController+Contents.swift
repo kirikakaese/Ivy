@@ -144,7 +144,7 @@ extension ConversationSettingsViewController {
             let iconSize: CGFloat = 20
             let imageView = UIImageView(image: iconImage)
             imageView.contentMode = .scaleAspectFit
-            imageView.tintColor = UIColor.Signal.label
+            imageView.tintColor = .Signal.label
             imageView.autoSetDimensions(to: .square(iconSize))
             stackView.addArrangedSubview(imageView)
 
@@ -218,7 +218,7 @@ extension ConversationSettingsViewController {
 
         let dateLabel = UILabel()
         dateLabel.font = .dynamicTypeBody
-        dateLabel.textColor = Theme.primaryTextColor
+        dateLabel.textColor = .Signal.label
         // We always want to show the absolute date with year
         dateLabel.text = DateUtil.formatOldDate(callRecord.callBeganDate)
         stackView.addArrangedSubview(dateLabel)
@@ -379,6 +379,12 @@ extension ConversationSettingsViewController {
             background.cornerRadius = imageView.layer.cornerRadius
             return background
         }()
+        let receivedAtDate: Date? = switch referencedAttachment.reference.owner {
+        case .message(let messageSource): Date(millisecondsSince1970: messageSource.receivedAtTimestamp)
+        case .storyMessage, .thread: nil
+        }
+        button.accessibilityLabel = PhotoGridItemType(referencedAttachment: referencedAttachment)
+            .accessibilityLabel(creationDate: receivedAtDate)
         return button
     }
 
@@ -417,7 +423,7 @@ extension ConversationSettingsViewController {
                     stackView.autoPinEdge(toSuperviewMargin: .bottom)
                 } else {
                     let seeAllLabel = UILabel()
-                    seeAllLabel.textColor = Theme.primaryTextColor
+                    seeAllLabel.textColor = .Signal.label
                     seeAllLabel.font = OWSTableItem.primaryLabelFont
                     seeAllLabel.text = CommonStrings.seeAllButton
 
@@ -700,8 +706,11 @@ extension ConversationSettingsViewController {
                     accessoryText: disappearingMessagesConfiguration.isEnabled
                         ? DateUtil.formatDuration(seconds: disappearingMessagesConfiguration.durationSeconds, useShortFormat: true)
                         : CommonStrings.switchOff,
+                    accessoryAccessibilityLabel: disappearingMessagesConfiguration.isEnabled
+                        ? DateUtil.formatDuration(seconds: disappearingMessagesConfiguration.durationSeconds, useShortFormat: false)
+                        : nil,
                     accessoryType: .disclosureIndicator,
-                    customColor: canEditConversationAttributes && !isTerminatedGroup ? nil : Theme.secondaryTextAndIconColor,
+                    customColor: canEditConversationAttributes && !isTerminatedGroup ? nil : .Signal.secondaryLabel,
                     accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "disappearing_messages"),
                 )
                 cell.isUserInteractionEnabled = canEditConversationAttributes && !isTerminatedGroup
@@ -953,7 +962,7 @@ extension ConversationSettingsViewController {
                     icon: .groupInfoAddMembers,
                     iconSize: AvatarBuilder.smallAvatarSizePoints,
                     innerIconSize: 20,
-                    iconTintColor: Theme.primaryTextColor,
+                    iconTintColor: .Signal.label,
                 )
 
                 let rowLabel = UILabel()
@@ -961,7 +970,7 @@ extension ConversationSettingsViewController {
                     "CONVERSATION_SETTINGS_ADD_MEMBERS",
                     comment: "Label for 'add members' button in conversation settings view.",
                 )
-                rowLabel.textColor = Theme.primaryTextColor
+                rowLabel.textColor = .Signal.label
                 rowLabel.font = OWSTableItem.primaryLabelFont
                 rowLabel.lineBreakMode = .byTruncatingTail
 
@@ -1089,12 +1098,12 @@ extension ConversationSettingsViewController {
                         icon: .groupInfoShowAllMembers,
                         iconSize: AvatarBuilder.smallAvatarSizePoints,
                         innerIconSize: 20,
-                        iconTintColor: Theme.primaryTextColor,
+                        iconTintColor: .Signal.label,
                     )
 
                     let rowLabel = UILabel()
                     rowLabel.text = CommonStrings.seeAllButton
-                    rowLabel.textColor = Theme.primaryTextColor
+                    rowLabel.textColor = .Signal.label
                     rowLabel.font = OWSTableItem.primaryLabelFont
                     rowLabel.lineBreakMode = .byTruncatingTail
 
@@ -1135,6 +1144,7 @@ extension ConversationSettingsViewController {
         titleLabel.textColor = OWSTableViewController2.defaultHeaderTextColor
         titleLabel.font = OWSTableViewController2.defaultHeaderFont
         titleLabel.numberOfLines = 0
+        titleLabel.accessibilityTraits = .header
         headerView.addArrangedSubview(titleLabel)
 
         headerView.addArrangedSubview(.hStretchingSpacer())
@@ -1151,7 +1161,10 @@ extension ConversationSettingsViewController {
             "GROUP_MEMBER_SEARCH_BUTTON_ACCESSIBILITY_LABEL",
             comment: "Accessibility label for the button that opens the group member search sheet.",
         )
+        searchButton.accessibilityTraits = .button
         headerView.addArrangedSubview(searchButton)
+
+        headerView.accessibilityElements = [titleLabel, searchButton]
 
         return headerView
     }
@@ -1184,24 +1197,19 @@ extension ConversationSettingsViewController {
         )
 
         let canEditMemberLabel = groupViewHelper.canEditMemberLabels
-        let iconColor: UIColor
-        let textColor: UIColor
-        if canEditMemberLabel {
-            iconColor = Theme.primaryIconColor
-            textColor = Theme.primaryTextColor
-        } else {
-            iconColor = UIColor.Signal.label.withAlphaComponent(0.3)
-            textColor = UIColor.Signal.label.withAlphaComponent(0.3)
+        var iconAndTextColor = UIColor.Signal.label
+        if !canEditMemberLabel {
+            iconAndTextColor = iconAndTextColor.withAlphaComponent(0.3)
         }
         section.add(
             OWSTableItem.disclosureItem(
                 icon: .memberLabel,
-                tintColor: iconColor,
+                tintColor: iconAndTextColor,
                 withText: OWSLocalizedString(
                     "CONVERSATION_SETTINGS_MEMBER_TAG",
                     comment: "Label for 'member label' action in conversation settings view.",
                 ),
-                textColor: textColor,
+                textColor: iconAndTextColor,
                 actionBlock: { [weak self] in
                     guard let self else { return }
                     if canEditMemberLabel {
@@ -1271,12 +1279,12 @@ extension ConversationSettingsViewController {
                     icon: .groupInfoAddMembers,
                     iconSize: AvatarBuilder.smallAvatarSizePoints,
                     innerIconSize: 20,
-                    iconTintColor: Theme.primaryTextColor,
+                    iconTintColor: .Signal.label,
                 )
 
                 let rowLabel = UILabel()
                 rowLabel.text = OWSLocalizedString("ADD_TO_GROUP_TITLE", comment: "Title of the 'add to group' view.")
-                rowLabel.textColor = Theme.primaryTextColor
+                rowLabel.textColor = .Signal.label
                 rowLabel.font = OWSTableItem.primaryLabelFont
                 rowLabel.lineBreakMode = .byTruncatingTail
 
@@ -1359,12 +1367,12 @@ extension ConversationSettingsViewController {
                         icon: .groupInfoShowAllMembers,
                         iconSize: AvatarBuilder.smallAvatarSizePoints,
                         innerIconSize: 20,
-                        iconTintColor: Theme.primaryTextColor,
+                        iconTintColor: .Signal.label,
                     )
 
                     let rowLabel = UILabel()
                     rowLabel.text = CommonStrings.seeAllButton
-                    rowLabel.textColor = Theme.primaryTextColor
+                    rowLabel.textColor = .Signal.label
                     rowLabel.font = OWSTableItem.primaryLabelFont
                     rowLabel.lineBreakMode = .byTruncatingTail
 

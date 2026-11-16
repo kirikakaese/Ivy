@@ -25,64 +25,60 @@ public class RegistrationSessionManagerMock: RegistrationSessionManager {
 
     // MARK: - BeginOrRestoreSession
 
-    private var beginSessionResponseMocks = [Registration.BeginSessionResponse]()
-    public func addBeginSessionResponseMock(_ mock: Registration.BeginSessionResponse) {
+    private var beginSessionResponseMocks = [() async throws -> RegistrationSession]()
+    public func addBeginSessionResponseMock(_ mock: @escaping () async throws -> RegistrationSession) {
         beginSessionResponseMocks.append(mock)
     }
 
-    public func beginOrRestoreSession(e164: E164, apnsToken: String?, logger: PrefixedLogger) async -> Registration.BeginSessionResponse {
+    public func beginOrRestoreSession(e164: E164, apnsToken: String?, logger: PrefixedLogger) async throws -> RegistrationSession {
         // TODO: Append step to known steps
-        return beginSessionResponseMocks.removeFirst()
+        return try await beginSessionResponseMocks.removeFirst()()
     }
 
     // MARK: - FulfillChallenge
 
-    private var fulfillChallengeResponseMocks = [Registration.UpdateSessionResponse]()
-    public var latestChallengeFulfillment: Registration.ChallengeFulfillment?
-    public func addFulfillChallengeResponseMock(_ mock: Registration.UpdateSessionResponse) {
+    private var fulfillChallengeResponseMocks = [(inout RegistrationSession, Registration.ChallengeFulfillment) async throws -> Void]()
+    public func addFulfillChallengeResponseMock(_ mock: @escaping (inout RegistrationSession, Registration.ChallengeFulfillment) async throws -> Void) {
         fulfillChallengeResponseMocks.append(mock)
     }
 
     public func fulfillChallenge(
-        for session: RegistrationSession,
+        for session: inout RegistrationSession,
         fulfillment: Registration.ChallengeFulfillment,
         logger: PrefixedLogger,
-    ) async -> Registration.UpdateSessionResponse {
-        latestChallengeFulfillment = fulfillment
-        return fulfillChallengeResponseMocks.removeFirst()
+    ) async throws {
+        try await fulfillChallengeResponseMocks.removeFirst()(&session, fulfillment)
     }
 
     // MARK: - RequestVerificationCode
 
-    public var didRequestCode = false
-    private var requestCodeResponseMocks = [Registration.UpdateSessionResponse]()
-    public func addRequestCodeResponseMock(_ mock: Registration.UpdateSessionResponse) {
-        requestCodeResponseMocks.append(mock)
+    private var requestVerificationCodeMocks = [(inout RegistrationSession) async throws -> Void]()
+    public func addRequestVerificationCodeMock(_ mock: @escaping (inout RegistrationSession) async throws -> Void) {
+        requestVerificationCodeMocks.append(mock)
     }
 
     public func requestVerificationCode(
-        for session: RegistrationSession,
+        for session: inout RegistrationSession,
         transport: Registration.CodeTransport,
         logger: PrefixedLogger,
-    ) async -> Registration.UpdateSessionResponse {
-        didRequestCode = true
+    ) async throws {
         // TODO: Append step to known steps
-        return requestCodeResponseMocks.removeFirst()
+        return try await requestVerificationCodeMocks.removeFirst()(&session)
     }
 
     // MARK: - SubmitVerificationCod
 
-    private var submitCodeResponseMocks = [Registration.UpdateSessionResponse]()
-    public func addSubmitCodeResponseMock(_ mock: Registration.UpdateSessionResponse) {
-        submitCodeResponseMocks.append(mock)
+    private var submitVerificationCodeMocks = [(inout RegistrationSession) async throws -> Void]()
+    public func addSubmitVerificationCodeMock(_ mock: @escaping (inout RegistrationSession) async throws -> Void) {
+        submitVerificationCodeMocks.append(mock)
     }
 
     public func submitVerificationCode(
-        for session: RegistrationSession,
+        for session: inout RegistrationSession,
         code: String,
         logger: PrefixedLogger,
-    ) async -> Registration.UpdateSessionResponse {
-        return submitCodeResponseMocks.removeFirst()
+    ) async throws {
+        try await submitVerificationCodeMocks.removeFirst()(&session)
     }
 }
 #endif

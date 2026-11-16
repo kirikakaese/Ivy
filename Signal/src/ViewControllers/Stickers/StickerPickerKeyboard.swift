@@ -12,9 +12,7 @@ protocol StickerKeyboardDelegate: AnyObject {
 
     func stickerKeyboardDidRequestPresentManageStickersView(_ stickerKeyboard: StickerKeyboard)
 
-    func stickerKeyboard(_: StickerKeyboard, didSelect stickerInfo: StickerInfo)
-
-    func shouldShowStickerPreview() -> Bool
+    func stickerKeyboard(_: StickerKeyboard, didSelect stickerMetadata: any StickerMetadata)
 }
 
 class StickerKeyboard: CustomKeyboard, StickerPickerViewDelegate {
@@ -65,20 +63,19 @@ class StickerKeyboard: CustomKeyboard, StickerPickerViewDelegate {
 
     override func willDismiss() {
         super.willDismiss()
-        stickerPickerView.dismissQuoteReplyPreviewIfNeeded()
     }
 
     // MARK: StickerPickerViewDelegate
-
-    func shouldShowStickerPreview() -> Bool {
-        return delegate?.shouldShowStickerPreview() ?? false
-    }
 
     func presentManageStickersView(for stickerPickerView: StickerPickerView) {
         delegate?.stickerKeyboardDidRequestPresentManageStickersView(self)
     }
 
     func didSelectSticker(_ stickerMetadata: any StickerMetadata) {
-        delegate?.stickerKeyboard(self, didSelect: stickerMetadata.stickerInfo)
+        delegate?.stickerKeyboard(self, didSelect: stickerMetadata)
+    }
+
+    func select(page: StickerPickerPage, bouncingSticker: StickerInfo? = nil) {
+        stickerPickerView.select(page: page, bouncingSticker: bouncingSticker)
     }
 }

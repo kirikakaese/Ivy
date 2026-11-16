@@ -426,32 +426,36 @@ public class RegistrationNavigationController: OWSNavigationController {
                 // No state to update.
                 update: nil,
             )
-        case let .showErrorSheet(errorSheet):
+        case .showError(let error):
             let title: String?
             let message: String
-            switch errorSheet {
-            case .sessionCanNeverRequestVerificationCode:
+            do {
+                throw error
+            } catch is AppExpiredError, is Registration.UnknownChallengeError {
+                present(UIAlertController.registrationAppUpdateBanner(), animated: true)
+                return nil
+            } catch Registration.VerificationCodeError.providerFailure {
                 title = nil
                 message = OWSLocalizedString(
                     "REGISTRATION_PROVIDER_FAILURE_MESSAGE_PERMANENT",
                     comment: "Error shown if an SMS/call service provider is unable to send a verification code to the provided number.",
                 )
-            case .becameDeregistered(let localIdentifiers):
-                handleDeregistrationReset(localIdentifiers: localIdentifiers.wrappedValue)
+            } catch let error as Registration.BecameDeregisteredError {
+                handleDeregistrationReset(localIdentifiers: error.localIdentifiers)
                 return nil
-            case .verificationCodeSubmissionUnavailable:
+            } catch Registration.VerificationCodeError.tooManyAttempts {
                 title = nil
                 message = OWSLocalizedString(
                     "REGISTRATION_SUBMIT_CODE_ATTEMPTS_EXHAUSTED_ALERT",
                     comment: "Alert shown when running out of attempts at submitting a verification code.",
                 )
-            case .submittingVerificationCodeBeforeAnyCodeSent:
+            } catch Registration.VerificationCodeError.wrongCode {
                 title = nil
                 message = OWSLocalizedString(
                     "REGISTRATION_VERIFICATION_ERROR_INVALID_VERIFICATION_CODE",
                     comment: "During registration and re-registration, users may have to enter a code to verify ownership of their phone number. If they enter an invalid code, they will see this error message.",
                 )
-            case .networkError:
+            } catch where error.isNetworkFailureOrTimeout {
                 title = OWSLocalizedString(
                     "REGISTRATION_NETWORK_ERROR_TITLE",
                     comment: "A network error occurred during registration, and an error is shown to the user. This is the title on that error sheet.",
@@ -460,7 +464,7 @@ public class RegistrationNavigationController: OWSNavigationController {
                     "REGISTRATION_NETWORK_ERROR_BODY",
                     comment: "A network error occurred during registration, and an error is shown to the user. This is the body on that error sheet.",
                 )
-            case .sessionInvalidated, .genericError:
+            } catch {
                 title = nil
                 message = CommonStrings.somethingWentWrongTryAgainLaterError
             }
@@ -472,12 +476,9 @@ public class RegistrationNavigationController: OWSNavigationController {
             actionSheet.isCancelable = false
             self.presentActionSheet(actionSheet)
             return nil
-        case .appUpdateBanner:
-            present(UIAlertController.registrationAppUpdateBanner(), animated: true)
-            return nil
         case .done:
             logger.info("Finished with registration!")
-            SignalApp.shared.showConversationSplitView()
+            SignalApp.shared.showHomeTabBarController()
             return nil
         }
     }
@@ -595,7 +596,7 @@ extension RegistrationNavigationController: RegistrationPhoneNumberPresenter {
             owsFailBeta("Unable to exit registration")
             return
         }
-        SignalApp.shared.showConversationSplitView()
+        SignalApp.shared.showHomeTabBarController()
     }
 
     func registerWithoutNumber() {
@@ -733,7 +734,7 @@ extension RegistrationNavigationController: RegistrationReglockTimeoutPresenter 
             return
         case .exitRegistration:
             logger.info("Exiting registration after reglock timeout")
-            SignalApp.shared.showConversationSplitView()
+            SignalApp.shared.showHomeTabBarController()
         case .restartRegistration(let nextStepGuarantee):
             pushNextController(nextStepGuarantee)
         }

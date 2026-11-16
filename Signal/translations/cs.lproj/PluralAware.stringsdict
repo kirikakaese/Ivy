@@ -1980,6 +1980,26 @@ Zkuste to znovu za %1$d hodiny.</string>
 Zkuste to znovu za %1$d hodin.</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Do Oblíbených můžete přidat jen %1$d nálepku</string>
+			<key>few</key>
+			<string>Do Oblíbených můžete přidat jen %1$d nálepky</string>
+			<key>many</key>
+			<string>Do Oblíbených můžete přidat jen %1$d nálepek</string>
+			<key>other</key>
+			<string>Do Oblíbených můžete přidat jen %1$d nálepek</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

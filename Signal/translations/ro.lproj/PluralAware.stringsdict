@@ -1780,6 +1780,24 @@
  Încearcă din nou în %1$d de ore.</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Poți să adaugi doar %1$d abțibild la Preferate</string>
+			<key>few</key>
+			<string>Poți să adaugi doar %1$d abțibilduri la Preferate</string>
+			<key>other</key>
+			<string>Poți să adaugi doar %1$d de abțibilduri la Preferate</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

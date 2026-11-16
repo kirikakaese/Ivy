@@ -313,6 +313,16 @@ public class RemoteConfig {
 
     // MARK: -
 
+    public var enableScreenshotBlocking: Bool {
+        guard DebugFlags.internalSettings else {
+            return false
+        }
+
+        return isEnabled(.enableScreenshotBlocking, defaultValue: true)
+    }
+
+    // MARK: -
+
     public var shouldCheckForServiceExtensionFailures: Bool {
         return !isEnabled(.serviceExtensionFailureKillSwitch)
     }
@@ -718,9 +728,10 @@ private enum IsEnabledFlag: String, FlagType {
     case cardGiftDonationKillSwitch = "ios.cardGiftDonationKillSwitch"
     case cardMonthlyDonationKillSwitch = "ios.cardMonthlyDonationKillSwitch"
     case cardOneTimeDonationKillSwitch = "ios.cardOneTimeDonationKillSwitch"
-    case contactSharingV2 = "ios.contactSharingV2"
+    case contactSharingV2 = "ios.contactSharingV2.2"
     case enableAutoAPNSRotation = "ios.enableAutoAPNSRotation"
     case enableGifSearch = "global.gifSearch"
+    case enableScreenshotBlocking = "ios.enableScreenshotBlocking"
     case messageResendKillSwitch = "ios.messageResendKillSwitch"
     case paymentsResetKillSwitch = "ios.paymentsResetKillSwitch"
     case paypalGiftDonationKillSwitch = "ios.paypalGiftDonationKillSwitch"
@@ -749,6 +760,7 @@ private enum IsEnabledFlag: String, FlagType {
         case .contactSharingV2: false
         case .enableAutoAPNSRotation: false
         case .enableGifSearch: false
+        case .enableScreenshotBlocking: true
         case .messageResendKillSwitch: false
         case .paymentsResetKillSwitch: false
         case .paypalGiftDonationKillSwitch: false
