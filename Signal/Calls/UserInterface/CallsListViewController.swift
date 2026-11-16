@@ -126,10 +126,12 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
         tableView.register(CreateCallLinkCell.self, forCellReuseIdentifier: Self.createCallLinkReuseIdentifier)
         tableView.register(CallCell.self, forCellReuseIdentifier: Self.callCellReuseIdentifier)
         tableView.dataSource = dataSource
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
-        tableView.autoPinHeight(toHeightOf: view)
-        tableViewHorizontalEdgeConstraints = [
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+<<<<<<< HEAD
             view.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
         ]
         NSLayoutConstraint.activate(tableViewHorizontalEdgeConstraints)
@@ -142,6 +144,11 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
         tableView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: ChatListViewController.ivyMacRowMargin, bottom: 0, trailing: ChatListViewController.ivyMacRowMargin)
 #endif
         updateTableViewPaddingIfNeeded()
+=======
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+>>>>>>> upstream/8.37.0.1993
 
         view.addSubview(emptyStateMessageView)
         emptyStateMessageView.autoCenterInSuperview()
@@ -156,6 +163,11 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        if tableView.isEditing == false, let selectedIndexPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: selectedIndexPath, animated: animated)
+        }
+
         updateTimeSensitiveStateForAllCallCells()
         clearMissedCallsIfNecessary()
         isPeekingEnabled = true
@@ -169,18 +181,21 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
         isPeekingEnabled = false
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        updateTableViewPaddingIfNeeded()
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        coordinator.animate { context in
+            self.updateListCellAppearance()
+        }
     }
 
     func updateBarButtonItems() {
+        updateSettingsBarButtonItem()
+
         if tableView.isEditing {
-            navigationItem.leftBarButtonItem = cancelMultiselectButton()
             navigationItem.rightBarButtonItem = deleteAllCallsButton
             updateMultiselectButtons()
         } else {
-            navigationItem.leftBarButtonItem = profileBarButtonItem()
             navigationItem.rightBarButtonItem = newCallButton()
 #if targetEnvironment(macCatalyst)
             // Ivy: a plain icon on the Mac, like the compose button.
@@ -207,12 +222,20 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
         }
     }
 
-    // MARK: Profile button
+    // MARK: Settings nav bar button
 
-    private func profileBarButtonItem() -> UIBarButtonItem {
+    func updateSettingsBarButtonItem() {
+        if tableView.isEditing {
+            navigationItem.leftBarButtonItem = cancelMultiselectButton()
+        } else {
+            navigationItem.leftBarButtonItem = settingsBarButtonItem()
+        }
+    }
+
+    private func settingsBarButtonItem() -> UIBarButtonItem {
         createSettingsBarButtonItem(
             databaseStorage: SSKEnvironment.shared.databaseStorageRef,
-            buildActions: { settingsAction -> [UIMenuElement] in
+            buildActions: {
                 return [
                     UIAction(
                         title: Strings.selectCallsButtonTitle,
@@ -221,7 +244,6 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
                             self?.startMultiselect()
                         },
                     ),
-                    settingsAction,
                 ]
             },
             showAppSettings: { [weak self] in
@@ -231,10 +253,7 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
     }
 
     private func showAppSettings() {
-        AssertIsOnMainThread()
-
-        conversationSplitViewController?.selectedConversationViewController?.dismissMessageContextMenu(animated: true)
-        presentFormSheet(AppSettingsViewController.inModalNavigationController(), animated: true)
+        homeTabBarController?.showAppSettings()
     }
 
     private func startMultiselect() {
@@ -259,7 +278,7 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
     private func showToolbar() {
         if #available(iOS 26, *) {
             navigationController?.setToolbarHidden(false, animated: true)
-            (tabBarController as? HomeTabBarController)?.setTabBarHidden(true)
+            tabBarController?.setTabBarHidden(true, animated: true)
             return
         }
 
@@ -280,7 +299,7 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
         self.tableView.contentInset.bottom = bottomInset
         self.tableView.verticalScrollIndicatorInsets.bottom = bottomInset
 
-        tabController.setTabBarHidden(true, animated: true, duration: 0.1) { [weak self] _ in
+        tabController.setTabBar(hidden: true, animated: true) { [weak self] _ in
             guard let self else { return }
             // See ChatListViewController.showToolbar for why this is async
             DispatchQueue.main.async {
@@ -372,8 +391,8 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
 
     private func hideToolbar() {
         if #available(iOS 26, *) {
-            self.navigationController?.setToolbarHidden(true, animated: true)
-            (self.tabBarController as? HomeTabBarController)?.setTabBarHidden(false)
+            navigationController?.setToolbarHidden(true, animated: true)
+            tabBarController?.setTabBarHidden(false, animated: true)
             return
         }
 
@@ -384,7 +403,7 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
             multiselectToolbarContainer.removeFromSuperview()
             self.multiselectToolbarContainer = nil
             guard let tabController = self.tabBarController as? HomeTabBarController else { return }
-            tabController.setTabBarHidden(false, animated: true, duration: 0.1) { _ in
+            tabController.setTabBar(hidden: false, animated: true) { _ in
                 self.tableView.contentInset.bottom = 0
                 self.tableView.verticalScrollIndicatorInsets.bottom = 0
             }
@@ -1580,10 +1599,10 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
     let tableView = UITableView(frame: .zero, style: .plain)
 
     /// Set to `true` when call list is displayed in split view controller's "sidebar" on iOS 26 and later.
-    /// Setting this to `true` would add an extra padding on both sides of the table view.
-    /// This value is also passed down to table view cells that make their own layout choices based on the value.
-    private var useSidebarCallListCellAppearance = false {
+    /// This value is then passed down to table view cells that make their own layout choices based on the value.
+    private var useSideBarListCellAppearance = false {
         didSet {
+<<<<<<< HEAD
             guard oldValue != useSidebarCallListCellAppearance else { return }
             tableViewHorizontalEdgeConstraints.forEach {
                 $0.constant = useSidebarCallListCellAppearance ? 18 : 0
@@ -1592,21 +1611,23 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
                 $0.constant = useSidebarCallListCellAppearance ? ChatListViewController.ivyMacHighlightInset : 0
 #endif
             }
+=======
+            guard oldValue != useSideBarListCellAppearance, isViewLoaded else { return }
+>>>>>>> upstream/8.37.0.1993
             tableView.reloadData()
         }
     }
 
-    private var tableViewHorizontalEdgeConstraints: [NSLayoutConstraint] = []
-
-    /// iOS 26+: checks if this VC is displayed in the collapsed split view controller and updates `useSidebarCallListCellAppearance` accordingly.
-    /// Does nothing on prior iOS versions.
-    private func updateTableViewPaddingIfNeeded() {
+    /// Checks whether this view controller is displayed in an expanded or collapsed split view controller
+    /// and updates `useSideBarListCellAppearance` accordingly.
+    /// No-op on versions below iOS 26.
+    private func updateListCellAppearance() {
         guard #available(iOS 26, *) else { return }
 
         if let splitViewController, !splitViewController.isCollapsed {
-            useSidebarCallListCellAppearance = true
+            useSideBarListCellAppearance = true
         } else {
-            useSidebarCallListCellAppearance = false
+            useSideBarListCellAppearance = false
         }
     }
 
@@ -1628,7 +1649,7 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
                     for: indexPath,
                 ) as? CreateCallLinkCell else { return nil }
 
-            createCallLinkCell.useSidebarAppearance = useSidebarCallListCellAppearance
+            createCallLinkCell.useSidebarAppearance = useSideBarListCellAppearance
             return createCallLinkCell
 
         case .existingCalls:
@@ -1638,7 +1659,7 @@ class CallsListViewController: OWSViewController, HomeTabViewController, CallSer
                     for: indexPath,
                 ) as? CallCell else { return nil }
 
-            callCell.useSidebarAppearance = useSidebarCallListCellAppearance
+            callCell.useSidebarAppearance = useSideBarListCellAppearance
             // These loads should be sufficiently fast that doing them here,
             // synchronously, is fine.
             loadMoreCallsIfNecessary(indexToBeDisplayed: indexPath.row)
@@ -1849,13 +1870,16 @@ extension CallsListViewController: UITableViewDelegate {
             return
         }
 
-        tableView.deselectRow(at: indexPath, animated: true)
-
         switch Section(rawValue: indexPath.section) {
         case .createCallLink:
             createCallLink()
+            // "Create Call Link" is presented modally so we need to deselect the row.
+            DispatchQueue.main.async {
+                self.tableView.deselectRow(at: indexPath, animated: true)
+            }
         case .existingCalls, .none:
             guard let viewModel = viewModelWithSneakyTransaction(at: indexPath) else {
+                tableView.deselectRow(at: indexPath, animated: true)
                 return
             }
             showCallInfo(from: viewModel)
@@ -2252,8 +2276,6 @@ extension CallsListViewController: CallCellDelegate, NewCallViewControllerDelega
     }
 
     fileprivate func showCallInfo(from viewModel: CallViewModel) {
-        AssertIsOnMainThread()
-
         switch viewModel.recipientType {
         case .individual(type: _, let thread):
             showCallInfo(forThread: thread, callRecords: viewModel.callRecords, callExpirations: viewModel.callExpirations)
@@ -2292,8 +2314,7 @@ extension CallsListViewController: CallCellDelegate, NewCallViewControllerDelega
             callExpirations: callExpirations,
             memberLabelCoordinator: nil,
         )
-
-        showCallInfo(viewController: callDetailsView)
+        showDetailViewController(callDetailsView, sender: self)
     }
 
     private func showCallInfo(forRootKey rootKey: CallLinkRootKey, callRecords: [CallRecord]) {
@@ -2301,12 +2322,11 @@ extension CallsListViewController: CallCellDelegate, NewCallViewControllerDelega
             return deps.callLinkStore.fetch(roomId: rootKey.deriveRoomId(), tx: tx)
                 .owsFailUnwrap("FOREIGN KEYs mean this must exist.")
         }
-        showCallInfo(viewController: CallLinkViewController.forExisting(callLinkRecord: callLinkRecord, callRecords: callRecords))
-    }
-
-    private func showCallInfo(viewController: UIViewController) {
-        viewController.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(viewController, animated: true)
+        let callLinkViewController = CallLinkViewController.forExisting(
+            callLinkRecord: callLinkRecord,
+            callRecords: callRecords,
+        )
+        showDetailViewController(callLinkViewController, sender: self)
     }
 
     // MARK: NewCallViewControllerDelegate
@@ -2651,8 +2671,17 @@ private extension CallsListViewController {
         override func updateConfiguration(using state: UICellConfigurationState) {
             var configuration = UIBackgroundConfiguration.clear()
             if state.isSelected || state.isHighlighted {
-                configuration.backgroundColor = Theme.tableCell2SelectedBackgroundColor
+                configuration.backgroundColor = OWSTableViewController2.cellSelectedBackgroundColor
                 if useSidebarAppearance {
+                    let contentMargin: CGFloat = 12
+                    let leading = directionalLayoutMargins.leading - contentMargin
+                    let trailing = directionalLayoutMargins.trailing - contentMargin
+                    configuration.backgroundInsets = .init(
+                        top: 0,
+                        leading: leading,
+                        bottom: 0,
+                        trailing: trailing,
+                    )
                     configuration.cornerRadius = 36
 #if targetEnvironment(macCatalyst)
                     configuration.cornerRadius = 10 // Ivy: as in the chat list
@@ -2795,7 +2824,7 @@ private extension CallsListViewController {
         override func updateConfiguration(using state: UICellConfigurationState) {
             var configuration = UIBackgroundConfiguration.clear()
             if state.isSelected || state.isHighlighted {
-                configuration.backgroundColor = Theme.tableCell2SelectedBackgroundColor
+                configuration.backgroundColor = OWSTableViewController2.cellSelectedBackgroundColor
                 if useSidebarAppearance {
                     configuration.cornerRadius = 36
 #if targetEnvironment(macCatalyst)

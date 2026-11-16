@@ -197,9 +197,10 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
             // Makes tableView clear so the wallpaper can show through.
             backgroundStyle = .clear
 
-            if Theme.isDarkThemeEnabled {
-                overrideCellBackgroundColor = UIColor(rgbHex: 0x424757, alpha: 1)
-            }
+            overrideCellBackgroundColor = UIColor(
+                light: .Signal.secondaryGroupedBackground, // use default cell bg color for light mode
+                dark: UIColor(rgbHex: 0x424757, alpha: 1),
+            )
 
             view.insertSubview(backgroundContainer, belowSubview: tableView)
             backgroundContainer.autoPinEdgesToSuperviewEdges()
@@ -208,15 +209,26 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
     }
 
     func updateNavigationBar() {
-        guard canEditConversationAttributes, isGroupThread, !isTerminatedGroup else {
-            navigationItem.rightBarButtonItem = nil
-            return
+        // Show (X) in the top left corner if presented modally.
+        let top = navigationController ?? self
+        let isPresentedModally = top.presentingViewController?.presentedViewController === top
+        if isPresentedModally {
+            navigationItem.leftBarButtonItem = .closeButton { [weak self] in
+                self?.dismiss(animated: true)
+            }
+        } else {
+            navigationItem.leftBarButtonItem = nil
         }
 
-        navigationItem.rightBarButtonItem = .systemItem(.edit) { [weak self] in
-            guard let self else { return }
-            owsAssertDebug(self.canEditConversationAttributes)
-            self.showGroupAttributesView(editAction: .none)
+        // Edit button on the right for active groups that are editable by user.
+        if canEditConversationAttributes, isGroupThread, !isTerminatedGroup {
+            navigationItem.rightBarButtonItem = .systemItem(.edit) { [weak self] in
+                guard let self else { return }
+                owsAssertDebug(self.canEditConversationAttributes)
+                self.showGroupAttributesView(editAction: .none)
+            }
+        } else {
+            navigationItem.rightBarButtonItem = nil
         }
     }
 
@@ -255,14 +267,6 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
         coordinator.animate { _ in } completion: { _ in
             self.updateTableContents()
         }
-    }
-
-    /// The base implementation of this reloads the table contents, which does
-    /// not update header/footer views. Since we need those to be updated, we
-    /// instead recreate the table contents wholesale.
-    override func themeDidChange() {
-        super.themeDidChange()
-        updateTableContents()
     }
 
     /// The base implementation of this reloads the table contents, which does

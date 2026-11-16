@@ -29,6 +29,7 @@ public protocol StorageServiceManager {
     func recordPendingUpdates(updatedGroupV2MasterKeys: [GroupMasterKey])
     func recordPendingUpdates(updatedStoryDistributionListIds: [Data])
     func recordPendingUpdates(callLinkRootKeys: [CallLinkRootKey])
+    func recordPendingUpdates(favoriteStickerIds: [FavoriteStickerId])
     func recordPendingLocalAccountUpdates()
 
     /// Marks `groupMasterKeys` as needing an update if they don't yet exist.
@@ -551,9 +552,14 @@ public class StorageServiceManagerImpl: NSObject, StorageServiceManager {
         updatePendingMutations { $0.updatedCallLinkRootKeys.formUnion(callLinkRootKeys.lazy.map(\.bytes)) }
     }
 
+<<<<<<< HEAD
     // Ivy: chat folders
     public func recordPendingUpdates(chatFolderIds: [Data]) {
         updatePendingMutations { $0.updatedChatFolderIds.formUnion(chatFolderIds) }
+=======
+    public func recordPendingUpdates(favoriteStickerIds: [FavoriteStickerId]) {
+        updatePendingMutations { $0.updatedFavoriteStickerIds.formUnion(favoriteStickerIds) }
+>>>>>>> upstream/8.37.0.1993
     }
 
     public func recordPendingLocalAccountUpdates() {
@@ -718,7 +724,11 @@ private struct PendingMutations {
     var insertedGroupMasterKeys = Set<Data>()
     var updatedStoryDistributionListIds = Set<Data>()
     var updatedCallLinkRootKeys = Set<Data>()
+<<<<<<< HEAD
     var updatedChatFolderIds = Set<Data>() // Ivy: chat folders
+=======
+    var updatedFavoriteStickerIds = Set<FavoriteStickerId>()
+>>>>>>> upstream/8.37.0.1993
     var updatedLocalAccount = false
 
     var hasChanges: Bool {
@@ -730,7 +740,11 @@ private struct PendingMutations {
                 || !insertedGroupMasterKeys.isEmpty
                 || !updatedStoryDistributionListIds.isEmpty
                 || !updatedCallLinkRootKeys.isEmpty
+<<<<<<< HEAD
                 || !updatedChatFolderIds.isEmpty // Ivy: chat folders
+=======
+                || !updatedFavoriteStickerIds.isEmpty
+>>>>>>> upstream/8.37.0.1993
 
     }
 }
@@ -927,7 +941,8 @@ class StorageServiceOperation {
             Contacts: \(allRecipientUniqueIds.count); \
             GV2: \(pendingMutations.updatedGroupV2MasterKeys.count) + \(pendingMutations.insertedGroupMasterKeys.count); \
             DLists: \(pendingMutations.updatedStoryDistributionListIds.count); \
-            CLinks: \(pendingMutations.updatedCallLinkRootKeys.count))
+            CLinks: \(pendingMutations.updatedCallLinkRootKeys.count); \
+            FavStickers: \(pendingMutations.updatedFavoriteStickerIds.count))
             """,
         )
 
@@ -958,9 +973,14 @@ class StorageServiceOperation {
             state.callLinkRootKeyChangeMap[$0] = .updated
         }
 
+<<<<<<< HEAD
         // Ivy: chat folders
         pendingMutations.updatedChatFolderIds.forEach {
             state.ivyChatFolderChangeMap[$0] = .updated
+=======
+        pendingMutations.updatedFavoriteStickerIds.forEach {
+            state.favoriteStickerChangeMap[$0] = .updated
+>>>>>>> upstream/8.37.0.1993
         }
     }
 
@@ -1093,10 +1113,16 @@ class StorageServiceOperation {
                 stateUpdater: buildCallLinkUpdater(),
                 transaction: transaction,
             )
+<<<<<<< HEAD
             // Ivy: chat folders
             updateRecords(
                 state: &state,
                 stateUpdater: buildChatFolderUpdater(),
+=======
+            updateRecords(
+                state: &state,
+                stateUpdater: buildFavoriteStickerRecordUpdater(),
+>>>>>>> upstream/8.37.0.1993
                 transaction: transaction,
             )
 
@@ -1389,10 +1415,18 @@ class StorageServiceOperation {
                 createRecord(localId: $0.rootKey.bytes, stateUpdater: callLinkUpdater)
             }
 
+<<<<<<< HEAD
             // Ivy: chat folders
             let chatFolderUpdater = buildChatFolderUpdater()
             chatFolderUpdater.recordUpdater.chatFolderManager.allFolders(tx: transaction).forEach {
                 createRecord(localId: $0.id, stateUpdater: chatFolderUpdater)
+=======
+            let favoriteStickerUpdater = buildFavoriteStickerRecordUpdater()
+            let stickerManager = favoriteStickerUpdater.recordUpdater.stickerManager
+            stickerManager.fetchAllFavoritedAndUnfavoritedStickers(tx: transaction).forEach {
+                let favoriteStickerId = FavoriteStickerId(packId: $0.packId, stickerId: $0.stickerId)
+                createRecord(localId: favoriteStickerId, stateUpdater: favoriteStickerUpdater)
+>>>>>>> upstream/8.37.0.1993
             }
         }
 
@@ -1747,6 +1781,24 @@ class StorageServiceOperation {
                     orphanedCallLinkRootKeyCount += 1
                 }
 
+                var orphanedFavoriteStickerCount = 0
+                for (favoriteStickerId, storageIdentifier) in state.favoriteStickerToStorageIdentifierMap where !allManifestItems.contains(storageIdentifier) {
+                    // If another client removes an unfavorited sticker, allow it.
+                    let stickerManager = DependenciesBridge.shared.stickerManager
+                    guard
+                        let favoriteStickerRecord = stickerManager.fetchFavoriteStickerRecord(
+                            packId: favoriteStickerId.packId,
+                            stickerId: favoriteStickerId.stickerId,
+                            tx: transaction,
+                        ),
+                        favoriteStickerRecord.favoritedAt != nil
+                    else {
+                        continue
+                    }
+                    state.favoriteStickerChangeMap[favoriteStickerId] = .updated
+                    orphanedFavoriteStickerCount += 1
+                }
+
                 var orphanedAccountCount = 0
                 let currentDate = Date()
                 let recipientDatabaseTable = DependenciesBridge.shared.recipientDatabaseTable
@@ -1769,7 +1821,8 @@ class StorageServiceOperation {
                     state.accountIdChangeMap.count
                         + state.groupV2ChangeMap.count
                         + state.storyDistributionListChangeMap.count
-                        + state.callLinkRootKeyChangeMap.count,
+                        + state.callLinkRootKeyChangeMap.count
+                        + state.favoriteStickerChangeMap.count,
                 )
 
                 Logger.info(
@@ -1780,7 +1833,8 @@ class StorageServiceOperation {
                     \(orphanedAccountCount) orphaned accounts; \
                     \(orphanedGroupV2Count) orphaned gv2; \
                     \(orphanedStoryDistributionListCount) orphaned dlists; \
-                    \(orphanedCallLinkRootKeyCount) orphaned clinks
+                    \(orphanedCallLinkRootKeyCount) orphaned clinks; \
+                    \(orphanedFavoriteStickerCount) orphaned favorite stickers
                     """,
                 )
 
@@ -1876,7 +1930,11 @@ class StorageServiceOperation {
         let groupV2Updater = buildGroupV2Updater()
         let storyDistributionListUpdater = buildStoryDistributionListUpdater()
         let callLinkUpdater = buildCallLinkUpdater()
+<<<<<<< HEAD
         let chatFolderUpdater = buildChatFolderUpdater() // Ivy: chat folders
+=======
+        let favoriteStickerUpdater = buildFavoriteStickerRecordUpdater()
+>>>>>>> upstream/8.37.0.1993
         for item in items {
             func _mergeRecord<StateUpdater: StorageServiceStateUpdater>(
                 _ record: StateUpdater.RecordType,
@@ -1901,8 +1959,13 @@ class StorageServiceOperation {
                 _mergeRecord(storyDistributionListRecord, stateUpdater: storyDistributionListUpdater)
             } else if let callLinkRecord = item.callLinkRecord {
                 _mergeRecord(callLinkRecord, stateUpdater: callLinkUpdater)
+<<<<<<< HEAD
             } else if let chatFolderRecord = item.ivyChatFolderRecord { // Ivy: chat folders
                 _mergeRecord(chatFolderRecord, stateUpdater: chatFolderUpdater)
+=======
+            } else if let favoriteStickerRecord = item.favoriteStickerRecord {
+                _mergeRecord(favoriteStickerRecord, stateUpdater: favoriteStickerUpdater)
+>>>>>>> upstream/8.37.0.1993
             } else if case .account = item.identifier.type {
                 owsFailDebug("unexpectedly found account record in remaining items")
             } else {
@@ -1963,10 +2026,16 @@ class StorageServiceOperation {
             return true
         case .callLink:
             return true
+<<<<<<< HEAD
         case .UNRECOGNIZED(let rawValue):
             // Ivy: chat folders
             return rawValue == IvyStorageProtos_KeyType.chatFolder
         case .unknown, nil:
+=======
+        case .favoriteStickerPack:
+            return true
+        case .unknown, .UNRECOGNIZED, nil:
+>>>>>>> upstream/8.37.0.1993
             return false
         }
     }
@@ -2266,6 +2335,7 @@ class StorageServiceOperation {
         )
     }
 
+<<<<<<< HEAD
     // Ivy: chat folders
     private func buildChatFolderUpdater() -> MultipleElementStateUpdater<StorageServiceChatFolderRecordUpdater> {
         return MultipleElementStateUpdater(
@@ -2278,6 +2348,16 @@ class StorageServiceOperation {
             changeState: \.ivyChatFolderChangeMap,
             storageIdentifier: \.ivyChatFolderIdToStorageIdentifierMap,
             recordWithUnknownFields: \.ivyChatFolderIdToRecordWithUnknownFields,
+=======
+    private func buildFavoriteStickerRecordUpdater() -> MultipleElementStateUpdater<StorageServiceFavoriteStickerRecordUpdater> {
+        return MultipleElementStateUpdater(
+            recordUpdater: StorageServiceFavoriteStickerRecordUpdater(
+                stickerManager: DependenciesBridge.shared.stickerManager,
+            ),
+            changeState: \.favoriteStickerChangeMap,
+            storageIdentifier: \.favoriteStickerToStorageIdentifierMap,
+            recordWithUnknownFields: \.favoriteStickerToRecordWithUnknownFields,
+>>>>>>> upstream/8.37.0.1993
         )
     }
 
@@ -2394,6 +2474,7 @@ class StorageServiceOperation {
             set { _callLinkRootKeyToRecordWithUnknownFields = newValue }
         }
 
+<<<<<<< HEAD
         // Ivy: chat folders
         private var _ivyChatFolderChangeMap: [Data: ChangeState]?
         fileprivate var ivyChatFolderChangeMap: [Data: ChangeState] {
@@ -2411,6 +2492,24 @@ class StorageServiceOperation {
         fileprivate var ivyChatFolderIdToRecordWithUnknownFields: [Data: IvyStorageProtos_ChatFolderRecord] {
             get { _ivyChatFolderIdToRecordWithUnknownFields ?? [:] }
             set { _ivyChatFolderIdToRecordWithUnknownFields = newValue }
+=======
+        private var _favoriteStickerChangeMap: [FavoriteStickerId: ChangeState]?
+        fileprivate var favoriteStickerChangeMap: [FavoriteStickerId: ChangeState] {
+            get { _favoriteStickerChangeMap ?? [:] }
+            set { _favoriteStickerChangeMap = newValue }
+        }
+
+        private var _favoriteStickerToStorageIdentifierMap: [FavoriteStickerId: StorageService.StorageIdentifier]?
+        fileprivate var favoriteStickerToStorageIdentifierMap: [FavoriteStickerId: StorageService.StorageIdentifier] {
+            get { _favoriteStickerToStorageIdentifierMap ?? [:] }
+            set { _favoriteStickerToStorageIdentifierMap = newValue }
+        }
+
+        private var _favoriteStickerToRecordWithUnknownFields: [FavoriteStickerId: StorageServiceProtoFavoriteStickerRecord]?
+        fileprivate var favoriteStickerToRecordWithUnknownFields: [FavoriteStickerId: StorageServiceProtoFavoriteStickerRecord] {
+            get { _favoriteStickerToRecordWithUnknownFields ?? [:] }
+            set { _favoriteStickerToRecordWithUnknownFields = newValue }
+>>>>>>> upstream/8.37.0.1993
         }
 
         fileprivate var allIdentifiers: [StorageService.StorageIdentifier] {
@@ -2424,7 +2523,11 @@ class StorageServiceOperation {
             allIdentifiers += groupV2MasterKeyToIdentifierMap.values
             allIdentifiers += storyDistributionListIdentifierToStorageIdentifierMap.values
             allIdentifiers += callLinkRootKeyToStorageIdentifierMap.values
+<<<<<<< HEAD
             allIdentifiers += ivyChatFolderIdToStorageIdentifierMap.values // Ivy: chat folders
+=======
+            allIdentifiers += favoriteStickerToStorageIdentifierMap.values
+>>>>>>> upstream/8.37.0.1993
 
             // We must persist any unknown identifiers, as they are potentially associated with
             // valid records that this version of the app doesn't yet understand how to parse.

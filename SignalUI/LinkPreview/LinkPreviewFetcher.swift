@@ -32,6 +32,7 @@ public class LinkPreviewFetcherImpl: LinkPreviewFetcher {
     private let groupsV2: any GroupsV2
     private let linkPreviewSettingStore: LinkPreviewSettingStore
     private let tsAccountManager: any TSAccountManager
+    private let stickerDownloader: any StickerDownloader
 
     public init(
         authCredentialManager: any AuthCredentialManager,
@@ -39,12 +40,14 @@ public class LinkPreviewFetcherImpl: LinkPreviewFetcher {
         groupsV2: any GroupsV2,
         linkPreviewSettingStore: LinkPreviewSettingStore,
         tsAccountManager: any TSAccountManager,
+        stickerDownloader: any StickerDownloader,
     ) {
         self.authCredentialManager = authCredentialManager
         self.db = db
         self.groupsV2 = groupsV2
         self.linkPreviewSettingStore = linkPreviewSettingStore
         self.tsAccountManager = tsAccountManager
+        self.stickerDownloader = stickerDownloader
     }
 
     public func fetchLinkPreview(for url: URL) async throws -> OWSLinkPreviewDraft {
@@ -292,10 +295,9 @@ public class LinkPreviewFetcherImpl: LinkPreviewFetcher {
             throw LinkPreviewError.invalidPreview
         }
         // tryToDownloadStickerPack will use locally saved data if possible...
-        let stickerPack = try await StickerManager.tryToDownloadStickerPack(stickerPackInfo: stickerPackInfo).awaitable()
+        let stickerPack = try await stickerDownloader.downloadStickerPack(stickerPackInfo: stickerPackInfo)
         let title = stickerPack.title?.filterForDisplay.nilIfEmpty
-        let coverUrl = try await StickerManager.tryToDownloadSticker(stickerInfo: stickerPack.coverInfo).awaitable()
-        let coverData = try Data(contentsOf: coverUrl, options: [.mappedIfSafe])
+        let coverData = try await stickerDownloader.downloadSticker(stickerInfo: stickerPack.coverInfo)
         let previewThumbnail = await Self.previewThumbnail(srcImageData: coverData)
 
         guard title != nil || previewThumbnail != nil else {

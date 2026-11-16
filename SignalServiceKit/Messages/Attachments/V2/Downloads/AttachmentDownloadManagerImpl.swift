@@ -49,7 +49,7 @@ public class AttachmentDownloadManagerImpl: AttachmentDownloadManager {
         reachabilityManager: SSKReachabilityManager,
         remoteConfigProvider: any RemoteConfigProvider,
         signalService: OWSSignalServiceProtocol,
-        stickerManager: Shims.StickerManager,
+        stickerManager: StickerManager,
         storyStore: any StoryStore,
         threadStore: ThreadStore,
         tsAccountManager: TSAccountManager,
@@ -604,7 +604,7 @@ public class AttachmentDownloadManagerImpl: AttachmentDownloadManager {
         private let downloadabilityChecker: DownloadabilityChecker
         private let downloadQueue: DownloadQueue
         private let remoteConfigProvider: any RemoteConfigProvider
-        private let stickerManager: Shims.StickerManager
+        private let stickerManager: StickerManager
         let store: Store
         private let tsAccountManager: TSAccountManager
 
@@ -622,7 +622,7 @@ public class AttachmentDownloadManagerImpl: AttachmentDownloadManager {
             downloadQueue: DownloadQueue,
             downloadabilityChecker: DownloadabilityChecker,
             remoteConfigProvider: any RemoteConfigProvider,
-            stickerManager: Shims.StickerManager,
+            stickerManager: StickerManager,
             tsAccountManager: TSAccountManager,
         ) {
             self.accountKeyStore = accountKeyStore
@@ -1269,7 +1269,7 @@ public class AttachmentDownloadManagerImpl: AttachmentDownloadManager {
                 return self.stickerManager.fetchInstalledSticker(
                     packId: stickerMetadata.stickerPackId,
                     stickerId: stickerMetadata.stickerId,
-                    tx: tx,
+                    transaction: tx,
                 )
             }
 
@@ -1809,7 +1809,7 @@ public class AttachmentDownloadManagerImpl: AttachmentDownloadManager {
     private class DownloadQueue {
         private let signalService: OWSSignalServiceProtocol
 
-        private let resumeDataCache: LRUCache<DownloadState, Data> = LRUCache(maxSize: 5)
+        private let resumeDataCache: LRUCache<DownloadState, (requestUrl: URL, data: Data)> = LRUCache(maxSize: 5)
 
         init(signalService: OWSSignalServiceProtocol) {
             self.signalService = signalService
@@ -1871,36 +1871,35 @@ public class AttachmentDownloadManagerImpl: AttachmentDownloadManager {
                     throw AttachmentDownloads.Error.expiredCredentials
                 }
 
-                let resumeData = resumeDataCache.object(forKey: downloadState)
                 let urlSession = await self.signalService.sharedUrlSessionForCdn(cdnNumber: downloadState.cdnNumber())
-
-                let downloadOperation: (OWSURLSession.ProgressBlock) async throws -> OWSUrlDownloadResponse
-                if let resumeData {
-                    let request = try urlSession.endpoint.buildRequest(urlPath, method: .get, headers: headers)
-                    guard let requestUrl = request.url else {
-                        throw OWSAssertionError("Request missing url.")
-                    }
-                    downloadOperation = {
-                        return try await urlSession.performDownload(
-                            requestUrl: requestUrl,
-                            resumeData: resumeData,
-                            maxResponseSize: maxDownloadSizeBytes,
-                            progressBlock: $0,
-                        )
-                    }
-                } else {
-                    downloadOperation = {
-                        return try await urlSession.performDownload(
-                            urlPath,
-                            method: .get,
-                            headers: headers,
-                            maxResponseSize: maxDownloadSizeBytes,
-                            progressBlock: $0,
-                        )
-                    }
+                let request = try urlSession.endpoint.buildRequest(urlPath, method: .get, headers: headers)
+                guard let requestUrl = request.url else {
+                    throw OWSAssertionError("Request missing url.")
                 }
 
-                let downloadResponse = try await downloadOperation(progressBlock)
+                let downloadResponse: OWSUrlDownloadResponse
+                do {
+                    // Resume data contains the original request, so don't reuse it after a route change.
+                    if let resumeData = resumeDataCache.object(forKey: downloadState), resumeData.requestUrl == requestUrl {
+                        downloadResponse = try await urlSession.performDownload(
+                            requestUrl: requestUrl,
+                            resumeData: resumeData.data,
+                            maxResponseSize: maxDownloadSizeBytes,
+                            progressBlock: progressBlock,
+                        )
+                    } else {
+                        downloadResponse = try await urlSession.performDownload(
+                            request: request,
+                            maxResponseSize: maxDownloadSizeBytes,
+                            progressBlock: progressBlock,
+                        )
+                    }
+                } catch {
+                    if let resumeData = ((error as NSError).userInfo[NSURLSessionDownloadTaskResumeData] as? Data)?.nilIfEmpty {
+                        resumeDataCache.set(key: downloadState, value: (requestUrl, resumeData))
+                    }
+                    throw error
+                }
 
                 let downloadUrl = downloadResponse.downloadUrl
                 let tmpFile = OWSFileSystem.temporaryFileUrl(
@@ -1912,10 +1911,6 @@ public class AttachmentDownloadManagerImpl: AttachmentDownloadManager {
             } onError: { error, attemptCount in
                 // Avoid logging the whole error, as it may contain the CDN URL.
                 Logger.warn("Error: \(error.shortDescription)")
-
-                if let resumeData = ((error as NSError).userInfo[NSURLSessionDownloadTaskResumeData] as? Data)?.nilIfEmpty {
-                    resumeDataCache.set(key: downloadState, value: resumeData)
-                }
 
                 let maxAttemptCount = 16
                 guard attemptCount < maxAttemptCount, error.isNetworkFailureOrTimeout else {
@@ -1931,11 +1926,11 @@ public class AttachmentDownloadManagerImpl: AttachmentDownloadManager {
     private class Decrypter {
 
         private let attachmentValidator: AttachmentContentValidator
-        private let stickerManager: Shims.StickerManager
+        private let stickerManager: StickerManager
 
         init(
             attachmentValidator: AttachmentContentValidator,
-            stickerManager: Shims.StickerManager,
+            stickerManager: StickerManager,
         ) {
             self.attachmentValidator = attachmentValidator
             self.stickerManager = stickerManager
@@ -1974,29 +1969,16 @@ public class AttachmentDownloadManagerImpl: AttachmentDownloadManager {
         func validateAndPrepareInstalledSticker(
             _ sticker: InstalledStickerRecord,
         ) async throws -> PendingAttachment {
-            let attachmentValidator = self.attachmentValidator
-            let stickerManager = self.stickerManager
             return try await decryptionQueue.runWithThrowingTask {
-                guard
-                    let stickerDataUrl = stickerManager.stickerDataUrl(
-                        forInstalledSticker: sticker,
-                        verifyExists: true,
-                    )
-                else {
-                    throw OWSAssertionError("Missing sticker")
+                let stickerType = StickerType.stickerType(forContentType: sticker.contentType)
+                let metadata = stickerManager.installedStickerMetadata(installedSticker: sticker)
+                guard let stickerData = try metadata?.readStickerData() else {
+                    throw OWSAssertionError("invalid sticker data")
                 }
 
-                let mimeType: MimeType
-                let imageMetadata = try? DataImageSource.forPath(stickerDataUrl.path).imageMetadata()
-                if let imageMetadata {
-                    mimeType = imageMetadata.imageFormat.mimeType
-                } else {
-                    mimeType = MimeType.imageWebp
-                }
-
-                return try await attachmentValidator.validateDataSourceContents(
-                    DataSourcePath(fileUrl: stickerDataUrl, ownership: .borrowed),
-                    mimeType: mimeType.rawValue,
+                return try await attachmentValidator.validateDataContents(
+                    stickerData,
+                    mimeType: stickerType.mimeType,
                     renderingFlag: .borderless,
                     sourceFilename: nil,
                 )
@@ -2632,34 +2614,5 @@ public class AttachmentDownloadManagerImpl: AttachmentDownloadManager {
                 db.touch(storyMessage: storyMessage, tx: tx)
             }
         }
-    }
-}
-
-extension AttachmentDownloadManagerImpl {
-    public enum Shims {
-        public typealias StickerManager = _AttachmentDownloadManagerImpl_StickerManagerShim
-    }
-
-    public enum Wrappers {
-        public typealias StickerManager = _AttachmentDownloadManagerImpl_StickerManagerWrapper
-    }
-}
-
-public protocol _AttachmentDownloadManagerImpl_StickerManagerShim {
-
-    func fetchInstalledSticker(packId: Data, stickerId: UInt32, tx: DBReadTransaction) -> InstalledStickerRecord?
-
-    func stickerDataUrl(forInstalledSticker: InstalledStickerRecord, verifyExists: Bool) -> URL?
-}
-
-public class _AttachmentDownloadManagerImpl_StickerManagerWrapper: _AttachmentDownloadManagerImpl_StickerManagerShim {
-    public init() {}
-
-    public func fetchInstalledSticker(packId: Data, stickerId: UInt32, tx: DBReadTransaction) -> InstalledStickerRecord? {
-        return StickerManager.fetchInstalledSticker(packId: packId, stickerId: stickerId, transaction: tx)
-    }
-
-    public func stickerDataUrl(forInstalledSticker: InstalledStickerRecord, verifyExists: Bool) -> URL? {
-        return StickerManager.stickerDataUrl(forInstalledSticker: forInstalledSticker, verifyExists: verifyExists)
     }
 }

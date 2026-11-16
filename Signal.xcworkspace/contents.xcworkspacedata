@@ -5,7 +5,7 @@
       location = "group:Signal.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Pods/Pods.xcodeproj">
+      location = "group:BinaryDependencies">
    </FileRef>
    <FileRef
       location = "group:ThirdParty/blurhash">

@@ -9,11 +9,13 @@ import SignalServiceKit
 class LazyDatabaseMigratorRunner: BGProcessingTaskRunner {
     private let audioWaveformMigrator: AudioWaveformFileMigrator
     private let infoMessageMigrator: InfoMessageGroupUpdateMigrator
+    private let stickerMigrator: StickerMigrator
 
     init(
         databaseStorage: SDSDatabaseStorage,
         modelReadCaches: @escaping () -> ModelReadCaches,
         tsAccountManager: @escaping () -> TSAccountManager,
+        stickerManager: @escaping () -> StickerManager,
     ) {
         self.audioWaveformMigrator = AudioWaveformFileMigrator(
             dateProvider: { Date() },
@@ -24,6 +26,7 @@ class LazyDatabaseMigratorRunner: BGProcessingTaskRunner {
             modelReadCaches: modelReadCaches,
             tsAccountManager: tsAccountManager,
         )
+        self.stickerMigrator = StickerMigrator(db: databaseStorage, stickerManager: stickerManager)
     }
 
     static let taskIdentifier: String = "LazyDatabaseMigratorTask"
@@ -40,6 +43,10 @@ class LazyDatabaseMigratorRunner: BGProcessingTaskRunner {
             return .asSoonAsPossible
         }
 
+        if stickerMigrator.needsToRun() {
+            return .asSoonAsPossible
+        }
+
         return .never
     }
 
@@ -50,6 +57,7 @@ class LazyDatabaseMigratorRunner: BGProcessingTaskRunner {
     func run() async throws {
         try await infoMessageMigrator.run()
         try await audioWaveformMigrator.run()
+        try await stickerMigrator.run()
     }
 
 #if targetEnvironment(simulator)

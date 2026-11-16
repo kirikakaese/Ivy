@@ -5,13 +5,11 @@
 
 import LibSignalClient
 import SignalServiceKit
-public import SignalUI
+import SignalUI
 
 extension ConversationViewController {
 
-    public func updateNavigationTitle() {
-        AssertIsOnMainThread()
-
+    func updateNavigationTitle() {
         let title = threadViewModel.name
 
         // Important as it will be displayed in <Back button popup in view controllers
@@ -35,9 +33,7 @@ extension ConversationViewController {
         headerView.updateTitleSpinning()
     }
 
-    public func createHeaderViews() {
-        AssertIsOnMainThread()
-
+    func createHeaderViews() {
         headerView.configure(threadViewModel: threadViewModel)
         headerView.accessibilityLabel = OWSLocalizedString(
             "CONVERSATION_SETTINGS",
@@ -60,8 +56,6 @@ extension ConversationViewController {
 #if USE_DEBUG_UI
     @objc
     private func navigationTitleLongPressed(_ gestureRecognizer: UIGestureRecognizer) {
-        AssertIsOnMainThread()
-
         if gestureRecognizer.state == .began {
             DebugUITableViewController.presentDebugUI(
                 fromViewController: self,
@@ -71,7 +65,7 @@ extension ConversationViewController {
     }
 #endif
 
-    public var unreadCountViewDiameter: CGFloat { 16 }
+    var unreadCountViewDiameter: CGFloat { 16 }
 
     private class JoinGroupCallButton: UIButton {
 
@@ -150,9 +144,7 @@ extension ConversationViewController {
         }
     }
 
-    public func updateBarButtonItems() {
-        AssertIsOnMainThread()
-
+    func updateBarButtonItems() {
         guard !thread.isReleaseNotesThread else {
             return
         }
@@ -174,13 +166,11 @@ extension ConversationViewController {
                 return
             }
             owsAssertDebug(navigationItem.searchController != nil)
-            return
 
         case .selection:
             navigationItem.rightBarButtonItems = [cancelSelectionBarButtonItem]
             navigationItem.leftBarButtonItem = deleteAllBarButtonItem
             navigationItem.hidesBackButton = true
-            return
 
         case .normal:
             if userLeftGroup {
@@ -254,11 +244,10 @@ extension ConversationViewController {
             }
 #endif
             navigationItem.rightBarButtonItems = barButtons
-            return
         }
     }
 
-    public func updateReleaseNotesBarButtonItems() {
+    func updateReleaseNotesBarButtonItems() {
         let icon: UIImage = threadViewModel.isMuted ? Theme.iconImage(.buttonUnmute) : Theme.iconImage(.buttonMute)
         let muteButton = UIBarButtonItem(
             image: icon,
@@ -275,7 +264,7 @@ extension ConversationViewController {
         navigationItem.rightBarButtonItem = muteButton
     }
 
-    public func updateNavigationBarSubtitleLabel() {
+    func updateNavigationBarSubtitleLabel() {
         let subtitleText = NSMutableAttributedString()
         let subtitleFont = headerView.subtitleLabel.font!
         // To ensure a single source of text color do not set `color` attributes unless you really need to.
@@ -348,7 +337,7 @@ extension ConversationViewController {
         headerView.subtitleLabel.attributedText = subtitleText
     }
 
-    public var safeContentHeight: CGFloat {
+    var safeContentHeight: CGFloat {
         // Don't use self.collectionView.contentSize.height as the collection view's
         // content size might not be set yet.
         //
@@ -363,7 +352,7 @@ extension ConversationViewController {
         voiceMemoDraft: VoiceMessageInterruptedDraft?,
         editTarget: TSOutgoingMessage?,
     ) -> ConversationInputToolbar {
-        AssertIsOnMainThread()
+
         owsAssertDebug(hasViewWillAppearEverBegun)
 
         let quotedReply: DraftQuotedReplyModel?
@@ -422,14 +411,9 @@ extension ConversationViewController {
         }
     }
 
-}
+    // MARK: - Keyboard Shortcuts
 
-// MARK: - Keyboard Shortcuts
-
-public extension ConversationViewController {
     func focusInputToolbar() {
-        AssertIsOnMainThread()
-
         guard hasViewWillAppearEverBegun else {
             owsFailDebug("InputToolbar not yet ready.")
             return
@@ -439,23 +423,22 @@ public extension ConversationViewController {
         }
 
         inputToolbar.clearDesiredKeyboard()
-        self.popKeyBoard()
+        popKeyBoard()
     }
 
     func openAllMedia() {
-        AssertIsOnMainThread()
-
         guard hasViewWillAppearEverBegun else {
             owsFailDebug("InputToolbar not yet ready.")
             return
         }
 
-        self.showConversationSettingsAndShowAllMedia()
+        showConversationSettingsAndShowAllMedia()
     }
 
-    func openStickerKeyboard() {
-        AssertIsOnMainThread()
-
+    func openStickerKeyboard(
+        page: StickerPickerPage? = nil,
+        bouncing stickerInfo: StickerInfo? = nil,
+    ) {
         guard hasViewWillAppearEverBegun else {
             owsFailDebug("InputToolbar not yet ready.")
             return
@@ -464,12 +447,10 @@ public extension ConversationViewController {
             return
         }
 
-        inputToolbar.showStickerKeyboard()
+        inputToolbar.showStickerKeyboard(page: page, bouncingSticker: stickerInfo)
     }
 
     func openAttachmentKeyboard() {
-        AssertIsOnMainThread()
-
         guard hasViewWillAppearEverBegun else {
             owsFailDebug("InputToolbar not yet ready.")
             return
@@ -482,8 +463,6 @@ public extension ConversationViewController {
     }
 
     func openGifSearch() {
-        AssertIsOnMainThread()
-
         guard hasViewWillAppearEverBegun else {
             owsFailDebug("InputToolbar not yet ready.")
             return
@@ -492,6 +471,6 @@ public extension ConversationViewController {
             return
         }
 
-        self.showGifPicker()
+        showGifPicker()
     }
 }

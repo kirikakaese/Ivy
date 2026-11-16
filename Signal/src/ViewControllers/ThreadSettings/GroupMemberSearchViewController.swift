@@ -104,7 +104,7 @@ class GroupMemberSearchViewController: OWSViewController {
 
         cell.backgroundColor = UIColor.Signal.secondaryGroupedBackground
         let selectedBackgroundView = UIView()
-        selectedBackgroundView.backgroundColor = Theme.tableCell2SelectedBackgroundColor
+        selectedBackgroundView.backgroundColor = OWSTableViewController2.cellSelectedBackgroundColor
         cell.selectedBackgroundView = selectedBackgroundView
 
         return cell
@@ -613,11 +613,13 @@ extension ContactCellView.Configuration {
         }
 
         if showAddMemberLabel {
+            let addMemberLabelText = OWSLocalizedString(
+                "MEMBER_LABEL_ADD_CSVC",
+                comment: "Label that shows up under a local user's row in contacts prompting them to add a member label",
+            )
+            configuration.subtitleAccessibilityLabel = addMemberLabelText
             configuration.attributedSubtitle = NSAttributedString(
-                string: OWSLocalizedString(
-                    "MEMBER_LABEL_ADD_CSVC",
-                    comment: "Label that shows up under a local user's row in contacts prompting them to add a member label",
-                ),
+                string: addMemberLabelText,
                 attributes: [.font: UIFont.dynamicTypeCaption1Clamped.medium()],
             ) + SignalSymbol.chevronRight.attributedString(
                 dynamicTypeBaseSize: 10,

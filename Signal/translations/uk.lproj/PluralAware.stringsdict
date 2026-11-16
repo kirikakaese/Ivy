@@ -1980,6 +1980,26 @@
 Спробуйте ще раз через %1$d години.</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>До улюблених можна додати до %1$d стікера</string>
+			<key>few</key>
+			<string>До улюблених можна додати до %1$d стікерів</string>
+			<key>many</key>
+			<string>До улюблених можна додати до %1$d стікерів</string>
+			<key>other</key>
+			<string>До улюблених можна додати до %1$d стікера</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

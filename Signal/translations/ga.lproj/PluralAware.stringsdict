@@ -2180,6 +2180,28 @@
  Triail arís i gceann %1$d uair an chloig.</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Ní féidir leat ach %1$d ghreamán a chur le Ceanáin</string>
+			<key>two</key>
+			<string>Ní féidir leat ach %1$d ghreamán a chur le Ceanáin</string>
+			<key>few</key>
+			<string>Ní féidir leat ach %1$d ghreamán a chur le Ceanáin</string>
+			<key>many</key>
+			<string>Ní féidir leat ach %1$d ngreamán a chur le Ceanáin</string>
+			<key>other</key>
+			<string>Ní féidir leat ach %1$d greamán a chur le Ceanáin</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-public import SignalServiceKit
-public import SignalUI
+import SignalServiceKit
+import SignalUI
 
-public enum ScrollContinuity: CustomStringConvertible {
+enum ScrollContinuity: CustomStringConvertible {
     // Do not try to maintain scroll continuity.
     case none
 
@@ -34,7 +34,7 @@ public enum ScrollContinuity: CustomStringConvertible {
 
     // MARK: - CustomStringConvertible
 
-    public var description: String {
+    var description: String {
         switch self {
         case .none:
             return "none"
@@ -48,7 +48,7 @@ public enum ScrollContinuity: CustomStringConvertible {
 
 // MARK: -
 
-public protocol ConversationViewLayoutItem {
+protocol ConversationViewLayoutItem {
 
     var interactionUniqueId: String { get }
 
@@ -63,7 +63,7 @@ public protocol ConversationViewLayoutItem {
 
 // MARK: -
 
-public protocol ConversationViewLayoutDelegate: AnyObject {
+protocol ConversationViewLayoutDelegate: AnyObject {
 
     var layoutItems: [ConversationViewLayoutItem] { get }
     var renderStateId: UInt { get }
@@ -76,9 +76,9 @@ public protocol ConversationViewLayoutDelegate: AnyObject {
 
 // MARK: -
 
-public class ConversationViewLayout: UICollectionViewLayout {
+class ConversationViewLayout: UICollectionViewLayout {
 
-    public weak var delegate: ConversationViewLayoutDelegate?
+    weak var delegate: ConversationViewLayoutDelegate?
 
     private var conversationStyle: ConversationStyle
 
@@ -491,22 +491,22 @@ public class ConversationViewLayout: UICollectionViewLayout {
 #endif
     }
 
-    override public class var layoutAttributesClass: AnyClass {
+    override class var layoutAttributesClass: AnyClass {
         CVCollectionViewLayoutAttributes.self
     }
 
-    public required init(conversationStyle: ConversationStyle) {
+    required init(conversationStyle: ConversationStyle) {
         self.conversationStyle = conversationStyle
 
         super.init()
     }
 
     @available(*, unavailable, message: "Use other constructor instead.")
-    public required init(coder aDecoder: NSCoder) {
+    required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public func update(conversationStyle: ConversationStyle) {
+    func update(conversationStyle: ConversationStyle) {
         AssertIsOnMainThread()
 
         guard self.conversationStyle != conversationStyle else {
@@ -518,7 +518,7 @@ public class ConversationViewLayout: UICollectionViewLayout {
         invalidateLayout()
     }
 
-    override public func invalidateLayout() {
+    override func invalidateLayout() {
         AssertIsOnMainThread()
 
         super.invalidateLayout()
@@ -528,7 +528,7 @@ public class ConversationViewLayout: UICollectionViewLayout {
         ensureState()
     }
 
-    override public func invalidateLayout(with context: UICollectionViewLayoutInvalidationContext) {
+    override func invalidateLayout(with context: UICollectionViewLayoutInvalidationContext) {
         AssertIsOnMainThread()
 
         ensureState()
@@ -549,7 +549,7 @@ public class ConversationViewLayout: UICollectionViewLayout {
         currentLayoutInfo = nil
     }
 
-    override public func prepare() {
+    override func prepare() {
         super.prepare()
 
         _ = ensureCurrentLayoutInfo()
@@ -729,7 +729,7 @@ public class ConversationViewLayout: UICollectionViewLayout {
 
     // MARK: - UICollectionViewLayout Impl.
 
-    override public func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         AssertIsOnMainThread()
 
         // Return values from the "translated" layout info.
@@ -748,7 +748,7 @@ public class ConversationViewLayout: UICollectionViewLayout {
         return result.filter { $0.frame.intersects(rect) }
     }
 
-    override public func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+    override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         AssertIsOnMainThread()
 
         // Return values from the "translated" layout info.
@@ -756,7 +756,7 @@ public class ConversationViewLayout: UICollectionViewLayout {
         return layoutInfo.layoutAttributesForItem(at: indexPath, assertIfMissing: true)
     }
 
-    override public func layoutAttributesForSupplementaryView(
+    override func layoutAttributesForSupplementaryView(
         ofKind elementKind: String,
         at indexPath: IndexPath,
     ) -> UICollectionViewLayoutAttributes? {
@@ -770,13 +770,13 @@ public class ConversationViewLayout: UICollectionViewLayout {
         )
     }
 
-    override public var collectionViewContentSize: CGSize {
+    override var collectionViewContentSize: CGSize {
         AssertIsOnMainThread()
 
         return ensureCurrentLayoutInfo().contentSize
     }
 
-    override public func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
         return true
     }
 
@@ -798,11 +798,11 @@ public class ConversationViewLayout: UICollectionViewLayout {
     // Returns true during performBatchUpdates() or reloadData(). This returns
     // true after performBatchUpdates() returns, before its completion is
     // called.
-    public var isPerformBatchUpdatesOrReloadDataBeingApplied: Bool {
+    var isPerformBatchUpdatesOrReloadDataBeingApplied: Bool {
         isPerformingBatchUpdates || isReloadingData
     }
 
-    public func willPerformBatchUpdates(
+    func willPerformBatchUpdates(
         scrollContinuity: ScrollContinuity,
         lastKnownDistanceFromBottom: CGFloat?,
     ) {
@@ -958,7 +958,7 @@ public class ConversationViewLayout: UICollectionViewLayout {
         return nil
     }
 
-    public func didPerformBatchUpdates() {
+    func didPerformBatchUpdates() {
         AssertIsOnMainThread()
         owsAssertDebug(!isReloadingData)
         owsAssertDebug(isPerformingBatchUpdates)
@@ -967,7 +967,7 @@ public class ConversationViewLayout: UICollectionViewLayout {
         delegateScrollContinuityMode = .disabled
     }
 
-    public func willReloadData() {
+    func willReloadData() {
         AssertIsOnMainThread()
         owsAssertDebug(!isReloadingData)
         owsAssertDebug(!isPerformingBatchUpdates)
@@ -980,7 +980,7 @@ public class ConversationViewLayout: UICollectionViewLayout {
         delegateScrollContinuityMode = .enabled(lastKnownDistanceFromBottom: lastKnownDistanceFromBottom)
     }
 
-    public func didReloadData() {
+    func didReloadData() {
         AssertIsOnMainThread()
         owsAssertDebug(isReloadingData)
         owsAssertDebug(!isPerformingBatchUpdates)
@@ -989,7 +989,7 @@ public class ConversationViewLayout: UICollectionViewLayout {
         delegateScrollContinuityMode = .disabled
     }
 
-    public func buildScrollContinuityToken(preferredAnchorInteractionId: String? = nil) -> CVScrollContinuityToken {
+    func buildScrollContinuityToken(preferredAnchorInteractionId: String? = nil) -> CVScrollContinuityToken {
         AssertIsOnMainThread()
 
         let layoutInfo = ensureCurrentLayoutInfo()
@@ -1020,7 +1020,7 @@ public class ConversationViewLayout: UICollectionViewLayout {
 
     // Some interactions shift around and cannot be reliably used as
     // references for scroll continuity.
-    public static func canInteractionBeUsedForScrollContinuity(_ interaction: TSInteraction) -> Bool {
+    static func canInteractionBeUsedForScrollContinuity(_ interaction: TSInteraction) -> Bool {
         switch interaction.interactionType {
         case .unknown, .unreadIndicator, .dateHeader, .typingIndicator, .threadDetails, .defaultDisappearingMessageTimer:
             return false
@@ -1047,7 +1047,7 @@ public class ConversationViewLayout: UICollectionViewLayout {
     // MARK: -
 
     // A layout can return the content offset to be applied during transition or update animations.
-    override public func targetContentOffset(
+    override func targetContentOffset(
         forProposedContentOffset proposedContentOffset: CGPoint,
         withScrollingVelocity velocity: CGPoint,
     ) -> CGPoint {
@@ -1059,7 +1059,7 @@ public class ConversationViewLayout: UICollectionViewLayout {
     }
 
     // A layout can return the content offset to be applied during transition or update animations.
-    override public func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
+    override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
 
         targetContentOffset(
             proposedContentOffset: proposedContentOffset,
@@ -1106,14 +1106,14 @@ public class ConversationViewLayout: UICollectionViewLayout {
         return proposedContentOffset
     }
 
-    override public var debugDescription: String {
+    override var debugDescription: String {
         ensureCurrentLayoutInfo().debugDescription
     }
 }
 
 // MARK: -
 
-public struct CVScrollContinuityToken {
+struct CVScrollContinuityToken {
     fileprivate let layoutInfo: ConversationViewLayout.LayoutInfo
     fileprivate let contentOffset: CGPoint
     fileprivate let visibleUniqueIds: [String]
@@ -1134,16 +1134,16 @@ public struct CVScrollContinuityToken {
 
 // MARK: -
 
-public class CVCollectionViewLayoutAttributes: UICollectionViewLayoutAttributes {
-    public var isStickyHeader: Bool = false
+class CVCollectionViewLayoutAttributes: UICollectionViewLayoutAttributes {
+    var isStickyHeader: Bool = false
 
-    override public func copy(with zone: NSZone? = nil) -> Any {
+    override func copy(with zone: NSZone? = nil) -> Any {
         let copy = super.copy(with: zone) as! CVCollectionViewLayoutAttributes
         copy.isStickyHeader = isStickyHeader
         return copy
     }
 
-    override public func isEqual(_ object: Any?) -> Bool {
+    override func isEqual(_ object: Any?) -> Bool {
         guard let object = object as? CVCollectionViewLayoutAttributes else {
             return false
         }

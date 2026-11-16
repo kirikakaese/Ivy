@@ -5,7 +5,7 @@
 
 import Contacts
 import Foundation
-public import LibSignalClient
+import LibSignalClient
 public import SignalServiceKit
 
 extension RegistrationCoordinatorImpl {
@@ -295,13 +295,6 @@ extension Registration {
         case success(RegistrationRequestFactory.ApnRegistrationId)
         case pushUnsupported(description: String)
         case timeout
-        case genericError(Error)
-    }
-
-    public enum SyncPushTokensResult {
-        case success
-        case pushUnsupported(description: String)
-        case networkError
         case genericError(Error)
     }
 }

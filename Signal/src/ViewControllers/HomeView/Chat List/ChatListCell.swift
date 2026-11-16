@@ -201,10 +201,19 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
-        var configuration = UIBackgroundConfiguration.clear()
+        var configuration = UIBackgroundConfiguration.clear().updated(for: state)
         if state.isSelected || state.isHighlighted {
-            configuration.backgroundColor = Theme.tableCell2SelectedBackgroundColor
+            configuration.backgroundColor = OWSTableViewController2.cellSelectedBackgroundColor
             if useSidebarAppearance {
+                let contentMargin: CGFloat = 12
+                let leading = directionalLayoutMargins.leading - contentMargin
+                let trailing = directionalLayoutMargins.trailing - contentMargin
+                configuration.backgroundInsets = .init(
+                    top: 0,
+                    leading: leading,
+                    bottom: 0,
+                    trailing: trailing,
+                )
                 configuration.cornerRadius = 24
 #if targetEnvironment(macCatalyst)
                 // Ivy: the Mac's rows are lower, so a smaller radius, close
@@ -362,8 +371,6 @@ class ChatListCell: UITableViewCell, ReusableTableViewCell {
         spoilerAnimationManager: SpoilerAnimationManager,
         asyncAvatarLoadingAllowed: Bool = true,
     ) {
-        AssertIsOnMainThread()
-
         self.cellContentToken = cellContentToken
 
         let configuration = cellContentToken.configuration

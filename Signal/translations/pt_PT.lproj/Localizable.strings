@@ -3112,6 +3112,15 @@
 /* Toast message confirming the system contact was deleted. Embeds {{The name of the user who was deleted.}}. */
 "DELETE_CONTACT_CONFIRMATION_TOAST" = "O contacto %1$@ foi eliminado e removido.";
 
+/* Message for a sheet confirming that the user, as a group admin, wants to delete messages for everyone. */
+"DELETE_FOR_EVERYONE_CONFIRMATION_SHEET_ADMIN_MESSAGE" = "Os membros do grupo poderão ver que eliminou estas mensagens.";
+
+/* Message for a sheet confirming that the user wants to delete their message for everyone. */
+"DELETE_FOR_EVERYONE_CONFIRMATION_SHEET_MESSAGE" = "Esta mensagem será eliminada para toda a gente no chat. Poderão ver que eliminou uma mensagem.";
+
+/* Title for a sheet confirming that the user wants to delete messages for everyone. */
+"DELETE_FOR_EVERYONE_CONFIRMATION_SHEET_TITLE" = "Eliminar para todos?";
+
 /* Title for an action sheet button explaining that a message will be deleted. */
 "DELETE_FOR_ME_NOTE_TO_SELF_ACTION_SHEET_BUTTON_TITLE" = "Eliminar";
 
@@ -3202,18 +3211,6 @@
 /* The title for the device transfer 'choice' view 'transfer' option when linking a device */
 "DEVICE_TRANSFER_CHOICE_TRANSFER_LINKED_TITLE" = "Transferir de outro iPad";
 
-/* An error indicating that the other device closed signal mid-transfer and it could not complete */
-"DEVICE_TRANSFER_ERROR_BACKGROUNDED" = "A transferência não pôde ser completada. Verifique se ambos os dispositivos têm o Signal aberto e tente outra vez.";
-
-/* An error indicating that something went wrong with the transfer and it could not complete */
-"DEVICE_TRANSFER_ERROR_GENERIC" = "A transferência não pôde ser completada. Assegure-se que os seus dispositivos estão perto um do outro e tente outra vez.";
-
-/* An error indicating that the user does not have enough free space on their device to complete the transfer */
-"DEVICE_TRANSFER_ERROR_NOT_ENOUGH_SPACE" = "Não existe espaço livre suficiente para terminar a transferência";
-
-/* An error indicating the user must update their device before trying to transfer. */
-"DEVICE_TRANSFER_ERROR_UNSUPPORTED_VERSION" = "Faça a atualização para a última versão do Signal e tente novamente";
-
 /* Body of the device transfer screen for pairing a new device, from the new device */
 "DEVICE_TRANSFER_PAIR_NEW_DEVICE_MESSAGE" = "Para transferir a sua conta, emparelhe este dispositivo com o seu dispositivo antigo";
 
@@ -3225,12 +3222,6 @@
 
 /* Title of the device transfer screen for pairing a new device, from the old device */
 "DEVICE_TRANSFER_PAIR_OLD_DEVICE_TITLE" = "Emparelhar com o seu dispositivo antigo";
-
-/* The explanation on the view that shows receiving progress */
-"DEVICE_TRANSFER_RECEIVING_EXPLANATION" = "Mantenha ambos os dispositivos próximos um do outro. Não desligue nenhum dos dispositivos e mantenha o Signal aberto. As transferências são encriptadas topo-a-topo.";
-
-/* The title on the view that shows receiving progress */
-"DEVICE_TRANSFER_RECEIVING_TITLE" = "A receber dados";
 
 /* Description in the progress view displayed during device transfer finalization. */
 "DEVICE_TRANSFER_STATUS_DEVICE_FINISHING" = "A finalizar a transferência…";
@@ -4711,6 +4702,9 @@
 /* Title for the group name view. */
 "GROUP_NAME_VIEW_TITLE" = "Nome do grupo";
 
+/* Bottom bar label for group chats the local user is not a member of */
+"GROUP_NOT_MEMBER_BOTTOM_PANEL_LABEL" = "Não pode enviar mensagens para este grupo pois já não é membro.";
+
 /* Message indicating that a remote user has accepted their invite. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_ACCEPTED_INVITE_FORMAT" = "%1$@ aceitou um convite para o grupo.";
 
@@ -4812,6 +4806,9 @@
 
 /* The title for the 'group requests and invites' view. */
 "GROUP_REQUESTS_AND_INVITES_VIEW_TITLE" = "Pedidos e convites";
+
+/* Label for a banner in group settings shown when the local user is not a member of the group */
+"GROUP_SETTINGS_NOT_MEMBER_BANNER_LABEL" = "Não é um membro do grupo";
 
 /* Name for a group story on the stories list. Embeds {author's name}, {group name} */
 "GROUP_STORY_NAME_FORMAT" = "%1$@ para %2$@";
@@ -5008,6 +5005,15 @@
 /* An explanation of why the user cannot be removed on a linked device. */
 "HIDE_RECIPIENT_IMPOSSIBLE_BECAUSE_SYSTEM_CONTACT_ACTION_SHEET_EXPLANATION" = "Esta pessoa está guardada nos Contactos do seu telemóvel. Elimine-a dos seus Contactos do telemóvel e tente outra vez.";
 
+/* Displayed on Calls tab when the screen is large (eg iPad) and is split into two columns and nothing is selected. */
+"HOME_CALLS_TAB_PLACEHOLDER" = "Toque em %1$@ para iniciar uma nova chamada de voz ou videochamada.";
+
+/* Displayed on Chats tab when the screen is large (eg iPad) and is split into two columns and no chat is selected. */
+"HOME_CHATS_TAB_PLACEHOLDER" = "Selecione um chat ou toque em %1$@ para começar a enviar mensagens.";
+
+/* Displayed on Stories tab when screen is large (eg iPad) and is split into two columns. */
+"HOME_STORIES_TAB_PLACEHOLDER" = "Toque para ver uma história.";
+
 /* Label for 'archived conversations' button. */
 "HOME_VIEW_ARCHIVED_CONVERSATIONS" = "Chats arquivados";
 
@@ -5052,6 +5058,9 @@
 
 /* Title for the conversation list's backup subscription not found locally context menu action. */
 "HOME_VIEW_TITLE_BACKUP_SUBSCRIPTION_NOT_FOUND_LOCALLY" = "Subscrição das cópias de segurança não encontrada";
+
+/* Title for the 'donate' action in the context menu of the settings button on home view tabs. */
+"HOME_VIEW_TITLE_DONATE" = "Doar ao Signal";
 
 /* Title for the conversation list's failed to backup context menu action. */
 "HOME_VIEW_TITLE_FAILED_TO_BACKUP" = "Falha na cópia de segurança";
@@ -5534,7 +5543,10 @@
 "LINKED_DEVICES_TITLE" = "Dispositivos associados";
 
 /* Alert Title */
-"LINKING_DEVICE_FAILED_TITLE" = "Falha na associação do dispositivo";
+"LINKING_DEVICE_FAILED_TITLE" = "Não foi possível vincular o dispositivo";
+
+/* Shown when trying to link a device to an account but that device is out of date and must first update its version of Signal. */
+"LINKING_DEVICE_OUT_OF_DATE" = "O seu outro dispositivo está a utilizar uma versão antiga do Signal. Tem de atualizar o Signal nesse dispositivo antes de o poder vincular.";
 
 /* Progress label when the message loading has nearly completed during the device linking process */
 "LINKING_SYNCING_FINALIZING" = "A finalizar transferência de mensagens…";
@@ -5770,6 +5782,9 @@
 /* Accessibility prefix for member labels. */
 "MEMBER_LABEL_AX_PREFIX" = "Etiqueta de membro: ";
 
+/* Accessibility label for the button that clears the member label text and emoji. */
+"MEMBER_LABEL_CLEAR_BUTTON_ACCESSIBILITY_LABEL" = "Limpar etiqueta";
+
 /* Button label on action sheet when attempting to change the group attributes access to 'administrator' and then continue */
 "MEMBER_LABEL_CLEAR_CHANGE_PERMISSION_CONTINUE" = "Alterar permissão";
 
@@ -5781,6 +5796,9 @@
 
 /* Text for a button to set a member label */
 "MEMBER_LABEL_EDIT" = "Editar a sua etiqueta";
+
+/* Accessibility label for the button that chooses an emoji for a member label. */
+"MEMBER_LABEL_EMOJI_BUTTON_ACCESSIBILITY_LABEL" = "Escolher emoji";
 
 /* Error indicating member label could not save. */
 "MEMBER_LABEL_FAIL_TO_SAVE" = "Não foi possível guardar a etiqueta de membro";
@@ -5821,17 +5839,11 @@
 /* Title for a view where users can edit and preview their member label. */
 "MEMBER_LABEL_VIEW_TITLE" = "Etiqueta de membro";
 
-/* A one-time confirmation that you, as an admin, want to delete for everyone */
-"MESSAGE_ACTION_ADMIN_DELETE_FOR_EVERYONE_CONFIRMATION" = "Os membros do grupo nas versões mais recentes do Signal poderão ver que eliminou estas mensagens.";
-
 /* Action sheet button title */
 "MESSAGE_ACTION_COPY_TEXT" = "Copiar mensagem";
 
 /* The title for the action that deletes a message for all users in the conversation. */
 "MESSAGE_ACTION_DELETE_FOR_EVERYONE" = "Eliminada para todos";
-
-/* A one-time confirmation that you want to delete for everyone */
-"MESSAGE_ACTION_DELETE_FOR_EVERYONE_CONFIRMATION" = "Esta mensagem será eliminada para todos os presentes no chat, se eles tiverem uma versão recente do Signal. Eles serão capazes de ver que você eliminou a mensagem.";
 
 /* The title for the action sheet asking who the user wants to delete the message for. */
 "MESSAGE_ACTION_DELETE_FOR_TITLE" = "Para quem deseja eliminar esta mensagem?";
@@ -6739,6 +6751,27 @@
 /* Title of the 'onboarding splash' view. */
 "ONBOARDING_SPLASH_TITLE" = "Leve a privacidade consigo.\nSeja você mesmo em todas as mensagens.";
 
+/* Subtitle for action to verify with an authenticator as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_AUTHENTICATOR_APP_BODY" = "Introduza um código único gerado pela sua app autenticadora.";
+
+/* Title for action to verify with an authenticator as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_AUTHENTICATOR_APP_TITLE" = "App autenticadora";
+
+/* Description for the 2fa screens shown during registration. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_BODY" = "Escolha um método mais forte para verificar a sua conta.";
+
+/* Subtitle for action to verify with a passkey as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_PASSKEY_BODY" = "Toque para usar a sua biometria ou chave de acesso FIDO2 guardados";
+
+/* Title for action to verify with a passkey as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_PASSKEY_TITLE" = "Chave de acesso";
+
+/* Description for the screen asking the user to verify their account with a passkey during registration. */
+"ONBOARDING_TWO_FACTOR_AUTH_PASSKEY_BODY" = "Para continuar, verifique a sua conta com a sua chave de acesso.";
+
+/* Title for the 2fa screens shown during registration. */
+"ONBOARDING_TWO_FACTOR_AUTH_TITLE" = "Autenticação de dois fatores";
+
 /* Label for the link that lets users change their phone number in the onboarding views. */
 "ONBOARDING_VERIFICATION_BACK_LINK" = "Número errado?";
 
@@ -6822,6 +6855,12 @@
 
 /* Title of prompt notifying registration without restore completed on the new device. */
 "OUTGOING_DEVICE_REGISTRATION_COMPLETE_TITLE" = "Registo completo";
+
+/* Body of prompt notifying connection failure during restore. */
+"OUTGOING_DEVICE_REGISTRATION_FAILED_CONNECTION_BODY" = "A ligação ao dispositivo falhou ou atingiu o tempo limite. Tente novamente.";
+
+/* Title of prompt notifying connection failure during restore. */
+"OUTGOING_DEVICE_REGISTRATION_FAILED_CONNECTION_TITLE" = "Falha na ligação";
 
 /* Body of prompt notifying restore failed. */
 "OUTGOING_DEVICE_REGISTRATION_FAILED_RESTORE_BODY" = "A mensagem de restauro do outro dispositivo continha dados inválidos ou expirados.  Tente novamente.";
@@ -7873,9 +7912,6 @@
 /* Message for an action sheet telling users how to use quick restore, when trying to open an external quick restore URL. */
 "QUICK_RESTORE_URL_OPENED_ACTION_SHEET_EXTERNAL_URL_MESSAGE" = "Para transferir esta conta para um novo dispositivo, toque em \"Continuar\" e leia novamente o código QR com a câmara do Signal. Certifique-se de que só lê códigos QR provenientes diretamente do Signal.";
 
-/* Label to show above a sticker used to reply to a message */
-"QUOTE_REPLY_STICKER" = "Responder";
-
 /* Accessibility label stating the author of the message to which you are replying. Embeds: {{ the author of the message to which you are replying }} {{ original message }}. */
 "QUOTED_REPLY_ACCESSIBILITY_LABEL_FORMAT" = "A responder a %1$@. %2$@";
 
@@ -8755,6 +8791,57 @@
 /* Label for button on lock screen that lets users unlock Signal. */
 "SCREEN_LOCK_UNLOCK_SIGNAL" = "Desbloquear o Signal";
 
+/* Title for a button in a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_BLOCKED_TOAST_OPTIONS_BUTTON_TITLE" = "Opções";
+
+/* Text for a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_BLOCKED_TOAST_TEXT" = "Captura de ecrã impedida pela definição \"Bloquear IA da Siri\"";
+
+/* Title for a button in a sheet shown to confirm disabling screenshot blocking. */
+"SCREENSHOT_BLOCKING_DISABLE_CONFIRM_SHEET_ALLOW_BUTTON_TITLE" = "Permitir a IA da Siri";
+
+/* Message for a sheet shown to confirm disabling screenshot blocking. */
+"SCREENSHOT_BLOCKING_DISABLE_CONFIRM_SHEET_MESSAGE" = "Se permitido, a IA da Siri pode ler automaticamente conteúdo do Signal e usá-lo para funcionalidades que podem não ser privadas.";
+
+/* Title for a sheet shown to confirm disabling screenshot blocking. */
+"SCREENSHOT_BLOCKING_DISABLE_CONFIRM_SHEET_TITLE" = "Permitir a IA da Siri?";
+
+/* Text for a toast shown after disabling screenshot blocking for ten minutes. */
+"SCREENSHOT_BLOCKING_DISABLED_TEN_MINUTES_TOAST_TEXT" = "\"Bloquear IA da Siri\" desativado durante 10 minutos";
+
+/* Text for a toast shown after disabling screenshot blocking. */
+"SCREENSHOT_BLOCKING_DISABLED_TOAST_TEXT" = "\"Bloquear IA da Siri\" desativado";
+
+/* Title for a button that disables screenshot blocking, in a sheet shown from a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_OPTIONS_SHEET_DISABLE_BUTTON_TITLE" = "Desativar \"Bloquear IA da Siri\"";
+
+/* Title for a button that temporarily disables screenshot blocking, in a sheet shown from a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_OPTIONS_SHEET_DISABLE_TEN_MINUTES_BUTTON_TITLE" = "Desativar durante 10 minutos";
+
+/* Message for a sheet shown from a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_OPTIONS_SHEET_MESSAGE" = "Isto impede a IA da Siri de ler automaticamente conteúdo do Signal. Isto também o impede de tirar capturas de ecrã na app e App Switcher.";
+
+/* Title for a sheet shown from a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_OPTIONS_SHEET_TITLE" = "\"Bloquear IA da Siri\" ativado";
+
+/* Option disabling screenshot blocking, in the menu of the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_MENU_DISABLED_OPTION" = "Off";
+
+/* Option temporarily disabling screenshot blocking, in the menu of the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_MENU_DISABLED_TEN_MINUTES_OPTION" = "Desativado durante 10 minutos";
+
+/* Option enabling screenshot blocking, in the menu of the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_MENU_ENABLED_OPTION" = "On";
+
+/* Title for the menu of the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_MENU_TITLE" = "Bloquear IA da Siri";
+
+/* Label for the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_TITLE" = "Bloquear IA da Siri";
+
+/* Footer for the screenshot blocking section of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_SECTION_FOOTER" = "Impede a IA da Siri de ler conteúdo do Signal Isto também o impede de tirar capturas de ecrã na app e App Switcher.";
+
 /* Placeholder text indicating the user can search for contacts by name, username, or phone number. */
 "SEARCH_BY_NAME_OR_USERNAME_OR_NUMBER_PLACEHOLDER_TEXT" = "Nome, nome de utilizador ou número";
 
@@ -9064,12 +9151,6 @@
 /* The title for the app icon section in the appearance settings. */
 "SETTINGS_APPEARANCE_APP_ICON" = "Ícone da app";
 
-/* Footer for avatar section in appearance settings */
-"SETTINGS_APPEARANCE_AVATAR_FOOTER" = "Exibir fotos dos contactos do telemóvel se possível.";
-
-/* Title for switch to toggle preference between contact and profile avatars */
-"SETTINGS_APPEARANCE_AVATAR_PREFERENCE_LABEL" = "Usar fotos dos contactos do telemóvel";
-
 /* The title for the theme section in the appearance settings. */
 "SETTINGS_APPEARANCE_THEME_TITLE" = "Tema";
 
@@ -9180,6 +9261,15 @@
 
 /* Title for a progress modal shown while the user's chat history is being exported. */
 "SETTINGS_CHATS_EXPORT_PROGRESS_TITLE" = "A exportar chats…";
+<<<<<<< HEAD
+=======
+
+/* Footer below the switch in Chats settings that chooses between contact photos from the phone's address book and Signal profile photos. */
+"SETTINGS_CHATS_PREFER_ADDRESS_BOOK_PHOTOS_FOOTER" = "Preferir as fotografias de contactos do seu livro de endereços.";
+
+/* Label for the switch in Chats settings that, when on, shows contact photos from the phone's address book instead of Signal profile photos. */
+"SETTINGS_CHATS_PREFER_ADDRESS_BOOK_PHOTOS_LABEL" = "Preferir fotografias do livro de endereços";
+>>>>>>> upstream/8.37.0.1993
 
 /* No comment provided by engineer. */
 "SETTINGS_CLEAR_HISTORY" = "Apagar histórico de chats";
@@ -9454,8 +9544,7 @@
 /* Explanation for the button that resets all notification settings. */
 "SETTINGS_NOTIFICATIONS_RESET_FOOTER" = "Repõe as definições de notificações para o padrão, incluindo definições personalizadas dos seus chats";
 
-/* Label for the switch controlling whether reminders about unread messages are shown.
-   Label for the switch controlling whether reminders about unread messages in muted chats are shown. */
+/* Label for the switch controlling whether reminders about unread messages in muted chats are shown */
 "SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS" = "Lembretes por ler";
 
 /* Explanation for the switch controlling whether reminders about unread messages are shown in this chat while it is muted. */
@@ -10064,6 +10153,15 @@
 /* No comment provided by engineer. */
 "SETTINGS_SCREEN_SECURITY" = "Ocultar o ecrã no alternador de aplicações";
 
+/* Message for a sheet shown when tapping the disabled screen security switch in privacy settings. */
+"SETTINGS_SCREEN_SECURITY_LOCKED_SHEET_MESSAGE" = "Para proteger a sua privacidade, o seu ecrã está sempre oculto na App Switcher quando a opção \"Bloquear IA da Siri\" está ativada. Desativar \"Bloquear IA da Siri\" desbloqueia esta definição.";
+
+/* Title for a sheet shown when tapping the disabled screen security switch in privacy settings. */
+"SETTINGS_SCREEN_SECURITY_LOCKED_SHEET_TITLE" = "\"Bloquear IA da Siri\" ativado";
+
+/* Title for a button in a sheet shown when tapping the disabled screen security switch in privacy settings. */
+"SETTINGS_SCREEN_SECURITY_LOCKED_SHEET_VIEW_SETTING_BUTTON_TITLE" = "Ver definição";
+
 /* Footer for table section */
 "SETTINGS_SECTION_FOOTER_CALLING" = "Exibe as chamadas na lista de 'Recentes' na aplicação do telefone iOS.";
 
@@ -10259,6 +10357,15 @@
 /* Text for a toast confirming that the speakerphone has been turned on for a call. */
 "SPEAKERPHONE_ON_CONFIRMATION_TOAST_LABEL" = "Alta voz ligada";
 
+/* Text shown in a toast confirming a sticker was added to favorites */
+"STICKER_ADDED_TO_FAVORITES_TOAST" = "Autocolante adicionado aos favoritos";
+
+/* Label for button to add sticker to favorites */
+"STICKER_BUTTON_ADD_FAVORITES" = "Adicionar aos favoritos";
+
+/* Label for button to remove sticker from favorites */
+"STICKER_BUTTON_REMOVE_FAVORITES" = "Remover dos favoritos";
+
 /* Title for a button to view a sticker pack */
 "STICKER_BUTTON_VIEW_PACK" = "Ver pacote";
 
@@ -10273,6 +10380,18 @@
 
 /* The name for the sticker category 'Recents' */
 "STICKER_CATEGORY_RECENTS_NAME" = "Recentes";
+
+/* Button to confirm a user wants to remove a sticker */
+"STICKER_CONFIRM_REMOVE_BUTTON" = "Remover";
+
+/* Toast shown when user tries to tap Favorites in sticker keyboard but has none */
+"STICKER_KEYBOARD_NO_FAVORITES_TOAST" = "Mantenha um autocolante pressionado para o adicionar aos favoritos";
+
+/* Section header for favorites in the sticker keyboard */
+"STICKER_KEYBOARD_SECTION_HEADER_LABEL_FAVORITES" = "Favoritos";
+
+/* Section header for recents in the sticker keyboard */
+"STICKER_KEYBOARD_SECTION_HEADER_LABEL_RECENTS" = "Recentemente utilizados";
 
 /* Preview text shown in notifications and conversation list for sticker messages. */
 "STICKER_MESSAGE_PREVIEW" = "Mensagem tipo autocolante";
@@ -10304,6 +10423,15 @@
 /* Label for a button on a sticker-pack share sheet that sends the pack in Signal. */
 "STICKER_PACK_SHARE_SHEET_SEND_IN_SIGNAL" = "Enviar no Signal";
 
+/* Message for an action sheet asking the user to confirm if they want to remove a sticker from favorites */
+"STICKER_REMOVE_FROM_FAVORITES_CONFIRM_MESSAGE" = "Não é possível enviá-lo nem adicioná-lo novamente aos favoritos sem um link ou uma mensagem de autocolante.";
+
+/* Title for an action sheet asking the user to confirm if they want to remove a sticker from favorites */
+"STICKER_REMOVE_FROM_FAVORITES_CONFIRM_TITLE" = "Remover dos favoritos?";
+
+/* Text shown in a toast confirming a sticker was removed from favorites */
+"STICKER_REMOVED_FROM_FAVORITES_TOAST" = "Autocolante removido dos favoritos";
+
 /* Message when trying to show a sticker that has expired and is unavailable for download */
 "STICKER_UNAVAILABLE_MESSAGE_LABEL" = "Autocolante não disponível";
 
@@ -10313,32 +10441,59 @@
 /* Label for the 'install sticker pack' button. */
 "STICKERS_INSTALL_BUTTON" = "Adicionar autocolantes";
 
+/* Placeholder text for the search bar in the sticker pack management. */
+"STICKERS_MANAGE_SEARCH_BAR_PLACEHOLDER" = "Procurar autocolantes";
+
+/* Label for a view explaining that no search results were found. Embeds {{ the search term }}. */
+"STICKERS_MANAGE_SEARCH_NO_RESULTS" = "Não se encontraram resultados para '%1$@'";
+
 /* Title for the 'available built-in stickers' section of the 'manage stickers' view. */
 "STICKERS_MANAGE_VIEW_AVAILABLE_BUILT_IN_PACKS_SECTION_TITLE" = "Séries de artista Signal";
 
+/* Subtitle for the section of known stickers in the manage stickers view */
+"STICKERS_MANAGE_VIEW_AVAILABLE_KNOWN_PACKS_SECTION_SUBTITLE" = "Quando receber um autocolante de alguém, o pacote de autocolantes aparecerá aqui.";
+
 /* Title for the 'available known stickers' section of the 'manage stickers' view. */
-"STICKERS_MANAGE_VIEW_AVAILABLE_KNOWN_PACKS_SECTION_TITLE" = "Autocolantes que recebeu";
+"STICKERS_MANAGE_VIEW_AVAILABLE_KNOWN_PACKS_SECTION_TITLE" = "Partilhados consigo";
+
+/* The title for a context menu item that installs a sticker pack. */
+"STICKERS_MANAGE_VIEW_CONTEXT_MENU_ADD" = "Adicionar";
+
+/* The title for a context menu item that copies the sticker pack link. */
+"STICKERS_MANAGE_VIEW_CONTEXT_MENU_COPY" = "Copiar link";
+
+/* The title for a context menu item that uninstalls a sticker pack. */
+"STICKERS_MANAGE_VIEW_CONTEXT_MENU_REMOVE" = "Remover";
+
+/* The title for a context menu item that sends the sticker pack link to someone else. */
+"STICKERS_MANAGE_VIEW_CONTEXT_MENU_SEND" = "Enviar";
 
 /* Label indicating that one or more known sticker packs failed to load. */
 "STICKERS_MANAGE_VIEW_FAILED_KNOWN_PACKS" = "Ocorreu um erro ao tentar carregar alguns pacotes de autocolantes";
 
-/* Title for the 'installed stickers' section of the 'manage stickers' view. */
-"STICKERS_MANAGE_VIEW_INSTALLED_PACKS_SECTION_TITLE" = "Autocolantes instalados";
+/* An option in the sticker management screen allowing the user to select the filter option 'all'; i.e., 'unfiltered'. */
+"STICKERS_MANAGE_VIEW_FILTER_TAB_ALL" = "Tudo";
+
+/* An option in the sticker management screen allowing the user to select the filter option 'my stickers'; i.e., their installed packs. */
+"STICKERS_MANAGE_VIEW_FILTER_TAB_MY_STICKERS" = "Os meus autocolantes";
 
 /* Label indicating that one or more known sticker packs is loading. */
 "STICKERS_MANAGE_VIEW_LOADING_KNOWN_PACKS" = "A carregar…";
 
 /* Label indicating that the user has no installed sticker packs. */
-"STICKERS_MANAGE_VIEW_NO_INSTALLED_PACKS" = "Sem autocolantes instalados";
+"STICKERS_MANAGE_VIEW_NO_INSTALLED_PACKS" = "Sem pacotes de autocolantes.\nAdicione autocolantes para enviar aos seus amigos.";
 
-/* Label indicating that the user has no known sticker packs. */
-"STICKERS_MANAGE_VIEW_NO_KNOWN_PACKS" = "Os autocolantes das mensagens recebidas irão aparecer aqui";
+/* Button to redirect back to the manage sticker 'all' section */
+"STICKERS_MANAGE_VIEW_NO_INSTALLED_PACKS_BUTTON" = "Adicionar autocolantes";
 
 /* Title for the 'manage stickers' view. */
 "STICKERS_MANAGE_VIEW_TITLE" = "Autocolantes";
 
+/* Default author for sticker packs. */
+"STICKERS_PACK_DEFAULT_AUTHOR" = "Autor desconhecido";
+
 /* Default title for sticker packs. */
-"STICKERS_PACK_DEFAULT_TITLE" = "Pacote de autocolantes";
+"STICKERS_PACK_DEFAULT_TITLE" = "Título desconhecido";
 
 /* The default title for the 'sticker pack' view. */
 "STICKERS_PACK_VIEW_DEFAULT_TITLE" = "Pacote de autocolantes";
@@ -10873,9 +11028,6 @@
 
 /* Description of how and why Signal iOS uses Touch ID/Face ID/Phone Passcode to transfer your account to a new device. */
 "TRANSFER_ACCOUNT_AUTHENTICATION_REASON" = "Faça a autenticação para transferir a sua conta";
-
-/* Button for bottom sheet shown when device transfer completes on the receiving device. Tapping will terminate the Signal app and trigger a notification to relaunch. */
-"TRANSFER_COMPLETE_SHEET_BUTTON" = "Encerrar Signal";
 
 /* Subtitle for bottom sheet shown when device transfer completes on the receiving device. */
 "TRANSFER_COMPLETE_SHEET_SUBTITLE" = "Para começar a usar a sua conta neste dispositivo, encerre o Signal e depois reabra-o.";

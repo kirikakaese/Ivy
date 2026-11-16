@@ -266,8 +266,6 @@ extension ThreadContextualActionProvider where Self: UIViewController {
     // MARK: -
 
     func toggleThreadIsArchived(threadViewModel: ThreadViewModel) {
-        AssertIsOnMainThread()
-
         let databaseStorage = SSKEnvironment.shared.databaseStorageRef
         let pinnedThreadManager = DependenciesBridge.shared.pinnedThreadManager
 
@@ -290,11 +288,21 @@ extension ThreadContextualActionProvider where Self: UIViewController {
             )
         }
 
+        // This method might be called from modally presented ConversationSettingsViewController
+        // that needs to be dismissed once the chat is archived.
+        if let presentedViewController {
+            presentedViewController.dismiss(animated: true)
+        }
+
         threadContextualActionDidComplete()
     }
 
     func deleteThreadWithConfirmation(threadViewModel: ThreadViewModel) {
-        AssertIsOnMainThread()
+        // Deletion might have been initiated from a modally presented view controller (ConversationSettingsViewController).
+        // View controller can't present more than one modal - the modal should be presented from the topmost VC.
+        // Therefore grab the topmost modal and present action sheet from that.
+        let presenter = topMostPresentedViewController()
+
         let db = DependenciesBridge.shared.db
         let threadDeletionManager = DependenciesBridge.shared.threadDeletionManager
         let tsAccountManager = DependenciesBridge.shared.tsAccountManager
@@ -314,6 +322,11 @@ extension ThreadContextualActionProvider where Self: UIViewController {
             style: .destructive,
         ) { [weak self] _ in
             guard let self else { return }
+
+            // Dismiss modal VC deletion was initiated from, if any.
+            if presenter !== self {
+                presenter.dismiss(animated: true)
+            }
 
             threadContextualActionShouldCloseThreadIfActive(threadViewModel: threadViewModel)
 
@@ -341,7 +354,7 @@ extension ThreadContextualActionProvider where Self: UIViewController {
         })
         alert.addAction(OWSActionSheets.cancelAction)
 
-        presentActionSheet(alert)
+        presenter.presentActionSheet(alert)
     }
 
     func markThreadAsRead(threadViewModel: ThreadViewModel) {
