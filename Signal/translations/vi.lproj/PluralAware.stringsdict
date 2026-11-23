@@ -291,6 +291,48 @@
 			<string>Màu này được dùng trong %1$d cuộc trò chuyện. Bạn có muốn lưu thay đổi cho tất cả các cuộc trò chuyện?</string>
 		</dict>
 	</dict>
+	<key>CHAT_FOLDERS_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>other</key>
+			<string>%1$d cuộc trò chuyện</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_CHAT_TYPE_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>other</key>
+			<string>%1$d loại cuộc trò chuyện</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_EXCLUDED_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>other</key>
+			<string>%1$d cuộc trò chuyện được loại trừ</string>
+		</dict>
+	</dict>
 	<key>CHOOSE_BACKUP_PLAN_BULLET_RECENT_MEDIA_BACKUP_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1380,6 +1422,62 @@
 Hãy thử lại sau %1$d giờ.</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>other</key>
+			<string>Bạn chỉ có thể thêm %1$d nhãn dán vào Yêu thích</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_MESSAGE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>other</key>
+			<string>Thao tác này sẽ xóa các gói nhãn dán. Bạn không thể thêm lại các gói nhãn dán nếu không có đường dẫn hoặc tin nhắn chứa nhãn dán.</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TITLE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>other</key>
+			<string>Xóa %1$d gói nhãn dán?</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>other</key>
+			<string>Đã xóa các gói nhãn dán</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1392,6 +1490,20 @@ Hãy thử lại sau %1$d giờ.</string>
 			<string>d</string>
 			<key>other</key>
 			<string>%1$d nhãn dán</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_TOOLBAR_CAPTION_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>other</key>
+			<string>%1$d Đã chọn</string>
 		</dict>
 	</dict>
 	<key>STORY_REPLIES_COUNT_%d</key>

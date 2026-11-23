@@ -4,10 +4,11 @@
 //
 
 import SignalServiceKit
-public import SignalUI
+import SignalUI
 
-public class CVComponentBottomLabel: CVComponentBase, CVComponent {
-    public var componentKey: CVComponentKey { .bottomLabel }
+class CVComponentBottomLabel: CVComponentBase, CVComponent {
+
+    var componentKey: CVComponentKey { .bottomLabel }
     private let bottomLabelState: String
 
     init(itemModel: CVItemModel, bottomLabelState: String) {
@@ -38,11 +39,11 @@ public class CVComponentBottomLabel: CVComponentBase, CVComponent {
         )
     }
 
-    public func buildComponentView(componentDelegate: CVComponentDelegate) -> CVComponentView {
+    func buildComponentView(componentDelegate: CVComponentDelegate) -> CVComponentView {
         CVComponentViewBottomLabel()
     }
 
-    public func configureForRendering(
+    func configureForRendering(
         componentView componentViewParam: CVComponentView,
         cellMeasurement: CVCellMeasurement,
         componentDelegate: CVComponentDelegate,
@@ -68,7 +69,7 @@ public class CVComponentBottomLabel: CVComponentBase, CVComponent {
         )
     }
 
-    public func measure(maxWidth: CGFloat, measurementBuilder: CVCellMeasurement.Builder) -> CGSize {
+    func measure(maxWidth: CGFloat, measurementBuilder: CVCellMeasurement.Builder) -> CGSize {
         owsAssertDebug(maxWidth > 0)
 
         let bottomLabelSize = CVText.measureLabel(
@@ -86,7 +87,7 @@ public class CVComponentBottomLabel: CVComponentBase, CVComponent {
         return stackMeasurement.measuredSize
     }
 
-    private class CVComponentViewBottomLabel: NSObject, CVComponentView {
+    private class CVComponentViewBottomLabel: CVComponentView {
 
         let stackView = ManualStackView(name: "bottomLabel")
 

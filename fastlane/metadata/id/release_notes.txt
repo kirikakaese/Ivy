@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal kini telah dioptimalkan untuk iPhone Duo.
+=======
+• Kini Anda bisa menambahkan stiker apa pun ke Favorit agar mudah ditemukan.
+
+• Editor media juga mendukung penghapusan trek audio dari video sebelum Anda mengirimnya.
+>>>>>>> upstream/8.38.0.2011

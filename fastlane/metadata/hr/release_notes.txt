@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal je sada optimiziran za iPhone Duo.
+=======
+• Sada možete dodati bilo koju naljepnicu na popis omiljenih da je lakše pronađete.
+
+• Uređivač medija također podržava uklanjanje zvučnog zapisa iz videozapisa prije slanja.
+>>>>>>> upstream/8.38.0.2011

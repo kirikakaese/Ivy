@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Da oggi Signal è ottimizzato per iPhone Duo, così puoi installare un solo aggiornamento per goderti l'app aggiornata su due schermi. Nei prossimi mesi faremo uscire altri "doppi" aggiornamenti.
+=======
+• I tuoi sticker più utilizzati ora hanno un posto dove rimanere appiccicati, pronti per l'uso. Aggiungi qualsiasi sticker ai tuoi Preferiti così non dovrai rovistare per trovare quelli che usi sempre!
+
+• L'editor dei contenuti multimediali supporta anche la rimozione della traccia audio da un video prima di inviarlo. Non dovrai più preoccuparti dei rumori di sottofondo quando catturi un momento epico, anche se il cane del vicino decide di fare da colonna sonora.
+>>>>>>> upstream/8.38.0.2011

@@ -10,6 +10,9 @@
 /* Label for forward button in media control panel */
 "ACCESSIBILITY_FORWARD_BUTTON_LABEL" = "بازارسال";
 
+/* AX hint letting a user know this button sends a sticker */
+"ACCESSIBILITY_HINT_STICKER" = "این استیکر را ارسال می‌کند";
+
 /* Accessibility label for attachment. */
 "ACCESSIBILITY_LABEL_ATTACHMENT" = "پیوست";
 
@@ -418,6 +421,9 @@
 /* Attachment error message for attachments without any data */
 "ATTACHMENT_ERROR_MISSING_DATA" = "فایل پیوست خالی است.";
 
+/* Attachment error message for video attachments that are too long to send. Embeds {{ the maximum duration, e.g. '15 minutes' }}. */
+"ATTACHMENT_ERROR_VIDEO_TOO_LONG_FORMAT" = "این ویدیو برای ارسال بیش از حد طولانی است. ویدیو را کوتاه کنید تا مدت آن %1$@ یا کمتر شود.";
+
 /* Accessibility hint describing what you can do with the attachment button */
 "ATTACHMENT_HINT" = "رسانه را برای ارسال انتخاب کنید";
 
@@ -508,8 +514,14 @@
 /* Accessibility label for the 'high/standard quality' dialog. */
 "ATTACHMENT_TOOL_BUTTON_MEDIA_QUALITY_ACCESSIBILITY_LABEL" = "کیفیت رسانه";
 
+/* Accessibility label for the button that mutes a video being sent. */
+"ATTACHMENT_TOOL_BUTTON_MUTE_ACCESSIBILITY_LABEL" = "بی‌صدا کردن ویدیو";
+
 /* Accessibility label for the 'pen' dialog. */
 "ATTACHMENT_TOOL_BUTTON_PEN_ACCESSIBILITY_LABEL" = "ترسیم یا حاشیه‌نویسی رسانه";
+
+/* Accessibility label for the button that unmutes a video being sent. */
+"ATTACHMENT_TOOL_BUTTON_UNMUTE_ACCESSIBILITY_LABEL" = "صدادار کردن ویدیو";
 
 /* Accessibility label for the 'view one' dialog. */
 "ATTACHMENT_TOOL_BUTTON_VIEW_ONE_ACCESSIBILITY_LABEL" = "یک‌بار مشاهده";
@@ -1498,9 +1510,6 @@
 /* Label for the 'not now' button. */
 "BUTTON_NOT_NOW" = "حالا نه";
 
-/* Label for the 'okay' button. */
-"BUTTON_OKAY" = "قبول";
-
 /* Label for the 'previous' button. */
 "BUTTON_PREVIOUS" = "قبلی";
 
@@ -2061,6 +2070,57 @@
 
 /* Tooltip highlighting the auto chat color option. */
 "CHAT_COLORS_AUTO_TOOLTIP" = "خودکار رنگ کاغذدیواری را تطبیق می‌دهد";
+
+/* Name of the default chat folder, which shows every chat. */
+"CHAT_FOLDERS_ALL_CHATS" = "همه گفتگوها";
+
+/* Action that deletes a chat folder. */
+"CHAT_FOLDERS_DELETE_FOLDER" = "حذف پوشه";
+
+/* Title of the confirmation shown before deleting a chat folder. */
+"CHAT_FOLDERS_DELETE_FOLDER_CONFIRMATION_TITLE" = "این پوشه گفتگو حذف شود؟";
+
+/* Button in chat folder settings to add a suggested chat folder. */
+"CHAT_FOLDERS_SETTINGS_ADD_SUGGESTED_FOLDER" = "افزودن";
+
+/* Button in chat folder settings to create a new chat folder. */
+"CHAT_FOLDERS_SETTINGS_CREATE_FOLDER" = "ایجاد پوشه";
+
+/* Description at the top of the chat folders settings screen. */
+"CHAT_FOLDERS_SETTINGS_DESCRIPTION" = "گفتگوهای خود را در پوشه‌ها مرتب کنید و به‌سرعت بین آنها در فهرست گفتگوها جابه‌جا شوید.";
+
+/* Toast shown after adding a suggested chat folder. Embeds {{ folder name }}. */
+"CHAT_FOLDERS_SETTINGS_FOLDER_ADDED_TOAST_FORMAT" = "پوشه %1$@ اضافه شد";
+
+/* Header for the list of chat folders in chat folder settings. */
+"CHAT_FOLDERS_SETTINGS_FOLDERS_HEADER" = "پوشه‌ها";
+
+/* Header for the list of suggested chat folders in chat folder settings. */
+"CHAT_FOLDERS_SETTINGS_SUGGESTED_HEADER" = "پوشه‌های پیشنهادی";
+
+/* Title for the chat folders settings screen. */
+"CHAT_FOLDERS_SETTINGS_TITLE" = "پوشه‌های گفتگو";
+
+/* Describes the suggested chat folder that shows group chats. */
+"CHAT_FOLDERS_SUGGESTED_GROUPS_DESCRIPTION" = "فقط پیام گفتگوهای گروهی";
+
+/* Name of the suggested chat folder that shows group chats. */
+"CHAT_FOLDERS_SUGGESTED_GROUPS_NAME" = "گروه‌ها‌";
+
+/* Describes the suggested chat folder that shows 1:1 chats. */
+"CHAT_FOLDERS_SUGGESTED_INDIVIDUAL_CHATS_DESCRIPTION" = "فقط پیام‌ گفتگوهای مستقیم";
+
+/* Name of the suggested chat folder that shows 1:1 chats. */
+"CHAT_FOLDERS_SUGGESTED_INDIVIDUAL_CHATS_NAME" = "گفتگوهای فرد به فرد";
+
+/* Describes the suggested chat folder that shows unread chats. */
+"CHAT_FOLDERS_SUGGESTED_UNREAD_DESCRIPTION" = "پیام‌های خوانده‌نشده‌ی همه گفتگوها";
+
+/* Name of the suggested chat folder that shows unread chats. */
+"CHAT_FOLDERS_SUGGESTED_UNREAD_NAME" = "خوانده نشده";
+
+/* Name shown for a chat folder whose name is empty. */
+"CHAT_FOLDERS_UNNAMED_FOLDER" = "پوشه بی‌نام";
 
 /* Message shown in an action sheet when the user tries to cancel a backup. */
 "CHAT_LIST_BACKUP_PROGRESS_VIEW_BACKUP_CANCEL_CONFIRMATION_MESSAGE" = "لغو پشتیبان‌گیری موجب حذف نسخه پشتیبان نمی‌شود. می‌توانید پشتیبان‌گیری را هر زمان خواستید در «تنظیمات نسخه پشتیبان» از سر بگیرید.";
@@ -3112,6 +3172,15 @@
 /* Toast message confirming the system contact was deleted. Embeds {{The name of the user who was deleted.}}. */
 "DELETE_CONTACT_CONFIRMATION_TOAST" = "%1$@ از مخاطبان شما پاک شد.";
 
+/* Message for a sheet confirming that the user, as a group admin, wants to delete messages for everyone. */
+"DELETE_FOR_EVERYONE_CONFIRMATION_SHEET_ADMIN_MESSAGE" = "اعضای گروه خواهند دید که این پیام‌ها را حذف کرده‌اید.";
+
+/* Message for a sheet confirming that the user wants to delete their message for everyone. */
+"DELETE_FOR_EVERYONE_CONFIRMATION_SHEET_MESSAGE" = "این پیام برای همه افراد حاضر در گفتگو حذف خواهد شد. آن‌ها می‌توانند ببینند که پیامی را حذف کرده‌اید.";
+
+/* Title for a sheet confirming that the user wants to delete messages for everyone. */
+"DELETE_FOR_EVERYONE_CONFIRMATION_SHEET_TITLE" = "برای همه حذف شود؟";
+
 /* Title for an action sheet button explaining that a message will be deleted. */
 "DELETE_FOR_ME_NOTE_TO_SELF_ACTION_SHEET_BUTTON_TITLE" = "پاک کردن";
 
@@ -3124,6 +3193,12 @@
 /* Text indicating the message was remotely deleted by an admin. Embeds {{admin display name}} */
 "DELETED_BY_ADMIN" = "مدیر %1$@ این پیام را حذف کرد";
 
+/* Title for a button in a toast shown after the user deletes messages for themselves only. */
+"DELETED_FOR_ME_TOAST_DELETE_FOR_EVERYONE_BUTTON_TITLE" = "پاک کردن برای همه";
+
+/* Text for a toast shown after the user deletes messages for themselves only. */
+"DELETED_FOR_ME_TOAST_TEXT" = "برای من حذف شد.";
+
 /* Text indicating the message was remotely deleted by its author. Embeds {{ author name }} */
 "DELETED_THIS_MESSAGE" = "‏%1$@ این پیام را حذف کرد";
 
@@ -3132,12 +3207,6 @@
 
 /* Notification warning the user that they have been de-registered. */
 "DEREGISTRATION_NOTIFICATION" = "در این دستگاه از سیگنال خارج شده‌اید.";
-
-/* Button that lets users re-register using the same phone number. */
-"DEREGISTRATION_REREGISTER_BUTTON" = "ثبت نام دوباره";
-
-/* Title for prompt that lets users re-register using the same phone number. */
-"DEREGISTRATION_REREGISTER_PROMPT_TITLE" = "این شماره تلفن دوباره ثبت شود؟";
 
 /* Label warning the user that they have been de-registered. */
 "DEREGISTRATION_WARNING" = "این دستگاه دیگر ثبت‌شده نیست. دلیل آن احتمالاً این است که شماره تلفن خود را روی دستگاه دیگری در سیگنال ثبت کرده‌اید.";
@@ -3202,18 +3271,6 @@
 /* The title for the device transfer 'choice' view 'transfer' option when linking a device */
 "DEVICE_TRANSFER_CHOICE_TRANSFER_LINKED_TITLE" = "انتقال از یک آیپد دیگر";
 
-/* An error indicating that the other device closed signal mid-transfer and it could not complete */
-"DEVICE_TRANSFER_ERROR_BACKGROUNDED" = "انتقال انجام نشد. مطمئن شوید که سیگنال در هر دو دستگاه باز است و دوباره امتحان کنید.";
-
-/* An error indicating that something went wrong with the transfer and it could not complete */
-"DEVICE_TRANSFER_ERROR_GENERIC" = "انتقال انجام نشد. مطمئن شوید که دستگاه‌هایتان نزدیک یکدیگر هستند و دوباره امتحان کنید.";
-
-/* An error indicating that the user does not have enough free space on their device to complete the transfer */
-"DEVICE_TRANSFER_ERROR_NOT_ENOUGH_SPACE" = "فضای خالی برای تکمیل انتقال وجود ندارد";
-
-/* An error indicating the user must update their device before trying to transfer. */
-"DEVICE_TRANSFER_ERROR_UNSUPPORTED_VERSION" = "به آخرین نسخه سیگنال به‌روزرسانی کرده و دوباره امتحان کنید";
-
 /* Body of the device transfer screen for pairing a new device, from the new device */
 "DEVICE_TRANSFER_PAIR_NEW_DEVICE_MESSAGE" = "برای انتقال حساب، این دستگاه را با دستگاه قدیمی خود جفت‌سازی کنید";
 
@@ -3225,12 +3282,6 @@
 
 /* Title of the device transfer screen for pairing a new device, from the old device */
 "DEVICE_TRANSFER_PAIR_OLD_DEVICE_TITLE" = "جفت‌سازی با دستگاه قدیمی";
-
-/* The explanation on the view that shows receiving progress */
-"DEVICE_TRANSFER_RECEIVING_EXPLANATION" = "هر دو دستگاه را نزدیک هم قرار دهید. هیچکدام را خاموش نکنید و سیگنال را باز نگه دارید. عملیات انتقال رمزگذاری سرتاسری شده است.";
-
-/* The title on the view that shows receiving progress */
-"DEVICE_TRANSFER_RECEIVING_TITLE" = "در حال دریافت داده";
 
 /* Description in the progress view displayed during device transfer finalization. */
 "DEVICE_TRANSFER_STATUS_DEVICE_FINISHING" = "در حال نهایی‌سازی انتقال…";
@@ -4711,6 +4762,9 @@
 /* Title for the group name view. */
 "GROUP_NAME_VIEW_TITLE" = "نام گروه";
 
+/* Bottom bar label for group chats the local user is not a member of */
+"GROUP_NOT_MEMBER_BOTTOM_PANEL_LABEL" = "از آنجا که عضو این گروه نیستید، نمی‌توانید در آن پیام ارسال کنید.";
+
 /* Message indicating that a remote user has accepted their invite. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_ACCEPTED_INVITE_FORMAT" = "%1$@ دعوت به گروه را پذیرفته است.";
 
@@ -4812,6 +4866,9 @@
 
 /* The title for the 'group requests and invites' view. */
 "GROUP_REQUESTS_AND_INVITES_VIEW_TITLE" = "درخواست‌ها و دعوتنامه‌ها";
+
+/* Label for a banner in group settings shown when the local user is not a member of the group */
+"GROUP_SETTINGS_NOT_MEMBER_BANNER_LABEL" = "شما عضو این گروه نیستید";
 
 /* Name for a group story on the stories list. Embeds {author's name}, {group name} */
 "GROUP_STORY_NAME_FORMAT" = "%1$@ به %2$@";
@@ -5008,6 +5065,15 @@
 /* An explanation of why the user cannot be removed on a linked device. */
 "HIDE_RECIPIENT_IMPOSSIBLE_BECAUSE_SYSTEM_CONTACT_ACTION_SHEET_EXPLANATION" = "این فرد در مخاطبان تلفن شما ذخیره شده است. او را از مخاطبان تلفن خود پاک کنید و دوباره تلاش کنید.";
 
+/* Displayed on Calls tab when the screen is large (eg iPad) and is split into two columns and nothing is selected. */
+"HOME_CALLS_TAB_PLACEHOLDER" = "برای شروع تماس صوتی یا تصویری جدید، روی %1$@ ضربه بزنید.";
+
+/* Displayed on Chats tab when the screen is large (eg iPad) and is split into two columns and no chat is selected. */
+"HOME_CHATS_TAB_PLACEHOLDER" = "یک گفتگو را انتخاب کنید یا برای شروع پیام‌رسانی، روی %1$@ ضربه بزنید.";
+
+/* Displayed on Stories tab when screen is large (eg iPad) and is split into two columns. */
+"HOME_STORIES_TAB_PLACEHOLDER" = "برای مشاهده استوری، ضربه بزنید.";
+
 /* Label for 'archived conversations' button. */
 "HOME_VIEW_ARCHIVED_CONVERSATIONS" = "گفتگوهای بایگانی‌شده";
 
@@ -5052,6 +5118,9 @@
 
 /* Title for the conversation list's backup subscription not found locally context menu action. */
 "HOME_VIEW_TITLE_BACKUP_SUBSCRIPTION_NOT_FOUND_LOCALLY" = "اشتراک پشتیبان یافت نشد";
+
+/* Title for the 'donate' action in the context menu of the settings button on home view tabs. */
+"HOME_VIEW_TITLE_DONATE" = "اهدای کمک مالی";
 
 /* Title for the conversation list's failed to backup context menu action. */
 "HOME_VIEW_TITLE_FAILED_TO_BACKUP" = "پشتیبان‌گیری ناموفق بود";
@@ -5534,7 +5603,10 @@
 "LINKED_DEVICES_TITLE" = "دستگاه‌های متصل شده";
 
 /* Alert Title */
-"LINKING_DEVICE_FAILED_TITLE" = "خطا در اتصال دستگاه جدید";
+"LINKING_DEVICE_FAILED_TITLE" = "دستگاه متصل نشد";
+
+/* Shown when trying to link a device to an account but that device is out of date and must first update its version of Signal. */
+"LINKING_DEVICE_OUT_OF_DATE" = "دستگاه دیگر شما از نسخه قدیمی سیگنال استفاده می‌کند. پیش از آنکه بتوانید آن دستگاه را متصل کنید، باید سیگنال را روی آن به‌روزرسانی نمایید.";
 
 /* Progress label when the message loading has nearly completed during the device linking process */
 "LINKING_SYNCING_FINALIZING" = "در حال نهایی‌سازی انتقال پیام…";
@@ -5770,6 +5842,9 @@
 /* Accessibility prefix for member labels. */
 "MEMBER_LABEL_AX_PREFIX" = "برچسب عضو: ";
 
+/* Accessibility label for the button that clears the member label text and emoji. */
+"MEMBER_LABEL_CLEAR_BUTTON_ACCESSIBILITY_LABEL" = "پاک کردن برچسب";
+
 /* Button label on action sheet when attempting to change the group attributes access to 'administrator' and then continue */
 "MEMBER_LABEL_CLEAR_CHANGE_PERMISSION_CONTINUE" = "تغییر مجوز";
 
@@ -5781,6 +5856,9 @@
 
 /* Text for a button to set a member label */
 "MEMBER_LABEL_EDIT" = "برچسب خود را ویرایش کنید";
+
+/* Accessibility label for the button that chooses an emoji for a member label. */
+"MEMBER_LABEL_EMOJI_BUTTON_ACCESSIBILITY_LABEL" = "انتخاب ایموجی";
 
 /* Error indicating member label could not save. */
 "MEMBER_LABEL_FAIL_TO_SAVE" = "برچسب عضو ذخیره نشد";
@@ -5821,17 +5899,11 @@
 /* Title for a view where users can edit and preview their member label. */
 "MEMBER_LABEL_VIEW_TITLE" = "برچسب عضو";
 
-/* A one-time confirmation that you, as an admin, want to delete for everyone */
-"MESSAGE_ACTION_ADMIN_DELETE_FOR_EVERYONE_CONFIRMATION" = "اعضای گروه در جدیدترین نسخه سیگنال خواهند دید که این پیام‌ها را حذف کردید.";
-
 /* Action sheet button title */
 "MESSAGE_ACTION_COPY_TEXT" = "کپی متن پیام";
 
 /* The title for the action that deletes a message for all users in the conversation. */
 "MESSAGE_ACTION_DELETE_FOR_EVERYONE" = "پاک کردن برای همه";
-
-/* A one-time confirmation that you want to delete for everyone */
-"MESSAGE_ACTION_DELETE_FOR_EVERYONE_CONFIRMATION" = "این پیام برای همهٔ کسانی در این گفتگو که از تازه‌ترین نسخهٔ سیگنال استفاده می‌کنند، پاک خواهد شد. آن‌ها قادر خواهند بود ببینند که شما پیامی را پاک کردید.";
 
 /* The title for the action sheet asking who the user wants to delete the message for. */
 "MESSAGE_ACTION_DELETE_FOR_TITLE" = "می‌خواهید این پیام را برای چه کسانی پاک کنید؟";
@@ -6739,6 +6811,33 @@
 /* Title of the 'onboarding splash' view. */
 "ONBOARDING_SPLASH_TITLE" = "حریم خصوصی را همراه خودتان داشته باشید.\nدر هر پیام خودتان باشید.";
 
+/* Description for the screen asking the user to enter the 6-digit code from their authenticator app during registration. */
+"ONBOARDING_TWO_FACTOR_AUTH_AUTHENTICATOR_CODE_BODY" = "برای ادامه، کد ۶ رقمی را از برنامه احراز هویت خود وارد کنید.";
+
+/* Accessibility label for the field where the user enters the code from their authenticator app */
+"ONBOARDING_TWO_FACTOR_AUTH_AUTHENTICATOR_CODE_FIELD_LABEL" = "کد برنامه احراز هویت";
+
+/* Subtitle for action to verify with an authenticator as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_AUTHENTICATOR_APP_BODY" = "کد یکبارمصرفی را که توسط برنامه احراز هویت شما تولید شده است وارد کنید.";
+
+/* Title for action to verify with an authenticator as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_AUTHENTICATOR_APP_TITLE" = "برنامه احراز هویت";
+
+/* Description for the 2fa screens shown during registration. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_BODY" = "برای تأیید حساب خود، یکی از روش‌های زیر را انتخاب کنید.";
+
+/* Subtitle for action to verify with a passkey as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_PASSKEY_BODY" = "برای استفاده از اطلاعات بیومتریک ذخیره‌شده یا کلید عبور FIDO2، ضربه بزنید";
+
+/* Title for action to verify with a passkey as a 2fa method. */
+"ONBOARDING_TWO_FACTOR_AUTH_METHOD_PASSKEY_TITLE" = "کلید عبور";
+
+/* Description for the screen asking the user to verify their account with a passkey during registration. */
+"ONBOARDING_TWO_FACTOR_AUTH_PASSKEY_BODY" = "برای ادامه، حساب خود را با کلید عبورتان تأیید کنید.";
+
+/* Title for the 2fa screens shown during registration. */
+"ONBOARDING_TWO_FACTOR_AUTH_TITLE" = "احراز هویت دومرحله‌ای";
+
 /* Label for the link that lets users change their phone number in the onboarding views. */
 "ONBOARDING_VERIFICATION_BACK_LINK" = "شماره اشتباه؟";
 
@@ -6822,6 +6921,12 @@
 
 /* Title of prompt notifying registration without restore completed on the new device. */
 "OUTGOING_DEVICE_REGISTRATION_COMPLETE_TITLE" = "ثبت‌نام تکمیل شد";
+
+/* Body of prompt notifying connection failure during restore. */
+"OUTGOING_DEVICE_REGISTRATION_FAILED_CONNECTION_BODY" = "اتصال به دستگاه برقرار نشد یا مهلت اتصال به پایان رسید. لطفاً دوباره امتحان کنید.";
+
+/* Title of prompt notifying connection failure during restore. */
+"OUTGOING_DEVICE_REGISTRATION_FAILED_CONNECTION_TITLE" = "اتصال موفق نبود";
 
 /* Body of prompt notifying restore failed. */
 "OUTGOING_DEVICE_REGISTRATION_FAILED_RESTORE_BODY" = "بازیابی پیام‌ها از دستگاه دیگرتان حاوی داده‌های نامعتبر یا منقضی‌شده بود.  لطفاً دوباره امتحان کنید.";
@@ -7873,9 +7978,6 @@
 /* Message for an action sheet telling users how to use quick restore, when trying to open an external quick restore URL. */
 "QUICK_RESTORE_URL_OPENED_ACTION_SHEET_EXTERNAL_URL_MESSAGE" = "برای انتقال این حساب به دستگاه جدید، روی «ادامه» ضربه بزنید و کد QR را با دوربین سیگنال اسکن کنید. مطمئن شوید فقط کدهای QR را اسکن می‌کنید که مستقیماً از طرف سیگنال ارسال شده‌اند.";
 
-/* Label to show above a sticker used to reply to a message */
-"QUOTE_REPLY_STICKER" = "پاسخ";
-
 /* Accessibility label stating the author of the message to which you are replying. Embeds: {{ the author of the message to which you are replying }} {{ original message }}. */
 "QUOTED_REPLY_ACCESSIBILITY_LABEL_FORMAT" = "در حال پاسخ به %1$@. %2$@";
 
@@ -8755,6 +8857,57 @@
 /* Label for button on lock screen that lets users unlock Signal. */
 "SCREEN_LOCK_UNLOCK_SIGNAL" = "آنلاک کردن سیگنال";
 
+/* Title for a button in a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_BLOCKED_TOAST_OPTIONS_BUTTON_TITLE" = "گزینه‌ها";
+
+/* Text for a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_BLOCKED_TOAST_TEXT" = "تنظیمات «مسدود کردن هوش مصنوعی Siri» مانع از گرفتن اسکرین‌شات شد";
+
+/* Title for a button in a sheet shown to confirm disabling screenshot blocking. */
+"SCREENSHOT_BLOCKING_DISABLE_CONFIRM_SHEET_ALLOW_BUTTON_TITLE" = "اجازه دادن به هوش مصنوعی Siri";
+
+/* Message for a sheet shown to confirm disabling screenshot blocking. */
+"SCREENSHOT_BLOCKING_DISABLE_CONFIRM_SHEET_MESSAGE" = "در صورت اجازه دادن، هوش مصنوعی Siri می‌تواند به‌طور خودکار محتوای سیگنال را اسکن کند و از آن برای قابلیت‌هایی استفاده کند که ممکن است خصوصی نباشند.";
+
+/* Title for a sheet shown to confirm disabling screenshot blocking. */
+"SCREENSHOT_BLOCKING_DISABLE_CONFIRM_SHEET_TITLE" = "به هوش مصنوعی Siri اجازه داده شود؟";
+
+/* Text for a toast shown after disabling screenshot blocking for ten minutes. */
+"SCREENSHOT_BLOCKING_DISABLED_TEN_MINUTES_TOAST_TEXT" = "«مسدود کردن هوش مصنوعی Siri» به مدت ۱۰ دقیقه خاموش شد";
+
+/* Text for a toast shown after disabling screenshot blocking. */
+"SCREENSHOT_BLOCKING_DISABLED_TOAST_TEXT" = "«مسدود کردن هوش مصنوعی Siri» خاموش شد";
+
+/* Title for a button that disables screenshot blocking, in a sheet shown from a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_OPTIONS_SHEET_DISABLE_BUTTON_TITLE" = "خاموش کردن «مسدود کردن هوش مصنوعی Siri»";
+
+/* Title for a button that temporarily disables screenshot blocking, in a sheet shown from a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_OPTIONS_SHEET_DISABLE_TEN_MINUTES_BUTTON_TITLE" = "خاموش کردن به مدت ۱۰ دقیقه";
+
+/* Message for a sheet shown from a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_OPTIONS_SHEET_MESSAGE" = "این کار مانع از اسکن خودکار محتوای سیگنال توسط هوش مصنوعی Siri می‌شود. همچنین مانع از گرفتن اسکرین‌شات در برنامه و جابه‌جاگر برنامه می‌شود.";
+
+/* Title for a sheet shown from a toast shown when a screenshot is blocked. */
+"SCREENSHOT_BLOCKING_OPTIONS_SHEET_TITLE" = "«مسدود کردن هوش مصنوعی Siri» روشن است";
+
+/* Option disabling screenshot blocking, in the menu of the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_MENU_DISABLED_OPTION" = "خاموش";
+
+/* Option temporarily disabling screenshot blocking, in the menu of the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_MENU_DISABLED_TEN_MINUTES_OPTION" = "به مدت ۱۰ دقیقه خاموش";
+
+/* Option enabling screenshot blocking, in the menu of the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_MENU_ENABLED_OPTION" = "روشن";
+
+/* Title for the menu of the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_MENU_TITLE" = "مسدود کردن هوش مصنوعی Siri";
+
+/* Label for the screenshot blocking item of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_ITEM_TITLE" = "مسدود کردن هوش مصنوعی Siri";
+
+/* Footer for the screenshot blocking section of the privacy settings. */
+"SCREENSHOT_BLOCKING_SETTINGS_SECTION_FOOTER" = "از اسکن محتوای سیگنال توسط هوش مصنوعی Siri جلوگیری کنید. این کار همچنین مانع از گرفتن اسکرین‌شات در برنامه و جابه‌جاگر برنامه می‌شود.";
+
 /* Placeholder text indicating the user can search for contacts by name, username, or phone number. */
 "SEARCH_BY_NAME_OR_USERNAME_OR_NUMBER_PLACEHOLDER_TEXT" = "نام ، نام کاربری، یا شماره";
 
@@ -9064,12 +9217,6 @@
 /* The title for the app icon section in the appearance settings. */
 "SETTINGS_APPEARANCE_APP_ICON" = "نماد برنامه";
 
-/* Footer for avatar section in appearance settings */
-"SETTINGS_APPEARANCE_AVATAR_FOOTER" = "نمایش عکس‌های مخاطبان تلفن در صورت وجود.";
-
-/* Title for switch to toggle preference between contact and profile avatars */
-"SETTINGS_APPEARANCE_AVATAR_PREFERENCE_LABEL" = "استفاده از عکس‌های مخاطبان تلفن";
-
 /* The title for the theme section in the appearance settings. */
 "SETTINGS_APPEARANCE_THEME_TITLE" = "زمینه";
 
@@ -9142,6 +9289,9 @@
 /* Title for the 'chats' link in settings. */
 "SETTINGS_CHATS" = "گفتگوها";
 
+/* Footer for the chat folders row in chats settings. */
+"SETTINGS_CHATS_CHAT_FOLDERS_FOOTER" = "برای مجموعه‌های مختلف گفتگوها پوشه ایجاد کنید و به‌سرعت میان آن‌ها جابه‌جا شوید.";
+
 /* Title for a button in Chats settings that starts exporting the user's chat history. */
 "SETTINGS_CHATS_EXPORT_BUTTON" = "خروجی گرفتن از گفتگوها";
 
@@ -9180,6 +9330,15 @@
 
 /* Title for a progress modal shown while the user's chat history is being exported. */
 "SETTINGS_CHATS_EXPORT_PROGRESS_TITLE" = "در حال خروجی گرفتن از گفتگوها…";
+<<<<<<< HEAD
+=======
+
+/* Footer below the switch in Chats settings that chooses between contact photos from the phone's address book and Signal profile photos. */
+"SETTINGS_CHATS_PREFER_ADDRESS_BOOK_PHOTOS_FOOTER" = "در صورت وجود، عکس مخاطبان دفترچه تلفن را در ترجیح می‌دهد.";
+
+/* Label for the switch in Chats settings that, when on, shows contact photos from the phone's address book instead of Signal profile photos. */
+"SETTINGS_CHATS_PREFER_ADDRESS_BOOK_PHOTOS_LABEL" = "ترجیح عکس‌های دفترچه تلفن";
+>>>>>>> upstream/8.38.0.2011
 
 /* No comment provided by engineer. */
 "SETTINGS_CLEAR_HISTORY" = "پاک کردن تاریخچهٔ گفتگو";
@@ -9454,8 +9613,7 @@
 /* Explanation for the button that resets all notification settings. */
 "SETTINGS_NOTIFICATIONS_RESET_FOOTER" = "تنظیمات اعلان را به حالت پیش‌فرض بازنشانی کنید، از‌جمله تنظیمات سفارشی برای گفتگوها.";
 
-/* Label for the switch controlling whether reminders about unread messages are shown.
-   Label for the switch controlling whether reminders about unread messages in muted chats are shown. */
+/* Label for the switch controlling whether reminders about unread messages in muted chats are shown */
 "SETTINGS_NOTIFICATIONS_UNREAD_REMINDERS" = "یادآورهای خوانده‌نشده";
 
 /* Explanation for the switch controlling whether reminders about unread messages are shown in this chat while it is muted. */
@@ -10064,6 +10222,15 @@
 /* No comment provided by engineer. */
 "SETTINGS_SCREEN_SECURITY" = "پنهان کردن صفحه هنگام تعویض برنامه‌ها";
 
+/* Message for a sheet shown when tapping the disabled screen security switch in privacy settings. */
+"SETTINGS_SCREEN_SECURITY_LOCKED_SHEET_MESSAGE" = "برای محافظت از حریم خصوصی شما، وقتی قابلیت «مسدود کردن هوش مصنوعی Siri» روشن است، صفحه‌نمایش‌تان همیشه در جابه‌جاگر برنامه پنهان است. خاموش کردن «مسدود کردن هوش مصنوعی Siri» این تنظیمات را فعال می‌کند.";
+
+/* Title for a sheet shown when tapping the disabled screen security switch in privacy settings. */
+"SETTINGS_SCREEN_SECURITY_LOCKED_SHEET_TITLE" = "«مسدود کردن هوش مصنوعی Siri» روشن است";
+
+/* Title for a button in a sheet shown when tapping the disabled screen security switch in privacy settings. */
+"SETTINGS_SCREEN_SECURITY_LOCKED_SHEET_VIEW_SETTING_BUTTON_TITLE" = "مشاهده تنظیمات";
+
 /* Footer for table section */
 "SETTINGS_SECTION_FOOTER_CALLING" = "نشان دادن تماس‌ها را در فهرست \"Recents\" برنامهٔ تلفن iOS";
 
@@ -10259,6 +10426,18 @@
 /* Text for a toast confirming that the speakerphone has been turned on for a call. */
 "SPEAKERPHONE_ON_CONFIRMATION_TOAST_LABEL" = "بلندگو روشن شد";
 
+/* Text shown in a toast confirming a sticker was added to favorites */
+"STICKER_ADDED_TO_FAVORITES_TOAST" = "استیکر به علاقه‌مندی‌ها افزوده شد";
+
+/* Label for button to add sticker to favorites */
+"STICKER_BUTTON_ADD_FAVORITES" = "افزودن به علاقه‌مندی‌ها";
+
+/* Label for button to remove sticker from favorites */
+"STICKER_BUTTON_REMOVE_FAVORITES" = "حذف از علاقه‌مندی‌ها";
+
+/* Title for a button to remove a sticker from recents */
+"STICKER_BUTTON_REMOVE_FROM_RECENTS" = "حذف از موارد اخیر";
+
 /* Title for a button to view a sticker pack */
 "STICKER_BUTTON_VIEW_PACK" = "مشاهده بسته";
 
@@ -10274,8 +10453,38 @@
 /* The name for the sticker category 'Recents' */
 "STICKER_CATEGORY_RECENTS_NAME" = "تماس‌های اخیر";
 
+/* Button to confirm a user wants to remove a sticker */
+"STICKER_CONFIRM_REMOVE_BUTTON" = "حذف";
+
+/* Label for the button to clear all sticker recents */
+"STICKER_KEYBOARD_BUTTON_CLEAR_RECENTS" = "پاک‌سازی موارد اخیر";
+
+/* Accessibility label for the button in the sticker keyboard that opens the screen for managing sticker packs. */
+"STICKER_KEYBOARD_MANAGE_BUTTON_ACCESSIBILITY_LABEL" = "مدیریت استیکرها";
+
+/* Toast shown when user tries to tap Favorites in sticker keyboard but has none */
+"STICKER_KEYBOARD_NO_FAVORITES_TOAST" = "برای افزودن استیکر به علاقه‌مندی‌ها، آن را لمس کنید و نگه دارید";
+
+/* Text displayed in the sticker keyboard when no sticker packs are installed. */
+"STICKER_KEYBOARD_NO_PACKS" = "هیچ بسته استیکری وجود ندارد.\nاستیکر اضافه کنید تا برای دوستانتان بفرستید.";
+
+/* Button in the sticker keyboard, shown when no sticker packs are installed, that opens the sticker pack manager. */
+"STICKER_KEYBOARD_NO_PACKS_ADD_BUTTON" = "افزودن استیکر";
+
+/* Section header for favorites in the sticker keyboard */
+"STICKER_KEYBOARD_SECTION_HEADER_LABEL_FAVORITES" = "علاقه‌مندی‌ها";
+
+/* Section header for recents in the sticker keyboard */
+"STICKER_KEYBOARD_SECTION_HEADER_LABEL_RECENTS" = "به‌تازگی استفاده شده";
+
 /* Preview text shown in notifications and conversation list for sticker messages. */
 "STICKER_MESSAGE_PREVIEW" = "استیکر";
+
+/* Button to confirm a user wants to clear recent stickers */
+"STICKER_PACK_CLEAR_RECENTS_BUTTON" = "پاک کردن";
+
+/* Message for a sheet asking the user to confirm they want to clear recently used stickers */
+"STICKER_PACK_CONFIRM_CLEAR_RECENTS_MESSAGE" = "استیکرهای اخیراً استفاده‌شده پاک شود؟";
 
 /* Button to confirm a user wants to remove a sticker pack */
 "STICKER_PACK_CONFIRM_REMOVE_BUTTON" = "حذف";
@@ -10304,6 +10513,18 @@
 /* Label for a button on a sticker-pack share sheet that sends the pack in Signal. */
 "STICKER_PACK_SHARE_SHEET_SEND_IN_SIGNAL" = "ارسال در سیگنال";
 
+/* Message for an action sheet asking the user to confirm if they want to remove a sticker from favorites */
+"STICKER_REMOVE_FROM_FAVORITES_CONFIRM_MESSAGE" = "بدون نصب بسته یا دسترسی به لینک یا پیام حاوی استیکر، نمی‌توانید آن را دوباره ارسال کنید یا به علاقه‌مندی‌ها بیفزایید";
+
+/* Title for an action sheet asking the user to confirm if they want to remove a sticker from favorites */
+"STICKER_REMOVE_FROM_FAVORITES_CONFIRM_TITLE" = "از علاقه‌مندی‌ها حذف شود؟";
+
+/* Title for a button to remove a sticker pack */
+"STICKER_REMOVE_PACK_BUTTON" = "حذف";
+
+/* Text shown in a toast confirming a sticker was removed from favorites */
+"STICKER_REMOVED_FROM_FAVORITES_TOAST" = "استیکر از علاقه‌مندی‌ها حذف شد";
+
 /* Message when trying to show a sticker that has expired and is unavailable for download */
 "STICKER_UNAVAILABLE_MESSAGE_LABEL" = "استیکر در دسترس نیست";
 
@@ -10313,32 +10534,77 @@
 /* Label for the 'install sticker pack' button. */
 "STICKERS_INSTALL_BUTTON" = "افزودن استیکر";
 
+/* Button used to deselect all selected sticker packs in selection mode */
+"STICKERS_MANAGE_DESELECT_ALL" = "لغو انتخاب همه";
+
+/* Enables selection mode for sticker pack */
+"STICKERS_MANAGE_EDIT" = "ویرایش";
+
+/* Label for a button to uninstall all selected sticker packs */
+"STICKERS_MANAGE_REMOVE" = "حذف";
+
+/* Placeholder text for the search bar in the sticker pack management. */
+"STICKERS_MANAGE_SEARCH_BAR_PLACEHOLDER" = "استیکرها را جستجو کنید";
+
+/* Label for a view explaining that no search results were found. Embeds {{ the search term }}. */
+"STICKERS_MANAGE_SEARCH_NO_RESULTS" = "هیچ نتیجه ای برای '%1$@' یافت نشد";
+
+/* Button used to select all sticker packs in selection mode */
+"STICKERS_MANAGE_SELECT_ALL" = "انتخاب همه";
+
+/* Title for the selection mode of sticker packs. */
+"STICKERS_MANAGE_SELECT_ITEMS" = "انتخاب موارد";
+
 /* Title for the 'available built-in stickers' section of the 'manage stickers' view. */
 "STICKERS_MANAGE_VIEW_AVAILABLE_BUILT_IN_PACKS_SECTION_TITLE" = "سری های هنرمند سیگنال";
 
+/* Subtitle for the section of known stickers in the manage stickers view */
+"STICKERS_MANAGE_VIEW_AVAILABLE_KNOWN_PACKS_SECTION_SUBTITLE" = "وقتی از کسی استیکر دریافت می‌کنید، بسته استیکر در اینجا نمایش داده می‌شود.";
+
 /* Title for the 'available known stickers' section of the 'manage stickers' view. */
-"STICKERS_MANAGE_VIEW_AVAILABLE_KNOWN_PACKS_SECTION_TITLE" = "استیکر هایی که دریافت کردید";
+"STICKERS_MANAGE_VIEW_AVAILABLE_KNOWN_PACKS_SECTION_TITLE" = "به‌اشتراک‌گذاشته‌شده با شما";
+
+/* The title for a context menu item that installs a sticker pack. */
+"STICKERS_MANAGE_VIEW_CONTEXT_MENU_ADD" = "افزودن";
+
+/* The title for a context menu item that copies the sticker pack link. */
+"STICKERS_MANAGE_VIEW_CONTEXT_MENU_COPY" = "کپی کردن لینک";
+
+/* The title for a context menu item that uninstalls a sticker pack. */
+"STICKERS_MANAGE_VIEW_CONTEXT_MENU_REMOVE" = "حذف";
+
+/* The title for a context menu item that selects a sticker pack for selection mode. */
+"STICKERS_MANAGE_VIEW_CONTEXT_MENU_SELECT" = "انتخاب";
+
+/* The title for a context menu item that sends the sticker pack link to someone else. */
+"STICKERS_MANAGE_VIEW_CONTEXT_MENU_SEND" = "ارسال";
 
 /* Label indicating that one or more known sticker packs failed to load. */
 "STICKERS_MANAGE_VIEW_FAILED_KNOWN_PACKS" = "برخی از بسته‌ های استیکر بارگیری نشدند";
 
-/* Title for the 'installed stickers' section of the 'manage stickers' view. */
-"STICKERS_MANAGE_VIEW_INSTALLED_PACKS_SECTION_TITLE" = "استیکر های نصب شده";
+/* An option in the sticker management screen allowing the user to select the filter option 'all'; i.e., 'unfiltered'. */
+"STICKERS_MANAGE_VIEW_FILTER_TAB_ALL" = "همه";
+
+/* An option in the sticker management screen allowing the user to select the filter option 'my stickers'; i.e., their installed packs. */
+"STICKERS_MANAGE_VIEW_FILTER_TAB_MY_STICKERS" = "استیکرهای من";
 
 /* Label indicating that one or more known sticker packs is loading. */
 "STICKERS_MANAGE_VIEW_LOADING_KNOWN_PACKS" = "در حال بارگیری…";
 
 /* Label indicating that the user has no installed sticker packs. */
-"STICKERS_MANAGE_VIEW_NO_INSTALLED_PACKS" = "هیچ استیکری نصب نیست";
+"STICKERS_MANAGE_VIEW_NO_INSTALLED_PACKS" = "هیچ بسته استیکری وجود ندارد.\nاستیکر اضافه کنید تا برای دوستانتان بفرستید.";
 
-/* Label indicating that the user has no known sticker packs. */
-"STICKERS_MANAGE_VIEW_NO_KNOWN_PACKS" = "استیکر ها از پیام های دریافتی در اینجا پدیدار خواهند شد";
+/* Button to redirect back to the manage sticker 'all' section */
+"STICKERS_MANAGE_VIEW_NO_INSTALLED_PACKS_BUTTON" = "افزودن استیکر";
 
 /* Title for the 'manage stickers' view. */
 "STICKERS_MANAGE_VIEW_TITLE" = "استیکر ها";
 
+/* Default author for sticker packs. */
+"STICKERS_PACK_DEFAULT_AUTHOR" = "نویسنده ناشناس";
+
 /* Default title for sticker packs. */
-"STICKERS_PACK_DEFAULT_TITLE" = "پک استیکر";
+"STICKERS_PACK_DEFAULT_TITLE" = "عنوان ناشناس";
 
 /* The default title for the 'sticker pack' view. */
 "STICKERS_PACK_VIEW_DEFAULT_TITLE" = "پک استیکر";
@@ -10873,9 +11139,6 @@
 
 /* Description of how and why Signal iOS uses Touch ID/Face ID/Phone Passcode to transfer your account to a new device. */
 "TRANSFER_ACCOUNT_AUTHENTICATION_REASON" = "برای انتقال حساب، احراز هویت کنید";
-
-/* Button for bottom sheet shown when device transfer completes on the receiving device. Tapping will terminate the Signal app and trigger a notification to relaunch. */
-"TRANSFER_COMPLETE_SHEET_BUTTON" = "بستن سیگنال";
 
 /* Subtitle for bottom sheet shown when device transfer completes on the receiving device. */
 "TRANSFER_COMPLETE_SHEET_SUBTITLE" = "برای شروع استفاده از حسابتان در این دستگاه، سیگنال را ببندید و دوباره باز کنید.";

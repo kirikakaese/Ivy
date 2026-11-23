@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • O Signal está agora otimizado para o iPhone Duo.
+=======
+• Agora pode adicionar qualquer autocolante à sua lista de favoritos, para ser mais fácil encontrar.
+
+• O editor de multimédia também suporta a remoção de uma faixa áudio de um vídeo antes do envio.
+>>>>>>> upstream/8.38.0.2011

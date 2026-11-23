@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal hiện đã được tối ưu hóa cho iPhone Duo.
+=======
+• Giờ đây, bạn có thể thêm bất kỳ nhãn dán nào vào danh sách yêu thích để dễ dàng tìm thấy.
+
+• Công cụ chỉnh sửa tập tin đa phương tiện cũng cho phép loại bỏ âm thanh khỏi video trước khi bạn gửi đi.
+>>>>>>> upstream/8.38.0.2011

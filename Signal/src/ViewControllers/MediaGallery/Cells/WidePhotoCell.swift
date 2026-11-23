@@ -39,7 +39,7 @@ class WidePhotoCell: MediaTileListModeCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        contentView.backgroundColor = UIColor(dynamicProvider: { _ in Theme.tableCell2PresentedBackgroundColor })
+        contentView.backgroundColor = .Signal.tertiaryBackground
 
         setupViews()
     }
@@ -113,12 +113,7 @@ class WidePhotoCell: MediaTileListModeCell {
         isAccessibilityElement = true
 
         if let item {
-            accessibilityLabel = [
-                item.type.localizedString,
-                MediaTileDateFormatter.formattedDateString(for: item.mediaMetadata?.creationDate),
-            ]
-            .compactMap { $0 }
-            .joined(separator: ", ")
+            accessibilityLabel = item.type.accessibilityLabel(creationDate: item.mediaMetadata?.creationDate)
         } else {
             accessibilityLabel = ""
         }

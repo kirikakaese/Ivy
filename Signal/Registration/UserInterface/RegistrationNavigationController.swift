@@ -55,7 +55,7 @@ public class RegistrationNavigationController: OWSNavigationController {
 
     private func pushNextController(
         _ step: Guarantee<RegistrationStep>,
-        loadingMode: RegistrationLoadingViewController.RegistrationLoadingMode? = .generic,
+        loadingMode: RegistrationLoadingViewController.RegistrationLoadingMode? = .progressView(nil),
     ) {
         guard !isLoading else {
             owsFailDebug("Parallel loads not allowed", logger: logger)
@@ -74,9 +74,9 @@ public class RegistrationNavigationController: OWSNavigationController {
                 ) { [weak self] in
                     self?._pushNextController(step)
                 }
-            default:
+            case .progressView(let loadingText):
                 pushViewController(
-                    RegistrationLoadingViewController(mode: loadingMode),
+                    RegistrationLoadingViewController(loadingText: loadingText),
                     animated: false,
                 ) { [weak self] in
                     self?._pushNextController(step)
@@ -89,7 +89,7 @@ public class RegistrationNavigationController: OWSNavigationController {
     }
 
     private func pushNextStepController(
-        loadingMode: RegistrationLoadingViewController.RegistrationLoadingMode? = .generic,
+        loadingMode: RegistrationLoadingViewController.RegistrationLoadingMode? = .progressView(nil),
     ) {
         pushNextController(
             Guarantee.wrapAsync { [coordinator] in await coordinator.nextStep() },
@@ -304,7 +304,11 @@ public class RegistrationNavigationController: OWSNavigationController {
             return Controller(
                 type: RegistrationSignalLoginViewController.self,
                 make: { presenter in
-                    return RegistrationSignalLoginViewController(state: state, presenter: presenter)
+                    return RegistrationSignalLoginViewController(
+                        state: state,
+                        goToNextStep: { [unowned presenter] in presenter.pushNextStepController() },
+                        exitRegistration: { [unowned presenter] in presenter.exitRegistration() },
+                    )
                 },
                 update: nil,
             )
@@ -414,6 +418,17 @@ public class RegistrationNavigationController: OWSNavigationController {
                 // No state to update.
                 update: nil,
             )
+        case .reviewAndConfirmSignalLogin(let state):
+            return Controller(
+                type: RegistrationSignalLoginDetailsViewController.self,
+                make: { presenter in
+                    return RegistrationSignalLoginDetailsViewController(
+                        state: state,
+                        goToNextStep: { [unowned presenter] in presenter.pushNextStepController() },
+                    )
+                },
+                update: nil,
+            )
         case .enterRecoveryKey(let state):
             return Controller(
                 type: RegistrationEnterAccountEntropyPoolViewController.self,
@@ -426,32 +441,36 @@ public class RegistrationNavigationController: OWSNavigationController {
                 // No state to update.
                 update: nil,
             )
-        case let .showErrorSheet(errorSheet):
+        case .showError(let error):
             let title: String?
             let message: String
-            switch errorSheet {
-            case .sessionCanNeverRequestVerificationCode:
+            do {
+                throw error
+            } catch is AppExpiredError, is Registration.UnknownChallengeError {
+                present(UIAlertController.registrationAppUpdateBanner(), animated: true)
+                return nil
+            } catch Registration.VerificationCodeError.providerFailure {
                 title = nil
                 message = OWSLocalizedString(
                     "REGISTRATION_PROVIDER_FAILURE_MESSAGE_PERMANENT",
                     comment: "Error shown if an SMS/call service provider is unable to send a verification code to the provided number.",
                 )
-            case .becameDeregistered(let localIdentifiers):
-                handleDeregistrationReset(localIdentifiers: localIdentifiers.wrappedValue)
+            } catch let error as Registration.BecameDeregisteredError {
+                handleDeregistrationReset(localIdentifiers: error.localIdentifiers)
                 return nil
-            case .verificationCodeSubmissionUnavailable:
+            } catch Registration.VerificationCodeError.tooManyAttempts {
                 title = nil
                 message = OWSLocalizedString(
                     "REGISTRATION_SUBMIT_CODE_ATTEMPTS_EXHAUSTED_ALERT",
                     comment: "Alert shown when running out of attempts at submitting a verification code.",
                 )
-            case .submittingVerificationCodeBeforeAnyCodeSent:
+            } catch Registration.VerificationCodeError.wrongCode {
                 title = nil
                 message = OWSLocalizedString(
                     "REGISTRATION_VERIFICATION_ERROR_INVALID_VERIFICATION_CODE",
                     comment: "During registration and re-registration, users may have to enter a code to verify ownership of their phone number. If they enter an invalid code, they will see this error message.",
                 )
-            case .networkError:
+            } catch where error.isNetworkFailureOrTimeout {
                 title = OWSLocalizedString(
                     "REGISTRATION_NETWORK_ERROR_TITLE",
                     comment: "A network error occurred during registration, and an error is shown to the user. This is the title on that error sheet.",
@@ -460,7 +479,7 @@ public class RegistrationNavigationController: OWSNavigationController {
                     "REGISTRATION_NETWORK_ERROR_BODY",
                     comment: "A network error occurred during registration, and an error is shown to the user. This is the body on that error sheet.",
                 )
-            case .sessionInvalidated, .genericError:
+            } catch {
                 title = nil
                 message = CommonStrings.somethingWentWrongTryAgainLaterError
             }
@@ -472,12 +491,9 @@ public class RegistrationNavigationController: OWSNavigationController {
             actionSheet.isCancelable = false
             self.presentActionSheet(actionSheet)
             return nil
-        case .appUpdateBanner:
-            present(UIAlertController.registrationAppUpdateBanner(), animated: true)
-            return nil
         case .done:
             logger.info("Finished with registration!")
-            SignalApp.shared.showConversationSplitView()
+            SignalApp.shared.showHomeTabBarController()
             return nil
         }
     }
@@ -581,7 +597,7 @@ extension RegistrationNavigationController: RegistrationPhoneNumberPresenter {
     func goToNextStep(withE164 e164: E164) {
         userActionLogger.info("Submitted phone number")
         coordinator.submitE164(e164)
-        pushNextStepController(loadingMode: .submittingPhoneNumber(e164: e164.stringValue))
+        pushNextStepController(loadingMode: .progressView(.submittingPhoneNumber(e164: e164.stringValue)))
     }
 
     func switchToDeviceLinking() {
@@ -595,7 +611,7 @@ extension RegistrationNavigationController: RegistrationPhoneNumberPresenter {
             owsFailBeta("Unable to exit registration")
             return
         }
-        SignalApp.shared.showConversationSplitView()
+        SignalApp.shared.showHomeTabBarController()
     }
 
     func registerWithoutNumber() {
@@ -608,7 +624,7 @@ extension RegistrationNavigationController: RegistrationChangePhoneNumberPresent
     func submitProspectiveChangeNumberE164(newE164: E164) {
         userActionLogger.info("Submitted prospective change-number number")
         coordinator.submitProspectiveChangeNumberE164(newE164)
-        pushNextStepController(loadingMode: .submittingPhoneNumber(e164: newE164.stringValue))
+        pushNextStepController(loadingMode: .progressView(.submittingPhoneNumber(e164: newE164.stringValue)))
     }
 }
 
@@ -617,7 +633,7 @@ extension RegistrationNavigationController: RegistrationChangePhoneNumberConfirm
     func confirmChangeNumber(newE164: E164) {
         userActionLogger.info("Confirmed new phone number")
         coordinator.submitE164(newE164)
-        pushNextStepController(loadingMode: .submittingPhoneNumber(e164: newE164.stringValue))
+        pushNextStepController(loadingMode: .progressView(.submittingPhoneNumber(e164: newE164.stringValue)))
     }
 }
 
@@ -651,7 +667,7 @@ extension RegistrationNavigationController: RegistrationVerificationPresenter {
 
     func submitVerificationCode(_ code: String) {
         userActionLogger.info("Submitted verification code")
-        pushNextController(coordinator.submitVerificationCode(code), loadingMode: .submittingVerificationCode)
+        pushNextController(coordinator.submitVerificationCode(code), loadingMode: .progressView(.submittingVerificationCode))
     }
 }
 
@@ -733,7 +749,7 @@ extension RegistrationNavigationController: RegistrationReglockTimeoutPresenter 
             return
         case .exitRegistration:
             logger.info("Exiting registration after reglock timeout")
-            SignalApp.shared.showConversationSplitView()
+            SignalApp.shared.showHomeTabBarController()
         case .restartRegistration(let nextStepGuarantee):
             pushNextController(nextStepGuarantee)
         }
@@ -829,10 +845,6 @@ extension RegistrationNavigationController: RegistrationRestoreFromBackupConfirm
             pushNextStepController(loadingMode: .restoringBackup(progressModal))
         }
     }
-}
-
-extension RegistrationNavigationController: RegistrationSignalLoginPresenter {
-    func submitLogin(aci: Aci, aep: SignalServiceKit.AccountEntropyPool) { }
 }
 
 extension RegistrationNavigationController: RegistrationSignalLoginSplashPresenter {

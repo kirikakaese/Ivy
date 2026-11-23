@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal jest już gotowy na iPhone’a Duo. Wystarczy zainstalować najnowszą aktualizację, by korzystać z aplikacji na dwóch ekranach. Na tym nie koniec. Z czasem dodamy kolejne usprawnienia.
+=======
+• Twoje ulubione naklejki wreszcie w jednym miejscu. Dodaj dowolną naklejkę do Ulubionych, żeby te najlepsze zawsze mieć pod ręką.
+
+• W edytorze multimediów możesz też usunąć dźwięk z filmu przed jego wysłaniem. Twój idylliczny film ze Szkocji zagłuszyło beczenie owiec? Teraz wystarczy jedno dotknięcie, żeby nastało… Milczenie. Milczenie owiec.
+>>>>>>> upstream/8.38.0.2011

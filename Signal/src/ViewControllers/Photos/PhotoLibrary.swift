@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
+import AVFoundation
 import CoreServices
 import Foundation
 import Photos
@@ -60,12 +61,6 @@ class PhotoAlbumContents {
     private let fetchResult: PHFetchResult<PHAsset>
     private let limit: Int
 
-    enum PhotoLibraryError: Error {
-        case assertionError(description: String)
-        case unsupportedMediaType
-        case failedToExportAsset(underlyingError: Error?)
-    }
-
     init(fetchResult: PHFetchResult<PHAsset>, limit: Int) {
         self.fetchResult = fetchResult
         self.limit = limit
@@ -107,47 +102,76 @@ class PhotoAlbumContents {
             }
         }
         guard let imageData else {
-            throw PhotoLibraryError.assertionError(description: "imageData was unexpectedly nil")
+            throw OWSGenericError("imageData was unexpectedly nil")
         }
         guard let dataUTI else {
-            throw PhotoLibraryError.assertionError(description: "dataUTI was unexpectedly nil")
+            throw OWSGenericError("dataUTI was unexpectedly nil")
         }
         guard let fileExtension = MimeTypeUtil.fileExtensionForUtiType(dataUTI) else {
-            throw PhotoLibraryError.assertionError(description: "fileExtension was unexpectedly nil")
+            throw OWSGenericError("fileExtension was unexpectedly nil")
         }
         let dataSource = try DataSourcePath(writingTempFileData: imageData, fileExtension: fileExtension)
         return (dataSource: dataSource, dataUTI: dataUTI)
     }
 
-    private func requestVideoDataSource(for asset: PHAsset) async throws -> AVAsset {
+    /// Exports the video out of the photo library, which may not keep it
+    /// accessible for as long as we need it.
+    private func requestVideoDataSource(for asset: PHAsset) async throws -> (dataSource: DataSourcePath, dataUTI: String) {
         let options: PHVideoRequestOptions = PHVideoRequestOptions()
         options.isNetworkAccessAllowed = true
         options.version = .current
 
-        return try await withCheckedThrowingContinuation { continuation in
-            _ = imageManager.requestAVAsset(forVideo: asset, options: options) { video, _, info in
-                guard let video else {
-                    let error = info?[PHImageErrorKey] as! Error?
-                    continuation.resume(throwing: PhotoLibraryError.failedToExportAsset(underlyingError: error))
+        let session: AVAssetExportSession = try await withCheckedThrowingContinuation { continuation in
+            _ = imageManager.requestExportSession(
+                forVideo: asset,
+                options: options,
+                exportPreset: AVAssetExportPresetPassthrough,
+            ) { session, info in
+                guard let session else {
+                    let error = info?[PHImageErrorKey] as? Error
+                    continuation.resume(throwing: error ?? OWSGenericError("session was unexpectedly nil"))
                     return
                 }
-                continuation.resume(returning: video)
+                continuation.resume(returning: session)
             }
+        }
+
+        let fileUrl = OWSFileSystem.temporaryFileUrl(
+            fileExtension: "mov",
+            isAvailableWhileDeviceLocked: false,
+        )
+        try await session.exportAsync(to: fileUrl, as: .mov)
+        switch session.status {
+        case .completed:
+            return (
+                dataSource: DataSourcePath(fileUrl: fileUrl, ownership: .owned),
+                dataUTI: UTType.quickTimeMovie.identifier,
+            )
+        case .cancelled:
+            throw CancellationError()
+        case .unknown, .waiting, .exporting, .failed:
+            fallthrough
+        @unknown default:
+            throw session.error ?? OWSGenericError("export failed with status \(session.status)")
         }
     }
 
-    func outgoingAttachment(for asset: PHAsset, attachmentLimits: OutgoingAttachmentLimits) async throws -> PreviewableAttachment {
+    func outgoingAttachment(for asset: PHAsset) async throws -> PreviewableAttachment {
         switch asset.mediaType {
         case .image:
             let (dataSource, dataUTI) = try await requestImageDataSource(for: asset)
             return try PreviewableAttachment.imageAttachment(dataSource: dataSource, dataUTI: dataUTI)
         case .video:
-            let video = try await requestVideoDataSource(for: asset)
-            return try await PreviewableAttachment.compressVideoAsMp4(asset: video, baseFilename: nil, attachmentLimits: attachmentLimits)
+            let (dataSource, dataUTI) = try await requestVideoDataSource(for: asset)
+            return try PreviewableAttachment.normalizedVideoAttachment(
+                dataSource: dataSource,
+                dataUTI: dataUTI,
+                mustTranscode: true,
+            )
         case .unknown, .audio:
             fallthrough
         @unknown default:
-            throw PhotoLibraryError.unsupportedMediaType
+            throw OWSGenericError("unsupported media type: \(asset.mediaType)")
         }
     }
 }

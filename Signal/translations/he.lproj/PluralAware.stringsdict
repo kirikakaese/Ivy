@@ -417,6 +417,66 @@
 			<string>צבע זה נמצא בשימוש ב–%1$d צ׳אטים. לשמור את השינויים עבור כל הצ׳אטים?</string>
 		</dict>
 	</dict>
+	<key>CHAT_FOLDERS_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>צ׳אט %1$d</string>
+			<key>two</key>
+			<string>%1$d צ׳אטים</string>
+			<key>many</key>
+			<string>%1$d צ׳אטים</string>
+			<key>other</key>
+			<string>%1$d צ׳אטים</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_CHAT_TYPE_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>סוג צ׳אט %1$d</string>
+			<key>two</key>
+			<string>%1$d סוגי צ׳אטים</string>
+			<key>many</key>
+			<string>%1$d סוגי צ׳אטים</string>
+			<key>other</key>
+			<string>%1$d סוגי צ׳אטים</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_EXCLUDED_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>צ׳אט %1$d לא כלול</string>
+			<key>two</key>
+			<string>%1$d צ׳אטים לא כלולים</string>
+			<key>many</key>
+			<string>%1$d צ׳אטים לא כלולים</string>
+			<key>other</key>
+			<string>%1$d צ׳אטים לא כלולים</string>
+		</dict>
+	</dict>
 	<key>CHOOSE_BACKUP_PLAN_BULLET_RECENT_MEDIA_BACKUP_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1980,6 +2040,86 @@
 יש לנסות שוב בעוד %1$d שעות.</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>אפשר להוסיף רק סטיקר %1$d למועדפים</string>
+			<key>two</key>
+			<string>אפשר להוסיף רק %1$d סטיקרים למועדפים</string>
+			<key>many</key>
+			<string>אפשר להוסיף רק %1$d סטיקרים למועדפים</string>
+			<key>other</key>
+			<string>אפשר להוסיף רק %1$d סטיקרים למועדפים</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_MESSAGE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>זה יסיר את חבילת הסטיקרים. לא תהיה לך אפשרות להוסיף אותה שוב בלי לינק או הודעת סטיקר.</string>
+			<key>two</key>
+			<string>זה יסיר את חבילות הסטיקרים. לא תהיה לך אפשרות להוסיף אותן שוב בלי לינק או הודעת סטיקר.</string>
+			<key>many</key>
+			<string>זה יסיר את חבילות הסטיקרים. לא תהיה לך אפשרות להוסיף אותן שוב בלי לינק או הודעת סטיקר.</string>
+			<key>other</key>
+			<string>זה יסיר את חבילות הסטיקרים. לא תהיה לך אפשרות להוסיף אותן שוב בלי לינק או הודעת סטיקר.</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TITLE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>להסיר חבילת סטיקרים %1$d?</string>
+			<key>two</key>
+			<string>להסיר %1$d חבילות סטיקרים?</string>
+			<key>many</key>
+			<string>להסיר %1$d חבילות סטיקרים?</string>
+			<key>other</key>
+			<string>להסיר %1$d חבילות סטיקרים?</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>חבילת סטיקרים הוסרה</string>
+			<key>two</key>
+			<string>חבילות סטיקרים הוסרו</string>
+			<key>many</key>
+			<string>חבילות סטיקרים הוסרו</string>
+			<key>other</key>
+			<string>חבילות סטיקרים הוסרו</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1998,6 +2138,26 @@
 			<string>%1$d סטיקרים</string>
 			<key>other</key>
 			<string>%1$d סטיקרים</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_TOOLBAR_CAPTION_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d נבחרה</string>
+			<key>two</key>
+			<string>%1$d נבחרו</string>
+			<key>many</key>
+			<string>%1$d נבחרו</string>
+			<key>other</key>
+			<string>%1$d נבחרו</string>
 		</dict>
 	</dict>
 	<key>STORY_REPLIES_COUNT_%d</key>

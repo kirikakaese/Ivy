@@ -402,13 +402,20 @@ public class LocalFileBackupManager: NSObject, UIDocumentPickerDelegate {
                     continue
                 }
 
-                let encryptedFileHandle = try Cryptography.encryptedAttachmentFileHandle(
-                    at: attachmentStream.fileURL,
-                    plaintextLength: UInt64(safeCast: attachmentStream.unencryptedByteCount),
-                    attachmentKey: AttachmentKey(combinedKey: attachmentStream.attachment.encryptionKey),
-                )
-
-                let attachmentKey = try AttachmentKey(combinedKey: localKey)
+                let encryptedFileHandle: EncryptedFileHandle
+                let attachmentKey: AttachmentKey
+                do {
+                    encryptedFileHandle = try Cryptography.encryptedAttachmentFileHandle(
+                        at: attachmentStream.fileURL,
+                        plaintextLength: UInt64(safeCast: attachmentStream.unencryptedByteCount),
+                        attachmentKey: AttachmentKey(combinedKey: attachmentStream.attachment.encryptionKey),
+                    )
+                    attachmentKey = try AttachmentKey(combinedKey: localKey)
+                } catch {
+                    logger.error("Error writing attachment ID \(attachmentWithMetadata.attachment.id) to disk, error: \(error)")
+                    source?.incrementCompletedUnitCount(by: attachmentByteCount)
+                    continue
+                }
 
                 let attachmentSubDirectory = backupsRootDirectory
                     .appendingPathComponent(FileStructure.attachmentDirectory.rawValue)

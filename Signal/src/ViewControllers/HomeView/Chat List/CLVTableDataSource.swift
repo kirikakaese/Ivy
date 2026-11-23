@@ -4,14 +4,14 @@
 //
 
 import SignalServiceKit
-public import SignalUI
+import SignalUI
 
-public enum ChatListMode: Int, CaseIterable {
+enum ChatListMode: Int, CaseIterable {
     case archive
     case inbox
 }
 
-public enum ChatListSectionType: String, CaseIterable {
+enum ChatListSectionType: String, CaseIterable {
     case reminders
     case backupDownloadProgressView
     case backupExportProgressView
@@ -44,8 +44,8 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
 
     var renderState: CLVRenderState = .empty
 
-    /// Used to let  chat list cells know when they should use rounded corners for background in `selected` state,
-    var useSideBarChatListCellAppearance: Bool = false
+    /// Used to let chat list cells know when they should use rounded corners for background in `selected` state,
+    var useSideBarListCellAppearance: Bool = false
 
     /// While table view selection is changing, i.e., between
     /// `tableView(_:willSelectRowAt:)` and `tableView(_:didSelectRowAt:)`,
@@ -118,7 +118,7 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
-        tableView.separatorColor = Theme.tableView2SeparatorColor
+        tableView.separatorColor = OWSTableViewController2.separatorColor
         tableView.register(ChatListCell.self)
         tableView.register(ArchivedConversationsCell.self)
         tableView.register(ChatListFilterFooterCell.self)
@@ -655,21 +655,18 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
     }
 
     private func buildConversationCell(tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
-        AssertIsOnMainThread()
-
-        let cell = tableView.dequeueReusableCell(ChatListCell.self, for: indexPath)
-
         guard let contentToken = buildCellContentToken(for: indexPath) else {
             owsFailDebug("Missing cellConfigurationAndContentToken.")
             return UITableViewCell()
         }
 
+        let cell = tableView.dequeueReusableCell(ChatListCell.self, for: indexPath)
         cell.configure(cellContentToken: contentToken, spoilerAnimationManager: viewState.spoilerAnimationManager)
-        cell.useSidebarAppearance = useSideBarChatListCellAppearance
+        cell.useSidebarAppearance = useSideBarListCellAppearance
 
         if
-            let conversationSplitViewController = viewController?.conversationSplitViewController,
-            conversationSplitViewController.selectedThread?.uniqueId == contentToken.thread.uniqueId
+            let homeTabBarController = viewController?.homeTabBarController,
+            homeTabBarController.selectedThread?.uniqueId == contentToken.thread.uniqueId
         {
             tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         } else if !viewState.multiSelectState.isActive {
@@ -681,7 +678,6 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
     }
 
     private func buildArchivedConversationsButtonCell(tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
-        AssertIsOnMainThread()
         let cell = tableView.dequeueReusableCell(ArchivedConversationsCell.self, for: indexPath)
         cell.configure(enabled: !viewState.multiSelectState.isActive)
         return cell
@@ -932,7 +928,7 @@ class CLVTableDataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
 
 // MARK: -
 
-public class CLVTableView: UITableView {
+class CLVTableView: UITableView {
     fileprivate var lastReloadDate: Date?
 
     // A `tableFooterView` that always expands to fill available contentSize
@@ -946,7 +942,7 @@ public class CLVTableView: UITableView {
     // content height is too small, the search bar otherwise becomes un-hideable).
     private let footerView = UIView()
 
-    public init() {
+    init() {
         super.init(frame: .zero, style: .grouped)
         tableFooterView = footerView
     }
@@ -956,7 +952,7 @@ public class CLVTableView: UITableView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override public func reloadData() {
+    override func reloadData() {
         AssertIsOnMainThread()
 
         lastReloadDate = Date()
@@ -964,12 +960,12 @@ public class CLVTableView: UITableView {
         (dataSource as? CLVTableDataSource)?.calcRefreshTimer()
     }
 
-    override public func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
         updateFooterHeight()
     }
 
-    override public func adjustedContentInsetDidChange() {
+    override func adjustedContentInsetDidChange() {
         super.adjustedContentInsetDidChange()
         updateFooterHeight()
     }

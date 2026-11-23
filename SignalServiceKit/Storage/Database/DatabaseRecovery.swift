@@ -352,6 +352,9 @@ public enum DatabaseRecovery {
             BackupLocalFileAttachmentImportRecord.databaseTableName,
             BackupLocalFileAttachmentMetadataRecord.databaseTableName,
             PinnedThreadRecord.databaseTableName,
+            FavoriteStickerRecord.databaseTableName,
+            ChatFolderRecord.databaseTableName,
+            ChatFolderChatRecord.databaseTableName,
         ]
 
         private static func prepareToCopyTablesWithBestEffort(

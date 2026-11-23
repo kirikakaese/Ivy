@@ -3,6 +3,7 @@ Config/User*.xcconfig
 
 # Exclude the build directory
 build/*
+.build/
 # Exclude temp nibs and swap files
 *~.nib
 *.swp
@@ -44,9 +45,15 @@ debuglogs/
 
 fastlane/Preview.html
 
+<<<<<<< HEAD
 # CocoaPods dependencies are installed by `make dependencies`
 /Pods/
 
 # Ruby gems installed by Bundler
 /.bundle/
 /vendor/bundle/
+=======
+# Local RingRTC development (Scripts/local-ringrtc.py)
+/ringrtc
+/Signal-LocalRingRTC.xcworkspace/
+>>>>>>> upstream/8.38.0.2011

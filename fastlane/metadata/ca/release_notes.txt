@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Ara, Signal està optimitzat per a iPhone Duo.
+=======
+• Ara pots afegir qualsevol sticker a la teva llista de favorits per trobar-lo més fàcilment.
+
+• El nou editor d'arxius multimèdia també permet eliminar l'àudio d'un vídeo abans d'enviar-lo.
+>>>>>>> upstream/8.38.0.2011

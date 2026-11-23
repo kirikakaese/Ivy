@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal är nu optimerat för iPhone Duo.
+=======
+• Nu kan du lägga till vilken sticker som helst i din favoritlista så att den är lätt att hitta.
+
+• Medieredigeraren stöder även att ta bort ljudspåret från en video innan du skickar den.
+>>>>>>> upstream/8.38.0.2011

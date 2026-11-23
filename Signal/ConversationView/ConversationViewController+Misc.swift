@@ -144,8 +144,16 @@ extension ConversationViewController {
 
     // MARK: - Toast
 
-    func presentToastCVC(_ toastText: String, image: UIImage? = nil) {
-        let toastController = ToastController(text: toastText, image: image)
+    func presentToastCVC(
+        _ toastText: String,
+        image: UIImage? = nil,
+        button: ToastController.Button? = nil,
+    ) {
+        let toastController = ToastController(
+            text: toastText,
+            image: image,
+            button: button,
+        )
         let kToastInset: CGFloat = 10
         let bottomInset = kToastInset + collectionView.contentInset.bottom + view.layoutMargins.bottom
         toastController.presentToastView(from: .bottom, of: self.view, inset: bottomInset)
@@ -210,11 +218,6 @@ extension ConversationViewController {
     }
 
     func showConversationSettings(mode: ConversationSettingsPresentationMode) {
-        guard let viewControllersUpToSelf = self.viewControllersUpToSelf else {
-            return
-        }
-        var viewControllers = viewControllersUpToSelf
-
         let settingsView = ConversationSettingsViewController(
             threadViewModel: threadViewModel,
             isSystemContact: conversationViewModel.isSystemContact,
@@ -222,7 +225,8 @@ extension ConversationViewController {
             memberLabelCoordinator: memberLabelCoordinator,
         )
         settingsView.conversationSettingsViewDelegate = self
-        viewControllers.append(settingsView)
+
+        let navigationController = UINavigationController(rootViewController: settingsView)
 
         switch mode {
         case .default:
@@ -230,19 +234,17 @@ extension ConversationViewController {
         case .showVerification:
             settingsView.showVerificationOnAppear = true
         case .showMemberRequests:
-            if let view = settingsView.buildMemberRequestsAndInvitesView() {
-                viewControllers.append(view)
+            if let requestsAndInvitesVC = settingsView.buildMemberRequestsAndInvitesView() {
+                navigationController.pushViewController(requestsAndInvitesVC, animated: false)
             }
         case .showAllMedia:
-            viewControllers.append(AllMediaViewController(
-                thread: thread,
-                spoilerState: viewState.spoilerState,
-                name: title,
-            ))
+            navigationController.pushViewController(
+                AllMediaViewController(thread: thread, spoilerState: viewState.spoilerState, name: title),
+                animated: false,
+            )
         }
 
-        dismissKeyboard()
-        navigationController?.setViewControllers(viewControllers, animated: true)
+        presentFormSheet(navigationController, animated: true)
     }
 
     private var viewControllersUpToSelf: [UIViewController]? {
@@ -299,25 +301,18 @@ extension ConversationViewController {
         )
         .presentAppropriateSheet(from: self)
     }
-}
 
-// MARK: -
+    // MARK: - ConversationSettingsViewDelegate
 
-extension ConversationViewController: ConversationSettingsViewDelegate {
+    func conversationSettingsDidRequestConversationSearch() {
+        uiMode = .search
 
-    public func conversationSettingsDidRequestConversationSearch() {
-        AssertIsOnMainThread()
-
-        self.uiMode = .search
-
-        self.popAllConversationSettingsViews {
+        popAllConversationSettingsViews {
             self.searchController.uiSearchController.searchBar.becomeFirstResponder()
         }
     }
 
     private func popAllConversationSettingsViews(completion: @escaping () -> Void) {
-        AssertIsOnMainThread()
-
         guard let presentedViewController else {
             navigationController?.popToViewController(self, animated: true, completion: completion)
             return
@@ -327,18 +322,16 @@ extension ConversationViewController: ConversationSettingsViewDelegate {
         }
     }
 
-    public func deleteConversation() {
+    func deleteConversation() {
         threadActionProviderDelegate?.deleteThreadWithConfirmation(threadViewModel: threadViewModel)
     }
 
-    public func toggleConversationArchived() {
+    func toggleConversationArchived() {
         threadActionProviderDelegate?.toggleThreadIsArchived(threadViewModel: threadViewModel)
     }
-}
 
-// MARK: - Preview / 3D Touch / UIContextMenu Methods
+    // MARK: - Preview / 3D Touch / UIContextMenu Methods
 
-public extension ConversationViewController {
     var isInPreviewPlatter: Bool {
         get { viewState.isInPreviewPlatter }
         set {
@@ -357,12 +350,10 @@ public extension ConversationViewController {
         isInPreviewPlatter = true
         actionOnOpen = .none
     }
-}
 
-// MARK: - Timers
+    // MARK: - Timers
 
-extension ConversationViewController {
-    public func startReadTimer(caller: String = #function) {
+    func startReadTimer(caller: String = #function) {
         AssertIsOnMainThread()
 
         readTimer?.invalidate()
@@ -391,7 +382,7 @@ extension ConversationViewController {
         markVisibleMessagesAsRead()
     }
 
-    public func cancelReadTimer(caller: String = #function) {
+    func cancelReadTimer(caller: String = #function) {
         AssertIsOnMainThread()
 
         readTimer?.invalidate()
@@ -464,7 +455,7 @@ extension ConversationViewController {
         self.lastSortIdMarkedRead = lastSortIdMarkedRead
     }
 
-    public func markVisibleMessagesAsRead(caller: String = #function) {
+    func markVisibleMessagesAsRead(caller: String = #function) {
         AssertIsOnMainThread()
 
         guard

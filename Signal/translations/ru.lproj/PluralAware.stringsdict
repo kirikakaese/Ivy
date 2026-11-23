@@ -417,6 +417,66 @@
 			<string>Этот цвет используется в %1$d чата. Вы хотите сохранить изменения для всех чатов?</string>
 		</dict>
 	</dict>
+	<key>CHAT_FOLDERS_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d чат</string>
+			<key>few</key>
+			<string>%1$d чата</string>
+			<key>many</key>
+			<string>%1$d чатов</string>
+			<key>other</key>
+			<string>%1$d чата</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_CHAT_TYPE_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d тип чата</string>
+			<key>few</key>
+			<string>%1$d типа чатов</string>
+			<key>many</key>
+			<string>%1$d типов чатов</string>
+			<key>other</key>
+			<string>%1$d типа чата</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_EXCLUDED_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d чат исключён</string>
+			<key>few</key>
+			<string>%1$d чата исключено</string>
+			<key>many</key>
+			<string>%1$d чатов исключено</string>
+			<key>other</key>
+			<string>%1$d чата исключено</string>
+		</dict>
+	</dict>
 	<key>CHOOSE_BACKUP_PLAN_BULLET_RECENT_MEDIA_BACKUP_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1980,6 +2040,86 @@
 Попробуйте ещё раз через %1$d часа.</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Вы можете добавить в избранное только %1$d стикер</string>
+			<key>few</key>
+			<string>Вы можете добавить в избранное только %1$d стикера</string>
+			<key>many</key>
+			<string>Вы можете добавить в избранное только %1$d стикеров</string>
+			<key>other</key>
+			<string>Вы можете добавить в избранное только %1$d стикера</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_MESSAGE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Данное действие удалит этот набор стикеров. Добавить его снова можно будет только по ссылке или через стикер-сообщение.</string>
+			<key>few</key>
+			<string>Данное действие удалит эти наборы стикеров. Добавить их снова можно будет только по ссылке или через стикер-сообщение.</string>
+			<key>many</key>
+			<string>Данное действие удалит эти наборы стикеров. Добавить их снова можно будет только по ссылке или через стикер-сообщение.</string>
+			<key>other</key>
+			<string>Данное действие удалит эти наборы стикеров. Добавить их снова можно будет только по ссылке или через стикер-сообщение.</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TITLE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Удалить %1$d набор стикеров?</string>
+			<key>few</key>
+			<string>Удалить %1$d набора стикеров?</string>
+			<key>many</key>
+			<string>Удалить %1$d наборов стикеров?</string>
+			<key>other</key>
+			<string>Удалить %1$d набора стикеров?</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Набор стикеров удалён</string>
+			<key>few</key>
+			<string>Наборы стикеров удалены</string>
+			<key>many</key>
+			<string>Наборы стикеров удалены</string>
+			<key>other</key>
+			<string>Наборы стикеров удалены</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1998,6 +2138,26 @@
 			<string>%1$d стикеров</string>
 			<key>other</key>
 			<string>%1$d стикера</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_TOOLBAR_CAPTION_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Выбрано: %1$d</string>
+			<key>few</key>
+			<string>Выбрано: %1$d</string>
+			<key>many</key>
+			<string>Выбрано: %1$d</string>
+			<key>other</key>
+			<string>Выбрано: %1$d</string>
 		</dict>
 	</dict>
 	<key>STORY_REPLIES_COUNT_%d</key>

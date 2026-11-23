@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal kini dioptimumkan untuk iPhone Duo.
+=======
+• Kini anda boleh menambahkan sebarang pelekat pada senarai kegemaran anda supaya senang untuk mencarinya.
+
+• Editor media juga menyokong untuk mengalih keluar runut audio daripada video sebelum anda menghantarnya.
+>>>>>>> upstream/8.38.0.2011

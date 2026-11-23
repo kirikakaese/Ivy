@@ -417,6 +417,66 @@
 			<string>Гэты колер ёсць ў %1$d чатах. Жадаеце захаваць змяненні для ўсіх чатаў?</string>
 		</dict>
 	</dict>
+	<key>CHAT_FOLDERS_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d чат</string>
+			<key>few</key>
+			<string>%1$d чаты</string>
+			<key>many</key>
+			<string>%1$d чатаў</string>
+			<key>other</key>
+			<string>%1$d чатаў</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_CHAT_TYPE_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d тып чата</string>
+			<key>few</key>
+			<string>%1$d тыпы чата</string>
+			<key>many</key>
+			<string>%1$d тыпаў чата</string>
+			<key>other</key>
+			<string>%1$d тыпаў чата</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_EXCLUDED_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d чат выключаны</string>
+			<key>few</key>
+			<string>%1$d чаты выключаны</string>
+			<key>many</key>
+			<string>%1$d чатаў выключаны</string>
+			<key>other</key>
+			<string>%1$d чатаў выключаны</string>
+		</dict>
+	</dict>
 	<key>CHOOSE_BACKUP_PLAN_BULLET_RECENT_MEDIA_BACKUP_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1980,6 +2040,86 @@
 Паўтарыце спробу праз %1$d гадзіны.</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Вы можаце дадаць толькі %1$d стыкер у Абраныя</string>
+			<key>few</key>
+			<string>Вы можаце дадаць толькі %1$d стыкеры ў Абраныя</string>
+			<key>many</key>
+			<string>Вы можаце дадаць толькі %1$d стыкераў у Абраныя</string>
+			<key>other</key>
+			<string>Вы можаце дадаць толькі %1$d стыкераў у Абраныя</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_MESSAGE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Пасля гэтага набор стыкераў будзе выдалены. Вы не зможаце дадаць яго зноў без спасылкі або паведамлення са стыкерам.</string>
+			<key>few</key>
+			<string>Пасля гэтага наборы стыкераў будуць выдалены. Вы не зможаце дадаць іх зноў без спасылкі або паведамлення са стыкерам.</string>
+			<key>many</key>
+			<string>Пасля гэтага набораў стыкераў будуць выдалены. Вы не зможаце дадаць іх зноў без спасылкі або паведамлення са стыкерам.</string>
+			<key>other</key>
+			<string>Пасля гэтага набораў стыкераў будуць выдалены. Вы не зможаце дадаць іх зноў без спасылкі або паведамлення са стыкерам.</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TITLE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Выдаліць набор стыкераў?</string>
+			<key>few</key>
+			<string>Выдаліць %1$d наборы стыкераў?</string>
+			<key>many</key>
+			<string>Выдаліць %1$d набораў стыкераў?</string>
+			<key>other</key>
+			<string>Выдаліць %1$d набораў стыкераў?</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Набор стыкераў выдалены</string>
+			<key>few</key>
+			<string>Наборы стыкераў выдалены</string>
+			<key>many</key>
+			<string>Набораў стыкераў выдалена</string>
+			<key>other</key>
+			<string>Набораў стыкераў выдалена</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1998,6 +2138,26 @@
 			<string>%1$d стыкераў</string>
 			<key>other</key>
 			<string>%1$d стыкераў</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_TOOLBAR_CAPTION_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d выбрана</string>
+			<key>few</key>
+			<string>%1$d выбраны</string>
+			<key>many</key>
+			<string>%1$d выбраны</string>
+			<key>other</key>
+			<string>%1$d выбраны</string>
 		</dict>
 	</dict>
 	<key>STORY_REPLIES_COUNT_%d</key>

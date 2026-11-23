@@ -10,96 +10,64 @@ extension RegistrationCoordinatorImpl {
 
     enum Service {
 
-        enum SVR2AuthCheckResponse {
-            case success(RegistrationServiceResponses.SVR2AuthCheckResponse)
-            case networkError
-            case genericError
-        }
-
         static func makeSVR2AuthCheckRequest(
             e164: E164,
             candidateCredentials: [SVR2AuthCredential],
             networkManager: any NetworkManagerProtocol,
             logger: PrefixedLogger,
-        ) async -> SVR2AuthCheckResponse {
+        ) async throws -> RegistrationServiceResponses.SVR2AuthCheckResponse {
             let request = RegistrationRequestFactory.svr2AuthCredentialCheckRequest(
                 e164: e164,
                 credentials: candidateCredentials,
                 logger: logger,
             )
-            return await makeRequest(
-                { try await networkManager.asyncRequest(request) },
-                handler: self.handleSVR2AuthCheckResponse(statusCode:retryAfterHeader:bodyData:logger:),
-                fallbackError: .genericError,
-                networkFailureError: .networkError,
-                logger: logger,
+            let response = try await networkManager.asyncRequest(request)
+            guard response.responseStatusCode == 200 else {
+                throw response.asError()
+            }
+            return try JSONDecoder().decode(
+                RegistrationServiceResponses.SVR2AuthCheckResponse.self,
+                from: response.responseBodyData ?? Data(),
             )
         }
 
-        private static func handleSVR2AuthCheckResponse(
-            statusCode: Int,
-            retryAfterHeader: TimeInterval?,
-            bodyData: Data?,
-            logger: PrefixedLogger,
-        ) -> SVR2AuthCheckResponse {
-            let statusCode = RegistrationServiceResponses.SVR2AuthCheckResponseCodes(rawValue: statusCode)
-            switch statusCode {
-            case .success:
-                guard let bodyData else {
-                    Logger.warn("Got empty KBS auth check response")
-                    return .genericError
-                }
-                guard let response = try? JSONDecoder().decode(RegistrationServiceResponses.SVR2AuthCheckResponse.self, from: bodyData) else {
-                    Logger.warn("Unable to parse KBS auth check response from response")
-                    return .genericError
-                }
-
-                return .success(response)
-            case .malformedRequest, .invalidJSON:
-                Logger.error("Malformed kbs auth check request")
-                return .genericError
-            case .none, .unexpectedError:
-                return .genericError
-            }
-        }
-
         static func makeCreateAccountRequest(
-            _ verificationMethod: RegistrationRequestFactory.VerificationMethod,
+            _ requestContext: RegistrationRequestFactory.CreateAccountRequestContext,
             authPassword: String,
             accountAttributes: AccountAttributes,
             skipDeviceTransfer: Bool,
             apnRegistrationId: RegistrationRequestFactory.ApnRegistrationId?,
             aciPreKeyBundle: RegistrationPreKeyUploadBundle,
-            pniPreKeyBundle: RegistrationPreKeyUploadBundle?,
             networkManager: any NetworkManagerProtocol,
             logger: PrefixedLogger,
-        ) async throws -> AccountResponse {
+        ) async throws -> AccountIdentityResponse {
             let request = RegistrationRequestFactory.createAccountRequest(
-                verificationMethod: verificationMethod,
+                requestContext,
                 authPassword: authPassword,
                 accountAttributes: accountAttributes,
                 skipDeviceTransfer: skipDeviceTransfer,
                 apnRegistrationId: apnRegistrationId,
                 aciPreKeyBundle: aciPreKeyBundle,
-                pniPreKeyBundle: pniPreKeyBundle,
                 logger: logger,
             )
             let response: HTTPResponse
             do {
                 response = try await networkManager.asyncRequest(request)
-            } catch where error.httpStatusCode == 401 {
+            } catch where error.httpStatusCode == 401 && requestContext.hasSessionId {
                 /// The Authorization header was invalid or the provided credentials were
                 /// insufficient to verify ownership of the given phone number. Response
                 /// body has an optional string error message.
-                return .rejectedVerificationMethod
-            } catch where error.httpStatusCode == 403 {
+                throw Registration.SessionRejectedError()
+            } catch where error.httpStatusCode == 401 && requestContext.hasReceiptCredential {
+                throw Registration.ReceiptCredentialRejectedError()
+            } catch where error.httpStatusCode == 403 && requestContext.hasRecoveryPassword {
                 /// The provided registration recovery password is either incorrect or
                 /// registration via reg recovery password is impossible for this number.
-                return .rejectedVerificationMethod
+                throw Registration.RecoveryPasswordRejectedError()
             } catch where error.httpStatusCode == 409 {
                 /// The caller has not explicitly elected to skip transferring data from
                 /// another device, but a device transfer is technically possible.
-                return .deviceTransferPossible
+                throw Registration.DeviceTransferPossibleError()
             } catch where error.httpStatusCode == 423 {
                 /// An account with the given phone number already exists and has a
                 /// registration lock, and the client has not provided appropriate reglock
@@ -111,32 +79,28 @@ extension RegistrationCoordinatorImpl {
                     RegistrationServiceResponses.RegistrationLockFailureResponse.self,
                     from: error.httpResponseData ?? Data(),
                 )
-                return .reglockFailure(parsedResponse)
+                throw Registration.ReglockError(failureResponse: parsedResponse)
             }
             guard response.responseStatusCode == 200 else {
                 throw response.asError()
             }
-            let parsedResponse = try JSONDecoder().decode(
+            return try JSONDecoder().decode(
                 AccountIdentityResponse.self,
                 from: response.responseBodyData ?? Data(),
             )
-            return .success(AccountIdentity(
-                localIdentifiers: parsedResponse.localIdentifiers,
-                authPassword: authPassword,
-                hasPreviouslyUsedSVR: parsedResponse.storageCapable,
-            ))
         }
 
         static func makeChangeNumberRequest(
-            _ verificationMethod: RegistrationRequestFactory.VerificationMethod,
+            _ requestContext: RegistrationRequestFactory.ChangeNumberRequestContext,
+            newPhoneNumber: E164,
             reglockToken: RegistrationLock?,
-            authPassword: String,
             pniChangeNumberParameters: PniDistribution.Parameters,
             networkManager: any NetworkManagerProtocol,
             logger: PrefixedLogger,
-        ) async throws -> AccountResponse {
+        ) async throws -> AccountIdentityResponse {
             let request = RegistrationRequestFactory.changeNumberRequest(
-                verificationMethod: verificationMethod,
+                requestContext,
+                newPhoneNumber: newPhoneNumber,
                 reglockToken: reglockToken,
                 pniChangeNumberParameters: pniChangeNumberParameters,
                 logger: logger,
@@ -144,14 +108,14 @@ extension RegistrationCoordinatorImpl {
             let response: HTTPResponse
             do {
                 response = try await networkManager.asyncRequest(request)
-            } catch where error.httpStatusCode == 401 {
+            } catch where error.httpStatusCode == 401 && requestContext.hasSessionId {
                 /// The provided credentials were insufficient to verify ownership of the
                 /// given phone number.
-                return .rejectedVerificationMethod
-            } catch where error.httpStatusCode == 403 {
+                throw Registration.SessionRejectedError()
+            } catch where error.httpStatusCode == 403 && requestContext.hasRecoveryPassword {
                 /// The provided registration recovery password is either incorrect or
                 /// registration via reg recovery password is impossible for this number.
-                return .rejectedVerificationMethod
+                throw Registration.RecoveryPasswordRejectedError()
             } catch where error.httpStatusCode == 409 {
                 /// The devices to notify in the request did not match the known linked
                 /// devices.
@@ -175,20 +139,15 @@ extension RegistrationCoordinatorImpl {
                     RegistrationServiceResponses.RegistrationLockFailureResponse.self,
                     from: error.httpResponseData ?? Data(),
                 )
-                return .reglockFailure(parsedResponse)
+                throw Registration.ReglockError(failureResponse: parsedResponse)
             }
             guard response.responseStatusCode == 200 else {
                 throw response.asError()
             }
-            let parsedResponse = try JSONDecoder().decode(
+            return try JSONDecoder().decode(
                 AccountIdentityResponse.self,
                 from: response.responseBodyData ?? Data(),
             )
-            return .success(AccountIdentity(
-                localIdentifiers: parsedResponse.localIdentifiers,
-                authPassword: authPassword,
-                hasPreviouslyUsedSVR: parsedResponse.storageCapable,
-            ))
         }
 
         static func makeWhoAmIRequest(
@@ -201,35 +160,6 @@ extension RegistrationCoordinatorImpl {
                 throw response.asError()
             }
             return try JSONDecoder().decode(AccountIdentityResponse.self, from: response.responseBodyData ?? Data())
-        }
-
-        private static func makeRequest<ResponseType>(
-            _ makeRequest: () async throws -> HTTPResponse,
-            handler: (_ statusCode: Int, _ retryAfterHeader: TimeInterval?, _ bodyData: Data?, _ logger: PrefixedLogger) -> ResponseType,
-            fallbackError: ResponseType,
-            networkFailureError: ResponseType,
-            logger: PrefixedLogger,
-        ) async -> ResponseType {
-            do {
-                let response = try await makeRequest()
-                return handler(
-                    response.responseStatusCode,
-                    response.headers.retryAfterTimeInterval,
-                    response.responseBodyData,
-                    logger,
-                )
-            } catch where error.isNetworkFailureOrTimeout {
-                return networkFailureError
-            } catch let error as OWSHTTPError {
-                return handler(
-                    error.responseStatusCode,
-                    error.responseHeaders?.retryAfterTimeInterval,
-                    error.httpResponseData,
-                    logger,
-                )
-            } catch {
-                return fallbackError
-            }
         }
     }
 }

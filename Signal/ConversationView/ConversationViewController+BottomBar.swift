@@ -3,9 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalServiceKit
-import UIKit
 
 enum CVCBottomViewType: Equatable {
     // For perf reasons, we don't use a bottom view until
@@ -22,6 +20,7 @@ enum CVCBottomViewType: Equatable {
     case notRegistered
     case notLinked
     case groupEnded
+    case notMemberOfGroup
     case releaseNotes
 }
 
@@ -31,11 +30,9 @@ protocol ConversationBottomBar: UIView {
     var shouldAttachToKeyboardLayoutGuide: Bool { get }
 }
 
-// MARK: -
+extension ConversationViewController {
 
-public extension ConversationViewController {
-
-    internal var bottomViewType: CVCBottomViewType {
+    var bottomViewType: CVCBottomViewType {
         get { viewState.bottomViewType }
         set {
             // For perf reasons, we avoid adding any "bottom view"
@@ -55,8 +52,6 @@ public extension ConversationViewController {
     }
 
     func ensureBottomViewType() {
-        AssertIsOnMainThread()
-
         guard viewState.selectionAnimationState == .idle else {
             return
         }
@@ -121,7 +116,7 @@ public extension ConversationViewController {
                 return .blockingLegacyGroup
             }
             if userLeftGroup {
-                return .none
+                return .notMemberOfGroup
             }
             if isBlockedFromSendingByAnnouncementOnlyGroup {
                 return .announcementOnlyGroup
@@ -131,8 +126,6 @@ public extension ConversationViewController {
     }
 
     private func updateBottomBar() {
-        AssertIsOnMainThread()
-
         guard hasViewWillAppearEverBegun else {
             return
         }
@@ -194,11 +187,11 @@ public extension ConversationViewController {
         case .notRegistered:
             let notRegisteredView = BlockingErrorBottomPanelView(
                 text: notRegisteredErrorText(),
-                onTap: { [unowned self] in
+                onTap: {
                     let tsAccountManager = DependenciesBridge.shared.tsAccountManager
                     let registrationState = tsAccountManager.registrationStateWithMaybeSneakyTransaction
                     let deregisteredState = registrationState.deregisteredState.owsFailUnwrap("must be deregistered")
-                    RegistrationUtils.showReRegistrationPrompt(fromViewController: self, deregisteredState: deregisteredState)
+                    RegistrationUtils.showReRegistration(deregisteredState: deregisteredState)
                 },
             )
             requestView = notRegisteredView
@@ -222,6 +215,16 @@ public extension ConversationViewController {
             )
             requestView = groupEndedView
             bottomView = groupEndedView
+        case .notMemberOfGroup:
+            let notMemberView = BlockingErrorBottomPanelView(
+                text: NSAttributedString(string: OWSLocalizedString(
+                    "GROUP_NOT_MEMBER_BOTTOM_PANEL_LABEL",
+                    comment: "Bottom bar label for group chats the local user is not a member of",
+                )),
+                onTap: {},
+            )
+            requestView = notMemberView
+            bottomView = notMemberView
         case .releaseNotes:
             let releaseNotesView = BlockingErrorBottomPanelView(
                 text: NSAttributedString(string: OWSLocalizedString("RELEASE_NOTES_BOTTOM_BAR_LABEL", comment: "Bottom bar label for the release notes thread")),
@@ -262,6 +265,13 @@ public extension ConversationViewController {
                 let conversationBottomBar = bottomView as? ConversationBottomBar,
                 conversationBottomBar.shouldAttachToKeyboardLayoutGuide
             {
+                // Make `bottomView` attach to the bottom of the screen when no on-screen keyboard is visible.
+                // It is then bottomView's responsibility to avoid bottom safe area inset as necessary.
+                // We do this to allow ConversationInputToolbar to sit lower than otherwise would be possible
+                // on devices with top and bottom safe area insets.
+                if #available(iOS 17, *), let keyboardLayoutGuide = keyboardLayoutGuide as? UIKeyboardLayoutGuide {
+                    keyboardLayoutGuide.usesBottomSafeArea = false
+                }
                 NSLayoutConstraint.activate([
                     bottomView.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor),
                 ])
@@ -342,8 +352,6 @@ public extension ConversationViewController {
     }
 
     func loadInputToolbarIfNeeded() {
-        AssertIsOnMainThread()
-
         guard hasViewWillAppearEverBegun else { return }
 
         guard inputToolbar == nil else { return }
@@ -380,8 +388,6 @@ public extension ConversationViewController {
     }
 
     func reloadDraft() {
-        AssertIsOnMainThread()
-
         guard
             let messageDraft = (SSKEnvironment.shared.databaseStorageRef.read { transaction in
                 self.thread.currentDraft(transaction: transaction)
@@ -389,7 +395,7 @@ public extension ConversationViewController {
         else {
             return
         }
-        guard let inputToolbar = self.inputToolbar else {
+        guard let inputToolbar else {
             return
         }
         inputToolbar.setMessageBody(messageDraft, animated: false)
@@ -398,22 +404,16 @@ public extension ConversationViewController {
     // MARK: - Message Request
 
     func showMessageRequestDialogIfRequiredAsync() {
-        AssertIsOnMainThread()
-
         DispatchQueue.main.async { [weak self] in
             self?.showMessageRequestDialogIfRequired()
         }
     }
 
     func showMessageRequestDialogIfRequired() {
-        AssertIsOnMainThread()
-
         ensureBottomViewType()
     }
 
     func popKeyBoard() {
-        AssertIsOnMainThread()
-
         guard hasViewWillAppearEverBegun else {
             owsFailDebug("InputToolbar not yet ready.")
             return
@@ -426,8 +426,6 @@ public extension ConversationViewController {
     }
 
     func dismissKeyboard() {
-        AssertIsOnMainThread()
-
         guard hasViewWillAppearEverBegun else {
             owsFailDebug("InputToolbar not yet ready.")
             return
@@ -446,8 +444,6 @@ public extension ConversationViewController {
     }
 
     private func dismissRequestView() {
-        AssertIsOnMainThread()
-
         guard let requestView else {
             return
         }

@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal ist jetzt für iPhone Duo optimiert, sodass du mit einem einzigen Update gleich zwei Bildschirme abdecken kannst. Wir werden auch in Zukunft weitere Verbesserungen vornehmen.
+=======
+• Deine Lieblingssticker haben jetzt einen Platz, an dem sie haften bleiben. Füge einen beliebigen Sticker zu deiner Favoritenliste hinzu, damit du deinen Liebsten immer in der Nähe hast.
+
+• Der Medien-Editor ermöglicht es dir auch, die Audiospur aus einem Video zu entfernen, bevor du es versendest. Wenn die idyllischen Zeitlupen-Aufnahmen von deinem Urlaub in Schottland also durch blökende Schafe beeinträchtigt wurden, kannst du deinen Film mit nur einem Fingertipp in »Das Schweigen der Lämmer« verwandeln.
+>>>>>>> upstream/8.38.0.2011

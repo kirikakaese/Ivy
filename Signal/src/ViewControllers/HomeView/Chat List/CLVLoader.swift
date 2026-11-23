@@ -51,7 +51,7 @@ enum CLVLoadResult {
 
 // MARK: -
 
-public class CLVLoader {
+class CLVLoader {
 
     static func loadRenderStateForReset(viewInfo: CLVViewInfo, transaction: DBReadTransaction) -> CLVLoadResult {
         AssertIsOnMainThread()
@@ -75,6 +75,7 @@ public class CLVLoader {
                 filterToVisible: true,
                 tx: transaction,
             ).map(\.uniqueId)
+<<<<<<< HEAD
             visibleThreadUniqueIds = IvyPerformance.measure("chat list folders") { ChatFolderChats.threadIds(
                 threadFinder.visibleInboxThreadUniqueIds(
                     filteredBy: viewInfo.inboxFilter,
@@ -102,6 +103,14 @@ public class CLVLoader {
         if !viewInfo.ivyHiddenThreadIds.isEmpty {
             pinnedThreadUniqueIds.removeAll { viewInfo.ivyHiddenThreadIds.contains($0) }
             visibleThreadUniqueIds.removeAll { viewInfo.ivyHiddenThreadIds.contains($0) }
+=======
+            visibleThreadUniqueIds = threadFinder.visibleInboxThreadUniqueIds(
+                filteredBy: viewInfo.inboxFilter,
+                chatFolder: viewInfo.selectedChatFolder,
+                requiredVisibleThreadIds: viewInfo.requiredVisibleThreadIds,
+                transaction: transaction,
+            )
+>>>>>>> upstream/8.38.0.2011
         }
 
         let pinnedThreadUniqueIdsToRender = Set(pinnedThreadUniqueIds).intersection(visibleThreadUniqueIds)

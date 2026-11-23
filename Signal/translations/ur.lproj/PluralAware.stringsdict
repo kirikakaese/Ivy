@@ -333,6 +333,54 @@
 			<string>یہ رنگ %1$d چیٹس میں استعمال کیا جاتا ہے۔ کیا آپ تمام چیٹس کے لیے تبدیلیاں محفوظ کرنا چاہتے ہیں؟</string>
 		</dict>
 	</dict>
+	<key>CHAT_FOLDERS_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d چیٹس</string>
+			<key>other</key>
+			<string>%1$d چیٹس</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_CHAT_TYPE_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d چیٹ کی قسم</string>
+			<key>other</key>
+			<string>%1$d چیٹ کی اقسام</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_EXCLUDED_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d چیٹ کو نکال دیا گیا</string>
+			<key>other</key>
+			<string>%1$d چیٹس کو نکال دیا گیا</string>
+		</dict>
+	</dict>
 	<key>CHOOSE_BACKUP_PLAN_BULLET_RECENT_MEDIA_BACKUP_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1580,6 +1628,70 @@
  %1$d گھنٹوں میں دوبارہ کوشش کریں۔</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>آپ پسندیدہ میں صرف %1$d اسٹیکر شامل کر سکتے ہیں</string>
+			<key>other</key>
+			<string>آپ پسندیدہ میں صرف %1$d اسٹیکرز شامل کر سکتے ہیں</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_MESSAGE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>اس سے اسٹیکر پیک ہٹا دیا جائے گا۔ آپ لنک یا اسٹیکر میسج کے بغیر اسے دوبارہ شامل نہیں کر سکتے۔</string>
+			<key>other</key>
+			<string>اس سے اسٹیکر پیکس ہٹا دیے جائیں گے۔ آپ لنک یا اسٹیکر میسج کے بغیر انہیں دوبارہ شامل نہیں کر سکتے۔</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TITLE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d اسٹیکر پیک ہٹا دیں؟</string>
+			<key>other</key>
+			<string>%1$d اسٹیکر پیکس ہٹا دیں؟</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>اسٹیکر پیک ہٹا دیا گیا</string>
+			<key>other</key>
+			<string>اسٹیکر پیکس ہٹا دیے گئے</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1594,6 +1706,22 @@
 			<string>%1$d اسٹیکر</string>
 			<key>other</key>
 			<string>%1$d اسٹیکرز</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_TOOLBAR_CAPTION_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d منتخب کیا گیا</string>
+			<key>other</key>
+			<string>%1$d منتخب کیے گئے</string>
 		</dict>
 	</dict>
 	<key>STORY_REPLIES_COUNT_%d</key>
