@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal este acum optimizat pentru iPhone Duo, așadar poți instala o actualizare, ca să te pregătești pentru două ecrane. Vom dezvălui și alte îmbunătățiri în viitor.
+=======
+• Abțibildurile tale preferate au acum un loc unde să rămână lipite. Adaugă orice abțibild la lista ta de favorite, astfel încât să le poți folosi cu ușurință pe cele care îți plac.
+
+• Noul editor multimedia permite, de asemenea, eliminarea piesei audio dintr-un videoclip, înainte de a-l trimite. Dacă imaginile pastorale filmate cu panoramare lentă din vacanța ta în Scoția au fost parțial stricate de zgomotul oilor rătăcite, cu o singură atingere, filmulețul tău poate deveni silențios, să auzi tăcerea mieilor.
+>>>>>>> upstream/8.38.0.2011

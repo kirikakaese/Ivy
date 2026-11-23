@@ -9,7 +9,7 @@ public protocol StickerHorizontalListViewItem {
     var view: UIView { get }
     var didSelectBlock: () -> Void { get }
     var isSelected: Bool { get }
-    var accessibilityName: String { get }
+    var accessibilityLabel: String { get }
 }
 
 // MARK: -
@@ -18,24 +18,34 @@ public class StickerHorizontalListViewItemSticker: StickerHorizontalListViewItem
     private let stickerInfo: StickerInfo
     public let didSelectBlock: () -> Void
     public let isSelectedBlock: () -> Bool
+    public let accessibilityLabel: String
     private weak var cache: StickerViewCache?
 
     // This initializer can be used for cells which are never selected.
     public convenience init(
         stickerInfo: StickerInfo,
+        accessibilityLabel: String,
         didSelectBlock: @escaping () -> Void,
         cache: StickerViewCache? = nil,
     ) {
-        self.init(stickerInfo: stickerInfo, didSelectBlock: didSelectBlock, isSelectedBlock: { false }, cache: cache)
+        self.init(
+            stickerInfo: stickerInfo,
+            accessibilityLabel: accessibilityLabel,
+            didSelectBlock: didSelectBlock,
+            isSelectedBlock: { false },
+            cache: cache,
+        )
     }
 
     public init(
         stickerInfo: StickerInfo,
+        accessibilityLabel: String,
         didSelectBlock: @escaping () -> Void,
         isSelectedBlock: @escaping () -> Bool,
         cache: StickerViewCache? = nil,
     ) {
         self.stickerInfo = stickerInfo
+        self.accessibilityLabel = accessibilityLabel
         self.didSelectBlock = didSelectBlock
         self.isSelectedBlock = isSelectedBlock
         self.cache = cache
@@ -67,11 +77,6 @@ public class StickerHorizontalListViewItemSticker: StickerHorizontalListViewItem
     public var isSelected: Bool {
         return isSelectedBlock()
     }
-
-    public var accessibilityName: String {
-        // We just need a stable identifier.
-        return "pack." + stickerInfo.asKey()
-    }
 }
 
 // MARK: -
@@ -99,8 +104,44 @@ public class StickerHorizontalListViewItemRecents: StickerHorizontalListViewItem
         return isSelectedBlock()
     }
 
-    public var accessibilityName: String {
-        return "recents"
+    public var accessibilityLabel: String {
+        OWSLocalizedString(
+            "STICKER_CATEGORY_RECENTS_NAME",
+            comment: "The name for the sticker category 'Recents'",
+        )
+    }
+}
+
+// MARK: -
+
+public class StickerHorizontalListViewItemFavorites: StickerHorizontalListViewItem {
+
+    public let didSelectBlock: () -> Void
+    public let isSelectedBlock: () -> Bool
+
+    public init(
+        didSelectBlock: @escaping () -> Void,
+        isSelectedBlock: @escaping () -> Bool,
+    ) {
+        self.didSelectBlock = didSelectBlock
+        self.isSelectedBlock = isSelectedBlock
+    }
+
+    public var view: UIView {
+        let imageView = UIImageView(image: UIImage(named: "favorite"))
+        imageView.tintColor = .Signal.label
+        return imageView
+    }
+
+    public var isSelected: Bool {
+        return isSelectedBlock()
+    }
+
+    public var accessibilityLabel: String {
+        OWSLocalizedString(
+            "STICKER_KEYBOARD_SECTION_HEADER_LABEL_FAVORITES",
+            comment: "Section header for favorites in the sticker keyboard",
+        )
     }
 }
 
@@ -149,6 +190,10 @@ public class StickerHorizontalListView: UICollectionView {
                 itemView.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor, constant: -cellContentInset),
                 itemView.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor, constant: -cellContentInset),
             ])
+
+            cell.isAccessibilityElement = true
+            cell.accessibilityLabel = item.accessibilityLabel
+            cell.accessibilityTraits = item.isSelected ? [.button, .selected] : .button
 
             // Configure background - this closure is called whenever cell state changes.
             cell.configurationUpdateHandler = { cell, state in

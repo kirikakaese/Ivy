@@ -318,7 +318,7 @@ public enum DonationViewsUtil {
                 comment: "Action sheet message for Still Processing Badge sheet",
             ),
         )
-        actionSheet.addAction(OWSActionSheets.okayAction)
+        actionSheet.addAction(OWSActionSheets.okAction)
 
         return actionSheet
     }
@@ -385,6 +385,7 @@ public enum DonationViewsUtil {
         }
     }
 
+    @MainActor
     static func presentErrorSheet(
         from viewController: UIViewController,
         error: Error,
@@ -401,16 +402,31 @@ public enum DonationViewsUtil {
                     paymentMethod: paymentMethod,
                     donateMode: donateMode,
                 )
-            case .assertion:
-                DonationViewsUtil.presentBadgeCantBeAddedSheet(
-                    from: viewController,
-                    donateMode: donateMode,
-                )
             }
         } else if let stripeError = error as? Stripe.StripeError {
             DonationViewsUtil.presentDonationErrorSheet(
                 from: viewController,
                 forDonationChargeErrorCode: stripeError.code,
+                using: paymentMethod,
+            )
+        } else if
+            let receiptCredentialRequestError = error as? ReceiptCredentialRequestError,
+            let chargeFailureCode = receiptCredentialRequestError
+                .chargeFailureCodeIfPaymentFailed?.strippedOrNil
+        {
+            DonationViewsUtil.presentDonationErrorSheet(
+                from: viewController,
+                forDonationChargeErrorCode: chargeFailureCode,
+                using: paymentMethod,
+            )
+        } else if
+            let chargeFailureCode = Subscription.ChargeFailure
+                .decode(responseBody: error.httpResponseData)?
+                .code?.strippedOrNil
+        {
+            DonationViewsUtil.presentDonationErrorSheet(
+                from: viewController,
+                forDonationChargeErrorCode: chargeFailureCode,
                 using: paymentMethod,
             )
         } else if let redirectError = error as? Stripe.RedirectAuthorizationError {
@@ -427,6 +443,8 @@ public enum DonationViewsUtil {
             presentRateLimitedSheet(
                 from: viewController,
             )
+        } else if error.isNetworkFailureOrTimeout || error.is5xxServiceResponse {
+            SheetDisplayableError.networkError.showSheet(from: viewController)
         } else {
             presentBadgeCantBeAddedSheet(
                 from: viewController,
@@ -594,7 +612,7 @@ public enum DonationViewsUtil {
                         title: localizedSheetTitle,
                         message: localizedSheetMessage,
                     )
-                    let buttonTitle = OWSLocalizedString("BUTTON_OKAY", comment: "Label for the 'okay' button.")
+                    let buttonTitle = CommonStrings.okButton
                     fallbackSheet.addAction(ActionSheetAction(title: buttonTitle, style: .default))
                     viewController.presentActionSheet(fallbackSheet)
                     return

@@ -487,13 +487,6 @@ extension ActionSheetAction {
         )
     }
 
-    public static var okay: ActionSheetAction {
-        ActionSheetAction(
-            title: CommonStrings.okayButton,
-            style: .default,
-        )
-    }
-
     public static var cancel: ActionSheetAction {
         ActionSheetAction(
             title: CommonStrings.cancelButton,
@@ -561,6 +554,7 @@ extension ActionSheetController: UIViewControllerTransitioningDelegate {
 }
 
 extension ActionSheetController: UITextViewDelegate {
+    @available(iOS, deprecated: 17.0)
     public func textView(
         _ textView: UITextView,
         shouldInteractWith url: URL,

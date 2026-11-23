@@ -4,10 +4,10 @@
 //
 
 import SignalServiceKit
-public import SignalUI
+import SignalUI
 import StoreKit
 
-public class ChatListViewController: OWSViewController, HomeTabViewController {
+class ChatListViewController: OWSViewController, HomeTabViewController {
     init(
         chatListMode: ChatListMode,
     ) {
@@ -28,17 +28,17 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         viewState.configure()
     }
 
-    override public var canBecomeFirstResponder: Bool {
+    override var canBecomeFirstResponder: Bool {
         true
     }
 
     // MARK: View Lifecycle
 
-    override public func loadView() {
+    override func loadView() {
         view = containerView
     }
 
-    override public func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = .Signal.background
@@ -92,6 +92,30 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         firstConversationCueView.autoPinEdge(toSuperviewEdge: .leading, withInset: 10, relation: .greaterThanOrEqual)
         firstConversationCueView.autoPinEdge(toSuperviewMargin: .bottom, relation: .greaterThanOrEqual)
 
+        // Chat folders
+        let chatFolderPickerView = viewState.chatFolderPickerView
+        chatFolderPickerView.isHidden = true
+        chatFolderPickerView.didSelectFolder = { [weak self] chatFolderId in
+            self?.selectChatFolder(chatFolderId: chatFolderId)
+        }
+        view.addSubview(chatFolderPickerView)
+        chatFolderPickerView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            chatFolderPickerView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
+            chatFolderPickerView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
+            // The picker sits within the top safe area
+            chatFolderPickerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            // The height of the safe area gets updated in viewDidLayoutSubviews
+        ])
+        if #available(iOS 26, *) {
+            let scrollEdgeInteraction = UIScrollEdgeElementContainerInteraction()
+            scrollEdgeInteraction.scrollView = tableView
+            scrollEdgeInteraction.edge = .top
+            chatFolderPickerView.addInteraction(scrollEdgeInteraction)
+        } else {
+            chatFolderPickerView.backgroundColor = .Signal.background
+        }
+
         // Search
         navigationItem.searchController = viewState.searchController
         viewState.searchController.searchResultsUpdater = self
@@ -110,14 +134,14 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         updateExpirationReminderView()
         updatePaymentReminderView()
         updateUsernameReminderView()
-        updateTableViewPaddingIfNeeded()
+        updateListCellAppearance()
         observeNotifications()
         ivyObserveChatFolders() // Ivy: chat folders
     }
 
     private var viewHasAppeared = false
 
-    override public func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         isViewVisible = true
@@ -243,7 +267,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         }
     }
 
-    override public func viewDidAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         defer {
             hasEverAppeared = true
@@ -273,7 +297,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         tableDataSource.updateAndSetRefreshTimer()
     }
 
-    override public func viewWillDisappear(_ animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         leaveMultiselectMode()
         tableDataSource.stopRefreshTimer()
 
@@ -283,7 +307,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         searchResultsController.viewWillDisappear(animated)
     }
 
-    override public func viewDidDisappear(_ animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
         searchResultsController.viewDidDisappear(animated)
@@ -293,14 +317,20 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         viewState.localFileBackupExportProgressView.didDisappear()
     }
 
-    override public func viewIsAppearing(_ animated: Bool) {
+    override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(animated)
 
         updateFilterControl(animated: false)
     }
 
-    override public func viewDidLayoutSubviews() {
+    override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+
+        let chatFolderPickerView = viewState.chatFolderPickerView
+        let chatFolderPickerHeight = chatFolderPickerView.isHidden ? 0 : chatFolderPickerView.frame.height
+        if additionalSafeAreaInsets.top != chatFolderPickerHeight {
+            additionalSafeAreaInsets.top = chatFolderPickerHeight
+        }
 
         let bottomInset = if let getStartedBanner, getStartedBanner.isViewLoaded, getStartedBanner.view.alpha > 0 {
             getStartedBanner.opaqueHeight
@@ -318,14 +348,14 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
 
     // MARK: Theme, content size, and layout changes
 
-    override public func contentSizeCategoryDidChange() {
+    override func contentSizeCategoryDidChange() {
         super.contentSizeCategoryDidChange()
 
         // This is expensive but this event is very rare.
         reloadTableDataAndResetCellContentCache()
     }
 
-    override public func themeDidChange() {
+    override func themeDidChange() {
         super.themeDidChange()
 
         reloadTableDataAndResetCellContentCache()
@@ -333,32 +363,16 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         ivyUpdateChatFolderBar() // Ivy: the folder bar follows the accent colour
     }
 
-    override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
         guard isViewLoaded else { return }
 
         containerView.willTransition(to: size, with: coordinator)
 
-        // There is a subtle difference in when the split view controller
-        // transitions between collapsed and expanded state on iPad vs
-        // when it does on iPhone. We reloadData here in order to ensure
-        // the background color of all of our cells is updated to reflect
-        // the current state, so it's important that we're only doing this
-        // once the state is ready, otherwise there will be a flash of the
-        // wrong background color. For iPad, this moment is _before_ the
-        // transition occurs. For iPhone, this moment is _during_ the
-        // transition. We reload in the right places accordingly.
-        if UIDevice.current.isIPad {
-            updateTableViewPaddingIfNeeded()
-            reloadTableDataAndResetCellContentCache()
-        }
-
         coordinator.animate { context in
-            if !UIDevice.current.isIPad {
-                self.updateTableViewPaddingIfNeeded()
-                self.reloadTableDataAndResetCellContentCache()
-            }
+            self.updateListCellAppearance()
+            self.reloadTableDataAndResetCellContentCache()
 
             // The Get Started banner will occupy most of the screen in landscape
             // If we're transitioning to landscape, fade out the view (if it exists)
@@ -533,7 +547,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
             databaseStorage: db,
             badgeColor: badgeColor,
             onDidDismissContextMenu: onDidDismissContextMenu,
-            buildActions: { settingsAction -> [UIMenuElement] in
+            buildActions: {
                 var contextMenuActions: [UIMenuElement] = []
 
                 if viewState.settingsButtonCreator.showBackupsFailedMenuItem {
@@ -551,7 +565,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
                                 ),
                                 image: image,
                                 handler: { [weak self] _ in
-                                    let backupSettingPageType: ShowAppSettingsMode.BackupSettingsPage = db.read { tx in
+                                    let backupSettingPageType: HomeTabBarController.ShowAppSettingsMode.BackupSettingsPage = db.read { tx in
                                         if failureStateManager.hasFailedRemoteBackup(tx: tx) {
                                             return .remote()
                                         } else if failureStateManager.hasFailedLocalBackup(tx: tx) {
@@ -639,14 +653,6 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
                     )
                 }
 
-                // FIXME: combine viewState.inboxFilter and renderState.viewInfo.inboxFilter to avoid bugs with them getting out of sync
-                switch viewState.inboxFilter {
-                case .unread:
-                    contextMenuActions.append(.disableChatListFilter(target: self))
-                case .unfiltered, nil:
-                    contextMenuActions.append(.enableChatListFilter(target: self))
-                }
-
                 if viewState.settingsButtonCreator.hasInboxChats {
                     contextMenuActions.append(
                         UIAction(
@@ -662,6 +668,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
                     )
                 }
 
+<<<<<<< HEAD
                 // Ivy: chat folders, reminders and tasks
                 contextMenuActions.append(UIAction(
                     title: IvyLocalizedString("CHAT_FOLDERS_TITLE", comment: "Title of the chat folder settings."),
@@ -703,7 +710,28 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
                             },
                         ),
                     )
+=======
+                // FIXME: combine viewState.inboxFilter and renderState.viewInfo.inboxFilter to avoid bugs with them getting out of sync
+                switch viewState.inboxFilter {
+                case .unread:
+                    contextMenuActions.append(.disableChatListFilter(target: self))
+                case .unfiltered, nil:
+                    contextMenuActions.append(.enableChatListFilter(target: self))
+>>>>>>> upstream/8.38.0.2011
                 }
+
+                contextMenuActions.append(
+                    UIAction(
+                        title: OWSLocalizedString(
+                            "HOME_VIEW_TITLE_ARCHIVE",
+                            comment: "Title for the conversation list's 'archive' mode.",
+                        ),
+                        image: Theme.iconImage(.contextMenuArchive),
+                        handler: { [weak self] _ in
+                            self?.showArchivedConversations(offerMultiSelectMode: true)
+                        },
+                    ),
+                )
 
                 return contextMenuActions
             },
@@ -723,16 +751,12 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
     }
 
     func reloadTableDataAndResetCellContentCache() {
-        AssertIsOnMainThread()
-
         cellContentCache.clear()
         conversationCellHeightCache = nil
         reloadTableData()
     }
 
     func reloadTableData(previouslySelectedThreadUniqueIds: [String] = []) {
-        AssertIsOnMainThread()
-
         tableView.reloadData()
 
         let selectedThreadIds: Set<String> = Set(previouslySelectedThreadUniqueIds)
@@ -758,8 +782,6 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
     }
 
     func updateCellVisibility() {
-        AssertIsOnMainThread()
-
         for cell in tableView.visibleCells {
             guard let cell = cell as? ChatListCell else {
                 continue
@@ -769,14 +791,10 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
     }
 
     func updateCellVisibility(cell: ChatListCell, isCellVisible: Bool) {
-        AssertIsOnMainThread()
-
         cell.isCellVisible = isViewVisible && isCellVisible
     }
 
     private func ensureCellAnimations() {
-        AssertIsOnMainThread()
-
         for cell in tableView.visibleCells {
             guard let cell = cell as? ChatListCell else {
                 continue
@@ -785,10 +803,10 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         }
     }
 
-    /// iOS 26+: checks if this VC is displayed in the collapsed split view controller
-    /// and updates `containerView.tableViewHorizontalInset` accordingly.
-    /// Does nothing on prior iOS versions.
-    private func updateTableViewPaddingIfNeeded() {
+    /// Checks whether this view controller is displayed in an expanded or collapsed split view controller
+    /// and updates `tableDataSource.useSideBarChatListCellAppearance` accordingly.
+    /// No-op on versions below iOS 26.
+    private func updateListCellAppearance() {
         guard #available(iOS 26, *) else { return }
 
         let useSidebarChatListCellAppearance: Bool
@@ -797,6 +815,7 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         } else {
             useSidebarChatListCellAppearance = false
         }
+<<<<<<< HEAD
         // We need to add/remove horizotal padding around table view...
         containerView.tableViewHorizontalInset = useSidebarChatListCellAppearance ? 16 : 0
 #if targetEnvironment(macCatalyst)
@@ -806,6 +825,11 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
 #endif
         // ... and tell ChatListCell to use rounded corners if there is non-zero padding.
         tableDataSource.useSideBarChatListCellAppearance = useSidebarChatListCellAppearance
+=======
+        // CLVTableDataSource will tell ChatListCell to use different selected state background appearance
+        // (rounded corners, inset) if chat list is presented in an expanded UISplitViewController.
+        tableDataSource.useSideBarListCellAppearance = useSidebarChatListCellAppearance
+>>>>>>> upstream/8.38.0.2011
     }
 
     // MARK: UI Helpers
@@ -817,14 +841,15 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
     var lastViewedThreadUniqueId: String?
 
     func updateBarButtonItems() {
-        updateLeftBarButtonItem()
+        updateSettingsBarButtonItem()
         updateRightBarButtonItems()
         ivyUpdateChatFolderBar() // Ivy: tabs or sidebar, depending on the split view
     }
 
-    private func updateLeftBarButtonItem() {
+    func updateSettingsBarButtonItem() {
         guard viewState.chatListMode == .inbox, !viewState.multiSelectState.isActive else { return }
 
+<<<<<<< HEAD
 #if targetEnvironment(macCatalyst)
         // Ivy: on the Mac the title sits on the left and the profile
         // picture is at the bottom of the sidebar.
@@ -833,6 +858,8 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         }
 #endif
         // Settings button.
+=======
+>>>>>>> upstream/8.38.0.2011
         navigationItem.leftBarButtonItem = settingsBarButtonItem()
     }
 
@@ -878,12 +905,10 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
     }
 
     func showNewConversationView() {
-        AssertIsOnMainThread()
-
         Logger.info("")
 
         // Dismiss any message actions if they're presented
-        conversationSplitViewController?.selectedConversationViewController?.dismissMessageContextMenu(animated: true)
+        homeTabBarController?.selectedConversationViewController?.dismissMessageContextMenu(animated: true)
 
         let viewController = ComposeViewController()
         SSKEnvironment.shared.contactManagerImplRef.requestSystemContactsOnce { error in
@@ -902,12 +927,10 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
     }
 
     func showNewGroupView() {
-        AssertIsOnMainThread()
-
         Logger.info("")
 
         // Dismiss any message actions if they're presented
-        conversationSplitViewController?.selectedConversationViewController?.dismissMessageContextMenu(animated: true)
+        homeTabBarController?.selectedConversationViewController?.dismissMessageContextMenu(animated: true)
 
         let newGroupViewController = NewGroupMembersViewController()
         SSKEnvironment.shared.contactManagerImplRef.requestSystemContactsOnce { error in
@@ -923,6 +946,10 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
             let modal = OWSNavigationController(rootViewController: newGroupViewController)
             self.navigationController?.presentFormSheet(modal, animated: true)
         }
+    }
+
+    func showAppSettings(mode: HomeTabBarController.ShowAppSettingsMode? = nil, completion: (() -> Void)? = nil) {
+        homeTabBarController?.showAppSettingsWithMode(mode, completion: completion)
     }
 
     @objc
@@ -1005,6 +1032,29 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
             emptyChatListView.isHidden = true
             firstConversationCueView.isHidden = true
         }
+
+        let isChatFolderPickerHidden = !renderState.viewInfo.hasChatFolderPicker
+        if viewState.chatFolderPickerView.isHidden != isChatFolderPickerHidden {
+            viewState.chatFolderPickerView.isHidden = isChatFolderPickerHidden
+            view.setNeedsLayout()
+        }
+    }
+
+    // MARK: Chat folders
+
+    func selectChatFolder(chatFolderId: UUID) {
+        let folder = renderState.viewInfo.chatFolders.first { $0.chatFolderId == chatFolderId }
+        let selectedChatFolderId: UUID? = switch folder?.folderType {
+        case .all, nil:
+            nil
+        case .custom:
+            chatFolderId
+        }
+        guard selectedChatFolderId != viewState.selectedChatFolderId else {
+            return
+        }
+        viewState.selectedChatFolderId = selectedChatFolderId
+        loadCoordinator.loadIfNecessary()
     }
 
     // MARK: -
@@ -1017,8 +1067,9 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
 
     func isChatListTopmostViewController() -> Bool {
         guard
-            UIApplication.shared.frontmostViewController == self.conversationSplitViewController,
-            conversationSplitViewController?.selectedThread == nil,
+            UIApplication.shared.frontmostViewController == homeTabBarController,
+            homeTabBarController?.selectedHomeTab == .chatList,
+            homeTabBarController?.selectedThread == nil,
             presentedViewController == nil
         else { return false }
 
@@ -1216,9 +1267,9 @@ public class ChatListViewController: OWSViewController, HomeTabViewController {
         stack.spacing = 10
         stack.layoutMargins = UIEdgeInsets(
             top: OWSTableViewController2.cellVInnerMargin,
-            left: OWSTableViewController2.cellOuterInset(in: view),
+            leading: OWSTableViewController2.cellHInnerMargin,
             bottom: OWSTableViewController2.cellVInnerMargin,
-            right: OWSTableViewController2.cellOuterInset(in: view),
+            trailing: OWSTableViewController2.cellHInnerMargin,
         )
         stack.isLayoutMarginsRelativeArrangement = true
         paymentsBannerView.addSubview(stack)
@@ -1411,7 +1462,7 @@ extension ChatListViewController {
 
 extension ChatListViewController: ChatListSettingsButtonDelegate {
     func didUpdateButton(_ settingsButtonCreator: ChatListSettingsButtonState) {
-        updateLeftBarButtonItem()
+        updateSettingsBarButtonItem()
     }
 }
 
@@ -1425,6 +1476,7 @@ extension ChatListViewController: ChatListProxyButtonDelegate {
     }
 }
 
+<<<<<<< HEAD
 // MARK: -
 
 extension ChatListViewController {
@@ -1612,16 +1664,18 @@ extension ChatListViewController {
     }
 }
 
+=======
+>>>>>>> upstream/8.38.0.2011
 // MARK: - ThreadContextualActionProvider
 
 extension ChatListViewController: ThreadContextualActionProvider {
     func threadContextualActionShouldCloseThreadIfActive(threadViewModel: ThreadViewModel) {
-        if
-            let conversationSplitViewController,
-            conversationSplitViewController.selectedThread?.uniqueId == threadViewModel.threadUniqueId
-        {
-            conversationSplitViewController.closeSelectedConversation(animated: true)
-        }
+        guard
+            let homeTabBarController,
+            homeTabBarController.selectedThread?.uniqueId == threadViewModel.threadUniqueId
+        else { return }
+
+        homeTabBarController.closeSelectedConversation(animated: true)
     }
 
     func threadContextualActionDidComplete() {
@@ -1747,29 +1801,33 @@ extension ChatListViewController {
 }
 
 extension ChatListViewController: UIScrollViewDelegate {
+<<<<<<< HEAD
     // Ivy: counts the frames the chat list drops while it scrolls.
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         IvyScrollHitches.shared.scrolled("chat list scroll")
     }
 
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+=======
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+>>>>>>> upstream/8.38.0.2011
         filterControl?.draggingWillBegin(in: scrollView)
         cancelSearch()
     }
 
-    public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         filterControl?.draggingWillEnd(in: scrollView)
     }
 
-    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool) {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate: Bool) {
         filterControl?.draggingDidEnd(in: scrollView)
     }
 
-    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         filterControl?.scrollingDidStop(in: scrollView)
     }
 
-    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         filterControl?.scrollingDidStop(in: scrollView)
     }
 }

@@ -459,6 +459,72 @@
 			<string>Tá an dath seo á úsáid in %1$d comhrá. An mian leat athruithe a shábháil do gach comhrá?</string>
 		</dict>
 	</dict>
+	<key>CHAT_FOLDERS_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d chomhrá</string>
+			<key>two</key>
+			<string>%1$d chomhrá</string>
+			<key>few</key>
+			<string>%1$d chomhrá</string>
+			<key>many</key>
+			<string>%1$d gcomhrá</string>
+			<key>other</key>
+			<string>%1$d comhrá</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_CHAT_TYPE_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d chineál comhrá</string>
+			<key>two</key>
+			<string>%1$d chineál comhráite</string>
+			<key>few</key>
+			<string>%1$d chineál comhráite</string>
+			<key>many</key>
+			<string>%1$d gcineál comhráite</string>
+			<key>other</key>
+			<string>%1$d cineál comhráite</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_EXCLUDED_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d chomhrá as an áireamh</string>
+			<key>two</key>
+			<string>%1$d chomhrá as an áireamh</string>
+			<key>few</key>
+			<string>%1$d chomhrá as an áireamh</string>
+			<key>many</key>
+			<string>%1$d gcomhrá as an áireamh</string>
+			<key>other</key>
+			<string>%1$d comhrá as an áireamh</string>
+		</dict>
+	</dict>
 	<key>CHOOSE_BACKUP_PLAN_BULLET_RECENT_MEDIA_BACKUP_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -2180,6 +2246,94 @@
  Triail arís i gceann %1$d uair an chloig.</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Ní féidir leat ach %1$d ghreamán a chur le Ceanáin</string>
+			<key>two</key>
+			<string>Ní féidir leat ach %1$d ghreamán a chur le Ceanáin</string>
+			<key>few</key>
+			<string>Ní féidir leat ach %1$d ghreamán a chur le Ceanáin</string>
+			<key>many</key>
+			<string>Ní féidir leat ach %1$d ngreamán a chur le Ceanáin</string>
+			<key>other</key>
+			<string>Ní féidir leat ach %1$d greamán a chur le Ceanáin</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_MESSAGE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Bainfear an beart greamán leis sin. Ní bheidh tú in ann é a chur leis arís gan nasc nó teachtaireacht ghreamáin.</string>
+			<key>two</key>
+			<string>Bainfear an dá bheart greamán leis sin. Ní bheidh tú in ann iad a chur leis arís gan nasc nó teachtaireacht ghreamáin.</string>
+			<key>few</key>
+			<string>Bainfear na bearta greamán leis sin. Ní bheidh tú in ann iad a chur leis arís gan nasc nó teachtaireacht ghreamáin.</string>
+			<key>many</key>
+			<string>Bainfear na bearta greamán leis sin. Ní bheidh tú in ann iad a chur leis arís gan nasc nó teachtaireacht ghreamáin.</string>
+			<key>other</key>
+			<string>Bainfear na bearta greamán leis sin. Ní bheidh tú in ann iad a chur leis arís gan nasc nó teachtaireacht ghreamáin.</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TITLE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Bain an beart greamán?</string>
+			<key>two</key>
+			<string>Bain %1$d bheart greamán?</string>
+			<key>few</key>
+			<string>Bain %1$d bheart greamán?</string>
+			<key>many</key>
+			<string>Bain %1$d mbeart greamán?</string>
+			<key>other</key>
+			<string>Bain %1$d beart greamán?</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Beart greamán bainte</string>
+			<key>two</key>
+			<string>Bearta greamán bainte</string>
+			<key>few</key>
+			<string>Bearta greamán bainte</string>
+			<key>many</key>
+			<string>Bearta greamán bainte</string>
+			<key>other</key>
+			<string>Bearta greamán bainte</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -2200,6 +2354,28 @@
 			<string>%1$d ngreamán</string>
 			<key>other</key>
 			<string>%1$d greamán</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_TOOLBAR_CAPTION_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d roghnaithe</string>
+			<key>two</key>
+			<string>%1$d roghnaithe</string>
+			<key>few</key>
+			<string>%1$d roghnaithe</string>
+			<key>many</key>
+			<string>%1$d roghnaithe</string>
+			<key>other</key>
+			<string>%1$d roghnaithe</string>
 		</dict>
 	</dict>
 	<key>STORY_REPLIES_COUNT_%d</key>

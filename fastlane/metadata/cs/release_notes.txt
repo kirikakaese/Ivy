@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal je teď optimalizovaný pro iPhone Duo.
+=======
+• Nově si můžete přidat libovolnou nálepku do oblíbených, abyste ji snadno našli.
+
+• Editor médií také umožňuje před odesláním videa odebrat jeho zvukovou stopu.
+>>>>>>> upstream/8.38.0.2011

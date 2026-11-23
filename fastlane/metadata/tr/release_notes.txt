@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal artık iPhone Duo için de optimize edilmiştir. İleride ek iyileştirmeleri de açıklayacağız.
+=======
+• Sık kullanılanlar listene artık herhangi bir çıkartma ekleyebilirsin böylece bulması kolay olur. Bundan böyle en sevdiğin çıkartmaların bir arada durduğu bir yer var.
+
+• Medya editörü, videoyu göndermeden önce ses izini kaldırmanı da sağlıyor. Böylece çektiğin videolardan rahatsız edici sesleri rahatlıkla çıkarabilir, manzaranın keyfini dostlarınla paylaşabilirsin.
+>>>>>>> upstream/8.38.0.2011

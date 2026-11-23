@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal on nyt optimoitu iPhone Duolle.
+=======
+• Nyt voit lisätä minkä tahansa tarran suosikkeihin, jotta se on helppo löytää.
+
+• Mediaeditori tukee myös videon ääniraidan poistamista ennen sen lähettämistä.
+>>>>>>> upstream/8.38.0.2011

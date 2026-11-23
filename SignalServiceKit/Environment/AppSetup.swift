@@ -679,6 +679,28 @@ extension AppSetup.GlobalsContinuation {
             localFileBackupStore: localFileBackupStore,
         )
 
+        let stickerFavoriteStore = StickerFavoriteStore()
+        let favoriteStickerExpirationJob = FavoriteStickerExpirationJob(
+            dateProvider: dateProvider,
+            db: db,
+            stickerFavoriteStore: stickerFavoriteStore,
+            storageServiceManager: storageServiceManager,
+        )
+        let stickerDownloader = StickerDownloaderImpl()
+        let stickerManager = StickerManager(
+            appReadiness: appReadiness,
+            dateProvider: dateProvider,
+            attachmentStore: attachmentStore,
+            attachmentDownloadStore: attachmentDownloadStore,
+            tsAccountManager: tsAccountManager,
+            messageSenderJobQueue: messageSenderJobQueue,
+            interactionStore: interactionStore,
+            stickerFavoriteStore: stickerFavoriteStore,
+            storageServiceManager: storageServiceManager,
+            stickerDownloader: stickerDownloader,
+            db: db,
+        )
+
         let attachmentDownloadManager = AttachmentDownloadManagerImpl(
             accountKeyStore: accountKeyStore,
             appReadiness: appReadiness,
@@ -701,7 +723,7 @@ extension AppSetup.GlobalsContinuation {
             reachabilityManager: reachabilityManager,
             remoteConfigProvider: remoteConfigManager,
             signalService: signalService,
-            stickerManager: AttachmentDownloadManagerImpl.Wrappers.StickerManager(),
+            stickerManager: stickerManager,
             storyStore: storyStore,
             threadStore: threadStore,
             tsAccountManager: tsAccountManager,
@@ -720,7 +742,7 @@ extension AppSetup.GlobalsContinuation {
             orphanedAttachmentStore: orphanedAttachmentStore,
             orphanedBackupAttachmentScheduler: orphanedBackupAttachmentScheduler,
             remoteConfigManager: remoteConfigManager,
-            stickerManager: AttachmentManagerImpl.Wrappers.StickerManager(),
+            stickerManager: stickerManager,
             localFileBackupStore: localFileBackupStore,
         )
         let attachmentValidationBackfillMigrator = AttachmentValidationBackfillMigratorImpl(
@@ -1036,6 +1058,16 @@ extension AppSetup.GlobalsContinuation {
             threadStore: threadStore,
         )
 
+        let chatFolderStore = ChatFolderStore()
+        let chatFolderManager = ChatFolderManager(
+            chatFolderStore: chatFolderStore,
+            dateProvider: dateProvider,
+            recipientDatabaseTable: recipientDatabaseTable,
+            recipientFetcher: recipientFetcher,
+            storageServiceManager: storageServiceManager,
+            threadStore: threadStore,
+        )
+
         let pinnedMessageExpirationJob = PinnedMessageExpirationJob(
             dateProvider: dateProvider,
             db: db,
@@ -1065,6 +1097,14 @@ extension AppSetup.GlobalsContinuation {
 
         let authorMergeHelper = AuthorMergeHelper()
         let recipientMerger = RecipientMergerImpl(
+            appliers: RecipientMergerImpl.buildAppliers(
+                chatFolderManager: chatFolderManager,
+                identityManager: identityManager,
+                pinnedThreadManager: pinnedThreadManager,
+                sessionStore: sessionStore,
+                storyRecipientStore: storyRecipientStore,
+            ),
+            chatFolderManager: chatFolderManager,
             identityManager: identityManager,
             observers: RecipientMergerImpl.buildObservers(
                 authorMergeHelper: authorMergeHelper,
@@ -1085,13 +1125,11 @@ extension AppSetup.GlobalsContinuation {
                 wallpaperImageStore: wallpaperImageStore,
                 wallpaperStore: wallpaperStore,
             ),
-            pinnedThreadMerger: pinnedThreadManager,
             recipientDatabaseTable: recipientDatabaseTable,
             recipientFetcher: recipientFetcher,
             searchableNameIndexer: searchableNameIndexer,
             sessionStore: sessionStore,
             storageServiceManager: storageServiceManager,
-            storyRecipientStore: storyRecipientStore,
         )
 
         let accountEntropyPoolManager = AccountEntropyPoolManagerImpl(
@@ -1657,6 +1695,7 @@ extension AppSetup.GlobalsContinuation {
                 threadStore: backupThreadStore,
             ),
             encryptedProtoStreamProvider: BackupArchiveEncryptedProtoStreamProvider(),
+            favoriteStickerArchiver: BackupArchiveFavoriteStickerArchiver(stickerManager: stickerManager),
             fullTextSearchIndexer: BackupArchiveFullTextSearchIndexerImpl(
                 appReadiness: appReadiness,
                 dateProvider: dateProviderMonotonic,
@@ -1884,6 +1923,8 @@ extension AppSetup.GlobalsContinuation {
             changePhoneNumberPniManager: changePhoneNumberPniManager,
             chatColorSettingStore: chatColorSettingStore,
             chatConnectionManager: chatConnectionManager,
+            chatFolderManager: chatFolderManager,
+            chatFolderStore: chatFolderStore,
             clockSkewManager: clockSkewManager,
             contactShareManager: contactShareManager,
             cron: cron,
@@ -1906,6 +1947,7 @@ extension AppSetup.GlobalsContinuation {
             donationSubscriptionManager: donationSubscriptionManager,
             editManager: editManager,
             editMessageStore: editMessageStore,
+            favoriteStickerExpirationJob: favoriteStickerExpirationJob,
             groupCallRecordManager: groupCallRecordManager,
             groupMemberStore: groupMemberStore,
             groupMemberUpdater: groupMemberUpdater,
@@ -1969,6 +2011,8 @@ extension AppSetup.GlobalsContinuation {
             senderKeyStore: senderKeyStore,
             sentMessageTranscriptReceiver: sentMessageTranscriptReceiver,
             signalProtocolStoreManager: signalProtocolStoreManager,
+            stickerDownloader: stickerDownloader,
+            stickerManager: stickerManager,
             storageServiceRecordIkmMigrator: storageServiceRecordIkmMigrator,
             storyMessageExpirationJob: storyMessageExpirationJob,
             storyRecipientManager: storyRecipientManager,
@@ -2011,10 +2055,6 @@ extension AppSetup.GlobalsContinuation {
         let messageDecrypter = OWSMessageDecrypter(
             appReadiness: appReadiness,
             senderKeyManager: senderKeyManager,
-        )
-        let stickerManager = StickerManager(
-            appReadiness: appReadiness,
-            dateProvider: dateProvider,
         )
         let sskPreferences = SSKPreferences()
         let groupV2Updates = testDependencies.groupV2Updates ?? GroupV2UpdatesImpl()
@@ -2075,7 +2115,6 @@ extension AppSetup.GlobalsContinuation {
             reachabilityManager: reachabilityManager,
             syncManager: syncManager,
             typingIndicators: typingIndicators,
-            stickerManager: stickerManager,
             databaseStorage: databaseStorage,
             signalServiceAddressCache: signalServiceAddressCache,
             signalService: signalService,
@@ -2313,6 +2352,11 @@ extension AppSetup.FinalContinuation {
             sskEnvironment.donationReceiptCredentialRedemptionJobQueue.start(appContext: appContext)
             sskEnvironment.smJobQueuesRef.incomingContactSyncJobQueue.start(appContext: appContext)
             sskEnvironment.smJobQueuesRef.sendGiftBadgeJobQueue.start(appContext: appContext)
+        }
+
+        appReadiness.runNowOrWhenAppDidBecomeReadySync {
+            self.dependenciesBridge.chatFolderManager
+                .createAllChatsFolderIfNeeded(db: self.dependenciesBridge.db)
         }
     }
 

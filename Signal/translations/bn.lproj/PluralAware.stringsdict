@@ -333,6 +333,54 @@
 			<string>এই রংটি %1$dটি চ্যাটে ব্যবহার করা হয়েছে। আপনি কি সব চ্যাটের জন্য এই পরিবর্তনগুলো সেভ করতে চান?</string>
 		</dict>
 	</dict>
+	<key>CHAT_FOLDERS_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$dটি চ্যাট</string>
+			<key>other</key>
+			<string>%1$dটি চ্যাট</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_CHAT_TYPE_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d চ্যাটের ধরন</string>
+			<key>other</key>
+			<string>%1$d চ্যাটের ধরন</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_EXCLUDED_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d চ্যাট বাদ দেওয়া হয়েছে</string>
+			<key>other</key>
+			<string>%1$d চ্যাট বাদ দেওয়া হয়েছে</string>
+		</dict>
+	</dict>
 	<key>CHOOSE_BACKUP_PLAN_BULLET_RECENT_MEDIA_BACKUP_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1580,6 +1628,70 @@
  %1$d ঘন্টা পরে আবার চেষ্টা করুন।</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>আপনি ফেভারিটস-এ সর্বোচ্চ %1$d-টি স্টিকার যোগ করতে পারবেন</string>
+			<key>other</key>
+			<string>আপনি ফেভারিটস-এ সর্বোচ্চ %1$d-টি স্টিকার যোগ করতে পারবেন</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_MESSAGE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>এটি স্টিকার প্যাকটি মুছে ফেলবে। লিংক বা স্টিকার মেসেজ ছাড়া আপনি এটি আর যোগ করতে পারবেন না।</string>
+			<key>other</key>
+			<string>এটি এই স্টিকার প্যাক মুছে ফেলবে। লিংক বা স্টিকার মেসেজ ছাড়া আপনি এগুলো আর যোগ করতে পারবেন না।</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TITLE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d-টি স্টিকার প্যাক মুছে ফেলবেন?</string>
+			<key>other</key>
+			<string>%1$d-টি স্টিকার প্যাক মুছে ফেলবেন?</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>স্টিকার প্যাক মুছে ফেলা হয়েছে</string>
+			<key>other</key>
+			<string>স্টিকার প্যাক মুছে ফেলা হয়েছে</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1594,6 +1706,22 @@
 			<string>%1$d-টি স্টিকার</string>
 			<key>other</key>
 			<string>%1$d-টি স্টিকার</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_TOOLBAR_CAPTION_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$dটি বেছে নেওয়া হয়েছে</string>
+			<key>other</key>
+			<string>%1$dটি বেছে নেওয়া হয়েছে</string>
 		</dict>
 	</dict>
 	<key>STORY_REPLIES_COUNT_%d</key>

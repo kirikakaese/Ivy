@@ -36,6 +36,7 @@ public class StickerPickerSheet: InteractiveSheetViewController {
     private lazy var stickerPickerView = StickerPickerView(
         delegate: self,
         storyStickerConfiguration: .showWithDelegate(pickerDelegate!),
+        allowContextMenus: false,
     )
 
     public init(pickerDelegate: StickerPickerDelegate & StoryStickerPickerDelegate) {
@@ -89,10 +90,6 @@ public class StickerPickerSheet: InteractiveSheetViewController {
 // MARK: StickerPickerViewDelegate
 
 extension StickerPickerSheet: StickerPickerViewDelegate {
-    public func shouldShowStickerPreview() -> Bool {
-        return false
-    }
-
     public func presentManageStickersView(for stickerPickerView: StickerPickerView) {
         guard let sheetDelegate else { return }
         let manageStickersViewController = sheetDelegate.makeManageStickersViewController(for: self)
@@ -101,5 +98,21 @@ extension StickerPickerSheet: StickerPickerViewDelegate {
 
     public func didSelectSticker(_ stickerMetadata: any StickerMetadata) {
         pickerDelegate?.didSelectSticker(stickerMetadata)
+    }
+
+    public func viewStickerPack(_ stickerPackInfo: StickerPackInfo) {
+        // StickerPickerSheet doesn't use sticker context menus.
+    }
+
+    public func scrollToFavoritedSticker(_ stickerInfo: StickerInfo) {
+        // StickerPickerSheet doesn't use sticker context menus.
+    }
+
+    public func sendSticker(_ stickerMetadata: any StickerMetadata) {
+        // StickerPickerSheet doesn't use sticker context menus.
+    }
+
+    public func queueStickerPackForSending(_ stickerPackInfo: StickerPackInfo) {
+        // StickerPickerSheet doesn't use sticker context menus.
     }
 }

@@ -4,9 +4,9 @@
 //
 
 import Foundation
-public import SignalServiceKit
+import SignalServiceKit
 
-public enum RegistrationStep: Equatable, CustomStringConvertible {
+public enum RegistrationStep: CustomStringConvertible {
 
     // MARK: - Opening Steps
 
@@ -56,6 +56,8 @@ public enum RegistrationStep: Equatable, CustomStringConvertible {
     /// PIN guesses got used up), we have no choice but to wait out the reglock.
     case reglockTimeout(RegistrationReglockTimeoutState)
 
+    case reviewAndConfirmSignalLogin(RegistrationSignalLoginDetailsState)
+
     // MARK: From Backup
 
     /// If the user elects to restore from backup and doesn't have their old phone,
@@ -65,7 +67,7 @@ public enum RegistrationStep: Equatable, CustomStringConvertible {
     // MARK: - Post-Registration
 
     /// The path taken to get to the restore options screen
-    public enum RestorePath: Equatable {
+    public enum RestorePath {
         public enum BackupTier {
             case free
             case paid
@@ -113,62 +115,11 @@ public enum RegistrationStep: Equatable, CustomStringConvertible {
 
     // MARK: - Non-ViewController steps
 
-    public enum ErrorSheet: Equatable {
-        /// We received a session that indicates we won't be able to use it to
-        /// request a code.
-        case sessionCanNeverRequestVerificationCode
-
-        /// We should tell the user their attempt has expired
-        /// and they need to start over.
-        case sessionInvalidated
-
-        /// The user can no longer submit a verification code.
-        /// This could be because the previously sent code expired,
-        /// or because they used up their verification code attempts.
-        /// In either case, they need to send a new code to proceed.
-        case verificationCodeSubmissionUnavailable
-
-        /// The user tried to submit a verification code, but we've never
-        /// actually sent a code, so no submission could possibly be correct.
-        case submittingVerificationCodeBeforeAnyCodeSent
-
-        /// The user had completed registration, but before finishing
-        /// post-registration steps they were deregistered, likely by
-        /// another device registering on the same number.
-        /// The only path forward is to reset _everything_ and re-register.
-        case becameDeregistered(localIdentifiers: EquatableReregisteringLocalIdentifiers)
-
-        /// A network error occurred. The user can probably fix this by
-        /// checking their internet connection.
-        case networkError
-
-        /// A generic error occurred. Prefer to use other error types.
-        case genericError
-
-        public var logSafeString: String {
-            switch self {
-            case .sessionCanNeverRequestVerificationCode: return "sessionCanNeverRequestVerificationCode"
-            case .sessionInvalidated: return "sessionInvalidated"
-            case .verificationCodeSubmissionUnavailable: return "verificationCodeSubmissionUnavailable"
-            case .submittingVerificationCodeBeforeAnyCodeSent: return "submittingVerificationCodeBeforeAnyCodeSent"
-            case .becameDeregistered: return "becameDeregistered"
-            case .networkError: return "networkError"
-            case .genericError: return "genericError"
-            }
-        }
-    }
-
-    /// Special cases; should display an error on the current screen, whatever it is.
+    /// Special case; should display an error on the current screen, whatever it is.
     /// (If this is returned as the first step, show the splash and then this error).
     /// This sheet should be undismissable; the user must ack it to proceed, and doing
     /// so should call `RegistrationCoordinator.nextStep()`
-    case showErrorSheet(ErrorSheet)
-
-    /// Special case, should display a banner on the current screen, whatever it is.
-    /// Happens if we get a response from the server we can't parse; we assume this means
-    /// an app version update is needed to parse it.
-    /// (If this is returned as the first step, show the splash and then this error).
-    case appUpdateBanner
+    case showError(any Error)
 
     /// Special case; done with the registration flow!
     case done
@@ -190,13 +141,13 @@ public enum RegistrationStep: Equatable, CustomStringConvertible {
         case .pinAttemptsExhaustedWithoutReglock: return "pinAttemptsExhaustedWithoutReglock"
         case .captchaChallenge: return "captchaChallenge"
         case .reglockTimeout: return "reglockTimeout"
+        case .reviewAndConfirmSignalLogin: return "reviewAndConfirmSignalLogin"
         case .enterRecoveryKey: return "enterRecoveryKey"
         case .chooseRestoreMethod(let restorePath): return "chooseRestoreMethod(\(restorePath.logSafeString))"
         case .confirmRestoreFromBackup: return "confirmRestoreFromBackup"
         case .phoneNumberDiscoverability: return "phoneNumberDiscoverability"
         case .setupProfile: return "setupProfile"
-        case .showErrorSheet(let errorSheet): return "showErrorSheet(\(errorSheet.logSafeString))"
-        case .appUpdateBanner: return "appUpdateBanner"
+        case .showError(let error): return "showError(\(error.shortDescription))"
         case .done: return "done"
         }
     }

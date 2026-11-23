@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-public import AVFoundation
+import AVFoundation
 public import SignalServiceKit
 
 /// Represents an attachment the user *might* choose to send.
@@ -29,6 +29,7 @@ public struct PreviewableAttachment {
     public enum AttachmentType {
         case image(NormalizedImage)
         case animatedImage
+        case normalizedVideo(NormalizedVideo)
         case other
     }
 
@@ -43,6 +44,15 @@ public struct PreviewableAttachment {
     public var isVideo: Bool { self.rawValue.isVideo }
     public var isVisualMedia: Bool { self.rawValue.isVisualMedia }
     public var isAudio: Bool { self.rawValue.isAudio }
+
+    var normalizedVideo: NormalizedVideo? {
+        switch attachmentType {
+        case .normalizedVideo(let normalizedVideo):
+            return normalizedVideo
+        case .image, .animatedImage, .other:
+            return nil
+        }
+    }
 
     // Factory method for an image attachment.
     public static func imageAttachment(dataSource: DataSourcePath, dataUTI: String, canBeBorderless: Bool = false) throws -> Self {
@@ -112,14 +122,27 @@ public struct PreviewableAttachment {
         )
     }
 
-    // Factory method for video attachments.
-    public static func videoAttachment(
+    /// Factory method for video attachments that are ready to send as-is.
+    static func finalizedVideoAttachment(
+        finalizedVideo: NormalizedVideo.FinalizedVideo,
+        attachmentLimits: OutgoingAttachmentLimits,
+    ) throws -> Self {
+        return try finalizedVideoAttachment(
+            dataSource: finalizedVideo.dataSource,
+            dataUTI: finalizedVideo.dataUTI,
+            attachmentLimits: attachmentLimits,
+        )
+    }
+
+    /// Factory method for video attachments that are ready to send as-is.
+    public static func finalizedVideoAttachment(
         dataSource: DataSourcePath,
         dataUTI: String,
         attachmentLimits: OutgoingAttachmentLimits,
     ) throws -> Self {
         try OWSMediaUtils.validateVideoExtension(ofPath: dataSource.fileUrl.path)
         try OWSMediaUtils.validateVideoAsset(atPath: dataSource.fileUrl.path)
+
         return try newAttachment(
             dataSource: dataSource,
             dataUTI: dataUTI,
@@ -128,82 +151,22 @@ public struct PreviewableAttachment {
         )
     }
 
-    @MainActor
-    public static func compressVideoAsMp4(
+    /// Factory method for video attachments that need to be finalized via
+    /// ``NormalizedVideo`` before sending.
+    public static func normalizedVideoAttachment(
         dataSource: DataSourcePath,
-        attachmentLimits: OutgoingAttachmentLimits,
-        sessionCallback: (@MainActor (AVAssetExportSession) -> Void)? = nil,
-    ) async throws -> Self {
-        return try await compressVideoAsMp4(
-            asset: AVAsset(url: dataSource.fileUrl),
-            baseFilename: dataSource.sourceFilename,
-            attachmentLimits: attachmentLimits,
-            sessionCallback: sessionCallback,
+        dataUTI: String,
+        mustTranscode: Bool,
+    ) throws(SignalAttachmentError) -> Self {
+        let normalizedVideo = try NormalizedVideo.forDataSource(
+            dataSource,
+            dataUTI: dataUTI,
+            mustTranscode: mustTranscode,
         )
-    }
-
-    @MainActor
-    public static func compressVideoAsMp4(
-        asset: AVAsset,
-        baseFilename: String?,
-        attachmentLimits: OutgoingAttachmentLimits,
-        sessionCallback: (@MainActor (AVAssetExportSession) -> Void)? = nil,
-    ) async throws -> Self {
-        let startTime = MonotonicDate()
-
-        guard let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPreset640x480) else {
-            throw SignalAttachmentError.couldNotConvertToMpeg4
-        }
-
-        exportSession.shouldOptimizeForNetworkUse = true
-        exportSession.metadataItemFilter = AVMetadataItemFilter.forSharing()
-
-        if let sessionCallback {
-            sessionCallback(exportSession)
-        }
-
-        let exportURL = OWSFileSystem.temporaryFileUrl(fileExtension: "mp4", isAvailableWhileDeviceLocked: false)
-
-        try await exportSession.exportAsync(to: exportURL, as: .mp4)
-
-        switch exportSession.status {
-        case .unknown:
-            throw OWSAssertionError("Unknown export status.")
-        case .waiting:
-            throw OWSAssertionError("Export status: .waiting.")
-        case .exporting:
-            throw OWSAssertionError("Export status: .exporting.")
-        case .completed:
-            break
-        case .failed:
-            if let error = exportSession.error {
-                owsFailDebug("Error: \(error)")
-                throw error
-            } else {
-                throw OWSAssertionError("Export failed without error.")
-            }
-        case .cancelled:
-            throw CancellationError()
-        @unknown default:
-            throw OWSAssertionError("Unknown export status: \(exportSession.status.rawValue)")
-        }
-
-        let mp4Filename: String?
-        if let baseFilename {
-            let baseFilenameWithoutExtension = (baseFilename as NSString).deletingPathExtension
-            mp4Filename = (baseFilenameWithoutExtension as NSString).appendingPathExtension("mp4") ?? baseFilenameWithoutExtension
-        } else {
-            mp4Filename = nil
-        }
-
-        let dataSource = DataSourcePath(fileUrl: exportURL, ownership: .owned)
-        dataSource.sourceFilename = mp4Filename
-
-        let endTime = MonotonicDate()
-        let formattedDuration = OWSOperation.formattedNs((endTime - startTime).nanoseconds)
-        Logger.info("transcoded video in \(formattedDuration)s")
-
-        return try videoAttachment(dataSource: dataSource, dataUTI: UTType.mpeg4Movie.identifier, attachmentLimits: attachmentLimits)
+        return Self(
+            rawValue: SignalAttachment(dataSource: dataSource, dataUTI: dataUTI),
+            attachmentType: .normalizedVideo(normalizedVideo),
+        )
     }
 
     // MARK: Audio Attachments
@@ -293,7 +256,11 @@ public struct PreviewableAttachment {
             guard types.contains(.video) else {
                 throw SignalAttachmentError.invalidFileFormat
             }
-            return try videoAttachment(dataSource: dataSource, dataUTI: dataUTI, attachmentLimits: attachmentLimits)
+            return try finalizedVideoAttachment(
+                dataSource: dataSource,
+                dataUTI: dataUTI,
+                attachmentLimits: attachmentLimits,
+            )
         }
         if SignalAttachment.audioUTISet.contains(dataUTI) {
             guard types.contains(.audio) else {

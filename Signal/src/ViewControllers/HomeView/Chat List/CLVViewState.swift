@@ -24,6 +24,7 @@ class CLVViewState {
 
     let containerView: ChatListContainerView
     let reminderViews: CLVReminderViews
+    let chatFolderPickerView = ChatListFolderPickerView()
     let backupDownloadProgressView: CLVBackupDownloadProgressView
     let backupExportProgressView: CLVBackupExportProgressView
     let localFileBackupRestoreProgressView: CLVLocalFileBackupRestoreProgressView
@@ -37,7 +38,12 @@ class CLVViewState {
 
     let chatListMode: ChatListMode
     var inboxFilter: InboxFilter?
+<<<<<<< HEAD
     var ivyChatFolderId: Data? // Ivy: the selected chat folder
+=======
+    /// The chat folder the inbox is filtered to, or `nil` for all chats.
+    var selectedChatFolderId: UUID?
+>>>>>>> upstream/8.38.0.2011
     var shouldBeUpdatingView = false
     var shouldFocusSearchOnAppear = false
     var isViewVisible = false
@@ -148,9 +154,9 @@ class CLVViewState {
 
     func updateViewInfo(_ viewInfo: CLVViewInfo) {
         inboxFilter = viewInfo.inboxFilter
+        chatFolderPickerView.configure(state: ChatListFolderPickerState(viewInfo: viewInfo))
         settingsButtonCreator.updateState(
             hasInboxChats: viewInfo.inboxCount > 0,
-            hasArchivedChats: viewInfo.archiveCount > 0,
         )
     }
 }
@@ -176,7 +182,7 @@ extension ChatListViewController {
 
     // MARK: - Views
 
-    var tableView: CLVTableView { tableDataSource.tableView }
+    var tableView: UITableView { tableDataSource.tableView }
 
     var searchBar: UISearchBar { viewState.searchController.searchBar }
     var searchResultsController: ConversationSearchViewController { viewState.searchResultsController }

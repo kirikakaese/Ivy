@@ -10,11 +10,13 @@ final class SendStickerFlow: ConversationPickerDelegate {
     private let db: DB
 
     private let stickerMetadata: any StickerMetadata
+    private let stickerManager: StickerManager
     private let selection = ConversationPickerSelection()
     private weak var navigationController: UINavigationController?
 
-    init(stickerMetadata: any StickerMetadata, db: DB) {
+    init(stickerMetadata: any StickerMetadata, stickerManager: StickerManager, db: DB) {
         self.stickerMetadata = stickerMetadata
+        self.stickerManager = stickerManager
         self.db = db
     }
 
@@ -37,24 +39,12 @@ final class SendStickerFlow: ConversationPickerDelegate {
             }
         }
 
-        let stickerInfo = stickerMetadata.stickerInfo
-        let installed = StickerManager.isStickerInstalled(stickerInfo: stickerInfo)
-
         for thread in threads {
-            if installed {
-                ThreadUtil.enqueueMessage(withInstalledSticker: stickerInfo, quotedReplyDraft: nil, thread: thread)
-            } else {
-                do {
-                    let stickerData = try stickerMetadata.readStickerData()
-                    ThreadUtil.enqueueMessage(
-                        withUninstalledSticker: stickerMetadata,
-                        stickerData: stickerData,
-                        thread: thread,
-                    )
-                } catch {
-                    owsFailDebug("Failed to send sticker: \(error)")
-                }
-            }
+            ThreadUtil.enqueueMessage(
+                withSticker: stickerMetadata,
+                quotedReplyDraft: nil,
+                thread: thread,
+            )
         }
     }
 

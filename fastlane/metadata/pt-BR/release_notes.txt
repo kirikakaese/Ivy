@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • O Signal agora está otimizado para o iPhone Duo. Assim, basta instalar uma atualização para usar as duas telas. Vamos revelar mais melhorias no futuro.
+=======
+• Agora suas figurinhas favoritas têm um lugar cativo. Adicione qualquer figurinha à sua lista de favoritos para ter sempre à mão aquelas de que você mais gosta.
+
+★ O editor de mídia também permite remover o áudio de um vídeo antes de enviá-lo .
+>>>>>>> upstream/8.38.0.2011

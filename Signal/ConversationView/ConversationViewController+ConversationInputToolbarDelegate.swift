@@ -5,28 +5,30 @@
 
 import CoreServices
 import LibSignalClient
-public import Photos
-public import SignalServiceKit
-public import SignalUI
+import Photos
+import SignalServiceKit
+import SignalUI
 import UniformTypeIdentifiers
 
-extension ConversationViewController: ConversationInputToolbarDelegate {
+extension ConversationViewController {
 
-    public func isBlockedConversation() -> Bool {
+    // MARK: - ConversationInputToolbarDelegate
+
+    func isBlockedConversation() -> Bool {
         threadViewModel.isBlocked
     }
 
-    public func isGroup() -> Bool {
+    func isGroup() -> Bool {
         isGroupConversation
     }
 
-    public func viewForKeyboardLayoutGuide() -> UIView {
+    func viewForKeyboardLayoutGuide() -> UIView {
         return view
     }
 
-    public func viewForSuggestedStickersPanel() -> UIView { view }
+    func viewForSuggestedStickersPanel() -> UIView { view }
 
-    public func sendButtonPressed() {
+    func sendButtonPressed() {
         AssertIsOnMainThread()
 
         guard hasViewWillAppearEverBegun else {
@@ -51,7 +53,7 @@ extension ConversationViewController: ConversationInputToolbarDelegate {
         tryToSendTextMessage(messageBody, updateKeyboardState: true)
     }
 
-    public func messageWasSent() {
+    func messageWasSent() {
         AssertIsOnMainThread()
 
         self.lastMessageSentDate = Date()
@@ -195,20 +197,20 @@ extension ConversationViewController: ConversationInputToolbarDelegate {
         NotificationCenter.default.post(name: ChatListViewController.clearSearch, object: nil)
     }
 
-    public func sendSticker(_ stickerInfo: StickerInfo) {
+    func sendSticker(_ stickerMetadata: any StickerMetadata) {
         AssertIsOnMainThread()
 
         ImpactHapticFeedback.impactOccurred(style: .light)
 
         ThreadUtil.enqueueMessage(
-            withInstalledSticker: stickerInfo,
+            withSticker: stickerMetadata,
             quotedReplyDraft: inputToolbar?.quotedReplyDraft,
             thread: thread,
         )
         messageWasSent()
     }
 
-    public func presentManageStickersView() {
+    func presentManageStickersView() {
         AssertIsOnMainThread()
 
         let manageStickersView = ManageStickersViewController()
@@ -216,7 +218,7 @@ extension ConversationViewController: ConversationInputToolbarDelegate {
         presentFormSheet(navigationController, animated: true)
     }
 
-    public func updateToolbarHeight() {
+    func updateToolbarHeight() {
         guard hasViewWillAppearEverBegun else {
             owsFailDebug("InputToolbar not yet ready.")
             return
@@ -227,7 +229,7 @@ extension ConversationViewController: ConversationInputToolbarDelegate {
         updateContentInsets()
     }
 
-    public func voiceMemoGestureDidStart() {
+    func voiceMemoGestureDidStart() {
         AssertIsOnMainThread()
         Logger.info("")
 
@@ -245,28 +247,28 @@ extension ConversationViewController: ConversationInputToolbarDelegate {
         checkPermissionsAndStartRecordingVoiceMessage()
     }
 
-    public func voiceMemoGestureDidComplete() {
+    func voiceMemoGestureDidComplete() {
         AssertIsOnMainThread()
         Logger.info("")
 
         finishRecordingVoiceMessage(sendImmediately: true)
     }
 
-    public func voiceMemoGestureDidLock() {
+    func voiceMemoGestureDidLock() {
         AssertIsOnMainThread()
         Logger.info("")
 
         inputToolbar?.lockVoiceMemoUI()
     }
 
-    public func voiceMemoGestureDidCancel() {
+    func voiceMemoGestureDidCancel() {
         AssertIsOnMainThread()
         Logger.info("")
 
         cancelRecordingVoiceMessage()
     }
 
-    public func voiceMemoGestureWasInterrupted() {
+    func voiceMemoGestureWasInterrupted() {
         AssertIsOnMainThread()
         Logger.info("")
 
@@ -279,7 +281,7 @@ extension ConversationViewController: ConversationInputToolbarDelegate {
         sendVoiceMessageDraft(voiceMemoDraft)
     }
 
-    public func saveDraft() {
+    func saveDraft() {
         AssertIsOnMainThread()
 
         guard hasViewWillAppearEverBegun else {
@@ -381,7 +383,7 @@ extension ConversationViewController: ConversationInputToolbarDelegate {
     }
 
     @MainActor
-    fileprivate func tryToSendAttachments(
+    private func tryToSendAttachments(
         _ approvedAttachments: ApprovedAttachments,
         from viewController: UIViewController,
         messageBody: MessageBody?,
@@ -417,15 +419,6 @@ extension ConversationViewController: ConversationInputToolbarDelegate {
             return false
         }
 
-        let imageQuality = approvedAttachments.imageQuality
-        let imageQualityLevel = ImageQualityLevel.resolvedValue(
-            imageQuality: imageQuality,
-            standardQualityLevel: attachmentLimits.standardQualityLevel,
-        )
-        let sendableAttachments = try await approvedAttachments.attachments.mapAsync {
-            return try await SendableAttachment.forPreviewableAttachment($0, imageQualityLevel: imageQualityLevel)
-        }
-
         if self.isBlockedConversation() {
             let isBlocked = await self.showUnblockConversationUI()
             if isBlocked {
@@ -445,6 +438,23 @@ extension ConversationViewController: ConversationInputToolbarDelegate {
             // They're still untrusted, so stop trying to send.
             return false
         }
+
+        let imageQualityLevel = ImageQualityLevel.resolvedValue(
+            imageQuality: approvedAttachments.imageQuality,
+            standardQualityLevel: attachmentLimits.standardQualityLevel,
+        )
+        let sendableAttachments = try await ModalActivityIndicatorViewController
+            .presentAndPropagateResult(
+                from: viewController,
+                title: CommonStrings.preparingModal,
+            ) {
+                try await approvedAttachments.attachments.mapAsync {
+                    try await SendableAttachment.forPreviewableAttachment(
+                        $0,
+                        imageQualityLevel: imageQualityLevel,
+                    )
+                }
+            }
 
         let didAddToProfileWhitelist = ThreadUtil.addThreadToProfileWhitelistIfEmptyOrPendingRequestAndSetDefaultTimerWithSneakyTransaction(self.thread)
 
@@ -476,37 +486,37 @@ extension ConversationViewController: ConversationInputToolbarDelegate {
 
     // MARK: - Accessory View
 
-    public func cameraButtonPressed() {
+    func cameraButtonPressed() {
         AssertIsOnMainThread()
 
         takePictureOrVideo()
     }
 
-    public func photosButtonPressed() {
+    func photosButtonPressed() {
         AssertIsOnMainThread()
 
         chooseFromLibrary()
     }
 
-    public func gifButtonPressed() {
+    func gifButtonPressed() {
         AssertIsOnMainThread()
 
         showGifPicker()
     }
 
-    public func fileButtonPressed() {
+    func fileButtonPressed() {
         AssertIsOnMainThread()
 
         showDocumentPicker()
     }
 
-    public func contactButtonPressed() {
+    func contactButtonPressed() {
         AssertIsOnMainThread()
 
         chooseContactForSending()
     }
 
-    public func locationButtonPressed() {
+    func locationButtonPressed() {
         AssertIsOnMainThread()
 
         let locationPicker = LocationPicker()
@@ -517,7 +527,7 @@ extension ConversationViewController: ConversationInputToolbarDelegate {
         presentFormSheet(navigationController, animated: true)
     }
 
-    public func paymentButtonPressed() {
+    func paymentButtonPressed() {
         AssertIsOnMainThread()
 
         guard let contactThread = thread as? TSContactThread else {
@@ -549,7 +559,7 @@ extension ConversationViewController: ConversationInputToolbarDelegate {
         )
     }
 
-    public func pollButtonPressed() {
+    func pollButtonPressed() {
         AssertIsOnMainThread()
 
         dismissKeyboard()
@@ -561,7 +571,7 @@ extension ConversationViewController: ConversationInputToolbarDelegate {
         present(OWSNavigationController(rootViewController: newPollViewController), animated: true)
     }
 
-    public func didSelectRecentPhoto(asset: PHAsset, attachment: PreviewableAttachment, attachmentLimits: OutgoingAttachmentLimits) {
+    func didSelectRecentPhoto(asset: PHAsset, attachment: PreviewableAttachment, attachmentLimits: OutgoingAttachmentLimits) {
         AssertIsOnMainThread()
 
         dismissKeyboard()
@@ -577,11 +587,8 @@ extension ConversationViewController: ConversationInputToolbarDelegate {
         let presenter = self.splitViewController ?? self
         presenter.present(pickerModal, animated: true)
     }
-}
 
-// MARK: -
-
-public extension ConversationViewController {
+    // MARK: -
 
     func showErrorAlert(attachmentError: SignalAttachmentError?) {
         AssertIsOnMainThread()
@@ -619,15 +626,10 @@ public extension ConversationViewController {
         let presenter = self.splitViewController ?? self
         presenter.present(modal, animated: true)
     }
-}
-
-// MARK: -
-
-private extension ConversationViewController {
 
     // MARK: - Attachment Picking: Contacts
 
-    func chooseContactForSending() {
+    private func chooseContactForSending() {
         AssertIsOnMainThread()
 
         dismissKeyboard()
@@ -659,7 +661,7 @@ private extension ConversationViewController {
 
     // MARK: - Attachment Picking: Documents
 
-    func showDocumentPicker() {
+    private func showDocumentPicker() {
         AssertIsOnMainThread()
 
         // UIDocumentPickerViewController with asCopy true copies to a temp file within our container.
@@ -677,7 +679,7 @@ private extension ConversationViewController {
 
     // MARK: - Media Library
 
-    func takePictureOrVideo() {
+    private func takePictureOrVideo() {
         AssertIsOnMainThread()
 
         let attachmentLimits = OutgoingAttachmentLimits.currentLimits()
@@ -719,7 +721,7 @@ private extension ConversationViewController {
         }
     }
 
-    func chooseFromLibrary() {
+    private func chooseFromLibrary() {
         AssertIsOnMainThread()
 
         let pickerModal = SendMediaNavigationController.showingNativePicker(
@@ -733,11 +735,9 @@ private extension ConversationViewController {
         let presenter = self.splitViewController ?? self
         presenter.present(pickerModal, animated: false)
     }
-}
 
-// MARK: - Attachment Picking: GIFs
+    // MARK: - Attachment Picking: GIFs
 
-public extension ConversationViewController {
     func showGifPicker() {
         let gifModal = GifPickerNavigationViewController(
             initialMessageBody: inputToolbar?.messageBodyForSending,
@@ -749,13 +749,10 @@ public extension ConversationViewController {
         dismissKeyboard()
         present(gifModal, animated: true)
     }
-}
 
-// MARK: -
+    // MARK: - LocationPickerDelegate
 
-extension ConversationViewController: LocationPickerDelegate {
-
-    public func didPickLocation(_ locationPicker: LocationPicker, location: Location) {
+    func didPickLocation(_ locationPicker: LocationPicker, location: Location) {
         AssertIsOnMainThread()
 
         Task { @MainActor in
@@ -791,20 +788,18 @@ extension ConversationViewController: LocationPickerDelegate {
         }
     }
 
-    public func locationPickerDidCancel() {
+    func locationPickerDidCancel() {
         self.dismiss(animated: true)
         self.openAttachmentKeyboard()
     }
-}
 
-// MARK: -
+    // MARK: - UIDocumentPickerDelegate
 
-extension ConversationViewController: UIDocumentPickerDelegate {
-    public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
         self.openAttachmentKeyboard()
     }
 
-    public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
         let resourceValues: URLResourceValues?
         do {
             resourceValues = try url.resourceValues(forKeys: [.contentTypeKey, .isDirectoryKey])
@@ -857,17 +852,24 @@ extension ConversationViewController: UIDocumentPickerDelegate {
 
         let attachmentLimits = OutgoingAttachmentLimits.currentLimits()
 
-        // Although we want to be able to send higher quality attachments through
-        // the document picker, it's more important that we ensure the sent format
-        // is one all clients can accept (e.g., *not* QuickTime .mov).
-        if SignalAttachment.videoUTISet.contains(contentTypeIdentifier) {
-            self.showApprovalDialogAfterProcessingVideo(dataSource: dataSource, attachmentLimits: attachmentLimits)
-            return
-        }
-
         let attachment: PreviewableAttachment
         do {
-            attachment = try PreviewableAttachment.buildAttachment(dataSource: dataSource, dataUTI: contentTypeIdentifier, attachmentLimits: attachmentLimits)
+            // Although we want to be able to send higher quality attachments through
+            // the document picker, it's more important that we ensure the sent format
+            // is one all clients can accept (e.g., *not* QuickTime .mov).
+            if SignalAttachment.videoUTISet.contains(contentTypeIdentifier) {
+                attachment = try PreviewableAttachment.normalizedVideoAttachment(
+                    dataSource: dataSource,
+                    dataUTI: contentTypeIdentifier,
+                    mustTranscode: true,
+                )
+            } else {
+                attachment = try PreviewableAttachment.buildAttachment(
+                    dataSource: dataSource,
+                    dataUTI: contentTypeIdentifier,
+                    attachmentLimits: attachmentLimits,
+                )
+            }
         } catch {
             DispatchQueue.main.async {
                 self.showErrorAlert(attachmentError: error as? SignalAttachmentError)
@@ -878,33 +880,8 @@ extension ConversationViewController: UIDocumentPickerDelegate {
         showApprovalDialog(forAttachments: [attachment], attachmentLimits: attachmentLimits)
     }
 
-    private func showApprovalDialogAfterProcessingVideo(dataSource: DataSourcePath, attachmentLimits: OutgoingAttachmentLimits) {
-        AssertIsOnMainThread()
+    // MARK: - SendMediaNavDelegate
 
-        ModalActivityIndicatorViewController.present(
-            fromViewController: self,
-            title: CommonStrings.preparingModal,
-            canCancel: true,
-            asyncBlock: { modalActivityIndicator in
-                do {
-                    let attachment = try await PreviewableAttachment.compressVideoAsMp4(dataSource: dataSource, attachmentLimits: attachmentLimits)
-                    modalActivityIndicator.dismissIfNotCanceled(completionIfNotCanceled: {
-                        self.showApprovalDialog(forAttachments: [attachment], attachmentLimits: attachmentLimits)
-                    })
-                } catch {
-                    owsFailDebug("Error: \(error).")
-                    modalActivityIndicator.dismissIfNotCanceled(completionIfNotCanceled: {
-                        self.showErrorAlert(attachmentError: error as? SignalAttachmentError)
-                    })
-                }
-            },
-        )
-    }
-}
-
-// MARK: -
-
-extension ConversationViewController: SendMediaNavDelegate {
     func sendMediaNavDidCancel(_ sendMediaNavigationController: SendMediaNavigationController) {
         self.dismiss(animated: true, completion: nil)
         self.openAttachmentKeyboard()
@@ -915,21 +892,15 @@ extension ConversationViewController: SendMediaNavDelegate {
         didApproveAttachments approvedAttachments: ApprovedAttachments,
         messageBody: MessageBody?,
     ) {
-        ModalActivityIndicatorViewController.present(
-            fromViewController: sendMediaNavigationController,
-            title: CommonStrings.preparingModal,
-            asyncBlock: { modal in
-                await self.sendAttachments(
-                    approvedAttachments,
-                    messageBody: messageBody,
-                    from: sendMediaNavigationController,
-                    attachmentLimits: sendMediaNavigationController.attachmentLimits,
-                )
-                modal.dismiss(completion: {
-                    self.dismiss(animated: true)
-                })
-            },
-        )
+        Task {
+            await self.sendAttachments(
+                approvedAttachments,
+                messageBody: messageBody,
+                from: sendMediaNavigationController,
+                attachmentLimits: sendMediaNavigationController.attachmentLimits,
+            )
+            self.dismiss(animated: true)
+        }
     }
 
     /// Attempts to send attachments. Handles prompting to unblock or un-verify safety numbers, as well as showing failure states.
@@ -995,11 +966,8 @@ extension ConversationViewController: SendMediaNavDelegate {
     func sendMediaNav(_ sendMediaNavigationController: SendMediaNavigationController, didChangeViewOnceState isViewOnce: Bool) {
         // We can ignore this event.
     }
-}
 
-// MARK: -
-
-extension ConversationViewController: SendMediaNavDataSource {
+    // MARK: - SendMediaNavDataSource
 
     func sendMediaNavInitialMessageBody(_ sendMediaNavigationController: SendMediaNavigationController) -> MessageBody? {
         inputToolbar?.messageBodyForSending
@@ -1019,22 +987,18 @@ extension ConversationViewController: SendMediaNavDataSource {
     func sendMediaNavMentionCacheInvalidationKey() -> String {
         return thread.uniqueId
     }
-}
 
-// MARK: - StickerPickerSheetDelegate
+    // MARK: - StickerPickerSheetDelegate
 
-extension ConversationViewController: StickerPickerSheetDelegate {
-    public func makeManageStickersViewController(for stickerPickerSheet: StickerPickerSheet) -> UIViewController {
+    func makeManageStickersViewController(for stickerPickerSheet: StickerPickerSheet) -> UIViewController {
         let manageStickersView = ManageStickersViewController()
         let navigationController = OWSNavigationController(rootViewController: manageStickersView)
         return navigationController
     }
-}
 
-// MARK: - PollSendDelegate
+    // MARK: - PollSendDelegate
 
-extension ConversationViewController: PollSendDelegate {
-    public func sendPoll(question: String, options: [String], allowMultipleVotes: Bool) {
+    func sendPoll(question: String, options: [String], allowMultipleVotes: Bool) {
         ThreadUtil.enqueueMessage(
             withPoll:
             CreatePollMessage(

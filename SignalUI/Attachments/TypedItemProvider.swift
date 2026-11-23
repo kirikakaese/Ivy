@@ -204,7 +204,7 @@ public struct TypedItemProvider {
             //   2) try to load a UIImage directly in the case that is what was sent over
             //   3) try to NSKeyedUnarchive NSData directly into a UIImage
             do {
-                attachment = try await buildFileAttachment(mustBeVisualMedia: true, attachmentLimits: attachmentLimits, progress: progress)
+                attachment = try await buildFileAttachment(mustBeVisualMedia: true, attachmentLimits: attachmentLimits)
             } catch SignalAttachmentError.couldNotParseImage, ItemProviderError.fileUrlWasBplist {
                 Logger.warn("failed to parse image directly from file; checking for loading UIImage directly")
                 let image: UIImage = try await loadObjectWithKeyedUnarchiverFallback(
@@ -214,9 +214,9 @@ public struct TypedItemProvider {
                 attachment = try Self.createAttachment(withImage: image)
             }
         case .movie:
-            attachment = try await self.buildFileAttachment(mustBeVisualMedia: true, attachmentLimits: attachmentLimits, progress: progress)
+            attachment = try await self.buildFileAttachment(mustBeVisualMedia: true, attachmentLimits: attachmentLimits)
         case .pdf, .data:
-            attachment = try await self.buildFileAttachment(mustBeVisualMedia: false, attachmentLimits: attachmentLimits, progress: progress)
+            attachment = try await self.buildFileAttachment(mustBeVisualMedia: false, attachmentLimits: attachmentLimits)
         case .fileUrl, .json:
             let url: NSURL = try await loadObjectWithKeyedUnarchiverFallback(
                 overrideTypeIdentifier: TypedItemProvider.ItemType.fileUrl.typeIdentifier,
@@ -232,7 +232,6 @@ public struct TypedItemProvider {
                 dataUTI: dataUTI,
                 mustBeVisualMedia: false,
                 attachmentLimits: attachmentLimits,
-                progress: progress,
             )
         case .webUrl:
             let url: NSURL = try await loadObjectWithKeyedUnarchiverFallback(
@@ -265,7 +264,6 @@ public struct TypedItemProvider {
     private func buildFileAttachment(
         mustBeVisualMedia: Bool,
         attachmentLimits: OutgoingAttachmentLimits,
-        progress: Progress?,
     ) async throws -> PreviewableAttachment {
         let (dataSource, dataUTI): (DataSourcePath, String) = try await withCheckedThrowingContinuation { continuation in
             let typeIdentifier = itemType.typeIdentifier
@@ -293,7 +291,6 @@ public struct TypedItemProvider {
             dataUTI: dataUTI,
             mustBeVisualMedia: mustBeVisualMedia,
             attachmentLimits: attachmentLimits,
-            progress: progress,
         )
     }
 
@@ -413,22 +410,12 @@ public struct TypedItemProvider {
         dataUTI: String,
         mustBeVisualMedia: Bool,
         attachmentLimits: OutgoingAttachmentLimits,
-        progress: Progress?,
     ) async throws -> PreviewableAttachment {
         if SignalAttachment.videoUTISet.contains(dataUTI) {
-            // TODO: Move waiting for this export to the end of the share flow rather than up front
-            var progressPoller: ProgressPoller?
-            defer {
-                progressPoller?.stopPolling()
-            }
-            return try await PreviewableAttachment.compressVideoAsMp4(
+            return try PreviewableAttachment.normalizedVideoAttachment(
                 dataSource: dataSource,
-                attachmentLimits: attachmentLimits,
-                sessionCallback: { exportSession in
-                    guard let progress else { return }
-                    progressPoller = ProgressPoller(progress: progress, pollInterval: 0.1, fractionCompleted: { return exportSession.progress })
-                    progressPoller?.startPolling()
-                },
+                dataUTI: dataUTI,
+                mustTranscode: true,
             )
         } else if mustBeVisualMedia {
             // If it's not a video but must be visual media, then we must parse it as
@@ -436,44 +423,6 @@ public struct TypedItemProvider {
             return try PreviewableAttachment.imageAttachment(dataSource: dataSource, dataUTI: dataUTI)
         } else {
             return try PreviewableAttachment.buildAttachment(dataSource: dataSource, dataUTI: dataUTI, attachmentLimits: attachmentLimits)
-        }
-    }
-}
-
-// MARK: - ProgressPoller
-
-/// Exposes a Progress object, whose progress is updated by polling the return of a given block
-private class ProgressPoller: NSObject {
-    private let progress: Progress
-    private let pollInterval: TimeInterval
-    private let fractionCompleted: () -> Float
-
-    init(progress: Progress, pollInterval: TimeInterval, fractionCompleted: @escaping () -> Float) {
-        self.progress = progress
-        self.pollInterval = pollInterval
-        self.fractionCompleted = fractionCompleted
-    }
-
-    private var timer: Timer?
-
-    func stopPolling() {
-        timer?.invalidate()
-    }
-
-    func startPolling() {
-        guard self.timer == nil else {
-            owsFailDebug("already started timer")
-            return
-        }
-
-        self.timer = WeakTimer.scheduledTimer(timeInterval: pollInterval, target: self, userInfo: nil, repeats: true) { [weak self] timer in
-            guard let self else {
-                timer.invalidate()
-                return
-            }
-
-            let fractionCompleted = self.fractionCompleted()
-            self.progress.completedUnitCount = Int64(fractionCompleted * Float(self.progress.totalUnitCount))
         }
     }
 }

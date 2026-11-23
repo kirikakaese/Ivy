@@ -417,6 +417,66 @@
 			<string>Tato barva se používá v %1$d chatech. Chcete změny uložit pro všechny chaty?</string>
 		</dict>
 	</dict>
+	<key>CHAT_FOLDERS_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d chat</string>
+			<key>few</key>
+			<string>%1$d chaty</string>
+			<key>many</key>
+			<string>%1$d chatů</string>
+			<key>other</key>
+			<string>%1$d chatů</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_CHAT_TYPE_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d typ chatu</string>
+			<key>few</key>
+			<string>%1$d typy chatů</string>
+			<key>many</key>
+			<string>%1$d typů chatů</string>
+			<key>other</key>
+			<string>%1$d typů chatů</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_EXCLUDED_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d chat vyloučen</string>
+			<key>few</key>
+			<string>%1$d chaty vyloučeny</string>
+			<key>many</key>
+			<string>%1$d chatů vyloučeno</string>
+			<key>other</key>
+			<string>%1$d chatů vyloučeno</string>
+		</dict>
+	</dict>
 	<key>CHOOSE_BACKUP_PLAN_BULLET_RECENT_MEDIA_BACKUP_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1980,6 +2040,86 @@ Zkuste to znovu za %1$d hodiny.</string>
 Zkuste to znovu za %1$d hodin.</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Do Oblíbených můžete přidat jen %1$d nálepku</string>
+			<key>few</key>
+			<string>Do Oblíbených můžete přidat jen %1$d nálepky</string>
+			<key>many</key>
+			<string>Do Oblíbených můžete přidat jen %1$d nálepek</string>
+			<key>other</key>
+			<string>Do Oblíbených můžete přidat jen %1$d nálepek</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_MESSAGE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Tímto se odstraní tento balíček nálepek. Bez odkazu nebo zprávy s nálepkou jej nebude možné znovu přidat.</string>
+			<key>few</key>
+			<string>Tímto se odstraní tyto balíčky nálepek. Bez odkazu nebo zprávy s nálepkou je nebude možné znovu přidat.</string>
+			<key>many</key>
+			<string>Tímto se odstraní tyto balíčky nálepek. Bez odkazu nebo zprávy s nálepkou je nebude možné znovu přidat.</string>
+			<key>other</key>
+			<string>Tímto se odstraní tyto balíčky nálepek. Bez odkazu nebo zprávy s nálepkou jej nebude možné znovu přidat.</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TITLE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Odebrat %1$d balíček nálepek?</string>
+			<key>few</key>
+			<string>Odebrat %1$d balíčky nálepek?</string>
+			<key>many</key>
+			<string>Odebrat %1$d balíčků nálepek?</string>
+			<key>other</key>
+			<string>Odebrat %1$d balíčků nálepek?</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Balíček nálepek odstraněn</string>
+			<key>few</key>
+			<string>Balíčky nálepek odstraněny</string>
+			<key>many</key>
+			<string>Balíčků nálepek odstraněno</string>
+			<key>other</key>
+			<string>Balíčků nálepek odstraněno</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1998,6 +2138,26 @@ Zkuste to znovu za %1$d hodin.</string>
 			<string>%1$d nálepek</string>
 			<key>other</key>
 			<string>%1$d nálepek</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_TOOLBAR_CAPTION_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d vybrána</string>
+			<key>few</key>
+			<string>%1$d vybrány</string>
+			<key>many</key>
+			<string>%1$d vybráno</string>
+			<key>other</key>
+			<string>%1$d vybráno</string>
 		</dict>
 	</dict>
 	<key>STORY_REPLIES_COUNT_%d</key>

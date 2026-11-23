@@ -375,6 +375,60 @@
 			<string>Această culoare este folosită pentru %1$d de conversații. Vrei să salvezi modificările pentru toate conversațiile?</string>
 		</dict>
 	</dict>
+	<key>CHAT_FOLDERS_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d conversație</string>
+			<key>few</key>
+			<string>%1$d conversații</string>
+			<key>other</key>
+			<string>%1$d de conversații</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_CHAT_TYPE_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d tip de conversație</string>
+			<key>few</key>
+			<string>%1$d tipuri de conversații</string>
+			<key>other</key>
+			<string>%1$d de tipuri de conversații</string>
+		</dict>
+	</dict>
+	<key>CHAT_FOLDERS_EXCLUDED_CHAT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d conversație exclusă</string>
+			<key>few</key>
+			<string>%1$d conversații excluse</string>
+			<key>other</key>
+			<string>%1$d de conversații excluse</string>
+		</dict>
+	</dict>
 	<key>CHOOSE_BACKUP_PLAN_BULLET_RECENT_MEDIA_BACKUP_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1780,6 +1834,78 @@
  Încearcă din nou în %1$d de ore.</string>
 		</dict>
 	</dict>
+	<key>STICKER_FAVORITE_MAX_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Poți să adaugi doar %1$d abțibild la Preferate</string>
+			<key>few</key>
+			<string>Poți să adaugi doar %1$d abțibilduri la Preferate</string>
+			<key>other</key>
+			<string>Poți să adaugi doar %1$d de abțibilduri la Preferate</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_MESSAGE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Acțiunea va elimina pachetul de abțibilduri. Nu poți să îl adaugi din nou fără un link sau un mesaj cu abțibild.</string>
+			<key>few</key>
+			<string>Acțiunea va elimina pachetele de abțibilduri. Nu poți să le adaugi din nou fără un link sau un mesaj cu abțibilduri.</string>
+			<key>other</key>
+			<string>Acțiunea va elimina pachetele de abțibilduri. Nu poți să le adaugi din nou fără un link sau un mesaj cu abțibilduri.</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TITLE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Elimini %1$d pachet de abțibilduri?</string>
+			<key>few</key>
+			<string>Elimini %1$d pachete de abțibilduri?</string>
+			<key>other</key>
+			<string>Elimini %1$d de pachete de abțibilduri?</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_REMOVE_TOAST_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Pachetul de abțibilduri a fost eliminat.</string>
+			<key>few</key>
+			<string>Pachetele de abțibilduri au fost eliminate.</string>
+			<key>other</key>
+			<string>Pachetele de abțibilduri au fost eliminate.</string>
+		</dict>
+	</dict>
 	<key>STICKER_PACK_STICKER_COUNT_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -1796,6 +1922,24 @@
 			<string>%1$d autocolante</string>
 			<key>other</key>
 			<string>%1$d de autocolante</string>
+		</dict>
+	</dict>
+	<key>STICKER_PACK_TOOLBAR_CAPTION_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@caption@</string>
+		<key>caption</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%1$d selectată</string>
+			<key>few</key>
+			<string>%1$d selectate</string>
+			<key>other</key>
+			<string>%1$d selectate</string>
 		</dict>
 	</dict>
 	<key>STORY_REPLIES_COUNT_%d</key>

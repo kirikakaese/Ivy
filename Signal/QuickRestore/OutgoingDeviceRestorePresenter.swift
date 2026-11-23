@@ -165,7 +165,7 @@ class OutgoingDeviceRestorePresenter: OutgoingDeviceRestoreInitialPresenter {
                 "OUTGOING_DEVICE_TRANSFER_COMPLETE_BODY",
                 comment: "Body of prompt notifying device transfer completed.",
             ),
-            primaryButton: .dismissing(title: CommonStrings.okayButton),
+            primaryButton: .dismissing(title: CommonStrings.okButton),
         )
         await presentingViewController.awaitablePresent(sheet, animated: true)
     }
@@ -201,7 +201,7 @@ class OutgoingDeviceRestorePresenter: OutgoingDeviceRestoreInitialPresenter {
             hero: .image(UIImage(resource: .checkCircle)),
             title: title,
             body: body,
-            primaryButton: .init(title: CommonStrings.okayButton, action: { _ in
+            primaryButton: .init(title: CommonStrings.okButton, action: { _ in
                 presentingViewController.dismiss(animated: false)
             }),
         )
@@ -389,6 +389,16 @@ class OutgoingDeviceRestorePresenter: OutgoingDeviceRestoreInitialPresenter {
                     comment: "Body of prompt notifying restore failed.",
                 ),
             )
+        case DeviceTransfer.Error.connectionTimeout: (
+                OWSLocalizedString(
+                    "OUTGOING_DEVICE_REGISTRATION_FAILED_CONNECTION_TITLE",
+                    comment: "Title of prompt notifying connection failure during restore.",
+                ),
+                OWSLocalizedString(
+                    "OUTGOING_DEVICE_REGISTRATION_FAILED_CONNECTION_BODY",
+                    comment: "Body of prompt notifying connection failure during restore.",
+                ),
+            )
         case is CancellationError: (
                 OWSLocalizedString(
                     "OUTGOING_DEVICE_REGISTRATION_CANCELLED_RESTORE_TITLE",
@@ -418,7 +428,7 @@ class OutgoingDeviceRestorePresenter: OutgoingDeviceRestoreInitialPresenter {
             hero: .image(UIImage(resource: .checkCircle)),
             title: title,
             body: body,
-            primaryButton: .init(title: CommonStrings.okayButton, action: { _ in
+            primaryButton: .init(title: CommonStrings.okButton, action: { _ in
                 presentingViewController.dismiss(animated: true)
             }),
         )

@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal is nu geoptimaliseerd voor iPhone Duo. Met slechts één update ben je helemaal klaar voor twee schermen. In de toekomst zullen er meer verbeteringen worden toegepast.
+=======
+• Je kunt nu stickers aan een favorietenlijst toevoegen, zodat je ze gemakkelijk terugvindt.
+
+• Met de media-editor kun je nu ook de audio van een video verwijderen voordat je deze verstuurt. Als krijsende meeuwen je video van de idyllische zonsondergang aan de Franse kust verpesten, wordt je video nu met één simpele tik een oase van rust.
+>>>>>>> upstream/8.38.0.2011

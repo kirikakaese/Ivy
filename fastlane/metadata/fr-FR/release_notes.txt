@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal est désormais optimisé pour l'iPhone Duo : il vous suffit d'une mise à jour pour utiliser deux écrans. D'autres améliorations sont prévues pour bientôt.
+=======
+• Un lieu sûr où conserver vos stickers préférés. Ajoutez n'importe quel sticker à votre liste de favoris pour le garder à portée de main.
+
+• L'éditeur de médias permet également de supprimer le son d'une vidéo avant de l'envoyer. Votre magnifique vidéo panoramique de la lande écossaise est gâchée par d'horribles bêlements de moutons ? Retrouvez le silence des agneaux d'un simple appui sur l'écran.
+>>>>>>> upstream/8.38.0.2011

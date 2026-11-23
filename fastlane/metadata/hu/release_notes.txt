@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • A Signal mostantól optimalizálva van iPhone Duóra.
+=======
+• Mostantól bármilyen matricát hozzáadhatsz a kedvenceid listájához, így könnyen megtalálod őket.
+
+• A médiaszerkesztő támogatja a hangsáv eltávolítását a videóból küldés előtt.
+>>>>>>> upstream/8.38.0.2011

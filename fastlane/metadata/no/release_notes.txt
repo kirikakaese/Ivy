@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal er nå optimalisert for iPhone Duo.
+=======
+Nå kan du legge til klistremerker som favoritter, slik at det blir lettere å finne dem.
+
+• På den nye redigeringssiden er det også mulig å fjerne lydsporet fra videoer før du sender dem.
+>>>>>>> upstream/8.38.0.2011

@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 • Signal er nu optimeret til iPhone Duo, så du kan nøjes med at installere én opdatering for at være klar til to skærme. Der kommer også flere forbedringer fremover.
+=======
+• Dine favoritklistermærker har nu fået et sted, hvor de kan blive hængende. Føj klistermærker til dine favoritter, så du nemt kan holde fast i dem, du bedst kan lide.
+
+• Det nye medieværktøj giver dig også mulighed for at fjerne lyden fra en video, før du sender den. Hvis de idylliske slow-panoramaoptagelser fra din ferie i Skotland delvist blev ødelagt af lyden af omstrejfende får, kan din film med blot ét tryk blive til lammenes stilhed.
+>>>>>>> upstream/8.38.0.2011

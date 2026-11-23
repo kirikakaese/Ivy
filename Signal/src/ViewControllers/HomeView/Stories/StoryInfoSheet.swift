@@ -27,7 +27,6 @@ class StoryInfoSheet: OWSTableViewController2, DatabaseChangeDelegate, UIAdaptiv
         DependenciesBridge.shared.databaseChangeObserver.appendDatabaseChangeDelegate(self)
 
         overrideUserInterfaceStyle = .dark
-        forceDarkMode = true
 
         modalPresentationStyle = .pageSheet
         presentationController?.delegate = self
@@ -302,7 +301,6 @@ class StoryInfoSheet: OWSTableViewController2, DatabaseChangeDelegate, UIAdaptiv
 
             SSKEnvironment.shared.databaseStorageRef.read { transaction in
                 var configuration = ContactCellView.Configuration(address: address, localUserDisplayMode: .asUser)
-                configuration.forceDarkAppearance = true
                 configuration.accessory = self.buildContactCellAccessory(
                     text: accessoryText,
                     transaction: transaction,

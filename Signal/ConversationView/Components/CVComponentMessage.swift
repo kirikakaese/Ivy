@@ -3,22 +3,20 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-public import Foundation
-public import SignalServiceKit
-public import SignalUI
-import UIKit
+import SignalServiceKit
+import SignalUI
 
-public class CVComponentMessage: CVComponentBase, CVRootComponent {
+class CVComponentMessage: CVComponentBase, CVRootComponent {
 
-    public var componentKey: CVComponentKey { .messageRoot }
+    var componentKey: CVComponentKey { .messageRoot }
 
-    public static let selectionAnimationDuration: TimeInterval = 0.2
+    static let selectionAnimationDuration: TimeInterval = 0.2
 
-    public var cellReuseIdentifier: CVCellReuseIdentifier {
+    var cellReuseIdentifier: CVCellReuseIdentifier {
         .`default`
     }
 
-    public var isDedicatedCell: Bool { false }
+    var isDedicatedCell: Bool { false }
 
     private var bodyText: CVComponent?
 
@@ -408,7 +406,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
         }
     }
 
-    public func configureCellRootComponent(
+    func configureCellRootComponent(
         cellView: UIView,
         cellMeasurement: CVCellMeasurement,
         componentDelegate: CVComponentDelegate,
@@ -427,11 +425,11 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
         self.swipeActionProgress = messageSwipeActionState.getProgress(interactionId: interaction.uniqueId)
     }
 
-    public func buildComponentView(componentDelegate: CVComponentDelegate) -> CVComponentView {
+    func buildComponentView(componentDelegate: CVComponentDelegate) -> CVComponentView {
         CVComponentViewMessage()
     }
 
-    override public func wallpaperBlurView(componentView: CVComponentView) -> CVWallpaperBlurView? {
+    override func wallpaperBlurView(componentView: CVComponentView) -> CVWallpaperBlurView? {
         guard let componentView = componentView as? CVComponentViewMessage else {
             owsFailDebug("Unexpected componentView.")
             return nil
@@ -439,7 +437,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
         return componentView.wallpaperBlurView
     }
 
-    override public func updateScrollingContent(componentView: CVComponentView) {
+    override func updateScrollingContent(componentView: CVComponentView) {
         super.updateScrollingContent(componentView: componentView)
 
         guard let componentView = componentView as? CVComponentViewMessage else {
@@ -465,15 +463,20 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
         }
     }
 
-    public static let textViewVSpacing: CGFloat = 3
+    static let textViewVSpacing: CGFloat = 3
 
     private var sendFailureBadgeSize: CGFloat { conversationStyle.hasWallpaper ? 40 : 24 }
 
+<<<<<<< HEAD
     // Ivy: from the bubble shape in Settings > Appearance.
     public static var bubbleSharpCornerRadius: CGFloat { IvyAppearance.bubbleSharpCornerRadius }
     public static var bubbleWideCornerRadius: CGFloat { IvyAppearance.bubbleWideCornerRadius }
+=======
+    static let bubbleSharpCornerRadius: CGFloat = 4
+    static let bubbleWideCornerRadius: CGFloat = 18
+>>>>>>> upstream/8.38.0.2011
 
-    public func configureForRendering(
+    func configureForRendering(
         componentView: CVComponentView,
         cellMeasurement: CVCellMeasurement,
         componentDelegate: CVComponentDelegate,
@@ -1578,7 +1581,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
     private static let measurementKey_reactions = "CVComponentMessage.measurementKey_reactions"
     private static let measurementKey_bottomNestedTextSpacing = "CVComponentMessage.measurementKey_bottomNestedTextSpacing"
 
-    public func measure(maxWidth: CGFloat, measurementBuilder: CVCellMeasurement.Builder) -> CGSize {
+    func measure(maxWidth: CGFloat, measurementBuilder: CVCellMeasurement.Builder) -> CGSize {
         owsAssertDebug(maxWidth > 0)
 
         let selectionViewWidth = ConversationStyle.selectionViewWidth
@@ -1901,13 +1904,13 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
 
     // MARK: - Events
 
-    override public func cellWillBecomeVisible(componentDelegate: any CVComponentDelegate) {
+    override func cellWillBecomeVisible(componentDelegate: any CVComponentDelegate) {
         subcomponents(forKeys: CVComponentKey.allCases).forEach { subcomponent in
             subcomponent.cellWillBecomeVisible(componentDelegate: componentDelegate)
         }
     }
 
-    override public func handleTap(
+    override func handleTap(
         sender: UIGestureRecognizer,
         componentDelegate: CVComponentDelegate,
         componentView: CVComponentView,
@@ -2023,7 +2026,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
         return false
     }
 
-    override public func canHandleDoubleTap(
+    override func canHandleDoubleTap(
         sender: UIGestureRecognizer,
         componentDelegate: any CVComponentDelegate,
         renderItem: CVRenderItem,
@@ -2036,7 +2039,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
         return viewModel.canEditMessage
     }
 
-    override public func handleDoubleTap(sender: UIGestureRecognizer, componentDelegate: any CVComponentDelegate, renderItem: CVRenderItem) -> Bool {
+    override func handleDoubleTap(sender: UIGestureRecognizer, componentDelegate: any CVComponentDelegate, renderItem: CVRenderItem) -> Bool {
         guard canHandleDoubleTap(sender: sender, componentDelegate: componentDelegate, renderItem: renderItem) else {
             return false
         }
@@ -2046,7 +2049,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
         return true
     }
 
-    override public func findLongPressHandler(
+    override func findLongPressHandler(
         sender: UIGestureRecognizer,
         componentDelegate: CVComponentDelegate,
         componentView: CVComponentView,
@@ -2170,7 +2173,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
         return CVComponentAndView(key: key, component: subcomponent, componentView: subcomponentView)
     }
 
-    public func albumItemView(
+    func albumItemView(
         forAttachment attachment: ReferencedAttachment,
         componentView: CVComponentView,
     ) -> UIView? {
@@ -2202,7 +2205,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
 
     // Used for rendering some portion of an Conversation View item.
     // It could be the entire item or some part thereof.
-    public class CVComponentViewMessage: NSObject, CVComponentView {
+    class CVComponentViewMessage: CVComponentView {
 
         // Contains the cell contents which are arranged horizontally:
         //
@@ -2301,9 +2304,9 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
             ]
         }
 
-        public var isDedicatedCellView = false
+        var isDedicatedCellView = false
 
-        public var rootView: UIView {
+        var rootView: UIView {
             hOuterStack
         }
 
@@ -2453,7 +2456,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
 
         // MARK: -
 
-        override init() {
+        init() {
             chatColorView.layoutMargins = .zero
             chatColorView.ensureSubviewsFillBounds = true
 
@@ -2463,7 +2466,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
             // reactionsSwipeToReplyWrapper later.
         }
 
-        public func setIsCellVisible(_ isCellVisible: Bool) {
+        func setIsCellVisible(_ isCellVisible: Bool) {
             for subcomponentView in allSubcomponentViews {
                 subcomponentView.setIsCellVisible(isCellVisible)
             }
@@ -2472,7 +2475,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
             }
         }
 
-        public func setSwipeToReplyOffset(
+        func setSwipeToReplyOffset(
             fastOffset: CGPoint,
             slowOffset: CGPoint,
         ) {
@@ -2486,7 +2489,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
             }
         }
 
-        public func reset() {
+        func reset() {
             removeSwipeActionAnimations()
 
             if !isDedicatedCellView {
@@ -2545,25 +2548,25 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
             }
         }
 
-        public func canHandleDoubleTapGesture(_ sender: UIGestureRecognizer) -> Bool {
+        func canHandleDoubleTapGesture(_ sender: UIGestureRecognizer) -> Bool {
             // If we have a body text view, allow taps anywhere (incl. adjacent whitespace).
             return bodyTextView != nil
         }
 
-        public func contextMenuContentView() -> UIView? {
+        func contextMenuContentView() -> UIView? {
             chatColorView.animationsEnabled = true
             return contentViewSwipeToReplyWrapper
         }
 
-        public func contextMenuAuxiliaryContentView() -> UIView? {
+        func contextMenuAuxiliaryContentView() -> UIView? {
             reactionsSwipeToReplyWrapper
         }
 
-        public func contextMenuPresentationWillBegin() {
+        func contextMenuPresentationWillBegin() {
             avatarView.isHidden = true
         }
 
-        public func contextMenuPresentationDidEnd() {
+        func contextMenuPresentationDidEnd() {
             avatarView.isHidden = false
             chatColorView.animationsEnabled = false
         }
@@ -2591,7 +2594,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
 
     // MARK: - Swipe To Reply
 
-    override public func findPanHandler(
+    override func findPanHandler(
         sender: UIPanGestureRecognizer,
         componentDelegate: CVComponentDelegate,
         componentView: CVComponentView,
@@ -2627,7 +2630,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
         )
     }
 
-    override public func startPanGesture(
+    override func startPanGesture(
         sender: UIPanGestureRecognizer,
         panHandler: CVPanHandler,
         componentDelegate: CVComponentDelegate,
@@ -2674,7 +2677,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
         }
     }
 
-    override public func handlePanGesture(
+    override func handlePanGesture(
         sender: UIPanGestureRecognizer,
         panHandler: CVPanHandler,
         componentDelegate: CVComponentDelegate,
@@ -2743,7 +2746,7 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
         }
     }
 
-    override public func contextMenuAccessoryViews(componentView: CVComponentView) -> [ContextMenuTargetedPreviewAccessory]? {
+    override func contextMenuAccessoryViews(componentView: CVComponentView) -> [ContextMenuTargetedPreviewAccessory]? {
         if hasSenderAvatar {
             guard let componentView = componentView as? CVComponentViewMessage else {
                 owsFailDebug("Unexpected componentView.")
@@ -3012,13 +3015,10 @@ public class CVComponentMessage: CVComponentBase, CVRootComponent {
 
         self.swipeActionProgress = nil
     }
-}
 
-// MARK: -
+    // MARK: -
 
-private extension CVComponentMessage {
-
-    func configureSubcomponentView(
+    private func configureSubcomponentView(
         messageView: CVComponentViewMessage,
         subcomponent: CVComponent,
         cellMeasurement: CVCellMeasurement,
@@ -3044,7 +3044,7 @@ private extension CVComponentMessage {
         }
     }
 
-    func configureSubcomponent(
+    private func configureSubcomponent(
         messageView: CVComponentViewMessage,
         cellMeasurement: CVCellMeasurement,
         componentDelegate: CVComponentDelegate,
@@ -3103,11 +3103,11 @@ private extension CVComponentMessage {
         )
     }
 
-    func buildBorderlessStackConfig() -> CVStackViewConfig {
+    private func buildBorderlessStackConfig() -> CVStackViewConfig {
         buildNoMarginsStackConfig()
     }
 
-    func buildFullWidthStackConfig(includeTopMargin: Bool, includeBottomMargin: Bool) -> CVStackViewConfig {
+    private func buildFullWidthStackConfig(includeTopMargin: Bool, includeBottomMargin: Bool) -> CVStackViewConfig {
         var layoutMargins = UIEdgeInsets.zero
         if includeTopMargin {
             layoutMargins.top = conversationStyle.textInsets.top
@@ -3123,7 +3123,7 @@ private extension CVComponentMessage {
         )
     }
 
-    func buildNoMarginsStackConfig() -> CVStackViewConfig {
+    private func buildNoMarginsStackConfig() -> CVStackViewConfig {
         CVStackViewConfig(
             axis: .vertical,
             alignment: .fill,
@@ -3132,7 +3132,7 @@ private extension CVComponentMessage {
         )
     }
 
-    func buildContentStackConfig() -> CVStackViewConfig {
+    private func buildContentStackConfig() -> CVStackViewConfig {
         CVStackViewConfig(
             axis: .vertical,
             alignment: .fill,
@@ -3141,7 +3141,7 @@ private extension CVComponentMessage {
         )
     }
 
-    func configureSubcomponentStack(
+    private func configureSubcomponentStack(
         messageView: CVComponentViewMessage,
         stackView: ManualStackView,
         stackConfig: CVStackViewConfig,
@@ -3175,7 +3175,7 @@ private extension CVComponentMessage {
         )
     }
 
-    func subcomponents(forKeys keys: [CVComponentKey]) -> [CVComponent] {
+    private func subcomponents(forKeys keys: [CVComponentKey]) -> [CVComponent] {
         keys.compactMap { key in
             guard let subcomponent = self.subcomponent(forKey: key) else {
                 // Not all subcomponents may be present.
@@ -3185,7 +3185,7 @@ private extension CVComponentMessage {
         }
     }
 
-    func buildSubcomponentMap(keys: [CVComponentKey]) -> [CVComponentKey: CVComponent] {
+    private func buildSubcomponentMap(keys: [CVComponentKey]) -> [CVComponentKey: CVComponent] {
         var result = [CVComponentKey: CVComponent]()
         for key in keys {
             guard let subcomponent = self.subcomponent(forKey: key) else {
@@ -3269,7 +3269,6 @@ private class SwipeToReplyIndicatorView: UIView {
     var backgroundEffect: UIVisualEffect? = nil {
         didSet {
             // Show/hide background.
-            let imageName: String
             if let backgroundEffect {
                 if let backgroundView {
                     backgroundView.effect = backgroundEffect
@@ -3286,18 +3285,15 @@ private class SwipeToReplyIndicatorView: UIView {
                 backgroundView?.contentView.addSubview(imageView)
 
                 // Smaller icon when we there is a background.
-                imageName = "reply-20"
+                imageView.image = .reply20
             } else {
                 backgroundView?.effect = nil
                 backgroundView?.isHidden = true
                 addSubview(imageView)
 
                 // Larger - 24 dp - icon.
-                imageName = "reply"
+                imageView.image = .reply
             }
-
-            // Update icon:
-            imageView.image = UIImage(named: imageName)?.withRenderingMode(.alwaysTemplate)
 
             invalidateIntrinsicContentSize()
             setNeedsLayout()
@@ -3319,7 +3315,7 @@ private class SwipeToReplyIndicatorView: UIView {
     }
 
     override var intrinsicContentSize: CGSize {
-        let size: CGFloat = (backgroundView?.isHidden ?? true) ? 34 : 24
+        let size: CGFloat = (backgroundView?.isHidden ?? true) ? 24 : 34
         return .square(size)
     }
 

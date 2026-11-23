@@ -150,6 +150,7 @@ class ProvisioningController: NSObject {
         viewController.navigationController?.pushViewController(view, animated: true)
     }
 
+    @MainActor
     func switchToPrimaryRegistration(viewController: UIViewController) {
         AssertIsOnMainThread()
 
@@ -164,7 +165,7 @@ class ProvisioningController: NSObject {
 
         let tsAccountManager = DependenciesBridge.shared.tsAccountManager
         if tsAccountManager.registrationStateWithMaybeSneakyTransaction.deregisteredState?.isPrimary == false {
-            SignalApp.shared.showConversationSplitView()
+            SignalApp.shared.showHomeTabBarController()
         } else if RegistrationUtils.isPrimaryByDefault {
             switchToPrimaryRegistration(viewController: viewController)
         } else {
@@ -384,7 +385,7 @@ class ProvisioningController: NSObject {
             }
             return
         }
-        SignalApp.shared.showConversationSplitView()
+        SignalApp.shared.showHomeTabBarController()
     }
 
     @MainActor

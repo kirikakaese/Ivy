@@ -4,30 +4,24 @@
 //
 
 import LibSignalClient
-public import SignalServiceKit
-public import SignalUI
+import SignalServiceKit
+import SignalUI
 
-public struct CVSelectionType: OptionSet {
-    public let rawValue: UInt
+struct CVSelectionType: OptionSet {
+    let rawValue: UInt
 
-    public init(rawValue: UInt) {
-        self.rawValue = rawValue
-    }
-
-    public static var none: CVSelectionType { CVSelectionType(rawValue: 0) }
-    public static let primaryContent = CVSelectionType(rawValue: 1 << 0)
-    public static let secondaryContent = CVSelectionType(rawValue: 1 << 1)
-    public static var allContent: CVSelectionType { primaryContent.union(secondaryContent) }
+    static var none: CVSelectionType { CVSelectionType(rawValue: 0) }
+    static let primaryContent = CVSelectionType(rawValue: 1 << 0)
+    static let secondaryContent = CVSelectionType(rawValue: 1 << 1)
+    static var allContent: CVSelectionType { primaryContent.union(secondaryContent) }
 }
 
-// MARK: -
+struct CVSelectionItem {
+    let interactionId: String
+    let interactionType: OWSInteractionType
+    let isForwardable: Bool
 
-public struct CVSelectionItem {
-    public let interactionId: String
-    public let interactionType: OWSInteractionType
-    public let isForwardable: Bool
-
-    public let selectionType: CVSelectionType
+    let selectionType: CVSelectionType
 
     init(
         interactionId: String,
@@ -64,28 +58,24 @@ public struct CVSelectionItem {
     }
 }
 
-// MARK: -
-
-public protocol CVSelectionStateDelegate: AnyObject {
+protocol CVSelectionStateDelegate: AnyObject {
     func selectionStateDidChange()
 }
 
 // MARK: -
 
 // In selection mode, represents which interactions (or portions thereof) are currently selected.
-public class CVSelectionState: NSObject {
-    public weak var delegate: CVSelectionStateDelegate?
+class CVSelectionState {
+    weak var delegate: CVSelectionStateDelegate?
 
     // A map of interaction uniqueId-to-CVSelectionItem.
     //
     // For items in this map, selectionType should never be .none.
     private var itemMap = [String: CVSelectionItem]()
 
-    public var interactionCount: Int { itemMap.count }
+    var interactionCount: Int { itemMap.count }
 
-    public func add(interaction: TSInteraction, hasRenderableContent: Bool, selectionType: CVSelectionType) {
-        AssertIsOnMainThread()
-
+    func add(interaction: TSInteraction, hasRenderableContent: Bool, selectionType: CVSelectionType) {
         guard !selectionType.isEmpty else {
             owsFailDebug("Cannot add or remote empty selection type.")
             return
@@ -119,7 +109,7 @@ public class CVSelectionState: NSObject {
         delegate?.selectionStateDidChange()
     }
 
-    public func add(itemViewModel: CVItemViewModel, selectionType: CVSelectionType) {
+    func add(itemViewModel: CVItemViewModel, selectionType: CVSelectionType) {
         add(
             interaction: itemViewModel.interaction,
             hasRenderableContent: itemViewModel.hasRenderableContent,
@@ -127,9 +117,7 @@ public class CVSelectionState: NSObject {
         )
     }
 
-    public func remove(interaction: TSInteraction, hasRenderableContent: Bool, selectionType: CVSelectionType) {
-        AssertIsOnMainThread()
-
+    func remove(interaction: TSInteraction, hasRenderableContent: Bool, selectionType: CVSelectionType) {
         guard !selectionType.isEmpty else {
             owsFailDebug("Cannot add or remote empty selection type.")
             return
@@ -162,7 +150,7 @@ public class CVSelectionState: NSObject {
         delegate?.selectionStateDidChange()
     }
 
-    public func remove(itemViewModel: CVItemViewModel, selectionType: CVSelectionType) {
+    func remove(itemViewModel: CVItemViewModel, selectionType: CVSelectionType) {
         remove(
             interaction: itemViewModel.interaction,
             hasRenderableContent: itemViewModel.hasRenderableContent,
@@ -170,9 +158,7 @@ public class CVSelectionState: NSObject {
         )
     }
 
-    public func isSelected(_ interactionId: String, selectionType: CVSelectionType) -> Bool {
-        AssertIsOnMainThread()
-
+    func isSelected(_ interactionId: String, selectionType: CVSelectionType) -> Bool {
         guard let oldItem = itemMap[interactionId] else {
             return false
         }
@@ -180,9 +166,7 @@ public class CVSelectionState: NSObject {
         return oldItem.selectionType.contains(selectionType)
     }
 
-    public func hasAnySelection(_ interactionId: String) -> Bool {
-        AssertIsOnMainThread()
-
+    func hasAnySelection(_ interactionId: String) -> Bool {
         guard let oldItem = itemMap[interactionId] else {
             return false
         }
@@ -190,13 +174,11 @@ public class CVSelectionState: NSObject {
         return true
     }
 
-    public func hasAnySelection(interaction: TSInteraction) -> Bool {
+    func hasAnySelection(interaction: TSInteraction) -> Bool {
         hasAnySelection(interaction.uniqueId)
     }
 
-    public func reset() {
-        AssertIsOnMainThread()
-
+    func reset() {
         guard !itemMap.isEmpty else {
             return
         }
@@ -206,18 +188,11 @@ public class CVSelectionState: NSObject {
         delegate?.selectionStateDidChange()
     }
 
-    public var selectionItems: [CVSelectionItem] {
-        AssertIsOnMainThread()
-
-        return Array(itemMap.values)
+    var selectionItems: [CVSelectionItem] {
+        Array(itemMap.values)
     }
-}
 
-// MARK: -
-
-extension CVSelectionState {
-
-    public var selectionCanBeDeleted: Bool {
+    var selectionCanBeDeleted: Bool {
         guard !itemMap.isEmpty else {
             return false
         }
@@ -239,7 +214,7 @@ extension CVSelectionState {
         return true
     }
 
-    public var selectionCanBeForwarded: Bool {
+    var selectionCanBeForwarded: Bool {
         guard !itemMap.isEmpty else {
             return false
         }
@@ -268,11 +243,9 @@ extension CVSelectionState {
     }
 }
 
-// MARK: -
-
 extension ConversationViewController {
 
-    public func buildSelectionToolbar() -> MessageActionsToolbar {
+    func buildSelectionToolbar() -> MessageActionsToolbar {
         let deleteMessagesAction = MessageAction(
             .delete,
             accessibilityLabel: OWSLocalizedString(
@@ -313,7 +286,7 @@ extension ConversationViewController {
 
     func didTapDeleteSelectedItems() {
         let db = DependenciesBridge.shared.db
-        let adminDeleteManager = DependenciesBridge.shared.adminDeleteManager
+        let tsAccountManager = DependenciesBridge.shared.tsAccountManager
 
         let selectionItems = self.selectionState.selectionItems
         guard !selectionItems.isEmpty else {
@@ -348,7 +321,7 @@ extension ConversationViewController {
                 guard let self else { return }
                 let thread = self.thread
 
-                await db.awaitableWrite { tx in
+                let deletedForMeMessages = await db.awaitableWrite { tx in
                     self.deleteSelectedItemsForMe(
                         selectionItems: selectionItems,
                         thread: thread,
@@ -358,42 +331,52 @@ extension ConversationViewController {
 
                 modalActivityIndicator.dismiss {
                     self.uiMode = .normal
+                    TSInteraction.presentDeletedForMeToast(
+                        deletedForMeMessages: deletedForMeMessages,
+                        thread: thread,
+                        fromViewController: self,
+                    )
                 }
             }
         }
         alert.addAction(deleteForMeAction)
 
-        var deleteType: AdminDeleteManager.DeleteType = []
-        let canDeleteForEveryone: Bool = db.read { tx in
-            selectionItems.allSatisfy { selectionItem in
+        // Every selected message must be eligible to offer delete for everyone.
+        let deleteTypes: Set<TSMessage.DeleteForEveryoneType>? = db.read { tx in
+            guard let localIdentifiers = tsAccountManager.localIdentifiers(tx: tx) else {
+                return nil
+            }
+            let remoteConfig = RemoteConfig.current
+            let now = Date()
+            var deleteTypes = Set<TSMessage.DeleteForEveryoneType>()
+            for selectionItem in selectionItems {
                 guard
                     let message = TSMessage.fetchMessageViaCache(
                         uniqueId: selectionItem.interactionId,
                         transaction: tx,
+                    ),
+                    let deleteType = message.deleteForEveryoneType(
+                        thread: thread,
+                        localIdentifiers: localIdentifiers,
+                        remoteConfig: remoteConfig,
+                        now: now,
                     )
                 else {
-                    return false
+                    return nil
                 }
-
-                if message.isIncoming {
-                    deleteType.update(with: .admin)
-                } else {
-                    deleteType.update(with: .regular)
-                }
-
-                let canAdminDelete = adminDeleteManager.canAdminDeleteMessage(message: message, thread: thread, tx: tx)
-                return message.canBeRemotelyDeletedByNonAdmin || canAdminDelete
+                deleteTypes.insert(deleteType)
             }
+            return deleteTypes
         }
 
-        if canDeleteForEveryone, !thread.isTerminatedGroup {
+        if let deleteTypes {
             let deleteForEveryoneAction = ActionSheetAction(
                 title: CommonStrings.deleteForEveryoneButton,
                 style: .destructive,
             ) { [weak self] _ in
                 guard let self else { return }
                 TSInteraction.showDeleteForEveryoneConfirmationIfNecessary(
-                    deleteType: deleteType,
+                    deleteTypes: deleteTypes,
                     completion: { [self] in
                         ModalActivityIndicatorViewController.present(
                             fromViewController: self,
@@ -427,7 +410,7 @@ extension ConversationViewController {
         selectionItems: [CVSelectionItem],
         thread: TSThread,
         tx: DBWriteTransaction,
-    ) {
+    ) -> [DeletedForMeMessage]? {
         let interactionDeleteManager = DependenciesBridge.shared.interactionDeleteManager
 
         let interactionsToDelete = selectionItems.compactMap { item in
@@ -437,6 +420,12 @@ extension ConversationViewController {
             )
         }
 
+        let deletedForMeMessages = TSInteraction.buildDeletedForMeMessages(
+            interactions: interactionsToDelete,
+            thread: thread,
+            tx: tx,
+        )
+
         interactionDeleteManager.delete(
             interactions: interactionsToDelete,
             sideEffects: .custom(
@@ -444,6 +433,8 @@ extension ConversationViewController {
             ),
             tx: tx,
         )
+
+        return deletedForMeMessages
     }
 
     private func deleteSelectedItemsForEveryone(
@@ -451,97 +442,30 @@ extension ConversationViewController {
         thread: TSThread,
         tx: DBWriteTransaction,
     ) {
-        let adminDeleteManager = DependenciesBridge.shared.adminDeleteManager
+        let tsAccountManager = DependenciesBridge.shared.tsAccountManager
 
-        guard !selectionItems.isEmpty else { return }
         guard let latestThread = TSThread.fetchViaCache(uniqueId: thread.uniqueId, transaction: tx) else {
             return owsFailDebug("Trying to delete messages without a thread.")
         }
-
-        guard let localIdentifiers = DependenciesBridge.shared.tsAccountManager.localIdentifiers(tx: tx) else {
+        guard let localIdentifiers = tsAccountManager.localIdentifiers(tx: tx) else {
             return owsFailDebug("LocalIdentifiers missing during message deletion.")
         }
 
-        selectionItems.forEach {
+        for selectionItem in selectionItems {
             guard
                 let message = TSMessage.fetchMessageViaCache(
-                    uniqueId: $0.interactionId,
+                    uniqueId: selectionItem.interactionId,
                     transaction: tx,
                 )
             else {
-                return
+                continue
             }
-
-            let canAdminDelete = adminDeleteManager.canAdminDeleteMessage(message: message, thread: thread, tx: tx)
-
-            guard
-                let deleteMessage = TSInteraction.buildDeleteMessage(
-                    thread: thread,
-                    message: message,
-                    localIdentifiers: localIdentifiers,
-                    canAdminDelete: canAdminDelete,
-                    tx: tx,
-                )
-            else {
-                return owsFailDebug("Failure to build outgoing delete for everyone.")
-            }
-
-            // TODO: pending send state for incoming messages
-            (message as? TSOutgoingMessage)?.updateWithRecipientAddressStates(
-                deleteMessage.recipientAddressStates,
+            _ = TSInteraction.deleteForEveryone(
+                message: message,
+                thread: latestThread,
+                localIdentifiers: localIdentifiers,
                 tx: tx,
             )
-
-            if message.canBeRemotelyDeletedByNonAdmin {
-                do {
-                    try TSMessage.tryToRemotelyDeleteMessageAsNonAdmin(
-                        fromAuthor: localIdentifiers.aci,
-                        sentAtTimestamp: message.timestamp,
-                        threadUniqueId: latestThread.uniqueId,
-                        serverTimestamp: 0, // TSOutgoingMessage won't have server timestamp.
-                        transaction: tx,
-                    )
-                } catch {
-                    return owsFailDebug("Unable to remotely delete message")
-                }
-            } else if
-                canAdminDelete,
-                let groupThread = thread as? TSGroupThread
-            {
-                let originalMessageAuthorAci: Aci?
-                if let incomingMessage = (message as? TSIncomingMessage) {
-                    originalMessageAuthorAci = incomingMessage.authorAddress.aci
-                } else {
-                    originalMessageAuthorAci = localIdentifiers.aci
-                }
-
-                guard let originalMessageAuthorAci else {
-                    owsFailDebug("Unable to admin delete without original message author")
-                    return
-                }
-                do {
-                    try DependenciesBridge.shared.adminDeleteManager.tryToAdminDeleteMessage(
-                        originalMessageAuthorAci: originalMessageAuthorAci,
-                        deleteAuthorAci: localIdentifiers.aci,
-                        sentAtTimestamp: message.timestamp,
-                        groupThread: groupThread,
-                        threadUniqueId: latestThread.uniqueId,
-                        serverTimestamp: 0, // TSOutgoingMessage won't have server timestamp.
-                        transaction: tx,
-                    )
-                } catch {
-                    return owsFailDebug("Unable to remotely delete message")
-                }
-            } else {
-                owsFailDebug("Unable to delete as admin or as non-admin")
-                return
-            }
-
-            let preparedMessage = PreparedOutgoingMessage.preprepared(
-                transientMessageWithoutAttachments: deleteMessage,
-            )
-
-            SSKEnvironment.shared.messageSenderJobQueueRef.add(message: preparedMessage, transaction: tx)
         }
     }
 
@@ -556,7 +480,7 @@ extension ConversationViewController {
         ForwardMessageViewController.present(forSelectionItems: selectionItems, from: self, delegate: self)
     }
 
-    public func updateSelectionButtons() {
+    func updateSelectionButtons() {
         guard let selectionToolbar = self.selectionToolbar else {
             owsFailDebug("Missing selectionToolbar.")
             return
@@ -584,11 +508,6 @@ extension ConversationViewController {
             return
         }
     }
-}
-
-// MARK: - Selection
-
-extension ConversationViewController {
 
     var cancelSelectionBarButtonItem: UIBarButtonItem {
         .cancelButton { [weak self] in
@@ -641,14 +560,8 @@ extension ConversationViewController {
         alert.addAction(delete)
         present(alert, animated: true)
     }
-}
 
-// MARK: -
-
-extension ConversationViewController: CVSelectionStateDelegate {
-    public func selectionStateDidChange() {
-        AssertIsOnMainThread()
-
+    func selectionStateDidChange() {
         updateSelectionButtons()
     }
 }
