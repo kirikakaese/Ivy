@@ -6,6 +6,7 @@ mod legacy;
 mod link;
 mod net;
 mod provisioning;
+mod store;
 
 use std::path::Path;
 use std::sync::{Arc, Mutex};

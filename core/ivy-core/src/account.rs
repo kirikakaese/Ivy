@@ -65,3 +65,27 @@ pub fn save(db: &mut Connection, account: &Account, aci: &LinkKeys, pni: Option<
     }
     Ok(tx.commit()?)
 }
+
+#[cfg(test)]
+pub(crate) mod tests {
+    use super::Account;
+
+    pub(crate) fn account(registration_id: u32) -> Account {
+        Account {
+            aci: "00000000-0000-4000-8000-000000000001".into(),
+            device_id: 2,
+            password: "pw".into(),
+            aci_identity: vec![],
+            aci_registration_id: registration_id,
+            number: None,
+            pni: None,
+            pni_identity: None,
+            pni_registration_id: None,
+            auth_credential_salt: None,
+            profile_key: vec![0; 32],
+            account_entropy_pool: String::new(),
+            media_root_backup_key: vec![0; 32],
+            read_receipts: false,
+        }
+    }
+}

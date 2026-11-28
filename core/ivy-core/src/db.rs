@@ -10,14 +10,34 @@ use crate::CoreError;
 pub const KEY_SPEC_LEN: usize = 48;
 
 /// The core's own schema, one entry per version. Only ever append.
-const MIGRATIONS: &[&str] = &["
+const MIGRATIONS: &[&str] = &[
+    "
     CREATE TABLE kv (key TEXT PRIMARY KEY, value BLOB NOT NULL) WITHOUT ROWID;
     -- kind: 0 signed, 1 kyber last resort. identity: 0 ACI, 1 PNI.
     CREATE TABLE prekey (
         identity INTEGER NOT NULL, kind INTEGER NOT NULL, id INTEGER NOT NULL, record BLOB NOT NULL,
         PRIMARY KEY (identity, kind, id)
     ) WITHOUT ROWID;
-"];
+",
+    "
+    -- Kinds in prekey: 2 one-time EC, 3 one-time Kyber (deleted when used).
+    -- Remote identity keys, by service id: the same for every local identity and device.
+    CREATE TABLE identity (address TEXT PRIMARY KEY, key BLOB NOT NULL) WITHOUT ROWID;
+    CREATE TABLE session (
+        identity INTEGER NOT NULL, address TEXT NOT NULL, device INTEGER NOT NULL, record BLOB NOT NULL,
+        PRIMARY KEY (identity, address, device)
+    ) WITHOUT ROWID;
+    CREATE TABLE sender_key (
+        address TEXT NOT NULL, device INTEGER NOT NULL, distribution_id BLOB NOT NULL, record BLOB NOT NULL,
+        PRIMARY KEY (address, device, distribution_id)
+    ) WITHOUT ROWID;
+    -- A last-resort Kyber key is used once per base key; a second use is a replay (as in the Swift app).
+    CREATE TABLE kyber_use (
+        identity INTEGER NOT NULL, kyber_id INTEGER NOT NULL, signed_id INTEGER NOT NULL, base_key BLOB NOT NULL,
+        PRIMARY KEY (identity, kyber_id, signed_id, base_key)
+    ) WITHOUT ROWID;
+",
+];
 
 fn open(path: &Path, key_spec: &[u8], flags: OpenFlags) -> Result<Connection, CoreError> {
     if key_spec.len() != KEY_SPEC_LEN {
