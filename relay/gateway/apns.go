@@ -139,7 +139,9 @@ func (s *apnsSender) wake(deviceToken string, sandbox bool) error {
 	}
 	body, _ := io.ReadAll(io.LimitReader(resp.Body, 4096))
 	_ = json.Unmarshal(body, &reason)
-	if resp.StatusCode == http.StatusGone || reason.Reason == "BadDeviceToken" || reason.Reason == "Unregistered" {
+	// BadDeviceToken is a build without push or the wrong environment: a failure the operator must
+	// see, not a removed device (which would make Ivy link a new push device).
+	if resp.StatusCode == http.StatusGone || reason.Reason == "Unregistered" {
 		return errUnregistered
 	}
 	return fmt.Errorf("Apple answered %d %s", resp.StatusCode, reason.Reason)

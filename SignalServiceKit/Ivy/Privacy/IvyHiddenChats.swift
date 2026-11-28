@@ -95,6 +95,7 @@ public final class IvyHiddenChats {
 
     public func hide(_ chat: IvyChatReference, now: Date = Date()) {
         store?.update(kind: Self.kind, entityId: chat.rawValue, fields: [
+            IvyDataChange.deletedField: nil,
             Field.hiddenAt: IvyDataStore.encode(UInt64(now.timeIntervalSince1970 * 1000)),
         ])
         reload()

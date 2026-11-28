@@ -115,7 +115,8 @@ public final class IvyDataStore {
         return applied
     }
 
-    /// Marks an entity as deleted. The deletion syncs like any other edit.
+    /// Marks an entity as deleted. The deletion syncs like any other edit. Kinds whose id comes back
+    /// (a chat, a message) pass `deletedField: nil` when they add the entity again.
     public func delete(kind: String, entityId: String) {
         update(kind: kind, entityId: entityId, fields: [IvyDataChange.deletedField: "true"])
     }
@@ -124,6 +125,7 @@ public final class IvyDataStore {
     /// that won over the stored values.
     @discardableResult
     public func apply(_ changes: [IvyDataChange]) -> [IvyDataChange] {
+        let changes = changes.filter { clock.accepts($0.timestamp) }
         guard !changes.isEmpty else {
             return []
         }

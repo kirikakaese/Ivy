@@ -51,6 +51,7 @@ public enum IvyStarStore {
 
     public static func save(_ star: IvyStar, store: IvyDataStore?) {
         store?.update(kind: kind, entityId: star.id, fields: [
+            IvyDataChange.deletedField: nil,
             Field.message: IvyDataStore.encode(star.message),
             Field.quote: star.quote,
             Field.starredAt: IvyDataStore.encode(UInt64(star.starredAt.timeIntervalSince1970 * 1000)),
@@ -114,7 +115,7 @@ public enum IvyChatNoteStore {
         guard text != note(for: chat, store: store) else {
             return
         }
-        store?.update(kind: kind, entityId: chat.rawValue, fields: [Field.text: text])
+        store?.update(kind: kind, entityId: chat.rawValue, fields: [IvyDataChange.deletedField: nil, Field.text: text])
     }
 }
 

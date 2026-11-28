@@ -212,6 +212,29 @@ final class IvyCalendarTest: XCTestCase {
         XCTAssertNil(IvyICS.parseDuration("15M"))
     }
 
+    /// Files from other people must not overflow anything (Swift stops the app on overflow).
+    func testHugeNumbersInReceivedFiles() throws {
+        XCTAssertNil(IvyICS.parseDuration("-PT99999999999999999999M"))
+        XCTAssertNil(IvyICS.parseDuration("P99999999999999999999W"))
+        let text = """
+        BEGIN:VCALENDAR
+        BEGIN:VEVENT
+        UID:huge@example.com
+        DTSTART:20261017T100000Z
+        DURATION:P99999999999999999999W
+        RRULE:FREQ=DAILY;COUNT=9223372036854775807;INTERVAL=9223372036854775807
+        SUMMARY:Huge
+        BEGIN:VALARM
+        TRIGGER:-PT9000000000000000000M
+        END:VALARM
+        END:VEVENT
+        END:VCALENDAR
+        """
+        let event = try XCTUnwrap(IvyICS.parse(text, calendar: calendar).first)
+        XCTAssertEqual(event.recurrence?.interval, 1000)
+        XCTAssertNil(event.alertMinutes)
+    }
+
     // MARK: - Store
 
     func testStoreRoundTripAndImportUpdatesByUID() throws {

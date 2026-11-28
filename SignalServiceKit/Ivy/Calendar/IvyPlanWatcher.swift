@@ -103,6 +103,10 @@ public final class IvyPlanWatcher {
             guard let stream = referenced.attachment.asStream() else {
                 return .notDownloaded
             }
+            // A plan is a few kilobytes; anything far larger is not one and is not worth reading into memory.
+            guard stream.unencryptedByteCount <= 1_000_000 else {
+                continue
+            }
             guard
                 let data = try? stream.decryptedRawData(),
                 let text = String(data: data, encoding: .utf8),

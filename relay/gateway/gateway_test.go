@@ -194,6 +194,10 @@ func TestAppleRejections(t *testing.T) {
 	if err := sender.wake(token, false); err != errUnregistered {
 		t.Fatalf("410: %v", err)
 	}
+	status, reason = http.StatusBadRequest, "BadDeviceToken"
+	if err := sender.wake(token, false); err == nil || err == errUnregistered {
+		t.Fatalf("BadDeviceToken: %v", err)
+	}
 	status, reason = http.StatusForbidden, "InvalidProviderToken"
 	if err := sender.wake(token, false); err == nil || err == errUnregistered {
 		t.Fatalf("403: %v", err)

@@ -72,6 +72,15 @@ final class IvyDataStoreTest: XCTestCase {
         XCTAssertEqual(store.entity(kind: "k", id: "a")?["f"], "2")
     }
 
+    func testEditsFarInTheFutureAreDropped() throws {
+        let store = try makeStore()
+        let future = IvyDataChange(kind: "k", entityId: "a", field: "f", value: "1", timestamp: .init(millis: UInt64.max, deviceId: 2))
+        XCTAssertTrue(store.apply([future]).isEmpty)
+        XCTAssertNil(store.entity(kind: "k", id: "a"))
+        // The clock was not dragged along, so local edits still work.
+        XCTAssertEqual(store.update(kind: "k", entityId: "a", fields: ["f": "2"]).count, 1)
+    }
+
     func testDeletion() throws {
         let store = try makeStore()
         store.update(kind: "reminder", entityId: "a", fields: ["title": "\"x\""])

@@ -112,6 +112,7 @@ public final class IvySnoozedChats {
 
     public func snooze(_ chat: IvyChatReference, until date: Date) {
         store?.update(kind: Self.kind, entityId: chat.rawValue, fields: [
+            IvyDataChange.deletedField: nil,
             Field.until: IvyDataStore.encode(UInt64(max(date.timeIntervalSince1970, 0) * 1000)),
         ])
         reload()

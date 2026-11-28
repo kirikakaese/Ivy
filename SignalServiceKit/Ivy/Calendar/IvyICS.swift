@@ -350,7 +350,11 @@ public enum IvyICS {
             default: return nil
             }
         }
-        return foundAny ? sign * seconds : nil
+        // Files come from other people: anything past ten years is not a real duration and would overflow later.
+        guard foundAny, seconds <= 10 * 366 * 86_400 else {
+            return nil
+        }
+        return sign * seconds
     }
 
     static func parseRule(_ value: String, start: Date, calendar: Calendar) -> IvyRecurrence? {
@@ -364,7 +368,8 @@ public enum IvyICS {
         guard let frequency = parts["FREQ"].flatMap({ IvyRecurrence.Frequency(rawValue: $0.lowercased()) }) else {
             return nil
         }
-        let interval = parts["INTERVAL"].flatMap(Int.init) ?? 1
+        // Bounded so date arithmetic on values from other people cannot overflow.
+        let interval = min(max(parts["INTERVAL"].flatMap(Int.init) ?? 1, 1), 1000)
         var until: Date?
         if let untilValue = parts["UNTIL"] {
             let property = Property(line: "UNTIL:" + untilValue)
@@ -373,7 +378,7 @@ public enum IvyICS {
                 parsed.isDateOnly ? (calendar.date(byAdding: .second, value: 86_399, to: parsed.date) ?? parsed.date) : parsed.date
             }
         } else if let count = parts["COUNT"].flatMap(Int.init), count > 0 {
-            until = calendar.date(byAdding: frequency.component, value: (count - 1) * max(interval, 1), to: start)
+            until = calendar.date(byAdding: frequency.component, value: (min(count, 1000) - 1) * interval, to: start)
         }
         return IvyRecurrence(frequency: frequency, interval: interval, until: until)
     }

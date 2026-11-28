@@ -81,6 +81,7 @@ public final class IvyLockedChats {
     public func setLocked(_ locked: Bool, chat: IvyChatReference, now: Date = Date()) {
         if locked {
             store?.update(kind: Self.kind, entityId: chat.rawValue, fields: [
+                IvyDataChange.deletedField: nil,
                 Field.lockedAt: IvyDataStore.encode(UInt64(now.timeIntervalSince1970 * 1000)),
             ])
         } else {
@@ -133,7 +134,7 @@ public enum IvyLinkPreviews {
 
     public static func setOff(_ off: Bool, for chat: IvyChatReference, store: IvyDataStore? = IvyData.shared?.store) {
         if off {
-            store?.update(kind: kind, entityId: chat.rawValue, fields: [Field.off: IvyDataStore.encode(true)])
+            store?.update(kind: kind, entityId: chat.rawValue, fields: [IvyDataChange.deletedField: nil, Field.off: IvyDataStore.encode(true)])
         } else {
             store?.delete(kind: kind, entityId: chat.rawValue)
         }

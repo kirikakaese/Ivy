@@ -96,11 +96,16 @@ public final class IvyReminderManager {
         var titles = [String: String]()
         var bodies = [String: String]()
         SSKEnvironment.shared.databaseStorageRef.read { tx in
+            let userPreview = DependenciesBridge.shared.notificationPreferencesManager.previewType(tx: tx)
             for reminder in reminders where !reminder.isDone {
                 let thread = reminder.chat.thread(tx: tx)
-                titles[reminder.id] = thread.map { SSKEnvironment.shared.contactManagerRef.displayName(for: $0, transaction: tx) }
+                // Same rules as message notifications: the user's preview setting, hidden and locked chats.
+                let preview = thread.map { userPreview.ivyForChat($0) } ?? userPreview
+                titles[reminder.id] = thread.flatMap { preview == .noNameNoPreview ? nil : SSKEnvironment.shared.contactManagerRef.displayName(for: $0, transaction: tx) }
                     ?? IvyLocalizedString("REMINDER_TITLE", comment: "Title of a reminder notification when the chat is unknown.")
-                bodies[reminder.id] = Self.body(for: reminder, tx: tx)
+                bodies[reminder.id] = preview == .namePreview
+                    ? Self.body(for: reminder, tx: tx)
+                    : IvyLocalizedString("REMINDER_BODY_CHAT", comment: "Body of a reminder notification about a whole chat.")
             }
         }
         Task {

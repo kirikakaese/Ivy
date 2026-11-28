@@ -235,12 +235,21 @@ public final class IvyPushRelay {
             connection = nil
             await save(nil)
         }
+        var created = false
         if connection == nil {
             let device = try await createDevice()
             connection = Connection(relayURL: relayURL, deviceId: device.deviceId, password: device.password)
             await save(connection)
+            created = true
         }
-        try await register(connection!, token: token, allowingNewDevice: true)
+        do {
+            try await register(connection!, token: token, allowingNewDevice: true)
+        } catch where created {
+            // A device the relay never took must not stay linked, or settings show the relay as on without pushes.
+            try? await unlink(connection!)
+            await save(nil)
+            throw error
+        }
     }
 
     /// Called with each push token iOS hands Ivy. Registers again when the
@@ -350,6 +359,8 @@ public final class IvyPushRelay {
         case "forbidden" where allowingNewDevice:
             // The push device was removed, for example under Linked Devices.
             Logger.info("The push device is gone; adding a new one.")
+            // The relay can say so while the device is still linked (Apple refused a wake-up); free its slot first.
+            try? await unlink(connection)
             let device = try await createDevice()
             let replacement = Connection(relayURL: connection.relayURL, deviceId: device.deviceId, password: device.password)
             await save(replacement)

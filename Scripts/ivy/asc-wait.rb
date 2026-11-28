@@ -19,26 +19,45 @@ BUNDLE_ID = 'io.github.kirikakaese.ivy'
 WAIT_MINUTES = Integer(ENV.fetch('IVY_PROCESSING_WAIT_MINUTES', '45'))
 
 build_number = ARGV[0] or ASC.fail_with('usage: asc-wait.rb BUILD')
-app = ASC.call(:get, "/v1/apps?filter[bundleId]=#{BUNDLE_ID}", what: 'find the app')['data'].first
-ASC.fail_with("No app with the bundle ID #{BUNDLE_ID}.") unless app
+
+# A failed request must not end the wait: any exit but 0 or 2 revokes the certificate
+# while Apple may still be processing the build.
+def apple_data(path)
+  response = ASC.request(:get, path)
+  return JSON.parse(response.body)['data'] if response.code.start_with?('2')
+
+  puts "App Store Connect answered #{response.code}; trying again."
+  nil
+rescue StandardError => e
+  puts "Couldn't reach App Store Connect (#{e.class}); trying again."
+  nil
+end
 
 deadline = Time.now + (WAIT_MINUTES * 60)
+app_id = nil
 last_state = nil
 loop do
-  builds = ASC.call(:get, "/v1/builds?filter[app]=#{app['id']}&sort=-uploadedDate&limit=20", what: 'list builds')['data']
-  build = builds.find { |b| b.dig('attributes', 'version').to_s.split('.').last == build_number.to_s }
-  state = build&.dig('attributes', 'processingState') || 'NOT_LISTED_YET'
-  if state != last_state
-    puts "Build #{build_number}: #{state}"
-    last_state = state
+  unless app_id
+    apps = apple_data("/v1/apps?filter[bundleId]=#{BUNDLE_ID}")
+    ASC.fail_with("No app with the bundle ID #{BUNDLE_ID}.") if apps&.empty?
+    app_id = apps&.first&.dig('id')
   end
-  case state
-  when 'VALID'
-    puts "Apple processed build #{build_number}; it's ready in TestFlight."
-    exit 0
-  when 'FAILED', 'INVALID'
-    puts "::error::Apple rejected build #{build_number} (#{state}). App Store Connect > TestFlight shows why, and Apple sends an email."
-    exit 1
+  builds = app_id && apple_data("/v1/builds?filter[app]=#{app_id}&sort=-uploadedDate&limit=20")
+  if builds
+    build = builds.find { |b| b.dig('attributes', 'version').to_s.split('.').last == build_number.to_s }
+    state = build&.dig('attributes', 'processingState') || 'NOT_LISTED_YET'
+    if state != last_state
+      puts "Build #{build_number}: #{state}"
+      last_state = state
+    end
+    case state
+    when 'VALID'
+      puts "Apple processed build #{build_number}; it's ready in TestFlight."
+      exit 0
+    when 'FAILED', 'INVALID'
+      puts "::error::Apple rejected build #{build_number} (#{state}). App Store Connect > TestFlight shows why, and Apple sends an email."
+      exit 1
+    end
   end
   if Time.now > deadline
     puts "::warning::Apple hasn't finished processing build #{build_number} after #{WAIT_MINUTES} minutes. " \

@@ -26,6 +26,9 @@ final class IvyHiddenChatsTest: XCTestCase {
         hiddenChats.unhide(chat)
         XCTAssertFalse(hiddenChats.isHidden(chat))
         XCTAssertTrue(hiddenChats.isEmpty)
+        // The entity id is the chat, so hiding it again must undo the earlier deletion.
+        hiddenChats.hide(chat)
+        XCTAssertTrue(hiddenChats.isHidden(chat))
     }
 
     func testHiddenChatsSyncToOtherDevices() throws {

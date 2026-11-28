@@ -82,6 +82,12 @@ public final class IvyDataClock {
         return IvyDataTimestamp(millis: lastMillis, deviceId: deviceId())
     }
 
+    /// Whether a received edit is dated plausibly. One far in the future (a broken clock or a crafted
+    /// backup file) would win every later edit of its field and could overflow this clock.
+    public func accepts(_ timestamp: IvyDataTimestamp) -> Bool {
+        timestamp.millis <= now() + 24 * 60 * 60 * 1000
+    }
+
     /// Moves the clock past a timestamp received from another device.
     public func observe(_ timestamp: IvyDataTimestamp) {
         lock.lock()

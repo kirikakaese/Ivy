@@ -58,8 +58,10 @@ final class IvyGlanceWriter {
         let reminders = IvyReminderManager.shared.openReminders()
         let chatNames = SSKEnvironment.shared.databaseStorageRef.read { tx in
             var names = [IvyChatReference: String]()
+            let userPreview = DependenciesBridge.shared.notificationPreferencesManager.previewType(tx: tx)
             for reminder in reminders where names[reminder.chat] == nil {
-                if let thread = reminder.chat.thread(tx: tx) {
+                // Widgets show on the Lock Screen: a chat's name only where its notifications would show it.
+                if let thread = reminder.chat.thread(tx: tx), userPreview.ivyForChat(thread) != .noNameNoPreview {
                     names[reminder.chat] = SSKEnvironment.shared.contactManagerRef.displayName(for: thread, transaction: tx)
                 }
             }
