@@ -92,7 +92,7 @@ jobs:
         run: xcodebuild -downloadComponent MetalToolchain
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@145243922b4465b78e04dd66294782c7de45901f # v1.345.0
         with:
           bundler-cache: true
 

@@ -55,28 +55,31 @@ public struct IvyEvent: Equatable, Identifiable, Sendable {
         self.createdAt = createdAt
     }
 
-    /// How long one occurrence lasts. All-day events count whole days.
-    public func duration(calendar: Calendar = .current) -> TimeInterval {
-        if isAllDay {
-            let lastDay = calendar.startOfDay(for: endAt)
-            let end = calendar.date(byAdding: .day, value: 1, to: lastDay) ?? lastDay
-            return end.timeIntervalSince(calendar.startOfDay(for: startAt))
+    /// When the occurrence that starts at `start` ends. All-day events count whole days, not seconds,
+    /// so an event first on a day with a clock change still lasts one day every time.
+    public func end(of start: Date, calendar: Calendar = .current) -> Date {
+        guard isAllDay else {
+            return start.addingTimeInterval(endAt.timeIntervalSince(startAt))
         }
-        return endAt.timeIntervalSince(startAt)
+        let firstDay = calendar.startOfDay(for: startAt)
+        let days = calendar.dateComponents([.day], from: firstDay, to: calendar.startOfDay(for: endAt)).day ?? 0
+        let day = calendar.startOfDay(for: start)
+        return calendar.date(byAdding: .day, value: max(days, 0) + 1, to: day) ?? day
     }
 
     /// The start of every occurrence that overlaps `interval`.
     public func occurrences(in interval: DateInterval, calendar: Calendar = .current) -> [Date] {
-        let length = duration(calendar: calendar)
         func overlaps(_ start: Date) -> Bool {
-            let end = start.addingTimeInterval(max(length, 1))
+            let end = max(end(of: start, calendar: calendar), start.addingTimeInterval(1))
             return start < interval.end && end > interval.start
         }
         guard let recurrence else {
             return overlaps(startAt) ? [startAt] : []
         }
         var result = [Date]()
-        for start in recurrence.starts(from: startAt, calendar: calendar) {
+        // Occurrences that end after the interval starts can begin up to one event length before it.
+        let notBefore = interval.start.addingTimeInterval(-max(endAt.timeIntervalSince(startAt), 0) - 2 * 86_400)
+        for start in recurrence.starts(from: startAt, notBefore: notBefore, calendar: calendar) {
             if start >= interval.end {
                 break
             }
@@ -92,7 +95,7 @@ public struct IvyEvent: Equatable, Identifiable, Sendable {
         guard let recurrence else {
             return startAt >= date ? startAt : nil
         }
-        return recurrence.starts(from: startAt, calendar: calendar).first { $0 >= date }
+        return recurrence.starts(from: startAt, notBefore: date, calendar: calendar).first { $0 >= date }
     }
 
     /// An event for the date found in a message, before the user edits it.
@@ -136,20 +139,26 @@ public struct IvyRecurrence: Equatable, Codable, Sendable {
         self.until = until
     }
 
-    /// At most this many occurrences are computed, so a daily event over
-    /// many years can't slow the calendar down.
+    /// At most this many occurrences are computed per call, so a daily event
+    /// over many years can't slow the calendar down.
     static let maxOccurrences = 3660
 
     /// Occurrence starts, counted from the first one so that monthly events
-    /// on the 31st don't drift to the 28th.
-    public func starts(from first: Date, calendar: Calendar = .current) -> AnySequence<Date> {
+    /// on the 31st don't drift to the 28th. Counting begins shortly before
+    /// `notBefore`, so an event that began years ago still has occurrences now.
+    public func starts(from first: Date, notBefore: Date? = nil, calendar: Calendar = .current) -> AnySequence<Date> {
         let component = frequency.component
         let step = interval
         let until = self.until
+        var firstIndex = 0
+        if let notBefore, notBefore > first {
+            let elapsed = calendar.dateComponents([component], from: first, to: notBefore).value(for: component) ?? 0
+            firstIndex = max(elapsed / max(step, 1) - 1, 0)
+        }
         return AnySequence { () -> AnyIterator<Date> in
-            var index = 0
+            var index = firstIndex
             return AnyIterator {
-                while index < Self.maxOccurrences {
+                while index < firstIndex + Self.maxOccurrences {
                     defer { index += 1 }
                     guard let start = calendar.date(byAdding: component, value: index * step, to: first) else {
                         return nil
@@ -297,7 +306,7 @@ public enum IvyEventStore {
     private static func event(id: String, fields: [String: String]) -> IvyEvent? {
         guard
             let title = IvyDataStore.decode(String.self, from: fields[Field.title]),
-            let startMillis = IvyDataStore.decode(UInt64.self, from: fields[Field.startAt])
+            let startMillis = IvyDataStore.decode(Int64.self, from: fields[Field.startAt])
         else {
             return nil
         }
@@ -308,21 +317,23 @@ public enum IvyEventStore {
             notes: IvyDataStore.decode(String.self, from: fields[Field.notes]) ?? "",
             location: IvyDataStore.decode(String.self, from: fields[Field.location]) ?? "",
             startAt: startAt,
-            endAt: IvyDataStore.decode(UInt64.self, from: fields[Field.endAt]).map(date) ?? startAt,
+            endAt: IvyDataStore.decode(Int64.self, from: fields[Field.endAt]).map(date) ?? startAt,
             isAllDay: IvyDataStore.decode(Bool.self, from: fields[Field.isAllDay]) ?? false,
             recurrence: IvyDataStore.decode(IvyRecurrence.self, from: fields[Field.recurrence]),
             alertMinutes: IvyDataStore.decode(Int.self, from: fields[Field.alertMinutes]),
             source: IvyDataStore.decode(IvyTask.Source.self, from: fields[Field.source]),
             importedUID: IvyDataStore.decode(String.self, from: fields[Field.importedUID]),
-            createdAt: IvyDataStore.decode(UInt64.self, from: fields[Field.createdAt]).map(date) ?? Date(timeIntervalSince1970: 0),
+            createdAt: IvyDataStore.decode(Int64.self, from: fields[Field.createdAt]).map(date) ?? Date(timeIntervalSince1970: 0),
         )
     }
 
-    private static func millis(_ date: Date) -> UInt64 {
-        UInt64(max(date.timeIntervalSince1970, 0) * 1000)
+    /// Signed, so birthdays and other dates before 1970 keep their day. Earlier versions wrote the same
+    /// numbers unsigned, which decode the same way.
+    private static func millis(_ date: Date) -> Int64 {
+        Int64((date.timeIntervalSince1970 * 1000).rounded(.down))
     }
 
-    private static func date(_ millis: UInt64) -> Date {
+    private static func date(_ millis: Int64) -> Date {
         Date(timeIntervalSince1970: TimeInterval(millis) / 1000)
     }
 }

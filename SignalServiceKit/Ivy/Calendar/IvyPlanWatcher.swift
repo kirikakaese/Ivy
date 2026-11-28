@@ -8,7 +8,9 @@ import GRDB
 
 /// Puts agreed shared plans into the calendar: whenever a message with a
 /// confirmed plan arrives (or is sent from another device), its event is
-/// added, or updated if it was added before. Files not downloaded yet are
+/// added, or updated if it was added before. Only plans confirmed by this
+/// account, or by whoever first proposed them in the same chat, are added;
+/// anyone else's file needs "Add to Calendar". Files not downloaded yet are
 /// looked at again later.
 public final class IvyPlanWatcher {
 
@@ -17,6 +19,8 @@ public final class IvyPlanWatcher {
     private let store = KeyValueStore(collection: "IvyPlanWatcher")
     private static let lastRowIdKey = "lastRowId"
     private static let pendingKey = "pending"
+    /// "proposer." + plan id → "<thread>|<author ACI>", empty author for this account.
+    private static let proposerKeyPrefix = "proposer."
 
     /// Messages looked at per scan.
     static let batchSize = 200
@@ -51,14 +55,26 @@ public final class IvyPlanWatcher {
 
         var confirmed = [IvyPlan]()
         var stillPending = [Int64]()
+        var newProposers = [String: String]()
         var newLastRowId = lastRowId
         databaseStorage.read { tx in
             let candidates = pending + Self.calendarMessageRowIds(after: lastRowId, tx: tx)
             for rowId in candidates {
                 newLastRowId = max(newLastRowId, rowId)
                 switch Self.planState(messageRowId: rowId, tx: tx) {
-                case .confirmed(let plan):
-                    confirmed.append(plan)
+                case .plan(let plan):
+                    guard let origin = Self.origin(messageRowId: rowId, tx: tx) else {
+                        break
+                    }
+                    let proposer = newProposers[plan.id] ?? store.getString(Self.proposerKeyPrefix + plan.id, transaction: tx)
+                    if !plan.isConfirmed {
+                        // The first proposal decides who may confirm; a later one with the same id cannot take over.
+                        if proposer == nil {
+                            newProposers[plan.id] = origin
+                        }
+                    } else if origin.hasSuffix("|") || origin == proposer {
+                        confirmed.append(plan)
+                    }
                 case .notDownloaded:
                     stillPending.append(rowId)
                 case .none:
@@ -72,6 +88,9 @@ public final class IvyPlanWatcher {
         }
         databaseStorage.write { tx in
             store.setInt64(newLastRowId, key: Self.lastRowIdKey, transaction: tx)
+            for (planId, origin) in newProposers {
+                store.setString(origin, key: Self.proposerKeyPrefix + planId, transaction: tx)
+            }
             let pendingText = Set(stillPending).sorted().suffix(Self.maxPending).map(String.init).joined(separator: ",")
             store.setString(pendingText, key: Self.pendingKey, transaction: tx)
         }
@@ -80,7 +99,19 @@ public final class IvyPlanWatcher {
     private enum PlanState {
         case none
         case notDownloaded
-        case confirmed(IvyPlan)
+        case plan(IvyPlan)
+    }
+
+    /// "<thread>|<author ACI>" of a message; the author is empty for messages this account sent.
+    private static func origin(messageRowId: Int64, tx: DBReadTransaction) -> String? {
+        // Incoming messages always have an author (old ones only a phone number); outgoing ones have none.
+        let sql = "SELECT uniqueThreadId, authorUUID, authorPhoneNumber FROM model_TSInteraction WHERE id = ?"
+        guard let row = try? Row.fetchOne(tx.database, sql: sql, arguments: [messageRowId]) else {
+            return nil
+        }
+        let thread: String = row["uniqueThreadId"]
+        let author: String? = row["authorUUID"] ?? row["authorPhoneNumber"]
+        return thread + "|" + (author ?? "")
     }
 
     private static func calendarMessageRowIds(after rowId: Int64, tx: DBReadTransaction) -> [Int64] {
@@ -110,12 +141,11 @@ public final class IvyPlanWatcher {
             guard
                 let data = try? stream.decryptedRawData(),
                 let text = String(data: data, encoding: .utf8),
-                let plan = IvySharedPlans.plan(fromICS: text),
-                plan.isConfirmed
+                let plan = IvySharedPlans.plan(fromICS: text)
             else {
                 continue
             }
-            return .confirmed(plan)
+            return .plan(plan)
         }
         return .none
     }

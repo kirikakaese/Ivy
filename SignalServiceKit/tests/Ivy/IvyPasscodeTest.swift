@@ -42,18 +42,21 @@ final class IvyPasscodeTest: XCTestCase {
     func testWrongAttemptsBlock() {
         let db = InMemoryDB()
         let now = Date(timeIntervalSince1970: 1_000_000)
+        let boot: TimeInterval = 5_000
         db.write { tx in _ = IvyPasscode.set("secret", tx: tx) }
         for _ in 1..<IvyPasscode.freeAttempts {
-            XCTAssertEqual(db.write { tx in IvyPasscode.verify("wrong", now: now, tx: tx) }, .wrong)
+            XCTAssertEqual(db.write { tx in IvyPasscode.verify("wrong", now: now, uptime: boot, tx: tx) }, .wrong)
         }
-        let blocked = db.write { tx in IvyPasscode.verify("wrong", now: now, tx: tx) }
+        let blocked = db.write { tx in IvyPasscode.verify("wrong", now: now, uptime: boot, tx: tx) }
         XCTAssertEqual(blocked, .blocked(until: now.addingTimeInterval(30)))
 
         // Even the right passcode waits.
-        XCTAssertEqual(db.write { tx in IvyPasscode.verify("secret", now: now.addingTimeInterval(10), tx: tx) }, blocked)
+        XCTAssertEqual(db.write { tx in IvyPasscode.verify("secret", now: now.addingTimeInterval(10), uptime: boot + 10, tx: tx) }, blocked)
+        // Setting the device clock an hour ahead doesn't end the wait.
+        XCTAssertNotNil(db.read { tx in IvyPasscode.blockedUntil(now: now.addingTimeInterval(3600), uptime: boot + 10, tx: tx) })
         // Afterwards it works and the count starts over.
-        XCTAssertEqual(db.write { tx in IvyPasscode.verify("secret", now: now.addingTimeInterval(31), tx: tx) }, .correct)
-        XCTAssertNil(db.read { tx in IvyPasscode.blockedUntil(now: now, tx: tx) })
+        XCTAssertEqual(db.write { tx in IvyPasscode.verify("secret", now: now.addingTimeInterval(31), uptime: boot + 31, tx: tx) }, .correct)
+        XCTAssertNil(db.read { tx in IvyPasscode.blockedUntil(now: now, uptime: boot + 31, tx: tx) })
     }
 
     func testDuressPasscode() {

@@ -7,6 +7,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -154,5 +155,15 @@ func TestNoAdminWithoutPassword(t *testing.T) {
 	mux.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/admin/", nil))
 	if rec.Code != http.StatusNotFound {
 		t.Fatalf("status %d", rec.Code)
+	}
+}
+
+func TestFailedLoginsAreCappedAcrossAddresses(t *testing.T) {
+	a := &admin{now: time.Now}
+	for i := 0; i < totalLoginAttempts; i++ {
+		a.recentFailures(fmt.Sprintf("2001:db8::%x", i), true)
+	}
+	if got := a.recentFailures("2001:db8::ffff", false); got < loginAttempts {
+		t.Fatalf("a fresh address in an attacked window may still guess: %d", got)
 	}
 }

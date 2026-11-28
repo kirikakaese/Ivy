@@ -77,6 +77,13 @@ final class IvyAppleSyncTest: XCTestCase {
         XCTAssertEqual(IvyAppleSync.plan(mode: .twoWay, ivy: [:], apple: [:], links: links), [.forget(ivyId: "1")])
     }
 
+    func testMassDisappearanceDeletesNothing() {
+        let ids = (1...6).map(String.init)
+        let links = Dictionary(uniqueKeysWithValues: ids.map { ($0, link("A" + $0)) })
+        let ivy = Dictionary(uniqueKeysWithValues: ids.map { ($0, "i") })
+        XCTAssertEqual(IvyAppleSync.plan(mode: .twoWay, ivy: ivy, apple: ["new": "a"], links: links), [])
+    }
+
     func testFingerprintsIgnoreFractionsOfSeconds() {
         let start = Date(timeIntervalSince1970: 1_790_000_000)
         let event = IvyEvent(title: "Lunch", startAt: start, endAt: start.addingTimeInterval(3600))

@@ -122,12 +122,11 @@ public enum IvyCalendar {
     ) -> [IvyCalendarItem] {
         var items = [IvyCalendarItem]()
         for event in events {
-            let duration = event.duration(calendar: calendar)
             for start in event.occurrences(in: interval, calendar: calendar) {
                 items.append(IvyCalendarItem(
                     kind: .event(event),
                     start: start,
-                    end: start.addingTimeInterval(duration),
+                    end: event.end(of: start, calendar: calendar),
                     isAllDay: event.isAllDay,
                 ))
             }

@@ -226,6 +226,12 @@ public enum IvyAppleSync {
         guard mode != .off else {
             return []
         }
+        // Most linked items gone from Apple at once is an account resync that gave them new ids, not the user
+        // deleting them; two-way would delete them all in Ivy on every device. Such a pass does nothing.
+        let vanished = links.filter { ivy[$0.key] != nil && apple[$0.value.appleId] == nil }.count
+        if mode == .twoWay, vanished >= 5, vanished * 2 > links.count {
+            return []
+        }
         var actions = [Action]()
         var linkedAppleIds = Set<String>()
         for (ivyId, link) in links.sorted(by: { $0.key < $1.key }) {

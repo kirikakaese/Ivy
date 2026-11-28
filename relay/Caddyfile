@@ -46,6 +46,10 @@
 		reverse_proxy ivy-gateway:8080
 	}
 	handle {
+		# A registration is a few hundred bytes; anyone can post one to an open relay, so each stays small.
+		request_body {
+			max_size 4KB
+		}
 		reverse_proxy h2c://mollysocket:8020
 	}
 }

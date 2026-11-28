@@ -63,6 +63,22 @@ final class IvyCalendarTest: XCTestCase {
         XCTAssertEqual(days, [date(2026, 10, 9), date(2026, 10, 10), date(2026, 10, 11)])
     }
 
+    func testDailyEventFromYearsAgoStillOccurs() {
+        let event = IvyEvent(title: "Walk", startAt: date(2015, 3, 1, 7), endAt: date(2015, 3, 1, 8), recurrence: IvyRecurrence(frequency: .daily))
+        let day = DateInterval(start: date(2026, 10, 17), end: date(2026, 10, 18))
+        XCTAssertEqual(event.occurrences(in: day, calendar: calendar), [date(2026, 10, 17, 7)])
+        XCTAssertEqual(event.nextStart(onOrAfter: date(2026, 10, 17, 9), calendar: calendar), date(2026, 10, 18, 7))
+    }
+
+    /// 25 October 2026 has 25 hours in Berlin; a weekly all-day event first on that day stays on one day.
+    func testAllDayEventStartingOnAClockChange() {
+        let event = IvyEvent(title: "Swim", startAt: date(2026, 10, 25), endAt: date(2026, 10, 25), isAllDay: true, recurrence: IvyRecurrence(frequency: .weekly))
+        let weeks = DateInterval(start: date(2026, 10, 25), end: date(2026, 11, 9))
+        let items = IvyCalendar.items(events: [event], tasks: [], reminders: [], in: weeks, calendar: calendar)
+        let days = IvyCalendar.itemsByDay(items, in: weeks, calendar: calendar).map(\.day)
+        XCTAssertEqual(days, [date(2026, 10, 25), date(2026, 11, 1), date(2026, 11, 8)])
+    }
+
     func testItemsMixEventsTasksAndReminders() {
         let day = DateInterval(start: date(2026, 10, 17), end: date(2026, 10, 18))
         let event = IvyEvent(title: "Lunch", startAt: date(2026, 10, 17, 12), endAt: date(2026, 10, 17, 13))
@@ -252,6 +268,11 @@ final class IvyCalendarTest: XCTestCase {
         )
         IvyEventStore.save(event, store: store)
         XCTAssertEqual(IvyEventStore.event(id: event.id, store: store), event)
+
+        // A birthday before 1970 keeps its date.
+        let birthday = IvyEvent(title: "Birthday", startAt: date(1965, 4, 12), endAt: date(1965, 4, 12), isAllDay: true, recurrence: IvyRecurrence(frequency: .yearly))
+        IvyEventStore.save(birthday, store: store)
+        XCTAssertEqual(IvyEventStore.event(id: birthday.id, store: store)?.startAt, date(1965, 4, 12))
 
         let imported = IvyEvent(title: "Meeting", startAt: date(2026, 10, 20, 9), endAt: date(2026, 10, 20, 10), importedUID: "uid-1")
         XCTAssertEqual(IvyEventStore.importEvents([imported], store: store).added, 1)

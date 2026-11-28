@@ -51,8 +51,12 @@ final class IvyGlanceTest: XCTestCase {
         )
         XCTAssertEqual(glance.todayRemaining(at: date(10), calendar: calendar).map(\.id), ["allDay", "lunch"])
         XCTAssertEqual(glance.todayRemaining(at: date(8, 30), calendar: calendar).map(\.id), ["allDay", "breakfast", "lunch"])
-        // A glance from yesterday knows nothing about today.
+        // A glance from yesterday without a look-ahead knows nothing about today…
         XCTAssertEqual(glance.todayRemaining(at: date(10, day: 19), calendar: calendar), [])
+        // …but one with a look-ahead knows today's events.
+        var withUpcoming = glance
+        withUpcoming.upcoming = [item("dentist", start: date(15, day: 19), end: date(16, day: 19))]
+        XCTAssertEqual(withUpcoming.todayRemaining(at: date(10, day: 19), calendar: calendar).map(\.id), ["dentist"])
     }
 
     func testNextTodayAndDueTasks() {

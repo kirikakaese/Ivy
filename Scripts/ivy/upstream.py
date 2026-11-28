@@ -142,6 +142,29 @@ def keeps_ours(path):
     return any(path == prefix or path.startswith(prefix) for prefix in KEEP_OURS)
 
 
+def use_ours(path):
+    """Puts back Ivy's version of a path, or removes it when Ivy has none
+    (upstream's workflows, the Pods pointer)."""
+    in_ours = subprocess.run(["git", "cat-file", "-e", f"HEAD:{path}"], cwd=ROOT, stderr=subprocess.DEVNULL).returncode == 0
+    if in_ours:
+        git("checkout", "HEAD", "--", path, check=False)
+    else:
+        git("rm", "-r", "--quiet", "--force", "--", path, check=False)
+
+
+def merge_started():
+    """git merge can stop before it starts (unrelated histories, a file in
+    the way); then there is no MERGE_HEAD."""
+    return subprocess.run(["git", "rev-parse", "-q", "--verify", "MERGE_HEAD"], cwd=ROOT, stdout=subprocess.DEVNULL).returncode == 0
+
+
+def keep_ours_everywhere():
+    """Upstream's changes under Ivy's own paths stay out, conflicting or not."""
+    for path in filter(None, git("diff", "--cached", "--name-only", "-z", "HEAD").split("\0")):
+        if keeps_ours(path):
+            use_ours(path)
+
+
 def lock_with_podfile_checksum(lock_text, podfile_text):
     """Podfile.lock with the checksum of Ivy's Podfile. CocoaPods records the
     SHA-1 of the Podfile's contents."""
@@ -243,18 +266,14 @@ def command_merge(args):
         cwd=ROOT, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
     print(merge.stdout.strip())
+    if not merge_started():
+        sys.exit(f"git merge did not start, so nothing was changed:\n{merge.stdout.strip()}")
 
     conflicts = git("diff", "--name-only", "-z", "--diff-filter=U").split("\0")
     left = []
     for path in filter(None, conflicts):
         if keeps_ours(path):
-            in_ours = subprocess.run(["git", "cat-file", "-e", f"HEAD:{path}"], cwd=ROOT).returncode == 0
-            if in_ours:
-                git("checkout", "--ours", "--", path, check=False)
-                git("add", "--", path)
-            else:
-                # Ivy removed it (upstream's workflows, the Pods pointer).
-                git("rm", "-r", "--quiet", "--force", "--", path, check=False)
+            continue
         elif path == PODFILE_LOCK:
             # Upstream's pods with the checksum of Ivy's Podfile. CI shows any
             # spec checksums that Ivy's Mac pins change.
@@ -263,6 +282,7 @@ def command_merge(args):
             git("add", "--", path)
         else:
             left.append(path)
+    keep_ours_everywhere()
     # Upstream's Pods submodule pointer never comes back.
     git("rm", "-r", "--cached", "--quiet", "--ignore-unmatch", "Pods", check=False)
 

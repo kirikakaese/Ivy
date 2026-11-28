@@ -37,9 +37,16 @@ public final class IvyHiddenChats {
             name: IvyDataStore.dataDidChange,
             object: nil,
         )
+        // The notification extension writes to the same database from its own process.
+        NotificationCenter.default.addObserver(self, selector: #selector(becameActive), name: .OWSApplicationDidBecomeActive, object: nil)
     }
 
     private var store: IvyDataStore? { storeProvider() }
+
+    @objc
+    private func becameActive() {
+        reload()
+    }
 
     @objc
     private func dataDidChange(_ notification: Notification) {
@@ -50,7 +57,11 @@ public final class IvyHiddenChats {
     }
 
     private func reload() {
-        let chats = Set((store?.entities(kind: Self.kind) ?? [:]).keys.compactMap(IvyChatReference.init(rawValue:)))
+        // Without the store nothing is known: stay unloaded so the next read tries again, never "none hidden".
+        guard let store else {
+            return
+        }
+        let chats = Set(store.entities(kind: Self.kind).keys.compactMap(IvyChatReference.init(rawValue:)))
         lock.lock()
         hidden = chats
         lock.unlock()
@@ -80,10 +91,8 @@ public final class IvyHiddenChats {
     }
 
     public func isHidden(thread: TSThread) -> Bool {
-        guard !isEmpty, let chat = IvyChatReference(thread: thread) else {
-            return false
-        }
-        return isHidden(chat)
+        let chats = self.chats
+        return !chats.isEmpty && IvyChatReference.all(thread: thread).contains { chats.contains($0) }
     }
 
     /// Unique ids of the hidden chats' threads, for the chat list.

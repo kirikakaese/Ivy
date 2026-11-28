@@ -80,6 +80,8 @@ type admin struct {
 const (
 	loginAttempts = 10
 	loginWindow   = 15 * time.Minute
+	// Many addresses (an IPv6 range) together get no more guesses than this per window.
+	totalLoginAttempts = 50
 )
 
 // clientIP is the visitor's address as Caddy passes it on.
@@ -117,6 +119,13 @@ func (a *admin) recentFailures(ip string, add bool) int {
 	}
 	if add {
 		a.failures[ip] = append(a.failures[ip], a.now())
+	}
+	total := 0
+	for _, times := range a.failures {
+		total += len(times)
+	}
+	if total >= totalLoginAttempts {
+		return loginAttempts
 	}
 	return len(a.failures[ip])
 }

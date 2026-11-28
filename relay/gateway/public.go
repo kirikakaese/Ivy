@@ -7,6 +7,7 @@ import (
 	"embed"
 	"encoding/json"
 	"io/fs"
+	"math"
 	"net/http"
 	"sync"
 	"time"
@@ -30,6 +31,19 @@ type monitor struct {
 	mu        sync.Mutex
 	reconnect reconnectWatch
 	latest    *adminStatus
+	// The public figures, refreshed hourly and rounded: on a small relay a value that moves with every
+	// wake-up would tell a stranger when its users get messages.
+	metrics   publicMetrics
+	metricsAt time.Time
+}
+
+// rounded returns the value rounded to a multiple of step, or nil.
+func rounded(value *float64, step float64) *float64 {
+	if value == nil {
+		return nil
+	}
+	r := math.Round(*value/step) * step
+	return &r
 }
 
 // evaluate checks everything now without counting it into the history.
@@ -203,13 +217,19 @@ func (m *monitor) publicView() publicStatus {
 			view.Components = append(view.Components, pc)
 		}
 	}
-	snap := m.stats.snapshot()
-	view.Metrics = publicMetrics{
-		Uptime30:      m.stats.uptime(30),
-		Uptime90:      m.stats.uptime(90),
-		WakeMedianMs:  snap.WakeMedianMs,
-		Acceptance24h: snap.Acceptance24h,
+	m.mu.Lock()
+	if m.metricsAt.IsZero() || now.Sub(m.metricsAt) >= time.Hour {
+		snap := m.stats.snapshot()
+		m.metrics = publicMetrics{
+			Uptime30:      m.stats.uptime(30),
+			Uptime90:      m.stats.uptime(90),
+			WakeMedianMs:  rounded(snap.WakeMedianMs, 50),
+			Acceptance24h: rounded(snap.Acceptance24h, 1),
+		}
+		m.metricsAt = now
 	}
+	view.Metrics = m.metrics
+	m.mu.Unlock()
 	for _, item := range m.posts.all() {
 		if item.Kind != kindNotice && !item.upcoming(now) && (item.Closed == nil || now.Sub(*item.Closed) < daysKept*24*time.Hour) {
 			view.Marked = append(view.Marked, toPublicPost(item))

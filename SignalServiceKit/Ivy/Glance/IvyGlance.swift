@@ -87,14 +87,17 @@ public struct IvyGlance: Codable, Equatable, Sendable {
             if offset == 0 {
                 return (day, todayRemaining(at: now, calendar: calendar))
             }
-            let items = upcoming.filter { item in
-                guard let itemStart = item.start else { return false }
-                if item.isAllDay, let end = item.end, end > itemStart {
-                    return calendar.startOfDay(for: itemStart) <= day && day <= calendar.startOfDay(for: end)
-                }
-                return calendar.isDate(itemStart, inSameDayAs: day)
+            return (day, upcoming(on: day, calendar: calendar))
+        }
+    }
+
+    private func upcoming(on day: Date, calendar: Calendar) -> [Item] {
+        upcoming.filter { item in
+            guard let itemStart = item.start else { return false }
+            if item.isAllDay, let end = item.end, end > itemStart {
+                return calendar.startOfDay(for: itemStart) <= day && day <= calendar.startOfDay(for: end)
             }
-            return (day, items)
+            return calendar.isDate(itemStart, inSameDayAs: day)
         }
     }
 
@@ -105,11 +108,17 @@ public struct IvyGlance: Codable, Equatable, Sendable {
 
     /// Today's items that haven't ended at `now`. All-day items stay all day.
     public func todayRemaining(at now: Date, calendar: Calendar = .current) -> [Item] {
-        guard calendar.isDate(writtenAt, inSameDayAs: now) else {
-            // Written on another day: today's items are unknown.
+        let items: [Item]
+        if calendar.isDate(writtenAt, inSameDayAs: now) {
+            items = today
+        } else if writtenAt < now {
+            // Written on an earlier day (Ivy wasn't opened since): its look-ahead knows today's events and
+            // reminders, though not tasks that came due.
+            items = upcoming(on: calendar.startOfDay(for: now), calendar: calendar)
+        } else {
             return []
         }
-        return today.filter { item in
+        return items.filter { item in
             item.isAllDay || (item.end ?? item.start ?? now) >= now
         }
     }

@@ -69,7 +69,7 @@ Edit `.env` on the server (`nano .env`):
 | `APNS_TEAM_ID` | developer.apple.com > Membership details > Team ID |
 | `APNS_KEY_ID` | the Key ID from step 1 |
 | `IVY_ADMIN_PASSWORD` | a password for the status page, for example from `openssl rand -base64 24`. Leave it empty to turn the page off. |
-| `IVY_ALLOWED_ACCOUNTS` | optional: only these accounts may use the relay, for example `["account ID"]`. Ivy shows the ID under Settings > Notifications > Push Relay. Leave it out to serve every Ivy account. |
+| `IVY_ALLOWED_ACCOUNTS` | optional: only these accounts may use the relay, for example `["account ID"]`. Ivy shows the ID under Settings > Notifications > Push Relay. Leave it out to serve every Ivy account, as a relay for testers must. An open relay keeps a small record for every registration anyone sends it, so set this for a relay only you or a known group use. |
 
 Start it:
 

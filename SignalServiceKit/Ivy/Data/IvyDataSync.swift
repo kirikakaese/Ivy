@@ -83,6 +83,10 @@ public final class IvyDataSync {
         store.onLocalChanges = { [weak self] changes in
             self?.enqueue(changes)
         }
+        // Edits wait in memory for the batch; leaving the app sends them now, before it may be ended.
+        NotificationCenter.default.addObserver(forName: .OWSApplicationWillResignActive, object: nil, queue: nil) { [weak self] _ in
+            self?.sendPending()
+        }
     }
 
     // MARK: - Sending
@@ -95,12 +99,23 @@ public final class IvyDataSync {
             }
             isSendScheduled = true
             queue.asyncAfter(deadline: .now() + Self.sendDelay) { [self] in
-                let changes = pendingChanges
-                pendingChanges = []
                 isSendScheduled = false
-                send(IvySyncPayload.payloads(kind: .changes, changes: changes))
+                sendPendingOnQueue()
             }
         }
+    }
+
+    private func sendPending() {
+        queue.sync { sendPendingOnQueue() }
+    }
+
+    private func sendPendingOnQueue() {
+        guard !pendingChanges.isEmpty else {
+            return
+        }
+        let changes = pendingChanges
+        pendingChanges = []
+        send(IvySyncPayload.payloads(kind: .changes, changes: changes))
     }
 
     private func send(_ payloads: [IvySyncPayload]) {

@@ -24,6 +24,9 @@ public enum IvyPasscode {
         static let allowsBiometrics = "allowsBiometrics"
         static let failedAttempts = "failedAttempts"
         static let blockedUntil = "blockedUntil"
+        /// Time since boot when the wait began and ends: the device clock can be set forward, this cannot.
+        static let blockedUptimeStart = "blockedUptimeStart"
+        static let blockedUptimeEnd = "blockedUptimeEnd"
         static let duressSalt = "duressSalt"
         static let duressHash = "duressHash"
     }
@@ -58,11 +61,21 @@ public enum IvyPasscode {
         store.getBool(Key.allowsBiometrics, defaultValue: true, transaction: tx)
     }
 
-    public static func blockedUntil(now: Date = Date(), tx: DBReadTransaction) -> Date? {
-        guard let date = store.getDate(Key.blockedUntil, transaction: tx), date > now else {
-            return nil
+    public static func blockedUntil(
+        now: Date = Date(),
+        uptime: TimeInterval = ProcessInfo.processInfo.systemUptime,
+        tx: DBReadTransaction,
+    ) -> Date? {
+        var remaining = store.getDate(Key.blockedUntil, transaction: tx)?.timeIntervalSince(now) ?? 0
+        // After a restart the time since boot starts over; then the device clock alone decides.
+        if
+            let start = store.getDouble(Key.blockedUptimeStart, transaction: tx),
+            let end = store.getDouble(Key.blockedUptimeEnd, transaction: tx),
+            uptime >= start
+        {
+            remaining = max(remaining, end - uptime)
         }
-        return date
+        return remaining > 0 ? now.addingTimeInterval(remaining) : nil
     }
 
     // MARK: - Changing
@@ -83,7 +96,10 @@ public enum IvyPasscode {
 
     /// Removes the passcode, and the duress passcode with it.
     public static func remove(tx: DBWriteTransaction) {
-        store.removeValues(forKeys: [Key.salt, Key.hash, Key.iterations, Key.failedAttempts, Key.blockedUntil], transaction: tx)
+        store.removeValues(
+            forKeys: [Key.salt, Key.hash, Key.iterations, Key.failedAttempts, Key.blockedUntil, Key.blockedUptimeStart, Key.blockedUptimeEnd],
+            transaction: tx,
+        )
         removeDuress(tx: tx)
     }
 
@@ -111,18 +127,26 @@ public enum IvyPasscode {
     // MARK: - Checking
 
     /// Checks a passcode and counts wrong attempts.
-    public static func verify(_ passcode: String, now: Date = Date(), tx: DBWriteTransaction) -> Result {
-        if let blockedUntil = blockedUntil(now: now, tx: tx) {
+    public static func verify(
+        _ passcode: String,
+        now: Date = Date(),
+        uptime: TimeInterval = ProcessInfo.processInfo.systemUptime,
+        tx: DBWriteTransaction,
+    ) -> Result {
+        if let blockedUntil = blockedUntil(now: now, uptime: uptime, tx: tx) {
             return .blocked(until: blockedUntil)
         }
         guard isSet(tx: tx) else {
             return .wrong
         }
-        if matches(passcode, salt: Key.salt, hash: Key.hash, tx: tx) {
+        // Both are always checked, so how long a wrong attempt takes doesn't tell whether a duress passcode exists.
+        let isPasscode = matches(passcode, salt: Key.salt, hash: Key.hash, tx: tx)
+        let isDuress = matchesDuress(passcode, tx: tx)
+        if isPasscode {
             resetAttempts(tx: tx)
             return .correct
         }
-        if matches(passcode, salt: Key.duressSalt, hash: Key.duressHash, tx: tx) {
+        if isDuress {
             resetAttempts(tx: tx)
             return .duress
         }
@@ -131,6 +155,8 @@ public enum IvyPasscode {
         if let delay = delay(afterFailedAttempts: failed) {
             let until = now.addingTimeInterval(delay)
             store.setDate(until, key: Key.blockedUntil, transaction: tx)
+            store.setDouble(uptime, key: Key.blockedUptimeStart, transaction: tx)
+            store.setDouble(uptime + delay, key: Key.blockedUptimeEnd, transaction: tx)
             return .blocked(until: until)
         }
         return .wrong
@@ -147,7 +173,7 @@ public enum IvyPasscode {
     }
 
     private static func resetAttempts(tx: DBWriteTransaction) {
-        store.removeValues(forKeys: [Key.failedAttempts, Key.blockedUntil], transaction: tx)
+        store.removeValues(forKeys: [Key.failedAttempts, Key.blockedUntil, Key.blockedUptimeStart, Key.blockedUptimeEnd], transaction: tx)
     }
 
     // MARK: - Hashing
@@ -170,6 +196,15 @@ public enum IvyPasscode {
             return false
         }
         return constantTimeEquals(hash(passcode, salt: salt, iterations: iterations(tx: tx)), expected)
+    }
+
+    /// Hashes even when there is no duress passcode, so both cases take as long.
+    private static func matchesDuress(_ passcode: String, tx: DBReadTransaction) -> Bool {
+        guard isDuressSet(tx: tx) else {
+            _ = hash(passcode, salt: Data(count: 16), iterations: iterations(tx: tx))
+            return false
+        }
+        return matches(passcode, salt: Key.duressSalt, hash: Key.duressHash, tx: tx)
     }
 
     static func hash(_ passcode: String, salt: Data, iterations: UInt32) -> Data {

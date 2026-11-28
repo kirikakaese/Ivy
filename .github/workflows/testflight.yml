@@ -33,11 +33,8 @@ permissions:
 
 env:
   XCODE_APP: /Applications/Xcode_26.6.app
-  APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-  ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-  ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-  ASC_KEY: ${{ secrets.ASC_KEY }}
-  IVY_BUILD: ${{ github.run_number }}
+  # The attempt is appended so a re-run uploads a new build number (attempts above 9 would collide).
+  IVY_BUILD: ${{ github.run_number }}${{ github.run_attempt }}
   IVY_PUSH_RELAY_HOST: ${{ vars.IVY_PUSH_RELAY_HOST }}
 
 jobs:
@@ -57,7 +54,13 @@ jobs:
         with:
           submodules: recursive
 
+      # The secrets reach only the steps that talk to Apple, not Ruby setup or dependency installs.
       - uses: ./.github/actions/testflight
+        with:
+          apple-team-id: ${{ secrets.APPLE_TEAM_ID }}
+          asc-key-id: ${{ secrets.ASC_KEY_ID }}
+          asc-issuer-id: ${{ secrets.ASC_ISSUER_ID }}
+          asc-key: ${{ secrets.ASC_KEY }}
 
   namespace:
     name: Build and upload to TestFlight (Namespace)
@@ -75,4 +78,10 @@ jobs:
         with:
           submodules: recursive
 
+      # The secrets reach only the steps that talk to Apple, not Ruby setup or dependency installs.
       - uses: ./.github/actions/testflight
+        with:
+          apple-team-id: ${{ secrets.APPLE_TEAM_ID }}
+          asc-key-id: ${{ secrets.ASC_KEY_ID }}
+          asc-issuer-id: ${{ secrets.ASC_ISSUER_ID }}
+          asc-key: ${{ secrets.ASC_KEY }}

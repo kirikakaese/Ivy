@@ -2,14 +2,29 @@ name: Build and upload to TestFlight
 description: >
   Builds the iOS app, signs it with a certificate made for the run and
   uploads it to TestFlight. Shared by both jobs of the TestFlight workflow.
-  Expects the repository checked out and APPLE_TEAM_ID, ASC_KEY_ID,
-  ASC_ISSUER_ID and ASC_KEY in the job's environment.
+  Expects the repository checked out; the secrets come as inputs and
+  reach only the steps that talk to Apple.
+
+inputs:
+  apple-team-id:
+    required: true
+  asc-key-id:
+    required: true
+  asc-issuer-id:
+    required: true
+  asc-key:
+    required: true
 
 runs:
   using: composite
   steps:
     - name: Check secrets
       shell: bash
+      env:
+        APPLE_TEAM_ID: ${{ inputs.apple-team-id }}
+        ASC_KEY_ID: ${{ inputs.asc-key-id }}
+        ASC_ISSUER_ID: ${{ inputs.asc-issuer-id }}
+        ASC_KEY: ${{ inputs.asc-key }}
       run: |
         missing=""
         for name in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_KEY; do
@@ -41,7 +56,7 @@ runs:
       run: xcodebuild -downloadComponent MetalToolchain
 
     - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
+      uses: ruby/setup-ruby@145243922b4465b78e04dd66294782c7de45901f # v1.345.0
       with:
         bundler-cache: true
 
@@ -49,6 +64,9 @@ runs:
       shell: bash
       env:
         IVY_BUNDLE_ID: io.github.kirikakaese.ivy
+        ASC_KEY_ID: ${{ inputs.asc-key-id }}
+        ASC_ISSUER_ID: ${{ inputs.asc-issuer-id }}
+        ASC_KEY: ${{ inputs.asc-key }}
       run: ruby Scripts/ivy/asc-check.rb
 
     - name: Cache dependencies
@@ -66,6 +84,11 @@ runs:
 
     - name: Build, sign and upload
       shell: bash
+      env:
+        APPLE_TEAM_ID: ${{ inputs.apple-team-id }}
+        ASC_KEY_ID: ${{ inputs.asc-key-id }}
+        ASC_ISSUER_ID: ${{ inputs.asc-issuer-id }}
+        ASC_KEY: ${{ inputs.asc-key }}
       run: Scripts/ivy/testflight.sh
 
     - name: Upload logs

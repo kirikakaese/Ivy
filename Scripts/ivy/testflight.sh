@@ -84,7 +84,8 @@ run() {
   local name="$1"
   shift
   set +e
-  NSUnbufferedIO=YES xcodebuild "$@" 2>&1 | tee "$LOG_DIR/$name.log" | xcbeautify --renderer github-actions
+  # The App Store Connect key stays out of the build, which runs pod and build-phase scripts.
+  NSUnbufferedIO=YES env -u ASC_KEY -u ASC_KEY_ID -u ASC_ISSUER_ID xcodebuild "$@" 2>&1 | tee "$LOG_DIR/$name.log" | xcbeautify --renderer github-actions
   local status=("${PIPESTATUS[@]}")
   set -e
   if [ "${status[0]}" -ne 0 ]; then

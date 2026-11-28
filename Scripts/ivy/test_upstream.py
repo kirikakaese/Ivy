@@ -5,7 +5,9 @@
 #
 
 import os
+import subprocess
 import sys
+import tempfile
 import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -101,6 +103,51 @@ class AutomationTests(unittest.TestCase):
             {"libsignal": ("0.105.0", "0.106.0"), "ringrtc": ("2.73.0", "2.74.1")},
         )
         self.assertEqual(upstream.dependency_changes(PODFILE, PODFILE), {})
+
+
+class MergeTests(unittest.TestCase):
+    def setUp(self):
+        self.dir = tempfile.TemporaryDirectory()
+        self.old_root = upstream.ROOT
+        upstream.ROOT = self.dir.name
+        self.run_git("init", "-q", "-b", "main")
+        self.write("app.txt", "ivy\n")
+        self.write(".github/workflows/ci.yml", "ivy\n")
+        self.commit("base")
+
+    def tearDown(self):
+        upstream.ROOT = self.old_root
+        self.dir.cleanup()
+
+    def run_git(self, *args):
+        env = dict(os.environ, GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@t", GIT_COMMITTER_NAME="t", GIT_COMMITTER_EMAIL="t@t")
+        return subprocess.run(["git", *args], cwd=self.dir.name, env=env, capture_output=True, text=True)
+
+    def write(self, path, text):
+        full = os.path.join(self.dir.name, path)
+        os.makedirs(os.path.dirname(full), exist_ok=True)
+        with open(full, "w") as f:
+            f.write(text)
+
+    def commit(self, message):
+        self.run_git("add", "--all")
+        self.run_git("commit", "-q", "-m", message)
+
+    def test_upstream_workflows_stay_out_without_a_conflict(self):
+        self.run_git("checkout", "-q", "-b", "upstream")
+        self.write("app.txt", "signal\n")
+        self.write(".github/workflows/ci.yml", "signal\n")
+        self.write(".github/workflows/new.yml", "signal\n")
+        self.commit("upstream")
+        self.run_git("checkout", "-q", "main")
+        self.assertFalse(upstream.merge_started())
+
+        self.run_git("merge", "--no-ff", "--no-commit", "upstream")
+        self.assertTrue(upstream.merge_started())
+        upstream.keep_ours_everywhere()
+        staged = self.run_git("diff", "--cached", "--name-only", "HEAD").stdout.split()
+        self.assertEqual(staged, ["app.txt"])
+        self.assertFalse(os.path.exists(os.path.join(self.dir.name, ".github/workflows/new.yml")))
 
 
 if __name__ == "__main__":

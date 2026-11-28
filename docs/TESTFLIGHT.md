@@ -35,7 +35,7 @@ Each run creates its own distribution certificate and App Store profiles. After 
 
 ## Version numbers
 
-The app's version stays the upstream Signal release (8.32), because Ivy reports it to Signal's servers. The build number is the upstream build number followed by the workflow's run number (`1910.57`), so every upload has a new one. Signal's servers only see `1910`. See `Config/Ivy.xcconfig`.
+The app's version stays the upstream Signal release (8.35.1), because Ivy reports it to Signal's servers. The build number is the upstream build number followed by the workflow's run number and attempt (`1964.571` for run 57, first attempt), so every upload, including a re-run, has a new one. Signal's servers only see `1964`. See `Config/Ivy.xcconfig`.
 
 ## What differs from the Mac beta
 

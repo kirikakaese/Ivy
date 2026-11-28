@@ -117,7 +117,7 @@ Drafts are not Ivy data: Home lists the drafts the chats keep themselves.
 
 ## Shared plans
 
-Shared plans are not Ivy data: they travel as normal messages with `.ics` files. Each proposed time has the UID `<plan>.o<number>@ivy-plan` and the status TENTATIVE; the agreed time has the UID `<plan>@ivy-plan` and the status CONFIRMED, so importing it again updates the same event. Each device remembers locally which messages it already looked at (collection `IvyPlanWatcher`).
+Shared plans are not Ivy data: they travel as normal messages with `.ics` files. Each proposed time has the UID `<plan>.o<number>@ivy-plan` and the status TENTATIVE; the agreed time has the UID `<plan>@ivy-plan` and the status CONFIRMED, so importing it again updates the same event. An agreed time is added to the calendar by itself only when this account sent it, or when it comes from whoever first proposed that plan in the same chat; other files need "Add to Calendar". Each device remembers locally which messages it already looked at and who proposed each plan (collection `IvyPlanWatcher`).
 
 ## Locked chats and link previews
 

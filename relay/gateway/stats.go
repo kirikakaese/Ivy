@@ -367,9 +367,21 @@ func (s *stats) save() error {
 		return err
 	}
 	if err := os.WriteFile(tmp, data, 0o600); err != nil {
+		s.markDirty()
 		return err
 	}
-	return os.Rename(tmp, s.path)
+	if err := os.Rename(tmp, s.path); err != nil {
+		s.markDirty()
+		return err
+	}
+	return nil
+}
+
+// markDirty makes the next save try again after a failed write.
+func (s *stats) markDirty() {
+	s.mu.Lock()
+	s.dirty = true
+	s.mu.Unlock()
 }
 
 type hourPoint struct {

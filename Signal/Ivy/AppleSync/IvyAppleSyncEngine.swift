@@ -337,7 +337,11 @@ final class IvyAppleSyncEngine {
         event.isAllDay = fields.isAllDay
         event.startDate = fields.startAt
         event.endDate = fields.endAt
-        event.recurrenceRules = fields.recurrence.map { [rule(from: $0)] }
+        // Apple's rule can say more than Ivy keeps (weekdays, a number of times): leave it unless the
+        // repeat setting Ivy reads from it is what changed.
+        if event.recurrenceRules?.first.flatMap(recurrence(from:)) != fields.recurrence {
+            event.recurrenceRules = fields.recurrence.map { [rule(from: $0)] }
+        }
     }
 
     static func recurrence(from rule: EKRecurrenceRule) -> IvyRecurrence? {

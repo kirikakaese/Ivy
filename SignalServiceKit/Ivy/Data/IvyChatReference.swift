@@ -37,6 +37,17 @@ public struct IvyChatReference: Hashable, Codable, Sendable, CustomStringConvert
         }
     }
 
+    /// Every name the thread may be stored under: a contact is `a:` once its ACI is known, but may have
+    /// been hidden or locked as `e:` before that, or on a device that didn't know the ACI yet.
+    public static func all(thread: TSThread) -> [IvyChatReference] {
+        guard let contactThread = thread as? TSContactThread else {
+            return IvyChatReference(thread: thread).map { [$0] } ?? []
+        }
+        let address = contactThread.contactAddress
+        return [address.aci.map { "a:" + $0.serviceIdString }, address.phoneNumber.map { "e:" + $0 }]
+            .compactMap { $0.flatMap(IvyChatReference.init(rawValue:)) }
+    }
+
     public var description: String { rawValue }
 
     public func thread(tx: DBReadTransaction) -> TSThread? {
