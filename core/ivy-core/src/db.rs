@@ -37,6 +37,30 @@ const MIGRATIONS: &[&str] = &[
         PRIMARY KEY (identity, kyber_id, signed_id, base_key)
     ) WITHOUT ROWID;
 ",
+    "
+    -- People by service id, with what messages told about them.
+    CREATE TABLE recipient (service_id TEXT PRIMARY KEY, e164 TEXT, profile_key BLOB, name TEXT) WITHOUT ROWID;
+    -- A chat is either with one person (service_id) or a group (group_id, its 32-byte identifier).
+    CREATE TABLE thread (
+        id INTEGER PRIMARY KEY,
+        service_id TEXT UNIQUE,
+        group_id BLOB UNIQUE,
+        title TEXT,
+        last_at INTEGER NOT NULL DEFAULT 0,
+        unread INTEGER NOT NULL DEFAULT 0,
+        CHECK ((service_id IS NULL) != (group_id IS NULL))
+    );
+    -- author is '' for messages this account sent; (thread, author, sent_at) identifies a message, as in Signal.
+    CREATE TABLE message (
+        id INTEGER PRIMARY KEY,
+        thread INTEGER NOT NULL REFERENCES thread (id),
+        author TEXT NOT NULL,
+        sent_at INTEGER NOT NULL,
+        received_at INTEGER NOT NULL,
+        body TEXT NOT NULL,
+        UNIQUE (thread, author, sent_at)
+    );
+",
 ];
 
 fn open(path: &Path, key_spec: &[u8], flags: OpenFlags) -> Result<Connection, CoreError> {

@@ -22,6 +22,9 @@ final class AppModel: ObservableObject {
 
     @Published var screen: Screen = .starting
     @Published var link: Link = .connecting
+    @Published var conversations: [Conversation] = []
+    @Published var selected: Int64?
+    private var receiving: Task<Void, Never>?
 
     private var core: Core?
     /// The running link attempt; callbacks from any other attempt are ignored.
@@ -36,7 +39,11 @@ final class AppModel: ObservableObject {
             await MainActor.run {
                 self.core = core
                 self.screen = screen
-                if case .link = screen { self.startLinking() }
+                switch screen {
+                case .link: self.startLinking()
+                case .linked: self.startReceiving()
+                default: break
+                }
             }
         }
     }
@@ -108,11 +115,31 @@ final class AppModel: ObservableObject {
                 let account = try await core.link(deviceName: name, listener: listener)
                 attempt = nil
                 screen = .linked(account)
+                startReceiving()
             } catch {
                 attempt = nil
                 link = Self.failure(error)
             }
         }
+    }
+
+    /// Keeps the core connected for as long as the app runs; it returns only when this Mac was unlinked.
+    private func startReceiving() {
+        guard let core, receiving == nil else { return }
+        reloadConversations()
+        let listener = ConversationsListenerImpl { [weak self] in
+            Task { @MainActor in self?.reloadConversations() }
+        }
+        receiving = Task {
+            do {
+                try await core.receive(listener: listener)
+            } catch {}
+            screen = .failed(localized("UNLINKED_WARNING"))
+        }
+    }
+
+    private func reloadConversations() {
+        conversations = (try? core?.conversations()) ?? conversations
     }
 
     /// Picks the translated text for a core error.
@@ -136,6 +163,12 @@ final class AppModel: ObservableObject {
                 title: localized("SECONDARY_LINKING_ERROR_WAITING_FOR_SCAN"),
                 message: IvyLocalizedString("CORE_LINK_FAILED_MESSAGE"))
         }
+    }
+
+    private final class ConversationsListenerImpl: ConversationsListener, @unchecked Sendable {
+        let onChange: () -> Void
+        init(_ onChange: @escaping () -> Void) { self.onChange = onChange }
+        func conversationsChanged() { onChange() }
     }
 
     private final class Listener: LinkListener, @unchecked Sendable {

@@ -31,3 +31,4 @@ The tokens live in `apps/mac/Sources/Design.swift` and are shared with the iOS a
 | Screen | Moment | Notes |
 |---|---|---|
 | Link this Mac | The QR code on a white paper card | Steps on the leading side, code on the trailing side. The card stays white in dark mode so phones can scan it |
+| Chat list | None: the list stays quiet, content comes with the chat | Sidebar 260–320. Two lines per chat: name and time, last message and unread count in ivy green as a plain number. The tendril marks the selected chat |

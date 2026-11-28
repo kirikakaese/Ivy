@@ -7,6 +7,7 @@ fn main() {
         &[
             format!("{protos}/Provisioning.proto"),
             format!("{protos}/SignalIOS.proto"),
+            format!("{protos}/SignalService.proto"),
         ],
         &[protos],
     )

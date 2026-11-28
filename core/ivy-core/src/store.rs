@@ -1,6 +1,4 @@
 //! libsignal's protocol stores on the core database, one per local identity (ACI or PNI).
-// shortcut: only the tests use these until the receive step wires them in; drop this allow then.
-#![cfg_attr(not(test), allow(dead_code))]
 
 use async_trait::async_trait;
 use libsignal_protocol::{
@@ -20,6 +18,7 @@ const ONE_TIME: u8 = 2;
 const KYBER_ONE_TIME: u8 = 3;
 
 pub const ACI: u8 = 0;
+pub const PNI: u8 = 1;
 
 /// Cheap to clone: libsignal wants each store as a separate `&mut`, so callers pass clones.
 #[derive(Clone)]

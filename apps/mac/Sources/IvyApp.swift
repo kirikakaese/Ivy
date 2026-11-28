@@ -23,11 +23,8 @@ struct RootView: View {
             ProgressView()
         case .link:
             LinkView(model: model)
-        case .linked(let account):
-            notice(
-                symbol: "checkmark.circle",
-                title: IvyLocalizedString("CORE_LINKED_TITLE"),
-                message: account.phoneNumber ?? "")
+        case .linked:
+            ConversationsView(model: model)
         case .existingData(let summary):
             notice(
                 symbol: "tray.full",

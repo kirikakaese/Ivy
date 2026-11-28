@@ -33,6 +33,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: $(SIGNAL_BUNDLEID_PREFIX).ivy.mac
         PRODUCT_NAME: Ivy
+        # Selection and controls use Ivy green (docs/DESIGN.md).
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: Accent
         CODE_SIGN_ENTITLEMENTS: Ivy.entitlements
         ENABLE_HARDENED_RUNTIME: YES
         GENERATE_INFOPLIST_FILE: YES

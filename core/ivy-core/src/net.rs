@@ -30,6 +30,7 @@ impl From<ConnectError> for CoreError {
     fn from(e: ConnectError) -> Self {
         match e {
             ConnectError::AppExpired => Self::Obsolete,
+            ConnectError::DeviceDeregistered => Self::Unlinked,
             e => Self::Network(e.to_string()),
         }
     }

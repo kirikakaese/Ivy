@@ -21,7 +21,7 @@ Rust unless Apple only offers the API to Swift: views, Keychain, app group paths
 |---|---|
 | `Keychain.swift` | The Keychain is an Apple API. It stores and returns bytes; the key itself is made in Rust (`new_key_spec`) |
 | `AppModel.swift` | Finds the app group folder, checks whether the Swift app's database file exists, hands the core's state to SwiftUI and picks the translated text for each core error |
-| `LinkView.swift`, `IvyApp.swift`, `Design.swift` | Views and design tokens. The QR code's modules are computed in Rust and only drawn here |
+| `LinkView.swift`, `ConversationsView.swift`, `IvyApp.swift`, `Design.swift` | Views and design tokens. The QR code's modules are computed in Rust and only drawn here; the chat list shows what `Core::conversations` returns and picks the translated fallback for a chat without a name |
 
 ## Data
 
@@ -58,6 +58,10 @@ cd apps/mac && Scripts/build-core.sh && xcodegen generate && open IvyMac.xcodepr
 
 `build-core.sh` writes the Swift bindings into `apps/mac/Generated`, which the project lists; Xcode runs it again on every build.
 
+## Receiving
+
+`Core::receive` keeps an authenticated connection to Signal through libsignal-net and reconnects with backoff (1 s, doubling to 60 s). Each envelope is decrypted with the protocol stores in the core database (`store.rs`): normal and first-contact messages, sealed sender checked against Signal's trust roots (the same two as the Swift app), and sender-key group messages. A message is stored once per chat, author and timestamp, then acknowledged, so a crash before the acknowledgement means it is delivered again, never lost. Messages sent from this account's other devices arrive as sync messages and are stored as its own.
+
 ## Not as strong as the Swift app yet
 
 | Area | Swift app | Core today |
@@ -65,11 +69,14 @@ cd apps/mac && Scripts/build-core.sh && xcodegen generate && open IvyMac.xcodepr
 | fsync | `F_BARRIERFSYNC` through Signal's SQLCipher fork | `fullfsync` and `checkpoint_fullfsync` on stock SQLCipher |
 | Routes | Direct, censorship circumvention, user proxy | Direct only |
 | History on linking | Link and sync | Not offered (the QR code announces no capability) |
+| Undecryptable messages | Retry receipt asks the sender to resend | Dropped and logged |
+| What is shown | Every message type | Text and attachment-only messages; reactions, edits, deletes and other updates are not shown yet |
+| Names | Profiles, system contacts, storage service | The number from a sealed sender certificate; names come next |
 
 ## Slices
 
 1. Link as a secondary device — core done and its socket checked against Signal in CI; Mac app builds in CI but has not been run with a phone scanning the code
-2. Conversation list
+2. Conversation list — receiving, storing and the list are done and tested in the core; the Mac list builds in CI. Names from profiles are next; group names come with groups
 3. Open a chat and read
 4. Send text
 5. Attachments

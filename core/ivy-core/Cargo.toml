@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 async-trait = "0.1.92"
 base64 = "0.22"
+futures-util = "0.3.34"
 hex = "0.4.3"
 hkdf = "0.13.0"
 http = "1.5.0"
@@ -27,6 +28,7 @@ thiserror = "2.0.21"
 tokio = { version = "1.54.1", features = ["rt-multi-thread", "sync", "time", "macros"] }
 uniffi = { version = "0.33.0", features = ["tokio"] }
 uuid = "1.29.3"
+zkgroup = { git = "https://github.com/signalapp/libsignal", tag = "v0.105.0", version = "0.9.0" }
 
 # Apple: bundled SQLCipher on CommonCrypto. Elsewhere (development and CI only) the system's SQLCipher:
 # a bundled one needs OpenSSL, whose symbols clash with libsignal's BoringSSL in one binary.

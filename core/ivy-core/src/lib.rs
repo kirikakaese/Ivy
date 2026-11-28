@@ -6,17 +6,22 @@ mod legacy;
 mod link;
 mod net;
 mod provisioning;
+mod receive;
 mod store;
 
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 
 pub use legacy::LegacySummary;
+pub use receive::Conversation;
 
-#[allow(clippy::all)]
+#[allow(clippy::all, dead_code)]
 mod proto {
     include!(concat!(env!("OUT_DIR"), "/provisioning_protos.rs"));
     include!(concat!(env!("OUT_DIR"), "/ios_protos.rs"));
+    pub mod service {
+        include!(concat!(env!("OUT_DIR"), "/signal_service_protos.rs"));
+    }
 }
 
 uniffi::setup_scaffolding!();
@@ -37,6 +42,8 @@ pub enum CoreError {
     Obsolete,
     #[error("the server refused the link: {0}")]
     LinkRefused(u16),
+    #[error("this device is no longer linked")]
+    Unlinked,
 }
 
 impl From<rusqlite::Error> for CoreError {
@@ -90,6 +97,12 @@ impl From<&account::Account> for AccountSummary {
     }
 }
 
+#[uniffi::export(with_foreign)]
+pub trait ConversationsListener: Send + Sync {
+    /// Something in the conversation list changed; read it again with `Core::conversations`.
+    fn conversations_changed(&self);
+}
+
 #[derive(uniffi::Object)]
 pub struct Core {
     db: Mutex<rusqlite::Connection>,
@@ -131,6 +144,77 @@ impl Core {
         let mut db = self.db.lock().expect("not poisoned");
         account::save(&mut db, &linked.account, &linked.aci_keys, linked.pni_keys.as_ref())?;
         Ok((&linked.account).into())
+    }
+
+    /// The chats, most recent first.
+    pub fn conversations(&self) -> Result<Vec<Conversation>, CoreError> {
+        Ok(receive::conversations(&self.db.lock().expect("not poisoned"))?)
+    }
+
+    /// Stays connected to Signal and stores incoming messages, reconnecting as needed.
+    /// Returns only when this device was unlinked.
+    pub async fn receive(&self, listener: Arc<dyn ConversationsListener>) -> Result<(), CoreError> {
+        use libsignal_net::chat::server_requests::ServerEvent;
+        use libsignal_net::chat::{AuthenticatedChatHeaders, LanguageList};
+        use libsignal_net::env::constants::CHAT_WEBSOCKET_PATH;
+
+        let account = account::load(&self.db.lock().expect("not poisoned"))?.ok_or(CoreError::Unlinked)?;
+        let aci = libsignal_core::Aci::parse_from_service_id_string(&account.aci).ok_or(CoreError::Unlinked)?;
+        let device = libsignal_core::DeviceId::try_from(account.device_id).map_err(|_| CoreError::Unlinked)?;
+        let roots = receive::trust_roots();
+        let mut backoff = std::time::Duration::from_secs(1);
+        loop {
+            let headers = AuthenticatedChatHeaders {
+                aci,
+                device_id: device,
+                password: account.password.clone(),
+                receive_stories: false.into(),
+                languages: LanguageList::default(),
+            };
+            let (events, mut inbox) = tokio::sync::mpsc::unbounded_channel();
+            let connection = self
+                .net
+                .connect(
+                    CHAT_WEBSOCKET_PATH,
+                    Some(headers.into()),
+                    Box::new(move |event| match ServerEvent::try_from(event) {
+                        Ok(event) => drop(events.send(event)),
+                        Err(e) => log::warn!("unexpected server request: {e}"),
+                    }),
+                )
+                .await;
+            match connection {
+                Err(CoreError::Unlinked) => return Err(CoreError::Unlinked),
+                Err(e) => log::warn!("receiving: {e}"),
+                Ok(_connection) => {
+                    backoff = std::time::Duration::from_secs(1);
+                    while let Some(event) = inbox.recv().await {
+                        match event {
+                            ServerEvent::IncomingMessage {
+                                envelope,
+                                server_delivery_timestamp,
+                                send_ack,
+                                ..
+                            } => {
+                                let changed = {
+                                    let db = self.db.lock().expect("not poisoned");
+                                    receive::process(&db, &account, &envelope, server_delivery_timestamp, &roots)
+                                };
+                                // Only after it is stored, so a crash before this means it is delivered again.
+                                let _ = send_ack(http::StatusCode::OK);
+                                if changed {
+                                    listener.conversations_changed();
+                                }
+                            }
+                            ServerEvent::Stopped(_) => break,
+                            _ => {}
+                        }
+                    }
+                }
+            }
+            tokio::time::sleep(backoff).await;
+            backoff = (backoff * 2).min(std::time::Duration::from_secs(60));
+        }
     }
 }
 

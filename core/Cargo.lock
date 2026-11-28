@@ -271,6 +271,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "bincode"
+version = "1.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b1f45e9417d87227c7a56d22e471c6206462cba514c7590c09aff4cf6d1ddcad"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "bindgen"
 version = "0.72.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -736,6 +745,7 @@ dependencies = [
  "digest 0.11.3",
  "fiat-crypto",
  "rustc_version",
+ "serde",
  "subtle",
  "zeroize",
 ]
@@ -1487,6 +1497,7 @@ version = "0.1.0"
 dependencies = [
  "async-trait",
  "base64 0.22.1",
+ "futures-util",
  "hex",
  "hkdf",
  "http",
@@ -1511,6 +1522,7 @@ dependencies = [
  "tokio",
  "uniffi",
  "uuid",
+ "zkgroup",
 ]
 
 [[package]]
@@ -1716,6 +1728,7 @@ dependencies = [
  "protobuf-codegen",
  "rand 0.9.5",
  "rand_core 0.9.5",
+ "serde",
  "sha2",
  "static_assertions",
  "subtle",
@@ -2194,6 +2207,16 @@ dependencies = [
  "quick-xml",
  "serde",
  "time",
+]
+
+[[package]]
+name = "poksho"
+version = "0.7.0"
+source = "git+https://github.com/signalapp/libsignal?tag=v0.105.0#4beb029d8a941f81e7d9c6d8af1ed25a677569a8"
+dependencies = [
+ "curve25519-dalek",
+ "hmac",
+ "sha2",
 ]
 
 [[package]]
@@ -3991,6 +4014,55 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.119",
+]
+
+[[package]]
+name = "zkcredential"
+version = "0.1.0"
+source = "git+https://github.com/signalapp/libsignal?tag=v0.105.0#4beb029d8a941f81e7d9c6d8af1ed25a677569a8"
+dependencies = [
+ "cfg-if",
+ "curve25519-dalek",
+ "derive-where",
+ "displaydoc",
+ "partial-default",
+ "poksho",
+ "rayon",
+ "serde",
+ "sha2",
+ "subtle",
+ "thiserror 2.0.21",
+]
+
+[[package]]
+name = "zkgroup"
+version = "0.9.0"
+source = "git+https://github.com/signalapp/libsignal?tag=v0.105.0#4beb029d8a941f81e7d9c6d8af1ed25a677569a8"
+dependencies = [
+ "aes",
+ "aes-gcm-siv",
+ "bincode",
+ "const-str",
+ "curve25519-dalek",
+ "derive-where",
+ "derive_more",
+ "displaydoc",
+ "hex",
+ "hkdf",
+ "libsignal-account-keys",
+ "libsignal-core",
+ "partial-default",
+ "poksho",
+ "rand 0.9.5",
+ "rayon",
+ "serde",
+ "sha1 0.11.0",
+ "sha2",
+ "static_assertions",
+ "subtle",
+ "thiserror 2.0.21",
+ "uuid",
+ "zkcredential",
 ]
 
 [[package]]
