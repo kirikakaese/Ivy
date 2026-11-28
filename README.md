@@ -12,6 +12,8 @@ Ivy is based on [Signal-iOS](https://github.com/signalapp/Signal-iOS) (currently
 
 - [Specification](docs/SPECIFICATION.md)
 - [Feature parity matrix](docs/PARITY.md)
+- [Rust core and native apps](docs/CORE.md)
+- [Design direction](docs/DESIGN.md)
 - [Building](docs/BUILDING.md)
 - [Merging upstream releases](docs/UPSTREAM_SYNC.md)
 - [Translations](docs/TRANSLATIONS.md)

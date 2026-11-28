@@ -135,3 +135,12 @@ Upstream features that exist on the Mac in a reduced form, because the underlyin
 | TestFlight builds | 7 | done | done | – | Actions > TestFlight; setup in `docs/TESTFLIGHT.md` |
 | Signed and notarized builds | 7 | planned | planned | planned | |
 | Sparkle updates | 7 | – | – | planned | Platform-only distribution mechanism |
+
+## Rust core and native apps
+
+The rewrite described in [CORE.md](CORE.md). A row is `done` only when it was exercised in the running app; until then the Swift app above is what ships. Status here is for the new apps only.
+
+| Feature | Core (Rust) | macOS (native) | iPhone | iPad | Notes |
+|---|---|---|---|---|---|
+| Reads the Swift app's database | in progress | in progress | planned | planned | Read-only: account, identity key, chat and message counts. Tested with hand-built data, not yet with a real database |
+| Linking (secondary) | in progress | in progress | – | planned | Core: QR link, provisioning message, link request, account and prekeys stored; unit-tested, not yet run against Signal's servers. Mac screen written, not yet built |
