@@ -53,7 +53,7 @@ struct LinkView: View {
         case .registering:
             VStack(spacing: Design.Space.m) {
                 ProgressView()
-                Text(localized("CORE_LINK_REGISTERING")).foregroundStyle(.secondary)
+                Text(IvyLocalizedString("CORE_LINK_REGISTERING")).foregroundStyle(.secondary)
             }
             .frame(width: Self.cardSide, height: Self.cardSide)
         case .failed(let title, let message):

@@ -22,8 +22,12 @@ enum Design {
     static let accent = Color("Accent")
 }
 
-/// Text from the translation tables shared with the Swift app: Signal's, then Ivy's own.
+/// A string from Signal's translation table, shared with the Swift app.
 func localized(_ key: String) -> String {
-    let upstream = NSLocalizedString(key, comment: "")
-    return upstream == key ? NSLocalizedString(key, tableName: "Ivy", comment: "") : upstream
+    NSLocalizedString(key, comment: "")
+}
+
+/// A string from Ivy's own table, `Ivy.strings` (same name as in the Swift app; Scripts/ivy/ivy_strings.py looks for it).
+func IvyLocalizedString(_ key: String) -> String {
+    NSLocalizedString(key, tableName: "Ivy", comment: "")
 }
