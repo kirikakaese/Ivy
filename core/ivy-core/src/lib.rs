@@ -155,6 +155,15 @@ pub fn legacy_summary(database_path: String, key_spec: Vec<u8>) -> Result<Legacy
 
 #[cfg(test)]
 mod tests {
+    /// Swift calls the constructor from a plain thread, with no async runtime around it.
+    #[test]
+    fn core_opens_without_a_runtime_and_starts_unlinked() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("core.sqlite").to_str().unwrap().to_owned();
+        let core = super::Core::new(path, super::new_key_spec(), "macOS/15.0".into()).unwrap();
+        assert!(core.account().unwrap().is_none());
+    }
+
     #[test]
     fn qr_code_is_square() {
         let code = super::qr_code("sgnl://linkdevice?uuid=abc&pub_key=Bfv7&capabilities=");
