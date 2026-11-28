@@ -26,15 +26,15 @@ struct RootView: View {
         case .linked(let account):
             notice(
                 symbol: "checkmark.circle",
-                title: localized("CORE_LINKED_TITLE"),
+                title: IvyLocalizedString("CORE_LINKED_TITLE"),
                 message: account.phoneNumber ?? "")
         case .existingData(let summary):
             notice(
                 symbol: "tray.full",
-                title: localized("CORE_EXISTING_DATA_TITLE"),
-                message: String(format: localized("CORE_EXISTING_DATA_MESSAGE_FORMAT"), summary.chats, summary.messages))
+                title: IvyLocalizedString("CORE_EXISTING_DATA_TITLE"),
+                message: String(format: IvyLocalizedString("CORE_EXISTING_DATA_MESSAGE_FORMAT"), summary.chats, summary.messages))
         case .failed(let message):
-            notice(symbol: "exclamationmark.triangle", title: localized("CORE_START_FAILED_TITLE"), message: message)
+            notice(symbol: "exclamationmark.triangle", title: IvyLocalizedString("CORE_START_FAILED_TITLE"), message: message)
         }
     }
 

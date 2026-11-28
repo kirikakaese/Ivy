@@ -94,9 +94,9 @@ final class AppModel: ObservableObject {
                 title: localized("SECONDARY_LINKING_ERROR_OBSOLETE_LINKED_DEVICE_TITLE"),
                 message: localized("SECONDARY_LINKING_ERROR_OBSOLETE_LINKED_DEVICE_MESSAGE"))
         case .Network:
-            .failed(title: localized("ERROR_NETWORK_FAILURE"), message: localized("CORE_LINK_NETWORK_MESSAGE"))
+            .failed(title: localized("ERROR_NETWORK_FAILURE"), message: IvyLocalizedString("CORE_LINK_NETWORK_MESSAGE"))
         default:
-            .failed(title: localized("SECONDARY_LINKING_ERROR_WAITING_FOR_SCAN"), message: localized("CORE_LINK_FAILED_MESSAGE"))
+            .failed(title: localized("SECONDARY_LINKING_ERROR_WAITING_FOR_SCAN"), message: IvyLocalizedString("CORE_LINK_FAILED_MESSAGE"))
         }
     }
 

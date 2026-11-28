@@ -23,7 +23,7 @@ import app_name  # noqa: E402
 
 TRANSLATIONS = os.path.join("Ivy", "Translations")
 TABLE = "Ivy.strings"
-SOURCE_DIRS = ("Signal", "SignalUI", "SignalServiceKit", "SignalNSE", "SignalShareExtension", "IvyWidgets")
+SOURCE_DIRS = ("Signal", "SignalUI", "SignalServiceKit", "SignalNSE", "SignalShareExtension", "IvyWidgets", "apps")
 SKIPPED_DIRS = {"tests", "test", "translations"}
 
 # IvyLocalizedString("KEY", ...) and, for shortcuts, LocalizedStringResource("KEY", ..., table: "Ivy").
