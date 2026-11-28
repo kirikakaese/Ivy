@@ -68,7 +68,7 @@ cd apps/mac && Scripts/build-core.sh && xcodegen generate && open IvyMac.xcodepr
 
 ## Slices
 
-1. Link as a secondary device — core done, Mac app written but not built or run yet
+1. Link as a secondary device — core done and its socket checked against Signal in CI; Mac app builds in CI but has not been run with a phone scanning the code
 2. Conversation list
 3. Open a chat and read
 4. Send text

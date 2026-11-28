@@ -143,4 +143,4 @@ The rewrite described in [CORE.md](CORE.md). A row is `done` only when it was ex
 | Feature | Core (Rust) | macOS (native) | iPhone | iPad | Notes |
 |---|---|---|---|---|---|
 | Reads the Swift app's database | in progress | in progress | planned | planned | Read-only: account, identity key, chat and message counts. Tested with hand-built data, not yet with a real database |
-| Linking (secondary) | in progress | in progress | – | planned | Core: QR link, provisioning message, link request, account and prekeys stored; unit-tested, not yet run against Signal's servers. Mac screen written, not yet built |
+| Linking (secondary) | in progress | in progress | – | planned | Core: QR link, provisioning message, link request, account and prekeys stored; unit-tested, and CI gets a link address from Signal's provisioning socket. Mac app builds in CI. Not yet run with a phone scanning the code |
