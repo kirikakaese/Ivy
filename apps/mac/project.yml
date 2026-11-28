@@ -1,0 +1,50 @@
+# The native Mac app: a SwiftUI shell over core/ (see docs/CORE.md).
+# Generate the Xcode project with `xcodegen generate` in this folder.
+name: IvyMac
+options:
+  bundleIdPrefix: io.github.kirikakaese
+  deploymentTarget:
+    macOS: "13.0"
+configFiles:
+  Debug: ../../Config/Ivy.xcconfig
+  Release: ../../Config/Ivy.xcconfig
+settings:
+  base:
+    SIGNAL_BUNDLEID_PREFIX: io.github.kirikakaese
+    DEVELOPMENT_TEAM: U68MSDN6DR
+    SWIFT_VERSION: "5.10"
+    ARCHS: arm64
+targets:
+  Ivy:
+    type: application
+    platform: macOS
+    sources:
+      - Sources
+      - Generated/ivy_core.swift
+      - Assets.xcassets
+      # The same translation tables as the Swift app.
+      - path: ../../Signal/translations
+        excludes: ["**/InfoPlist.strings"]
+      - path: ../../Ivy/Translations
+        includes: ["*.lproj/Ivy.strings"]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(SIGNAL_BUNDLEID_PREFIX).ivy.mac
+        PRODUCT_NAME: Ivy
+        CODE_SIGN_ENTITLEMENTS: Ivy.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+        GENERATE_INFOPLIST_FILE: YES
+        MARKETING_VERSION: $(IVY_UPSTREAM_MARKETING_VERSION)
+        CURRENT_PROJECT_VERSION: $(IVY_UPSTREAM_BUILD_NUMBER).$(IVY_BUILD)
+        INFOPLIST_KEY_IvyAppGroup: group.$(SIGNAL_BUNDLEID_PREFIX).ivy.group
+        SWIFT_INCLUDE_PATHS: $(PROJECT_DIR)/Generated
+        LIBRARY_SEARCH_PATHS: $(PROJECT_DIR)/../../core/target/aarch64-apple-darwin/release
+        OTHER_LDFLAGS: -livy_core -lc++
+    preBuildScripts:
+      - name: Build the Rust core
+        script: '"$PROJECT_DIR/Scripts/build-core.sh"'
+        basedOnDependencyAnalysis: false
+    postBuildScripts:
+      - name: Ivy app name
+        script: /usr/bin/env python3 "$PROJECT_DIR/../../Scripts/ivy/app_name.py" apply "$PROJECT_DIR/../../Scripts/ivy/app-name-rules.json" "$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH"
+        basedOnDependencyAnalysis: false

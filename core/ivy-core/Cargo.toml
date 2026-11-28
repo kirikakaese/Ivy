@@ -1,0 +1,45 @@
+[package]
+name = "ivy-core"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+base64 = "0.22"
+hex = "0.4.3"
+hkdf = "0.13.0"
+http = "1.5.0"
+libsignal-core = { git = "https://github.com/signalapp/libsignal", tag = "v0.105.0", version = "0.1.0" }
+libsignal-net = { git = "https://github.com/signalapp/libsignal", tag = "v0.105.0", version = "0.1.0" }
+libsignal-net-infra = { git = "https://github.com/signalapp/libsignal", tag = "v0.105.0", version = "0.1.0" }
+libsignal-protocol = { git = "https://github.com/signalapp/libsignal", tag = "v0.105.0", version = "0.1.0" }
+log = "0.4.35"
+plist = "1.10.5"
+prost = "0.14"
+qrcode = { version = "0.15.0", default-features = false }
+rand = "0.9"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+sha2 = "0.11.2"
+signal-crypto = { git = "https://github.com/signalapp/libsignal", tag = "v0.105.0", version = "0.1.0" }
+subtle = "2.6.1"
+thiserror = "2.0.21"
+tokio = { version = "1.54.1", features = ["rt-multi-thread", "sync", "time", "macros"] }
+uniffi = { version = "0.33.0", features = ["tokio"] }
+uuid = "1.29.3"
+
+# Apple: bundled SQLCipher on CommonCrypto. Elsewhere (development and CI only) the system's SQLCipher:
+# a bundled one needs OpenSSL, whose symbols clash with libsignal's BoringSSL in one binary.
+[target.'cfg(target_vendor = "apple")'.dependencies]
+rusqlite = { version = "0.43.0", features = ["bundled-sqlcipher"] }
+
+[target.'cfg(not(target_vendor = "apple"))'.dependencies]
+rusqlite = { version = "0.43.0", features = ["sqlcipher"] }
+
+[build-dependencies]
+prost-build = "0.14"
+
+[dev-dependencies]
+tempfile = "3.27.0"
+
+[lib]
+crate-type = ["lib", "staticlib"]

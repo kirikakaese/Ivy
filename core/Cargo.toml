@@ -1,0 +1,8 @@
+[workspace]
+members = ["ivy-core", "uniffi-bindgen"]
+resolver = "3"
+
+# libsignal needs Signal's BoringSSL fork everywhere (same as its own workspace).
+[patch.crates-io]
+boring = { git = "https://github.com/signalapp/boring", tag = "signal-v5.2.0" }
+boring-sys = { git = "https://github.com/signalapp/boring", tag = "signal-v5.2.0" }
