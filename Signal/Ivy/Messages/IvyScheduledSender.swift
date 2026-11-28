@@ -18,6 +18,9 @@ final class IvyScheduledSender {
 
     private var isStarted = false
     private var timer: Timer?
+    /// Whether messages queued while this device was away have been received. Until then its copy can be stale:
+    /// another device may already have sent, rescheduled or deleted a message.
+    private var isCaughtUp = false
 
     private var store: IvyDataStore? { IvyData.shared?.store }
 
@@ -28,7 +31,12 @@ final class IvyScheduledSender {
             NotificationCenter.default.addObserver(self, selector: #selector(dataDidChange(_:)), name: IvyDataStore.dataDidChange, object: nil)
         }
         IvyScheduledStore.removeOldSent(store: store)
-        check()
+        isCaughtUp = false
+        Task {
+            try? await SSKEnvironment.shared.messageProcessorRef.waitForFetchingAndProcessing()
+            isCaughtUp = true
+            check()
+        }
     }
 
     @objc
@@ -91,6 +99,9 @@ final class IvyScheduledSender {
     // MARK: - Sending
 
     private func check() {
+        guard isCaughtUp else {
+            return
+        }
         timer?.invalidate()
         timer = nil
         let device = IvyData.localDeviceId()

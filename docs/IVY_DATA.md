@@ -86,6 +86,7 @@ A scheduled message (kind `scheduled`) holds the chat, the message body with its
 
 - The device that wrote the message, or last changed its time, sends it at the send time.
 - If that device hasn't sent it 10 minutes after the send time, another Ivy device takes over: it records itself in `claimedBy`, waits 30 seconds for a takeover by another device to arrive, and sends if it still holds the claim. A claim that hasn't led to a sent message after 5 minutes can be taken over again.
+- A device sends or takes over only after it has received the messages that arrived while it was away, so a stale copy never sends a message another device already sent, moved or deleted.
 - The sending device marks the message `sent` before handing it to Signal's send queue, which retries until it goes out. Sent entries are removed after 7 days.
 - An iPhone only sends while Ivy runs; a message may go out late when no Ivy device is running at the time.
 - Only text is scheduled; attachments are not.
