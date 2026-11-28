@@ -2618,3 +2618,12 @@
 
 /* Title when the new Mac app cannot open its database or the Keychain. */
 "CORE_START_FAILED_TITLE" = "Ivy konnte nicht starten";
+
+/* Shown when the new Mac app cannot find its shared app group folder. */
+"CORE_NO_APP_GROUP_MESSAGE" = "Dieser Kopie von Ivy fehlt ihr Datenordner. Installiere sie erneut aus dem offiziellen Build.";
+
+/* Shown when the new Mac app finds the current app's database but cannot read it. */
+"CORE_EXISTING_DATA_UNREADABLE_MESSAGE" = "Die Daten der bisherigen Ivy-App sind auf diesem Mac, aber diese Vorschau konnte sie nicht lesen. Nichts wurde verändert; nutze weiter die bisherige Ivy-App.";
+
+/* Shown when Signal accepted the link but the Mac could not save it. */
+"CORE_LINK_SAVE_FAILED_MESSAGE" = "Ivy konnte die Kopplung nicht speichern. Entferne diesen Mac unter „Gekoppelte Geräte“ auf deinem Telefon und versuche es dann erneut.";

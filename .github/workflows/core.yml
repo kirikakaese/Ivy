@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: sudo apt-get update && sudo apt-get install -y protobuf-compiler libsqlcipher-dev
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           workspaces: core
       - working-directory: core
@@ -36,19 +36,22 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: brew install xcodegen protobuf
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           workspaces: core
       # Bundled SQLCipher on CommonCrypto, as the apps ship it.
       - name: Core tests
         working-directory: core
         run: cargo test
-      # Not behind TLS interception like a development sandbox, so the pinned connection can be tried.
-      - name: Provisioning socket on Signal's server
-        working-directory: core
-        run: cargo test -- --ignored live
       - name: Build the Mac app
         working-directory: apps/mac
         run: |
+          Scripts/build-core.sh
           xcodegen generate
-          xcodebuild -project IvyMac.xcodeproj -scheme Ivy -configuration Debug -destination 'platform=macOS,arch=arm64' CODE_SIGNING_ALLOWED=NO build
+          xcodebuild -project IvyMac.xcodeproj -target Ivy -configuration Debug CODE_SIGNING_ALLOWED=NO build
+      # Talks to Signal's production server, so an outage there must not fail the build.
+      # A runner is not behind TLS interception like a development sandbox, so the pinned connection can be tried.
+      - name: Provisioning socket on Signal's server
+        working-directory: core
+        continue-on-error: true
+        run: cargo test -- --ignored live

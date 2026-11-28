@@ -19,7 +19,7 @@ struct LinkView: View {
                 VStack(alignment: .leading, spacing: Design.Space.m) {
                     ForEach(Array(steps.enumerated()), id: \.offset) { index, key in
                         HStack(alignment: .firstTextBaseline, spacing: Design.Space.s) {
-                            Text("\(index + 1)").monospacedDigit().foregroundStyle(.secondary)
+                            Text((index + 1).formatted()).monospacedDigit().foregroundStyle(.secondary)
                             Text(localized(key))
                         }
                         .accessibilityElement(children: .combine)

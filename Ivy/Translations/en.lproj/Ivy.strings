@@ -2618,3 +2618,12 @@
 
 /* Title when the new Mac app cannot open its database or the Keychain. */
 "CORE_START_FAILED_TITLE" = "Ivy could not start";
+
+/* Shown when the new Mac app cannot find its shared app group folder. */
+"CORE_NO_APP_GROUP_MESSAGE" = "This copy of Ivy is missing its data folder. Install it again from the official build.";
+
+/* Shown when the new Mac app finds the current app's database but cannot read it. */
+"CORE_EXISTING_DATA_UNREADABLE_MESSAGE" = "The current Ivy app's data is on this Mac, but this preview could not read it. Nothing was changed; keep using the current Ivy app.";
+
+/* Shown when Signal accepted the link but the Mac could not save it. */
+"CORE_LINK_SAVE_FAILED_MESSAGE" = "Ivy could not save the link. Remove this Mac under Linked Devices on your phone, then try again.";

@@ -34,25 +34,26 @@ async fn await_primary(net: &Net, show_url: &(dyn Fn(String) + Send + Sync)) -> 
             .connect(
                 CHAT_PROVISIONING_PATH,
                 None,
-                Box::new(move |event| {
-                    // An event the socket should not carry ends the attempt like a disconnect.
-                    let _ = events.send(ProvisioningEvent::try_from(event).ok());
+                Box::new(move |event| match ProvisioningEvent::try_from(event) {
+                    Ok(event) => drop(events.send(event)),
+                    // libsignal reports (usually empty) alerts on every connection; provisioning has no use for them.
+                    Err(e) => log::debug!("ignoring provisioning event: {e}"),
                 }),
             )
             .await?;
         loop {
             match inbox.recv().await {
-                Some(Some(ProvisioningEvent::ReceivedAddress { address, send_ack })) => {
+                Some(ProvisioningEvent::ReceivedAddress { address, send_ack }) => {
                     let _ = send_ack(StatusCode::OK);
                     show_url(link_url(&address, &ours.public_key));
                 }
-                Some(Some(ProvisioningEvent::ReceivedEnvelope { envelope, send_ack })) => {
+                Some(ProvisioningEvent::ReceivedEnvelope { envelope, send_ack }) => {
                     let _ = send_ack(StatusCode::OK);
                     return decrypt_envelope(&ours.private_key, &envelope);
                 }
-                Some(Some(ProvisioningEvent::ServerTimestamp(_))) => {}
+                Some(ProvisioningEvent::ServerTimestamp(_)) => {}
                 // The server closes idle provisioning sockets; start over with a new address.
-                Some(Some(ProvisioningEvent::Stopped(_))) | Some(None) | None => break,
+                Some(ProvisioningEvent::Stopped(_)) | None => break,
             }
         }
         // Never reconnect in a tight loop if the server keeps closing the socket.

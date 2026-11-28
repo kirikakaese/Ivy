@@ -20,14 +20,14 @@ Rust unless Apple only offers the API to Swift: views, Keychain, app group paths
 | File | Why Swift |
 |---|---|
 | `Keychain.swift` | The Keychain is an Apple API. It stores and returns bytes; the key itself is made in Rust (`new_key_spec`) |
-| `AppModel.swift` | Finds the app group folder, hands the core's state to SwiftUI and picks the translated text for each core error |
+| `AppModel.swift` | Finds the app group folder, checks whether the Swift app's database file exists, hands the core's state to SwiftUI and picks the translated text for each core error |
 | `LinkView.swift`, `IvyApp.swift`, `Design.swift` | Views and design tokens. The QR code's modules are computed in Rust and only drawn here |
 
 ## Data
 
 - The core has its own SQLCipher database, `ivy-core/core.sqlite` in the app group folder, with the same parameters as the Swift app's (48-byte raw key spec from the Keychain, 32-byte plaintext header, WAL). Its key is the Keychain item `IvyCoreKeyChainService` / `IvyCoreCipherKeySpec`.
 - The Swift app's database (`grdb/signal.sqlite`) is only ever opened read-only (`db::open_legacy`). Existing data will be copied into the core database once, slice by slice; the old file is never changed, so nothing can be lost and the current app keeps working.
-- Until that copy exists, the new Mac app does not link when it finds an existing account: it shows what it found and stops, so it cannot end up as a second device beside the data it should take over.
+- Until that copy exists, the new Mac app does not link when it finds the Swift app's database at all: it shows what it found, or that it could not read it, and stops. So it cannot end up as a second device beside the data it should take over.
 - A read-only connection to a database in WAL mode may create the `-shm` file next to it. It never changes the database or its `-wal` file.
 
 ### Checking a real database
@@ -53,8 +53,10 @@ Needs `protoc`, `cmake` and a C compiler. On Linux it also needs `libsqlcipher-d
 Mac app, on a Mac with Xcode, XcodeGen and the Rust target `aarch64-apple-darwin`:
 
 ```bash
-cd apps/mac && xcodegen generate && open IvyMac.xcodeproj
+cd apps/mac && Scripts/build-core.sh && xcodegen generate && open IvyMac.xcodeproj
 ```
+
+`build-core.sh` writes the Swift bindings into `apps/mac/Generated`, which the project lists; Xcode runs it again on every build.
 
 ## Not as strong as the Swift app yet
 

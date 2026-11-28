@@ -24,25 +24,47 @@ final class AppModel: ObservableObject {
     @Published var link: Link = .connecting
 
     private var core: Core?
-    private var linking: Task<Void, Never>?
+    /// The running link attempt; callbacks from any other attempt are ignored.
+    private var attempt: Int?
+    private var attempts = 0
 
     func start() {
-        do {
-            guard let group = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Self.appGroup) else {
-                throw CocoaError(.fileNoSuchFile)
+        // The window's task runs again each time the window reopens.
+        guard case .starting = screen else { return }
+        Task.detached {
+            let (core, screen) = Self.open()
+            await MainActor.run {
+                self.core = core
+                self.screen = screen
+                if case .link = screen { self.startLinking() }
             }
-            let legacy = group.appendingPathComponent("grdb/signal.sqlite")
-            if FileManager.default.fileExists(atPath: legacy.path), let key = try Keychain.read(Keychain.legacy) {
-                let summary = try legacySummary(databasePath: legacy.path, keySpec: key)
-                if summary.hasAccount {
-                    screen = .existingData(summary)
-                    return
-                }
-            }
+        }
+    }
 
+    /// Off the main thread: Keychain, database open and the old database's counts can take a while.
+    private nonisolated static func open() -> (Core?, Screen) {
+        let files = FileManager.default
+        let appGroup = Bundle.main.object(forInfoDictionaryKey: "IvyAppGroup") as? String ?? ""
+        guard let group = files.containerURL(forSecurityApplicationGroupIdentifier: appGroup) else {
+            return (nil, .failed(IvyLocalizedString("CORE_NO_APP_GROUP_MESSAGE")))
+        }
+
+        // Any trace of the Swift app's database stops here, so this Mac never links beside data it should take over.
+        let legacy = group.appendingPathComponent("grdb/signal.sqlite")
+        if files.fileExists(atPath: legacy.path) {
+            guard
+                let key = try? Keychain.read(Keychain.legacy),
+                let summary = try? legacySummary(databasePath: legacy.path, keySpec: key)
+            else {
+                return (nil, .failed(IvyLocalizedString("CORE_EXISTING_DATA_UNREADABLE_MESSAGE")))
+            }
+            return (nil, .existingData(summary))
+        }
+
+        do {
             // Not `grdb…`: the Swift app deletes folders with that prefix.
             let folder = group.appendingPathComponent("ivy-core", isDirectory: true)
-            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            try files.createDirectory(at: folder, withIntermediateDirectories: true)
             let key: Data
             if let stored = try Keychain.read(Keychain.core) {
                 key = stored
@@ -56,29 +78,38 @@ final class AppModel: ObservableObject {
                 keySpec: key,
                 osVersion: "macOS/\(version.majorVersion).\(version.minorVersion)"
             )
-            self.core = core
             if let account = try core.account() {
-                screen = .linked(account)
-            } else {
-                screen = .link
-                startLinking()
+                return (core, .linked(account))
             }
+            return (core, .link)
         } catch {
-            screen = .failed(error.localizedDescription)
+            return (nil, .failed(error.localizedDescription))
         }
     }
 
     func startLinking() {
-        guard let core else { return }
-        linking?.cancel()
+        guard let core, attempt == nil else { return }
+        attempts += 1
+        let current = attempts
+        attempt = current
         link = .connecting
         let name = Host.current().localizedName ?? "Mac"
-        linking = Task {
+        let listener = Listener { [weak self] state in
+            Task { @MainActor in
+                guard let self, self.attempt == current else { return }
+                switch state {
+                case .showCode(let code): self.link = .code(code)
+                case .registering: self.link = .registering
+                }
+            }
+        }
+        Task {
             do {
-                let account = try await core.link(deviceName: name, listener: Listener(model: self))
+                let account = try await core.link(deviceName: name, listener: listener)
+                attempt = nil
                 screen = .linked(account)
-            } catch is CancellationError {
             } catch {
+                attempt = nil
                 link = Self.failure(error)
             }
         }
@@ -95,24 +126,21 @@ final class AppModel: ObservableObject {
                 message: localized("SECONDARY_LINKING_ERROR_OBSOLETE_LINKED_DEVICE_MESSAGE"))
         case .Network:
             .failed(title: localized("ERROR_NETWORK_FAILURE"), message: IvyLocalizedString("CORE_LINK_NETWORK_MESSAGE"))
+        // During linking the database is only written after Signal accepted the device.
+        case .Database:
+            .failed(
+                title: localized("SECONDARY_LINKING_ERROR_WAITING_FOR_SCAN"),
+                message: IvyLocalizedString("CORE_LINK_SAVE_FAILED_MESSAGE"))
         default:
-            .failed(title: localized("SECONDARY_LINKING_ERROR_WAITING_FOR_SCAN"), message: IvyLocalizedString("CORE_LINK_FAILED_MESSAGE"))
+            .failed(
+                title: localized("SECONDARY_LINKING_ERROR_WAITING_FOR_SCAN"),
+                message: IvyLocalizedString("CORE_LINK_FAILED_MESSAGE"))
         }
     }
 
-    private static let appGroup = Bundle.main.object(forInfoDictionaryKey: "IvyAppGroup") as? String ?? ""
-
     private final class Listener: LinkListener, @unchecked Sendable {
-        weak var model: AppModel?
-        init(model: AppModel) { self.model = model }
-
-        func linkState(state: LinkState) {
-            Task { @MainActor [model] in
-                switch state {
-                case .showCode(let code, _): model?.link = .code(code)
-                case .registering: model?.link = .registering
-                }
-            }
-        }
+        let onState: (LinkState) -> Void
+        init(_ onState: @escaping (LinkState) -> Void) { self.onState = onState }
+        func linkState(state: LinkState) { onState(state) }
     }
 }

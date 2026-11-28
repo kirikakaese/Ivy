@@ -12,7 +12,7 @@ settings:
   base:
     SIGNAL_BUNDLEID_PREFIX: io.github.kirikakaese
     DEVELOPMENT_TEAM: U68MSDN6DR
-    SWIFT_VERSION: "5.10"
+    SWIFT_VERSION: "5.0"
     ARCHS: arm64
 targets:
   Ivy:
@@ -20,7 +20,9 @@ targets:
     platform: macOS
     sources:
       - Sources
-      - Generated/ivy_core.swift
+      # Written by Scripts/build-core.sh, which must run once before `xcodegen generate`.
+      - path: Generated/ivy_core.swift
+        optional: true
       - Assets.xcassets
       # The same translation tables as the Swift app.
       - path: ../../Signal/translations
@@ -36,14 +38,21 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         MARKETING_VERSION: $(IVY_UPSTREAM_MARKETING_VERSION)
         CURRENT_PROJECT_VERSION: $(IVY_UPSTREAM_BUILD_NUMBER).$(IVY_BUILD)
-        INFOPLIST_KEY_IvyAppGroup: group.$(SIGNAL_BUNDLEID_PREFIX).ivy.group
+        INFOPLIST_FILE: Info.plist
+        # The core build writes into core/target, outside what a sandboxed script may touch.
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
         SWIFT_INCLUDE_PATHS: $(PROJECT_DIR)/Generated
         LIBRARY_SEARCH_PATHS: $(PROJECT_DIR)/../../core/target/aarch64-apple-darwin/release
-        OTHER_LDFLAGS: -livy_core -lc++
+        # SQLCipher uses CommonCrypto (Security); libsignal links CoreFoundation and Security too.
+        OTHER_LDFLAGS: -livy_core -lc++ -framework Security -framework CoreFoundation
     preBuildScripts:
       - name: Build the Rust core
         script: '"$PROJECT_DIR/Scripts/build-core.sh"'
         basedOnDependencyAnalysis: false
+        # Declared so Xcode compiles the bindings only after this script wrote them.
+        outputFiles:
+          - $(PROJECT_DIR)/Generated/ivy_core.swift
+          - $(PROJECT_DIR)/Generated/ivy_coreFFI.h
     postBuildScripts:
       - name: Ivy app name
         script: /usr/bin/env python3 "$PROJECT_DIR/../../Scripts/ivy/app_name.py" apply "$PROJECT_DIR/../../Scripts/ivy/app-name-rules.json" "$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH"

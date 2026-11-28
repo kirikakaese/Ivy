@@ -25,7 +25,6 @@ subtle = "2.6.1"
 thiserror = "2.0.21"
 tokio = { version = "1.54.1", features = ["rt-multi-thread", "sync", "time", "macros"] }
 uniffi = { version = "0.33.0", features = ["tokio"] }
-uuid = "1.29.3"
 
 # Apple: bundled SQLCipher on CommonCrypto. Elsewhere (development and CI only) the system's SQLCipher:
 # a bundled one needs OpenSSL, whose symbols clash with libsignal's BoringSSL in one binary.

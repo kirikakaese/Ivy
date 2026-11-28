@@ -62,8 +62,8 @@ fn qr_code(text: &str) -> QrCode {
 /// What the link screen shows while `Core::link` runs.
 #[derive(uniffi::Enum)]
 pub enum LinkState {
-    /// Scan this with the primary device. `url` is the same link as text, for accessibility and copying.
-    ShowCode { code: QrCode, url: String },
+    /// Scan this with the primary device.
+    ShowCode { code: QrCode },
     /// The primary device answered; registering with the server.
     Registering,
 }
@@ -113,8 +113,8 @@ impl Core {
             .map(Into::into))
     }
 
-    /// Links this installation as a secondary device. Returns once the account is stored;
-    /// dropping the call (cancelling the Swift task) abandons the attempt.
+    /// Links this installation as a secondary device. Returns once the account is stored.
+    /// shortcut: cannot be cancelled (UniFFI's Swift bindings don't support it); add when a screen needs Cancel.
     pub async fn link(
         &self,
         device_name: String,
@@ -123,12 +123,7 @@ impl Core {
         let linked = link::link(
             &self.net,
             &device_name,
-            &|url| {
-                listener.link_state(LinkState::ShowCode {
-                    code: qr_code(&url),
-                    url,
-                })
-            },
+            &|url| listener.link_state(LinkState::ShowCode { code: qr_code(&url) }),
             &|| listener.link_state(LinkState::Registering),
         )
         .await?;
