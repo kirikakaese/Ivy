@@ -55,6 +55,8 @@ async fn await_primary(net: &Net, show_url: &(dyn Fn(String) + Send + Sync)) -> 
                 Some(Some(ProvisioningEvent::Stopped(_))) | Some(None) | None => break,
             }
         }
+        // Never reconnect in a tight loop if the server keeps closing the socket.
+        tokio::time::sleep(Duration::from_secs(2)).await;
     }
 }
 
