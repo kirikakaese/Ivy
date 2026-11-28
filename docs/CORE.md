@@ -60,7 +60,7 @@ cd apps/mac && Scripts/build-core.sh && xcodegen generate && open IvyMac.xcodepr
 
 ## Receiving
 
-`Core::receive` keeps an authenticated connection to Signal through libsignal-net and reconnects with backoff (1 s, doubling to 60 s). Each envelope is decrypted with the protocol stores in the core database (`store.rs`): normal and first-contact messages, sealed sender checked against Signal's trust roots (the same two as the Swift app), and sender-key group messages. A message is stored once per chat, author and timestamp, then acknowledged, so a crash before the acknowledgement means it is delivered again, never lost. Messages sent from this account's other devices arrive as sync messages and are stored as its own.
+`Core::receive` keeps an authenticated connection to Signal through libsignal-net and reconnects with backoff (1 s, doubling to 60 s). Each envelope is decrypted with the protocol stores in the core database (`store.rs`): normal and first-contact messages, sealed sender checked against Signal's trust roots (the same two as the Swift app), and sender-key group messages. A message is stored once per chat, author and timestamp, then acknowledged, so a crash before the acknowledgement means it is delivered again, never lost. Messages sent from this account's other devices arrive as sync messages and are stored as its own. When a message brings a contact's profile key, the core fetches their versioned profile and decrypts the name locally (`profile.rs`); control and direction-override characters are removed so a name can't disguise itself. A new profile key means the name is fetched again.
 
 ## Not as strong as the Swift app yet
 
@@ -71,12 +71,12 @@ cd apps/mac && Scripts/build-core.sh && xcodegen generate && open IvyMac.xcodepr
 | History on linking | Link and sync | Not offered (the QR code announces no capability) |
 | Undecryptable messages | Retry receipt asks the sender to resend | Dropped and logged |
 | What is shown | Every message type | Text and attachment-only messages; reactions, edits, deletes and other updates are not shown yet |
-| Names | Profiles, system contacts, storage service | The number from a sealed sender certificate; names come next |
+| Names | Profiles, system contacts, nicknames, storage service | Profile names of people who wrote, fetched with the profile key their messages carry; otherwise the number from a sealed sender certificate. System contacts, nicknames and people who haven't written come with the storage service |
 
 ## Slices
 
 1. Link as a secondary device — core done and its socket checked against Signal in CI; Mac app builds in CI but has not been run with a phone scanning the code
-2. Conversation list — receiving, storing and the list are done and tested in the core; the Mac list builds in CI. Names from profiles are next; group names come with groups
+2. Conversation list — receiving, storing, profile names and the list are done and tested in the core; the Mac list builds in CI. Not yet run against a real account. Group names come with groups
 3. Open a chat and read
 4. Send text
 5. Attachments

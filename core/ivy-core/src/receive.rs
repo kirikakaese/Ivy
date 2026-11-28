@@ -242,8 +242,9 @@ fn remember(db: &Connection, sender: &str, e164: Option<&str>, profile_key: Opti
         )?;
     }
     if let Some(key) = profile_key.filter(|k| k.len() == 32) {
+        // A new key means a new profile: the name is fetched again.
         db.execute(
-            "UPDATE recipient SET profile_key = ?2 WHERE service_id = ?1",
+            "UPDATE recipient SET name = CASE WHEN profile_key IS ?2 THEN name END, profile_key = ?2 WHERE service_id = ?1",
             params![sender, key],
         )?;
     }
@@ -594,6 +595,23 @@ mod tests {
         // The certificate's number names the sender for later.
         let e164: String = us.db.query_row("SELECT e164 FROM recipient", [], |r| r.get(0)).unwrap();
         assert_eq!(e164, "+4915112345678");
+    }
+
+    #[test]
+    fn a_new_profile_key_means_the_name_is_fetched_again() {
+        let us = us();
+        remember(&us.db, ALICE, None, Some(&[1; 32])).unwrap();
+        crate::profile::save(&us.db, ALICE, "Alice").unwrap();
+        remember(&us.db, ALICE, None, Some(&[1; 32])).unwrap();
+        assert!(
+            crate::profile::missing(&us.db).unwrap().is_empty(),
+            "same key keeps the name"
+        );
+        remember(&us.db, ALICE, None, Some(&[2; 32])).unwrap();
+        assert_eq!(
+            crate::profile::missing(&us.db).unwrap(),
+            vec![(ALICE.to_owned(), [2; 32])]
+        );
     }
 
     #[tokio::test]

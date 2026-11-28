@@ -5,6 +5,7 @@ mod db;
 mod legacy;
 mod link;
 mod net;
+mod profile;
 mod provisioning;
 mod receive;
 mod store;
@@ -186,8 +187,12 @@ impl Core {
             match connection {
                 Err(CoreError::Unlinked) => return Err(CoreError::Unlinked),
                 Err(e) => log::warn!("receiving: {e}"),
-                Ok(_connection) => {
+                Ok(connection) => {
                     backoff = std::time::Duration::from_secs(1);
+                    let mut tried = std::collections::HashSet::new();
+                    if self.fetch_names(&connection, &mut tried).await {
+                        listener.conversations_changed();
+                    }
                     while let Some(event) = inbox.recv().await {
                         match event {
                             ServerEvent::IncomingMessage {
@@ -203,6 +208,7 @@ impl Core {
                                 // Only after it is stored, so a crash before this means it is delivered again.
                                 let _ = send_ack(http::StatusCode::OK);
                                 if changed {
+                                    self.fetch_names(&connection, &mut tried).await;
                                     listener.conversations_changed();
                                 }
                             }
@@ -215,6 +221,48 @@ impl Core {
             tokio::time::sleep(backoff).await;
             backoff = (backoff * 2).min(std::time::Duration::from_secs(60));
         }
+    }
+}
+
+impl Core {
+    /// Fetches and decrypts the profile names of contacts whose profile key arrived but whose name
+    /// isn't known, each at most once per connection. True when a name was added.
+    async fn fetch_names(
+        &self,
+        chat: &libsignal_net::chat::ChatConnection,
+        tried: &mut std::collections::HashSet<String>,
+    ) -> bool {
+        use base64::Engine as _;
+        let missing = profile::missing(&self.db.lock().expect("not poisoned")).unwrap_or_default();
+        let mut added = false;
+        for (aci, key) in missing {
+            if !tried.insert(aci.clone()) {
+                continue;
+            }
+            let Some(path) = profile::path(&aci, &key).and_then(|p| p.parse().ok()) else {
+                continue;
+            };
+            let request = libsignal_net::chat::Request {
+                method: http::Method::GET,
+                path,
+                headers: http::HeaderMap::new(),
+                body: None,
+            };
+            let Ok(response) = chat.send(request, std::time::Duration::from_secs(10)).await else {
+                continue;
+            };
+            let name = (response.status == http::StatusCode::OK)
+                .then_some(response.body)
+                .flatten()
+                .and_then(|body| serde_json::from_slice::<serde_json::Value>(&body).ok())
+                .and_then(|profile| profile["name"].as_str().map(str::to_owned))
+                .and_then(|encrypted| base64::engine::general_purpose::STANDARD.decode(encrypted).ok())
+                .and_then(|encrypted| profile::decrypt_name(&key, &encrypted));
+            if let Some(name) = name {
+                added |= profile::save(&self.db.lock().expect("not poisoned"), &aci, &name).is_ok();
+            }
+        }
+        added
     }
 }
 
